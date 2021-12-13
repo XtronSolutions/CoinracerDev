@@ -1,0 +1,654 @@
+fileFormatVersion: 2
+guid: 962349ad0322e4519a6b4233ecf5c2cc
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Car.020
+    100002: Car.021
+    100004: Car.022
+    100006: Car.023
+    100008: Car.024
+    100010: Car.025
+    100012: Car.026
+    100014: Car.027
+    100016: Car.1
+    100018: Car.10
+    100020: Car.11
+    100022: Car.12
+    100024: Car.13
+    100026: Car.14
+    100028: Car.15
+    100030: Car.16
+    100032: Car.17
+    100034: Car.18
+    100036: Car.19
+    100038: Car.2
+    100040: Car.3
+    100042: Car.4
+    100044: Car.5
+    100046: Car.6
+    100048: Car.7
+    100050: Car.8
+    100052: Car.9
+    100054: //RootNode
+    100056: caterpillar
+    100058: caterpillar left
+    100060: handlebar
+    100062: left wheel
+    100064: left wheel 2
+    100066: left wheel 2.001
+    100068: left wheel 2.002
+    100070: left wheel.
+    100072: left wheel.001
+    100074: left wheel.002
+    100076: left wheel.003
+    100078: left wheel.004
+    100080: left wheel.005
+    100082: left wheel.006
+    100084: left wheel.007
+    100086: left wheel.008
+    100088: left wheel.009
+    100090: left wheel.010
+    100092: left wheel.011
+    100094: left wheel.012
+    100096: left wheel.013
+    100098: left wheel.014
+    100100: left wheel.015
+    100102: left wheel.016
+    100104: left wheel.017
+    100106: left wheel.018
+    100108: left wheel.019
+    100110: left wheel.020
+    100112: left wheel.021
+    100114: left wheel.022
+    100116: left wheel.023
+    100118: left wheel.024
+    100120: left wheel.025
+    100122: left wheel.026
+    100124: left wheel.027
+    100126: left wheel.028
+    100128: left wheel.029
+    100130: left wheel.030
+    100132: right wheel
+    100134: right wheel 2
+    100136: right wheel 2.001
+    100138: right wheel.001
+    100140: right wheel.002
+    100142: right wheel.003
+    100144: right wheel.004
+    100146: right wheel.005
+    100148: right wheel.006
+    100150: right wheel.007
+    100152: right wheel.008
+    100154: right wheel.009
+    100156: right wheel.010
+    100158: right wheel.011
+    100160: right wheel.012
+    100162: right wheel.013
+    100164: right wheel.014
+    100166: right wheel.015
+    100168: right wheel.016
+    100170: right wheel.017
+    100172: right wheel.018
+    100174: right wheel.019
+    100176: right wheel.020
+    100178: right wheel.021
+    100180: right wheel.022
+    100182: right wheel.023
+    100184: right wheel.024
+    100186: right wheel.025
+    100188: right wheel.026
+    100190: right wheel.027
+    100192: right wheel.028
+    100194: right wheel.029
+    100196: right wheel.030
+    100198: right wheel.031
+    100200: right wheel.032
+    100202: tank
+    100204: tankright wheel 3
+    100206: tanleft wheel 3
+    100208: weapon
+    100210: weapon.001
+    100212: weapon.002
+    100214: weapon.003
+    100216: wheel
+    400000: Car.020
+    400002: Car.021
+    400004: Car.022
+    400006: Car.023
+    400008: Car.024
+    400010: Car.025
+    400012: Car.026
+    400014: Car.027
+    400016: Car.1
+    400018: Car.10
+    400020: Car.11
+    400022: Car.12
+    400024: Car.13
+    400026: Car.14
+    400028: Car.15
+    400030: Car.16
+    400032: Car.17
+    400034: Car.18
+    400036: Car.19
+    400038: Car.2
+    400040: Car.3
+    400042: Car.4
+    400044: Car.5
+    400046: Car.6
+    400048: Car.7
+    400050: Car.8
+    400052: Car.9
+    400054: //RootNode
+    400056: caterpillar
+    400058: caterpillar left
+    400060: handlebar
+    400062: left wheel
+    400064: left wheel 2
+    400066: left wheel 2.001
+    400068: left wheel 2.002
+    400070: left wheel.
+    400072: left wheel.001
+    400074: left wheel.002
+    400076: left wheel.003
+    400078: left wheel.004
+    400080: left wheel.005
+    400082: left wheel.006
+    400084: left wheel.007
+    400086: left wheel.008
+    400088: left wheel.009
+    400090: left wheel.010
+    400092: left wheel.011
+    400094: left wheel.012
+    400096: left wheel.013
+    400098: left wheel.014
+    400100: left wheel.015
+    400102: left wheel.016
+    400104: left wheel.017
+    400106: left wheel.018
+    400108: left wheel.019
+    400110: left wheel.020
+    400112: left wheel.021
+    400114: left wheel.022
+    400116: left wheel.023
+    400118: left wheel.024
+    400120: left wheel.025
+    400122: left wheel.026
+    400124: left wheel.027
+    400126: left wheel.028
+    400128: left wheel.029
+    400130: left wheel.030
+    400132: right wheel
+    400134: right wheel 2
+    400136: right wheel 2.001
+    400138: right wheel.001
+    400140: right wheel.002
+    400142: right wheel.003
+    400144: right wheel.004
+    400146: right wheel.005
+    400148: right wheel.006
+    400150: right wheel.007
+    400152: right wheel.008
+    400154: right wheel.009
+    400156: right wheel.010
+    400158: right wheel.011
+    400160: right wheel.012
+    400162: right wheel.013
+    400164: right wheel.014
+    400166: right wheel.015
+    400168: right wheel.016
+    400170: right wheel.017
+    400172: right wheel.018
+    400174: right wheel.019
+    400176: right wheel.020
+    400178: right wheel.021
+    400180: right wheel.022
+    400182: right wheel.023
+    400184: right wheel.024
+    400186: right wheel.025
+    400188: right wheel.026
+    400190: right wheel.027
+    400192: right wheel.028
+    400194: right wheel.029
+    400196: right wheel.030
+    400198: right wheel.031
+    400200: right wheel.032
+    400202: tank
+    400204: tankright wheel 3
+    400206: tanleft wheel 3
+    400208: weapon
+    400210: weapon.001
+    400212: weapon.002
+    400214: weapon.003
+    400216: wheel
+    2100000: Material.001
+    2100002: Material
+    2100004: Material.002
+    2100006: Material.003
+    2100008: Material.004
+    2100010: Material.005
+    2100012: Material.006
+    2100014: Material.008
+    2100016: Material.009
+    2100018: Material.010
+    2100020: Material.011
+    2100022: Material.012
+    2100024: Material.013
+    2100026: Material.014
+    2100028: Material.015
+    2100030: Material.016
+    2100032: Material.017
+    2100034: Material.018
+    2100036: Material.019
+    2100038: Material.020
+    2300000: Car.020
+    2300002: Car.021
+    2300004: Car.022
+    2300006: Car.023
+    2300008: Car.024
+    2300010: Car.025
+    2300012: Car.026
+    2300014: Car.027
+    2300016: Car.1
+    2300018: Car.10
+    2300020: Car.11
+    2300022: Car.12
+    2300024: Car.13
+    2300026: Car.14
+    2300028: Car.15
+    2300030: Car.16
+    2300032: Car.17
+    2300034: Car.18
+    2300036: Car.19
+    2300038: Car.2
+    2300040: Car.3
+    2300042: Car.4
+    2300044: Car.5
+    2300046: Car.6
+    2300048: Car.7
+    2300050: Car.8
+    2300052: Car.9
+    2300054: caterpillar
+    2300056: caterpillar left
+    2300058: handlebar
+    2300060: left wheel
+    2300062: left wheel 2
+    2300064: left wheel 2.001
+    2300066: left wheel 2.002
+    2300068: left wheel.
+    2300070: left wheel.001
+    2300072: left wheel.002
+    2300074: left wheel.003
+    2300076: left wheel.004
+    2300078: left wheel.005
+    2300080: left wheel.006
+    2300082: left wheel.007
+    2300084: left wheel.008
+    2300086: left wheel.009
+    2300088: left wheel.010
+    2300090: left wheel.011
+    2300092: left wheel.012
+    2300094: left wheel.013
+    2300096: left wheel.014
+    2300098: left wheel.015
+    2300100: left wheel.016
+    2300102: left wheel.017
+    2300104: left wheel.018
+    2300106: left wheel.019
+    2300108: left wheel.020
+    2300110: left wheel.021
+    2300112: left wheel.022
+    2300114: left wheel.023
+    2300116: left wheel.024
+    2300118: left wheel.025
+    2300120: left wheel.026
+    2300122: left wheel.027
+    2300124: left wheel.028
+    2300126: left wheel.029
+    2300128: left wheel.030
+    2300130: right wheel
+    2300132: right wheel 2
+    2300134: right wheel 2.001
+    2300136: right wheel.001
+    2300138: right wheel.002
+    2300140: right wheel.003
+    2300142: right wheel.004
+    2300144: right wheel.005
+    2300146: right wheel.006
+    2300148: right wheel.007
+    2300150: right wheel.008
+    2300152: right wheel.009
+    2300154: right wheel.010
+    2300156: right wheel.011
+    2300158: right wheel.012
+    2300160: right wheel.013
+    2300162: right wheel.014
+    2300164: right wheel.015
+    2300166: right wheel.016
+    2300168: right wheel.017
+    2300170: right wheel.018
+    2300172: right wheel.019
+    2300174: right wheel.020
+    2300176: right wheel.021
+    2300178: right wheel.022
+    2300180: right wheel.023
+    2300182: right wheel.024
+    2300184: right wheel.025
+    2300186: right wheel.026
+    2300188: right wheel.027
+    2300190: right wheel.028
+    2300192: right wheel.029
+    2300194: right wheel.030
+    2300196: right wheel.031
+    2300198: right wheel.032
+    2300200: tank
+    2300202: tankright wheel 3
+    2300204: tanleft wheel 3
+    2300206: weapon
+    2300208: weapon.001
+    2300210: weapon.002
+    2300212: weapon.003
+    2300214: wheel
+    3300000: Car.020
+    3300002: Car.021
+    3300004: Car.022
+    3300006: Car.023
+    3300008: Car.024
+    3300010: Car.025
+    3300012: Car.026
+    3300014: Car.027
+    3300016: Car.1
+    3300018: Car.10
+    3300020: Car.11
+    3300022: Car.12
+    3300024: Car.13
+    3300026: Car.14
+    3300028: Car.15
+    3300030: Car.16
+    3300032: Car.17
+    3300034: Car.18
+    3300036: Car.19
+    3300038: Car.2
+    3300040: Car.3
+    3300042: Car.4
+    3300044: Car.5
+    3300046: Car.6
+    3300048: Car.7
+    3300050: Car.8
+    3300052: Car.9
+    3300054: caterpillar
+    3300056: caterpillar left
+    3300058: handlebar
+    3300060: left wheel
+    3300062: left wheel 2
+    3300064: left wheel 2.001
+    3300066: left wheel 2.002
+    3300068: left wheel.
+    3300070: left wheel.001
+    3300072: left wheel.002
+    3300074: left wheel.003
+    3300076: left wheel.004
+    3300078: left wheel.005
+    3300080: left wheel.006
+    3300082: left wheel.007
+    3300084: left wheel.008
+    3300086: left wheel.009
+    3300088: left wheel.010
+    3300090: left wheel.011
+    3300092: left wheel.012
+    3300094: left wheel.013
+    3300096: left wheel.014
+    3300098: left wheel.015
+    3300100: left wheel.016
+    3300102: left wheel.017
+    3300104: left wheel.018
+    3300106: left wheel.019
+    3300108: left wheel.020
+    3300110: left wheel.021
+    3300112: left wheel.022
+    3300114: left wheel.023
+    3300116: left wheel.024
+    3300118: left wheel.025
+    3300120: left wheel.026
+    3300122: left wheel.027
+    3300124: left wheel.028
+    3300126: left wheel.029
+    3300128: left wheel.030
+    3300130: right wheel
+    3300132: right wheel 2
+    3300134: right wheel 2.001
+    3300136: right wheel.001
+    3300138: right wheel.002
+    3300140: right wheel.003
+    3300142: right wheel.004
+    3300144: right wheel.005
+    3300146: right wheel.006
+    3300148: right wheel.007
+    3300150: right wheel.008
+    3300152: right wheel.009
+    3300154: right wheel.010
+    3300156: right wheel.011
+    3300158: right wheel.012
+    3300160: right wheel.013
+    3300162: right wheel.014
+    3300164: right wheel.015
+    3300166: right wheel.016
+    3300168: right wheel.017
+    3300170: right wheel.018
+    3300172: right wheel.019
+    3300174: right wheel.020
+    3300176: right wheel.021
+    3300178: right wheel.022
+    3300180: right wheel.023
+    3300182: right wheel.024
+    3300184: right wheel.025
+    3300186: right wheel.026
+    3300188: right wheel.027
+    3300190: right wheel.028
+    3300192: right wheel.029
+    3300194: right wheel.030
+    3300196: right wheel.031
+    3300198: right wheel.032
+    3300200: tank
+    3300202: tankright wheel 3
+    3300204: tanleft wheel 3
+    3300206: weapon
+    3300208: weapon.001
+    3300210: weapon.002
+    3300212: weapon.003
+    3300214: wheel
+    4300000: Car.1
+    4300002: left wheel.001
+    4300004: left wheel.002
+    4300006: right wheel.002
+    4300008: right wheel.001
+    4300010: handlebar
+    4300012: tank
+    4300014: caterpillar left
+    4300016: left wheel 2.002
+    4300018: left wheel
+    4300020: tanleft wheel 3
+    4300022: caterpillar
+    4300024: right wheel
+    4300026: right wheel 2
+    4300028: tankright wheel 3
+    4300030: weapon.002
+    4300032: weapon.003
+    4300034: Car.2
+    4300036: left wheel.007
+    4300038: left wheel.006
+    4300040: right wheel.008
+    4300042: right wheel.009
+    4300044: Car.3
+    4300046: left wheel.005
+    4300048: left wheel.004
+    4300050: right wheel.006
+    4300052: right wheel.007
+    4300054: Car.4
+    4300056: left wheel.011
+    4300058: left wheel.010
+    4300060: right wheel.012
+    4300062: right wheel.013
+    4300064: Car.5
+    4300066: left wheel.009
+    4300068: left wheel.008
+    4300070: right wheel.011
+    4300072: right wheel.010
+    4300074: Car.6
+    4300076: left wheel.013
+    4300078: left wheel.012
+    4300080: right wheel.015
+    4300082: right wheel.014
+    4300084: Car.7
+    4300086: left wheel 2.001
+    4300088: left wheel.003
+    4300090: right wheel 2.001
+    4300092: right wheel.003
+    4300094: Car.8
+    4300096: left wheel 2
+    4300098: left wheel.
+    4300100: right wheel.004
+    4300102: right wheel.005
+    4300104: Car.9
+    4300106: wheel
+    4300108: Car.10
+    4300110: left wheel.015
+    4300112: left wheel.014
+    4300114: right wheel.016
+    4300116: right wheel.017
+    4300118: Car.11
+    4300120: Car.020
+    4300122: Car.021
+    4300124: Car.022
+    4300126: Car.023
+    4300128: Car.12
+    4300130: left wheel.017
+    4300132: left wheel.016
+    4300134: right wheel.018
+    4300136: right wheel.019
+    4300138: Car.13
+    4300140: left wheel.020
+    4300142: left wheel.019
+    4300144: left wheel.018
+    4300146: right wheel.022
+    4300148: right wheel.021
+    4300150: right wheel.020
+    4300152: Car.14
+    4300154: left wheel.022
+    4300156: left wheel.021
+    4300158: right wheel.024
+    4300160: right wheel.023
+    4300162: Car.15
+    4300164: left wheel.024
+    4300166: left wheel.023
+    4300168: right wheel.026
+    4300170: right wheel.025
+    4300172: Car.16
+    4300174: Car.024
+    4300176: Car.025
+    4300178: Car.026
+    4300180: Car.027
+    4300182: Car.17
+    4300184: weapon
+    4300186: weapon.001
+    4300188: left wheel.026
+    4300190: left wheel.025
+    4300192: right wheel.027
+    4300194: right wheel.028
+    4300196: Car.18
+    4300198: left wheel.028
+    4300200: left wheel.027
+    4300202: right wheel.029
+    4300204: right wheel.030
+    4300206: Car.19
+    4300208: left wheel.030
+    4300210: left wheel.029
+    4300212: right wheel.032
+    4300214: right wheel.031
+    2186277476908879412: ImportLogs
+  externalObjects: {}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

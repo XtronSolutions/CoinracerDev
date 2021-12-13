@@ -1,0 +1,80 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.Networking;
+using Newtonsoft.Json;
+
+public class IPFSdata
+{
+    public string name { get; set; }
+    public string description { get; set; }
+    public string image { get; set; }
+}
+public class NFTDataHandler : MonoBehaviour
+{
+    private IPFSdata dataIPFS;
+    public Image AnimationRef;
+    public TextMeshProUGUI ModelName;
+    public TextMeshProUGUI ModelID;
+ 
+    private float speed = 0.03f;
+    private int tokenID = 0;
+    public void AssignData(Sprite[] _sprites,string _name, string _id)
+    {
+        StartCoroutine(PlayAnimation(_sprites));
+        ModelName.text = _name;
+        ModelID.text = "#" + _id;
+    }
+
+    public IEnumerator PlayAnimation(Sprite[] _sprites)
+    {
+        for (int i = 0; i < _sprites.Length; i++)
+        {
+            AnimationRef.sprite = _sprites[i];
+            yield return new WaitForSecondsRealtime(speed);
+        }
+
+        StartCoroutine(PlayAnimation(_sprites));
+    }
+
+    public IEnumerator GetJSONData(int _tokenID,string _URL)
+    {
+        tokenID = _tokenID;
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(_URL))
+        {
+            yield return webRequest.SendWebRequest();
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
+                    dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
+
+                    if(!Constants.StoredCarNames.Contains(dataIPFS.name))
+                        Constants.StoredCarNames.Add(dataIPFS.name);
+
+                    for (int i = 0; i < NFTGameplayManager.Instance.DataNFTModel.Count; i++)
+                    {
+                        if (dataIPFS.name.ToLower() == NFTGameplayManager.Instance.DataNFTModel[i].name.ToLower())
+                        {
+                            AssignData(NFTGameplayManager.Instance.DataNFTModel[i].AnimationSequence, NFTGameplayManager.Instance.DataNFTModel[i].name,tokenID.ToString());
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+
+
+}
+
