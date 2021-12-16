@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using ExitGames.Client.Photon;
+using Photon.Realtime;
 
 namespace DavidJalbert
 {
@@ -67,6 +70,11 @@ namespace DavidJalbert
         [Tooltip("How much grip the car should have on the road when turning.")]
         public float lateralFriction = 80;
 
+        [Tooltip("if controller is for multiplayer.")]
+        public bool IsMultiplayer = false;
+
+        public PhotonView PHView;
+
         private Rigidbody body;
         private SphereCollider sphereCollider;
         private bool onGround = false;
@@ -123,7 +131,6 @@ namespace DavidJalbert
 
         virtual protected void Update()
         {
-            // refresh rigid body and collider parameters
             body.hideFlags = HideFlags.None;
             sphereCollider.hideFlags = HideFlags.None;
 

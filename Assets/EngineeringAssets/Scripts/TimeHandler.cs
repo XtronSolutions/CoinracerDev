@@ -36,7 +36,9 @@ public class TimeHandler : MonoBehaviour
     void Start()
     {
         Instance = this;
-        timerIsRunning = true;
+
+        if(!Constants.IsMultiplayer)
+            timerIsRunning = true;
     }
 
     void Update()

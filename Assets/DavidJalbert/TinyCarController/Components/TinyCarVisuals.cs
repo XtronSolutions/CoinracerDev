@@ -202,6 +202,12 @@ namespace DavidJalbert
         private void LateUpdate()
         {
             vehicleContainer.position = carController.getBodyPosition();
+
+            //if(carController.IsMultiplayer)
+            //{
+            //    if(!carController.PHView.IsMine)
+            //        vehicleContainer.rotation = carController.getBodyRotation();
+            //}
         }
 
         public void stopAllParticles()

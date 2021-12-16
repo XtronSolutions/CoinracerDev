@@ -1016,6 +1016,7 @@ public class MainMenuViewController : MonoBehaviour
             CheckBoughtCars();
             IsTournament = false;
             IsPractice = true;
+            IsMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
             CarSelection3dObject.SetActive(true);
@@ -1104,6 +1105,7 @@ public class MainMenuViewController : MonoBehaviour
             CheckBoughtCars();
             IsTournament = true;
             IsPractice = false;
+            IsMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
             CarSelection3dObject.SetActive(true);
@@ -1117,6 +1119,7 @@ public class MainMenuViewController : MonoBehaviour
             CheckBoughtCars();
             IsTournament = true;
             IsPractice = false;
+            IsMultiplayer = false;
 
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
@@ -1149,6 +1152,13 @@ public class MainMenuViewController : MonoBehaviour
 
         SelectedCar = _selecteableCars[_currentSelectedCarIndex].carSettings;
         SceneManager.LoadScene(_levelsSettings[_currentlySelectedLevelIndex].SceneName);
+    }
+
+
+    public void TempStartRace()
+    {
+        IsPractice = true;
+        SelectedCar = _selecteableCars[0].carSettings;
     }
     #endregion
 
@@ -1426,14 +1436,16 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SelectMultiplayer_ConnectionUI()
     {
+        Constants.IsMultiplayer = true;
         ToggleScreen_ConnectionUI(true);
-
+        
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.ConnectToPhotonServer();
     }
 
     public void DisableScreen_ConnectionUI()
     {
+        Constants.IsMultiplayer = false;
         ChangeConnectionText_ConnectionUI("connecting...");
         ChangeRegionText_ConnectionUI("Selected Region : n/a");
         ToggleScreen_ConnectionUI(false);

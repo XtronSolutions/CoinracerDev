@@ -477,6 +477,8 @@ public class WalletManager : MonoBehaviour
                 return;
             }
         }
+
+
         Constants.NFTBought = int.Parse(response);
 
         if(Constants.NFTBought==0)

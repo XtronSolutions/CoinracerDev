@@ -6,6 +6,7 @@ using ExitGames.Client.Photon;
 using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class PhotonSetting
@@ -22,14 +23,19 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
     public static MultiplayerManager Instance;
     public PhotonSetting Settings;
+    private PhotonView PHView;
+    private List<string> ActorNumbers = new List<string>();
     private void Start()
     {
         if(!Instance)
         {
+            ActorNumbers.Clear();
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
 
-            if(Settings.AutoConnect)
+            PHView = GetComponent<PhotonView>();
+
+            if (Settings.AutoConnect)
                 ConnectToPhotonServer();
         }
     }
@@ -54,6 +60,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
         else
         {
+            ActorNumbers.Clear();
             UpdateConnectionText("Connecting...");
             Debug.Log("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
             PhotonNetwork.ConnectUsingSettings();
@@ -99,6 +106,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void DisconnectPhoton()
     {
+        ActorNumbers.Clear();
         PhotonNetwork.Disconnect();
     }
 
@@ -143,12 +151,90 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         Debug.Log("OnPlayerEnteredRoom() called by PUN. Connected players " + newPlayer.NickName);
+
+        if(PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
+        {
+            if(PhotonNetwork.IsMasterClient)
+            {
+                StartCoroutine(LoadAsyncScene());
+            }
+        }
+    }
+
+    public IEnumerator LoadAsyncScene()
+    {
+        PhotonNetwork.LoadLevel(1);
+        yield return null;
+        //AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Level1",LoadSceneMode.Single);
+
+        // Wait until the asynchronous scene fully loads
+        //while (!asyncLoad.isDone)
+        //{
+        //    yield return null;
+        //}
+
+        //if(asyncLoad.isDone)
+        //{
+        //    Debug.Log("is loaded");
+
+        //    if (PhotonNetwork.InRoom)
+        //    {
+        //        if (!ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
+        //        {
+        //            ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+        //        }
+
+        //        PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+        //    }
+        //}
+    }
+
+    public void CallStartRPC()
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            PHView.RPC("StartRace", RpcTarget.AllViaServer);
+        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
+    }
+    #endregion
+
+    #region RPC Calls
+    [PunRPC]
+    public void SyncScene(string ID)
+    {
+        if (!ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
+            ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+
+        if (!ActorNumbers.Contains(ID))
+            ActorNumbers.Add(ID);
+
+       if(PhotonNetwork.IsMasterClient)
+        {
+            if(ActorNumbers.Count==Settings.MaxPlayers)
+            {
+                Debug.Log("all players connected starting game");
+                PHView.RPC("StartRace", RpcTarget.AllViaServer);
+            }
+
+        }else
+        {
+            PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+        }
+    }
+
+    [PunRPC]
+    public void StartRace()
+    {
+        if (RaceManager.Instance)
+        {
+            RaceManager.Instance.StartTheRaceTimer();
+        }
     }
     #endregion
 }

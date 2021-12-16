@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ExitGames.Client.Photon;
+using Photon.Realtime;
+using Photon.Pun;
 
 namespace DavidJalbert
 {
-    public class TinyCarStandardInput : MonoBehaviour
+    public class TinyCarStandardInput : MonoBehaviour, IOnEventCallback
     {
         public TinyCarController carController;
 
@@ -43,10 +46,16 @@ namespace DavidJalbert
         public float boostMultiplier = 2;
 
         private float boostTimer = 0;
-
-        void Start()
+        RaiseEventOptions raiseEventOptions;
+        private void OnEnable()
         {
-        
+            PhotonNetwork.AddCallbackTarget(this);
+            raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.Others }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+        }
+
+        private void OnDisable()
+        {
+            PhotonNetwork.RemoveCallbackTarget(this);
         }
 
         void Update()
@@ -54,8 +63,15 @@ namespace DavidJalbert
             if (!Constants.MoveCar)
                 return;
 
-            float motorDelta = getInput(forwardInput) - getInput(reverseInput);
-            float steeringDelta = getInput(steerRightInput) - getInput(steerLeftInput);
+            if (carController.IsMultiplayer)
+            {
+                if (!carController.PHView.IsMine)
+                    return;
+            }
+
+            ApplyCarMotor();
+            ApplyCarSteer();
+
             // if (getInput(boostInput) == 1 && boostTimer == 0)
             // {
             //     boostTimer = boostCoolOff + boostDuration;
@@ -66,8 +82,21 @@ namespace DavidJalbert
             //     carController.setBoostMultiplier(boostTimer > boostCoolOff ? boostMultiplier : 1);
             // }
 
-            carController.setSteering(steeringDelta);
+
+        }
+
+        public void ApplyCarMotor()
+        {
+
+            float motorDelta = getInput(forwardInput) - getInput(reverseInput);
             carController.setMotor(motorDelta);
+        }
+
+        public void ApplyCarSteer()
+        {
+
+            float steeringDelta = getInput(steerRightInput) - getInput(steerLeftInput);
+            carController.setSteering(steeringDelta);
         }
 
         public float getInput(InputValue v)
@@ -82,6 +111,30 @@ namespace DavidJalbert
             }
             if (v.invert) value *= -1;
             return Mathf.Clamp01(value);
+        }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            byte eventCode = photonEvent.Code;
+            if (eventCode == 1)
+            {
+                object[] data = (object[])photonEvent.CustomData;
+                string ViewID = (string)data[0];
+           
+                if (carController.PHView.ViewID.ToString() == ViewID)
+                {
+                    float Motor = (float)data[1];
+                    float Steer = (float)data[2];
+                    carController.setSteering(Steer);
+                    carController.setMotor(Motor);
+                }
+            }
+        }
+
+        private void SendInputData(string ID,float _motor, float _steer)
+        {
+            object[] content = new object[] { ID,_motor, _steer }; // Array contains the target position and the IDs of the selected units
+            PhotonNetwork.RaiseEvent(1, content, raiseEventOptions, SendOptions.SendUnreliable);
         }
     }
 }

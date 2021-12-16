@@ -8,7 +8,6 @@ using TMPro;
 
 public class RaceManager : MonoBehaviour
 {
-
     [SerializeField] private List<WayPoint> _wayPoints = new List<WayPoint>();
     [SerializeField] private int _requiredNumberOfLaps = 3;
     [SerializeField] private GameObject _pasueMenuObject = null;
@@ -25,6 +24,18 @@ public class RaceManager : MonoBehaviour
     int RaceCounter = 3;
 
     private void OnEnable()
+    {
+        Instance = this;
+
+        if (Constants.IsMultiplayer)
+            MultiplayerManager.Instance.CallStartRPC();
+        else
+            StartTheRaceTimer();
+
+
+    }
+
+    public void StartTheRaceTimer()
     {
         RaceCounter = 3;
         Constants.MoveCar = false;
@@ -50,14 +61,12 @@ public class RaceManager : MonoBehaviour
             if (RaceCounter > 0)
             {
                 GameStartTimer.text = RaceCounter.ToString();
-                Debug.Log("Starting again1");
                 StartCoroutine(StartTimerCountDown());
             }
             else
             {
                 RaceCounter--;
                 GameStartTimer.text = "GO!";
-                Debug.Log("Starting again2");
                 StartCoroutine(StartTimerCountDown());
             }
         }
@@ -65,7 +74,6 @@ public class RaceManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Instance = this;
         LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
         foreach (var wayPoint in _wayPoints)
         {

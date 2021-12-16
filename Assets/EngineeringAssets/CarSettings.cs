@@ -13,6 +13,7 @@ public class CarSettings : ScriptableObject
     public CarType carType;
     public string Name;
     public GameObject CarPrefab;
+    public GameObject CarMultiplayerPrefab;
     public Sprite Icon;
 
 }

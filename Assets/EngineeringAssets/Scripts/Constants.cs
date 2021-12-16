@@ -55,6 +55,7 @@ public static class Constants
     public static float SoundSliderValue = 1;
     public static float MusicSliderValue = 1;
     public static bool OnIce = false;
+    public static bool IsMultiplayer = false;
 
     public static void ResetData()
     {
