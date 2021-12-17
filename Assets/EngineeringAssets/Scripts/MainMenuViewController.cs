@@ -1016,7 +1016,7 @@ public class MainMenuViewController : MonoBehaviour
             CheckBoughtCars();
             IsTournament = false;
             IsPractice = true;
-            IsMultiplayer = false;
+            //IsMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
             CarSelection3dObject.SetActive(true);
@@ -1149,9 +1149,19 @@ public class MainMenuViewController : MonoBehaviour
             FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
         }
 #endif
-
-        SelectedCar = _selecteableCars[_currentSelectedCarIndex].carSettings;
-        SceneManager.LoadScene(_levelsSettings[_currentlySelectedLevelIndex].SceneName);
+        if (Constants.IsMultiplayer)
+        {
+            if (MultiplayerManager.Instance)
+            {
+                MultiplayerManager.Instance.ConnectToPhotonServer();
+                MainMenuViewController.Instance.SelectMultiplayer_ConnectionUI();
+            } 
+        }
+        else
+        {
+            SelectedCar = _selecteableCars[_currentSelectedCarIndex].carSettings;
+            SceneManager.LoadScene(_levelsSettings[_currentlySelectedLevelIndex].SceneName);
+        }
     }
 
 
@@ -1411,9 +1421,15 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SubscribeEvents_ConnectionUI()
     {
-        UIConnection.MultiplayerButton.onClick.AddListener(SelectMultiplayer_ConnectionUI);
+        UIConnection.MultiplayerButton.onClick.AddListener(onMultiplayerBtnClick);
         UIConnection.BackButton.onClick.AddListener(DisableScreen_ConnectionUI);
     }
+    public void onMultiplayerBtnClick()
+    {
+        Constants.IsMultiplayer = true;
+        MainMenuViewController.Instance.OnGoToCarSelection();
+    }
+
     public void ToggleScreen_ConnectionUI(bool _state)
     {
         UIConnection.MainScreen.SetActive(_state);
