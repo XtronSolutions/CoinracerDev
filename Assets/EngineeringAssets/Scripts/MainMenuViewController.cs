@@ -1193,6 +1193,14 @@ public class MainMenuViewController : MonoBehaviour
 
         if (WalletConnected)//WalletConnected
         {
+            if (Constants.IsTestNet)
+            {
+                ToggleScreen_Garage(true);
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "No NFT was purchased, please purchase one.");
+                return;
+            }
+
             if (Constants.CheckAllNFT || Constants.NFTStored == 0)
             {
 
@@ -1228,14 +1236,23 @@ public class MainMenuViewController : MonoBehaviour
 
     public void CheckBoughtCars()
     {
+        if(Constants.IsTestNet)
+        {
+            _selecteableCars.Clear();
+            _selecteableCars.Add(_allCars[0].CarDetail);
+            LoadingScreen.SetActive(false);
+            _currentSelectedCarIndex = 0;
+            UpdateSelectedCarVisual(_currentSelectedCarIndex);
+
+            return;
+        }
+
         if (Constants.CheckAllNFT || Constants.NFTStored == 0)
         {
             if (Constants.NFTStored == 0)
             {
                 _selecteableCars.Clear();
                 _selecteableCars.Add(_allCars[0].CarDetail);
-                //_selecteableCars.Add(_allCars[1].CarDetail);
-                //_selecteableCars.Add(_allCars[2].CarDetail);
 
                 LoadingScreen.SetActive(false);
                 _currentSelectedCarIndex = 0;
@@ -1247,8 +1264,6 @@ public class MainMenuViewController : MonoBehaviour
                 //clearing list and adding BOLT car
                 _selecteableCars.Clear();
                 _selecteableCars.Add(_allCars[0].CarDetail);
-                //_selecteableCars.Add(_allCars[1].CarDetail);
-                //_selecteableCars.Add(_allCars[2].CarDetail);
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
                 {

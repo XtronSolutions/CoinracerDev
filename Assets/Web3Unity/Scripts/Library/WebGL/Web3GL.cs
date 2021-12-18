@@ -14,7 +14,13 @@ public class Web3GL
     private static extern string SendContractResponse();
 
     [DllImport("__Internal")]
+    private static extern string SendContractEventResponse();
+
+    [DllImport("__Internal")]
     private static extern void SetContractResponse(string value);
+
+    [DllImport("__Internal")]
+    private static extern void SetContractEventResponse(string value);
 
     [DllImport("__Internal")]
     private static extern void SendTransactionJs(string to, string value, string gasLimit, string gasPrice);
@@ -37,11 +43,15 @@ public class Web3GL
     [DllImport("__Internal")]
     private static extern int GetNetwork();
 
+    public static string eventResponse = "";
+
     // this function will create a metamask tx for user to confirm.
-    async public static Task<string> SendContract(string _method, string _abi, string _contract, string _args, string _value, string _gasLimit = "", string _gasPrice = "")
+    async public static Task<string> SendContract(string _method, string _abi, string _contract, string _args, string _value, string _gasLimit = "", string _gasPrice = "",bool _hasEvent=false)
     {
         // Set response to empty
+        eventResponse = "";
         SetContractResponse("");
+        SetContractEventResponse("");
         SendContractJs(_method, _abi, _contract, _args, _value, _gasLimit, _gasPrice);
         string response = SendContractResponse();
         while (response == "")
@@ -50,6 +60,20 @@ public class Web3GL
             response = SendContractResponse();
         }
         SetContractResponse("");
+
+        if(_hasEvent)
+        {
+            eventResponse = SendContractEventResponse();
+            while (eventResponse == "" && eventResponse != "error")
+            {
+                Debug.Log(eventResponse);
+                await new WaitForSeconds(1f);
+                eventResponse = SendContractEventResponse();
+            }
+
+            SetContractEventResponse("");
+        }
+      
         // check if user submmited or user rejected
         if (response.Length == 66) 
         {

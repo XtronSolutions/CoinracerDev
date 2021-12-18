@@ -48,7 +48,8 @@ public static class Constants
     public static List<string> StoredCarNames = new List<string>();
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
-    public static bool IsTest = true;
+    public static bool IsTestNet = false;
+    public static bool IsTest = false;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
     public static string EmailSent = "";
@@ -56,6 +57,7 @@ public static class Constants
     public static float MusicSliderValue = 1;
     public static bool OnIce = false;
     public static bool IsMultiplayer = false;
+    public static string StoredPID = "";
 
     public static void ResetData()
     {

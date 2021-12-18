@@ -92,6 +92,17 @@ mergeInto(LibraryManager.library, {
   SetContractResponse: function (value) {
     window.web3gl.sendContractResponse = value;
   },
+  
+  SendContractEventResponse: function () {
+    var bufferSize = lengthBytesUTF8(window.web3gl.sendContractEventResponse) + 1;
+    var buffer = _malloc(bufferSize);
+    stringToUTF8(window.web3gl.sendContractEventResponse, buffer, bufferSize);
+    return buffer;
+  },
+  
+   SetContractEventResponse: function (value) {
+    window.web3gl.sendContractEventResponse = value;
+  },
 
   SendTransactionJs: function (to, value, gasLimit, gasPrice) {
     window.web3gl.sendTransaction(
