@@ -17,8 +17,8 @@ public class CarSelectionHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //CarSettings settings = MainMenuViewController.SelectedCar != null ? MainMenuViewController.SelectedCar : _defualtCarSettings;
-        CarSettings settings = _defualtCarSettings;
+        CarSettings settings = MainMenuViewController.SelectedCar != null ? MainMenuViewController.SelectedCar : _defualtCarSettings;
+        //CarSettings settings = _defualtCarSettings;
         GameObject car;
 
         if (Constants.IsMultiplayer)
