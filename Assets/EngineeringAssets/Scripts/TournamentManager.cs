@@ -28,6 +28,9 @@ public class TournamentData
     public StartDate StartDate { get; set; }
     public EndDate EndDate { get; set; }
     public int Week { get; set; }
+    public int PassPrice { get; set; }
+    public int DiscountPercentage { get; set; }
+    public int DiscountOnCrace { get; set; }
 }
 public class TournamentManager : MonoBehaviour
 {
@@ -138,7 +141,7 @@ public class TournamentManager : MonoBehaviour
                         //Debug.LogError(RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString());
 
                         ManipulateTournamnetUIActivness(true, true, true, false, false, false);
-                        ManipulateTournamnetUIData("Week " + _data.Week.ToString(), RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.TicketPrice.ToString() + " $CRACE");
+                        ManipulateTournamnetUIData("Week " + _data.Week.ToString(), RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.TicketPrice.ToString() + " $CRACE", "*"+Constants.DiscountPercentage.ToString()+"% off if you hold "+Constants.DiscountForCrace.ToString()+" $crace or more");
                         StartTimer = true;
                         TournamentStartTimer = false;
                     }
@@ -181,6 +184,12 @@ public class TournamentManager : MonoBehaviour
         if (info != null && info != "null")
         {
             DataTournament = JsonConvert.DeserializeObject<TournamentData>(info);
+
+            Constants.TournamentPassPrice = DataTournament.PassPrice;
+            Constants.DiscountPercentage = DataTournament.DiscountPercentage;
+            Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
+            Constants.TicketPrice = DataTournament.TicketPrice;
+
             StartTournamentCounter(false, DataTournament);
         }
         else
@@ -205,13 +214,14 @@ public class TournamentManager : MonoBehaviour
             MainMenuViewController.Instance.UITournament.TournamentStartText.gameObject.SetActive(DisclaimerActive2);
         }
     }
-    public void ManipulateTournamnetUIData(string LowerHeaderText, string TimerText, string FotterText)
+    public void ManipulateTournamnetUIData(string LowerHeaderText, string TimerText, string FotterText, string Fotter2Text)
     {
         if (MainMenuViewController.Instance) //if instance of UI class is created
         {
             MainMenuViewController.Instance.UITournament.LowerHeaderText.text = LowerHeaderText;
             MainMenuViewController.Instance.UITournament.TimerText.text = TimerText;
             MainMenuViewController.Instance.UITournament.FotterText.text = FotterText;
+            MainMenuViewController.Instance.UITournament.Fotter2Text.text = Fotter2Text;
         }
     }
     public void ManipulateTournamnetStartTimer(string TimerText)

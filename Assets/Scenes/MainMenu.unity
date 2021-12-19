@@ -5434,7 +5434,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 966370818}
   m_OnClick:
     m_PersistentCalls:
@@ -19199,6 +19199,7 @@ MonoBehaviour:
     LowerHeaderText: {fileID: 816027920}
     TimerText: {fileID: 287862956}
     FotterText: {fileID: 147840191}
+    Fotter2Text: {fileID: 127479926}
     DisclaimerText: {fileID: 1896353320}
     LoaderObj: {fileID: 2095739247}
     TournamentStartText: {fileID: 1491346293}
@@ -28568,7 +28569,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &798951586
 RectTransform:
   m_ObjectHideFlags: 0

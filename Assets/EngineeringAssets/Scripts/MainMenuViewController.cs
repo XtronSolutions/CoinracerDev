@@ -96,6 +96,7 @@ public class TournamentUI
     public TextMeshProUGUI LowerHeaderText;
     public TextMeshProUGUI TimerText;
     public TextMeshProUGUI FotterText;
+    public TextMeshProUGUI Fotter2Text;
     public TextMeshProUGUI DisclaimerText;
     public GameObject LoaderObj;
     public TextMeshProUGUI TournamentStartText;
@@ -288,6 +289,9 @@ public class MainMenuViewController : MonoBehaviour
     #region SeletionUI (MainData/Selections)
     public void ToggleScreen_SelectionUI(bool _state)
     {
+        if(_state)
+            ChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.TournamentPassPrice + " $crace. unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + Constants.TicketPrice + " $crace, if you hold " + Constants.DiscountForCrace + " $crace - " + Constants.DiscountPercentage + "% discount.");
+
         UISelection.MainScreen.SetActive(_state);
     }
 
@@ -486,7 +490,7 @@ public class MainMenuViewController : MonoBehaviour
                     TicketPrice = TournamentManager.Instance.DataTournament.TicketPrice;
                     if (WalletManager.Instance.CheckBalanceTournament(false, true, false))
                     {
-                        ShowToast(2f, "Congrats!, You have received 50% discount.");
+                        ShowToast(2f, "Congrats!, You have received "+Constants.DiscountPercentage+"% discount.");
                         TicketPrice = (TicketPrice * DiscountPercentage) / 100;
                     }
 
@@ -967,7 +971,8 @@ public class MainMenuViewController : MonoBehaviour
         }
         else if (IsTournament)
         {
-            _levelsSettings.Add(_allLevelsSettings[1]);
+            //_levelsSettings.Add(_allLevelsSettings[1]);
+            _levelsSettings.Add(_allLevelsSettings[2]);
         }
 
         OnLevelSelected(0);

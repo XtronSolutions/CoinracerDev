@@ -20,7 +20,7 @@ public static class Constants
     public static double GameSeconds = 0;
     public static string WalletAddress = "";
     public static string UserName = "";
-    public static int TournamentPassPrice =500;//500
+    public static int TournamentPassPrice =200;//500
     public static bool BuyingPass = false;
     public static int DiscountPercentage = 50;
     public static int DiscountForCrace = 25000;//25000
@@ -75,11 +75,11 @@ public static class Constants
         GameSeconds = 0;
         WalletAddress = "";
         UserName = "";
-        TournamentPassPrice = 500;//500
+        //TournamentPassPrice = 500;//500
         BuyingPass = false;
-        DiscountPercentage = 50;
-        DiscountForCrace = 25000;//25000
-        TicketPrice = 0;
+        //DiscountPercentage = 50;
+        //DiscountForCrace = 25000;//25000
+       //TicketPrice = 0;
         FlagSelectedIndex = 0;
         LoggedIn = false;
         RegisterSubmit = false;
