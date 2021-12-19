@@ -95,6 +95,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         customProperties.Add("t", "2");
 
         RoomOptions roomOptions = new RoomOptions();
+       // roomOptions.customRoomPropertiesForLobby = new Hashtable(1) { { "level", MainMenuViewController.Instance.getSelectedLevel() } };
         roomOptions.MaxPlayers = Settings.MaxPlayers;
         roomOptions.PublishUserId = true;
         roomOptions.IsVisible = true;
@@ -102,6 +103,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         roomOptions.CustomRoomProperties = customProperties;
 
         PhotonNetwork.CreateRoom("Room_"+roomCode.ToString(), roomOptions, TypedLobby.Default);
+
+
+       
     }
 
     public void DisconnectPhoton()
@@ -109,7 +113,23 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         ActorNumbers.Clear();
         PhotonNetwork.Disconnect();
     }
+    public void pushResult()
+    {
+        //var winProperty = new ExitGames.Client.Photon.Hashtable();
+        //for (int i = 0; i < 5; i++)
+        //{
+        //    winProperty.Add(i.ToString(), i + 1.ToString());
+        //}
+        //PhotonNetwork.CurrentRoom.SetCustomProperties(winProperty);
+        //Debug.Log(winProperty);
 
+        //winProperty = (Hashtable)PhotonNetwork.CurrentRoom.CustomProperties["winProperty"];
+        //Debug.Log("won Custom Properties are: "+winProperty);
+
+        int result = if((int)PhotonNetwork.CurrentRoom.CustomProperties["winProperty"])
+        Debug.Log("Result is" + result);
+
+    }
     #region PunCallbacks
     public override void OnConnectedToMaster()
     {
@@ -119,6 +139,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         UpdateConnectionText("Joined Lobby");
         Debug.Log("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
+
+
+     //   private Hashtable expectedCustomRoomProperties = new Hashtable(1) { { "level", MainMenuViewController.Instance.getSelectedLevel() } };
+
+       /// PhotonNetwork.JoinRandomRoom(expectedCustomRoomProperties, Settings.MaxPlayers);
+        
         PhotonNetwork.JoinRandomRoom();
 
         if (MainMenuViewController.Instance)
@@ -163,7 +189,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public IEnumerator LoadAsyncScene()
     {
-        PhotonNetwork.LoadLevel(1);
+       Debug.Log("Selected Level is" + MainMenuViewController.Instance.getSelectedLevel());
+        PhotonNetwork.LoadLevel(MainMenuViewController.Instance.getSelectedLevel()+1);
         yield return null;
         //AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Level1",LoadSceneMode.Single);
 
@@ -236,6 +263,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             RaceManager.Instance.StartTheRaceTimer();
         }
     }
+    [PunRPC]
+    public void EndMultiplayerRace()
+    {
+        //var customProperties = new ExitGames.Client.Photon.Hashtable();
+
+
+        //PhotonNetwork.room.SetCustomProperty("mapIndex", 1);
+    }
+
     #endregion
 }
 

@@ -976,6 +976,11 @@ public class MainMenuViewController : MonoBehaviour
         CarSelection3dObject.SetActive(false);
         MapSelection.SetActive(true);
     }
+    public int getSelectedLevel()
+    {
+        return _currentlySelectedLevelIndex;
+      
+    }
 
     #endregion
 

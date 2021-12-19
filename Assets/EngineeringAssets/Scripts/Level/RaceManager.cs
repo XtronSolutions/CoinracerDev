@@ -104,7 +104,8 @@ public class RaceManager : MonoBehaviour
                 LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
                 if (_lapsCounter == _requiredNumberOfLaps)
                 {
-                    OnRaceDone();
+                    MultiplayerManager.Instance.pushResult();
+                   // OnRaceDone();
                 }
             }
             else
@@ -133,6 +134,11 @@ public class RaceManager : MonoBehaviour
             GamePlayUIHandler.Instance.ToggleInputScreen_InputFieldUI(true);
             GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseManager.Instance.PlayerData.WalletAddress);
             GamePlayUIHandler.Instance.SetInputUsername_InputFieldUI(FirebaseManager.Instance.PlayerData.UserName);
+        }
+        else if(GamePlayUIHandler.Instance && Constants.IsMultiplayer)
+        {
+            //Multiplayer Game end
+           // _raceOverMenuObject.SetActive(true);
         }
         else if (GamePlayUIHandler.Instance && Constants.IsPractice)
         {

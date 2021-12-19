@@ -7222,6 +7222,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 764444297}
   m_Mesh: {fileID: 8097623375320281078, guid: bfc22e9dd3ac3794485351b99e7a08c0, type: 3}
+--- !u!1 &769773580
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 769773581}
+  m_Layer: 0
+  m_Name: StartPos2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &769773581
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 769773580}
+  m_LocalRotation: {x: -0, y: -0.57357645, z: 0, w: -0.81915206}
+  m_LocalPosition: {x: 32.4, y: 40.64, z: 94.42}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: -290, z: 0}
 --- !u!1 &770695794
 GameObject:
   m_ObjectHideFlags: 0
@@ -16597,7 +16627,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1937154666}
   m_LocalRotation: {x: -0, y: -0.57357645, z: 0, w: -0.81915206}
-  m_LocalPosition: {x: 31.19, y: 40.64, z: 97.74}
+  m_LocalPosition: {x: 30.05, y: 40.64, z: 100.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -17408,7 +17438,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f71a06e2f784055478bc868fa2a98367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawnLocation: {fileID: 1937154666}
+  _spawnLocation:
+  - {fileID: 1937154666}
+  - {fileID: 769773580}
   _defualtCarSettings: {fileID: 11400000, guid: 9c2538565e166b54bb68c9f136f481a6, type: 2}
   _virtualCamera: {fileID: 245266832}
   _wayPointPointer: {fileID: 1090632232}
