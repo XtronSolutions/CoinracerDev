@@ -22,7 +22,6 @@ public class RaceManager : MonoBehaviour
 
     public static RaceManager Instance;
     int RaceCounter = 3;
-
     private void OnEnable()
     {
         Instance = this;
@@ -45,7 +44,7 @@ public class RaceManager : MonoBehaviour
 
     IEnumerator StartTimerCountDown()
     {
-        Debug.Log(RaceCounter);
+        //Debug.Log(RaceCounter);
         if (RaceCounter < -1)
         {
             GameStartTimer.text = "";
@@ -110,7 +109,7 @@ public class RaceManager : MonoBehaviour
             }
             else
             {
-                print($"cross waypoint {_currentWayPointIndex}");
+                //print($"cross waypoint {_currentWayPointIndex}");
             }
         }
     }
@@ -125,7 +124,7 @@ public class RaceManager : MonoBehaviour
             TimeHandler.Instance.timerIsRunning = false;
         }else
         {
-            Debug.LogError("TimeHandler instance is null");
+            Debug.LogError("TH is null for OnRaceDone");
         }
 
 
@@ -154,6 +153,9 @@ public class RaceManager : MonoBehaviour
         if(GamePlayUIHandler.Instance)
         {
             LeaderboardManager.Instance.EnableGameplayLeaderboard();
+        }else
+        {
+            Debug.LogError("GUH is null for RaceEnded");
         }
     }
 

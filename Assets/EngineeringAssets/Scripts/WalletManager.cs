@@ -100,14 +100,6 @@ public class WalletManager : MonoBehaviour
     /// </summary>
     private void OnEnable()
     {
-
-        //string jsonData = @"{'address':'0x57988AE6CC7F6fEd1B13A0C88bbBE7216ceC6DA9','blockNumber':15064418,'transactionHash':'0x7b123c543901953e8b5b9b44bb64582075e144caea2022b956bf89238e71a5a4','transactionIndex':2,'blockHash':'0xafbb72ccd33dc6356d7441f6f9e4612fb777c3283cc0974eb0f35fd18c8f9457','logIndex':23,'removed':false,'id':'log_bdc8979d','returnValues':{'0':'25','1':'7','2':'5','pid':'25','pNumber':'7','price':'5'},'event':'CreateRace','signature':'0x1297bd62b71fc9493965360e5bcd506947ff2bf11c909cb4e2ce3f27f27a034b','raw':{'data':'0x000000000000000000000000000000000000000000000000000000000000001900000000000000000000000000000000000000000000000000000000000000070000000000000000000000000000000000000000000000000000000000000005','topics':['0x1297bd62b71fc9493965360e5bcd506947ff2bf11c909cb4e2ce3f27f27a034b']}}";
-        //var details = JObject.Parse(jsonData);
-        //Debug.Log(details["address"]);
-        //Debug.Log(details["returnValues"]["pid"]);
-        //Debug.Log(details["returnValues"]["pNumber"]);
-        //Debug.Log(details["returnValues"]["price"]);
-
         Instance = this;
         Constants.WalletConnected = false;
 
@@ -124,7 +116,7 @@ public class WalletManager : MonoBehaviour
         {
             //TesT
             SetAcount("0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
-            InvokeRepeating("CheckNFTBalance", 0.1f,10f);
+            InvokeRepeating("CheckNFTBalance", 0.1f, 10f);
         }
     }
 
@@ -145,11 +137,11 @@ public class WalletManager : MonoBehaviour
     /// <param name="info"></param>
     public void OnGetAcount(string info)
     {
-        if (info != "null" && info != "" && info!=null && info != string.Empty) //if received data is not empty (we had stored some wallet address before)
+        if (info != "null" && info != "" && info != null && info != string.Empty) //if received data is not empty (we had stored some wallet address before)
         {
             StoredWallet = info;
             ConnectWallet();
-        }else
+        } else
         {
             StoredWallet = "null";
         }
@@ -163,21 +155,21 @@ public class WalletManager : MonoBehaviour
     {
         account = _acc;
     }
-
     #endregion
 
     #region Wallet Functionality
+
     /// <summary>
     /// Called to connect wallet using web3 libraries (called from connect wallet button and "OnGetAcount" function (if wallet address was stored in local storage))
     /// </summary>
     public void ConnectWallet()
     {
-        #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
             Web3Connect();
             OnConnected();
-        #else
-            Debug.Log("Cannot call inside editor, has support of webgl build only");
-        #endif
+#else
+        Debug.Log("Cannot call inside editor, has support of webgl build only");
+#endif
     }
 
     /// <summary>
@@ -194,46 +186,34 @@ public class WalletManager : MonoBehaviour
             account = ConnectAccount();
         };
 
-     
         PlayerPrefs.SetString(Constants.WalletAccoutKey, account); //save connected wallet address in a playerpref
         Constants.WalletAddress = account;//store wallet address in a singleton static class as well (for single session)
+        string _newAcount = '"' + account.ToLower() + '"';
 
-        Debug.Log("stored: " + StoredWallet.ToLower());
-        string _newAcount ='"'+ account.ToLower()+'"';
-        Debug.Log("Current: " + _newAcount);
-
-        if (StoredWallet !="null" && StoredWallet.ToLower() != _newAcount)
+        if (StoredWallet != "null" && StoredWallet.ToLower() != _newAcount)
         {
             Debug.Log("Wallet address was changed.");
             Constants.WalletChanged = true;
-        }else
+        } else
         {
             Constants.WalletChanged = false;
         }
-        
+
         //store connected wallet address in local storage by a key
 #if UNITY_WEBGL && !UNITY_EDITOR
             SetStorage("Account", PlayerPrefs.GetString(Constants.WalletAccoutKey));
 #endif
-
         Constants.WalletConnected = true;
         FirebaseManager.Instance.DocFetched = false;
         FirebaseManager.Instance.ResultFetched = true;
-
-        // reset login message
-        SetConnectAccount("");
-
+        SetConnectAccount(""); // reset login message
         MainUI.ConnectBtn.SetActive(false); //disable connect button
         MainUI.ConnectedBtn.SetActive(true);// enable connected button
         PrintWalletAddress(); // print wallet address on connected button
         BEPBalanceOf();//calculte and display BEP20 (crace) balance on screen
-                       //CheckNFTBalance(); //check number of NFT purchased
 
         if (!Constants.IsTestNet)
-        {
             InvokeRepeating("CheckNFTBalance", 0.1f, 10f);//check number of NFT purchased after every 10 seconds of interval
-        }
-
     }
 
     /// <summary>
@@ -332,7 +312,7 @@ public class WalletManager : MonoBehaviour
         string args = JsonConvert.SerializeObject(obj);//convert c# array to json
         string value = "0"; //value of coin for transaction (for example BNB if binance is used)
         string gasLimit = "210000";
-        string gasPrice = "5000000000";
+        string gasPrice = "10000000000";
 
         try
         {
@@ -340,6 +320,7 @@ public class WalletManager : MonoBehaviour
 
             if (response.Contains("Returned error: internal error"))
             {
+                Debug.LogError("Returned error: internal error");
                 if (MainMenuViewController.Instance)
                 {
                     MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
@@ -355,8 +336,8 @@ public class WalletManager : MonoBehaviour
                 {
                     StoredHash = response;
                     StoredMethodName = "BuyingPass";
-                   
-                }else
+
+                } else
                 {
                     StoredHash = response;
                     StoredMethodName = "transfer";
@@ -383,87 +364,64 @@ public class WalletManager : MonoBehaviour
     async public void CheckTransaction()
     {
         string txStatus = await EVM.TxStatus(chain, network, StoredHash);
-        if (StoredMethodName == "BuyingPass")
+
+        if (txStatus == "success")
         {
-            if (txStatus == "success")
+            switch (StoredMethodName)
             {
-                Constants.BuyingPass = false;
-                MainMenuViewController.Instance.OnPassBuy(true);
-            }
-            else if (txStatus == "fail")
-            {
-                Constants.BuyingPass = false;
-                MainMenuViewController.Instance.OnPassBuy(false);
-            }
-            else if (txStatus == "pending")
-            {
-                Invoke("CheckTransaction", 2f);
-            }
-        }else if (StoredMethodName == "transfer")
-        {
-            if (txStatus == "success")
-            {
-                MainMenuViewController.Instance.StartTournament(true);
-            }
-            else if (txStatus == "fail")
-            {
-                MainMenuViewController.Instance.StartTournament(false);
-            }
-            else if (txStatus == "pending")
-            {
-                Invoke("CheckTransaction", 2f);
+                case "BuyingPass":
+                    Constants.BuyingPass = false;
+                    Debug.Log("pass bought was success");
+                    MainMenuViewController.Instance.OnPassBuy(true);
+                    break;
+                case "transfer":
+                    Debug.Log("transaction was success for tournament");
+                    MainMenuViewController.Instance.StartTournament(true);
+                    break;
+                case "createRace":
+                    Debug.Log("createRace was success");
+                    OnRaceCreateCalled(true);
+                    break;
+                case "deposit":
+                    Debug.Log("deposit was success");
+                    OnDepositCalled(true);
+                    break;
+                case "endRace":
+                    Debug.Log("endrace was success");
+                    OnEndRaceCalled(true);
+                    break;
             }
         }
-        else if (StoredMethodName == "createRace")
+        else if (txStatus == "fail")
         {
-            if (txStatus == "success")
+            switch (StoredMethodName)
             {
-                Debug.Log("transaction was success");
-                Debug.Log(Web3GL.eventResponse);
-                OnRaceCreateCalled(true);
-            }
-            else if (txStatus == "fail")
-            {
-                OnRaceCreateCalled(false);
-            }
-            else if (txStatus == "pending")
-            {
-                Invoke("CheckTransaction", 2f);
+                case "BuyingPass":
+                    Constants.BuyingPass = false;
+                    Debug.Log("pass bought was failed TX");
+                    MainMenuViewController.Instance.OnPassBuy(false);
+                    break;
+                case "transfer":
+                    Debug.Log("transaction was failed for tournament TX");
+                    MainMenuViewController.Instance.StartTournament(false);
+                    break;
+                case "createRace":
+                    Debug.Log("createRace was failed TX");
+                    OnRaceCreateCalled(false);
+                    break;
+                case "deposit":
+                    Debug.Log("deposit was failed TX");
+                    OnDepositCalled(false);
+                    break;
+                case "endRace":
+                    Debug.Log("endrace was failed TX");
+                    OnEndRaceCalled(false);
+                    break;
             }
         }
-        else if (StoredMethodName == "deposit")
+        else if (txStatus == "pending")
         {
-            if (txStatus == "success")
-            {
-                Debug.Log("deposit was success");
-                Debug.Log(Web3GL.eventResponse);
-                OnDepositCalled(true);
-            }
-            else if (txStatus == "fail")
-            {
-                OnDepositCalled(false);
-            }
-            else if (txStatus == "pending")
-            {
-                Invoke("CheckTransaction", 2f);
-            }
-        }
-        else if (StoredMethodName == "endRace")
-        {
-            if (txStatus == "success")
-            {
-                Debug.Log("endrace was success");
-                Debug.Log(Web3GL.eventResponse);
-                OnEndRaceCalled(true);
-            }
-            else if (txStatus == "fail")
-            {
-                OnEndRaceCalled(false);
-            }
-            else if (txStatus == "pending")
-            {
-                Invoke("CheckTransaction", 2f);
-            }
+            Invoke("CheckTransaction", 2f);
         }
     }
 
@@ -471,7 +429,7 @@ public class WalletManager : MonoBehaviour
     /// Called to check amount of  BEP20 (crace) before entering tournament
     /// </summary>
     /// <returns></returns>
-    public bool CheckBalanceTournament(bool _checkBalance,bool _checkDiscountBalance,bool _checkPassBalance,bool _checkMultiplayerAmount)
+    public bool CheckBalanceTournament(bool _checkBalance, bool _checkDiscountBalance, bool _checkPassBalance, bool _checkMultiplayerAmount)
     {
         bool _havebalance = false;
         int _amountToCheck = 0;
@@ -486,13 +444,12 @@ public class WalletManager : MonoBehaviour
             else if (_checkMultiplayerAmount)
                 _amountToCheck = Constants.CalculatedCrace;
 
-
-            if (actualBalance >= _amountToCheck)
+            if (actualBalance >= _amountToCheck || Constants.IsTest)
                 _havebalance = true;
         }
         else
         {
-            Debug.LogError("TournamentManager instance is null");
+            Debug.LogError("TM is null for CheckBalanceTournament");
             Invoke("CheckBalanceTournament", 1f); //call CheckBalanceTournament function again if instance of TournamentManager is not created yet
         }
 
@@ -513,7 +470,7 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("TournamentManager instance is null");
+            Debug.LogError("TM is null for CheckBalanceTournament");
         }
 
         return _havebalance;
@@ -544,39 +501,38 @@ public class WalletManager : MonoBehaviour
         string argsNFT = JsonConvert.SerializeObject(obj);
         string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
 
-        print(response);
+        PrintOnConsoleEditor(response);
 
         if (response.Contains("Returned error: internal error"))
         {
-            if(MainMenuViewController.Instance)
+            Debug.Log("Returned error: internal error");
+            if (MainMenuViewController.Instance)
             {
                 MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
                 return;
             }
         }
 
-
         Constants.NFTBought = int.Parse(response);
 
-        if(Constants.NFTBought==0)
+        if (Constants.NFTBought == 0)
         {
             Constants.NFTStored = 0;
-            Debug.Log("nothing was purchased");
             return;
         }
 
         if (Constants.NFTStored != Constants.NFTBought)
         {
-            if(Constants.NFTChanged)
+            if (Constants.NFTChanged)
             {
-                Debug.Log("NFT was changed");
+                Debug.Log("NFT was changed during gameplay");
                 NFTTokens.Clear();
                 metaDataURL.Clear();
                 Constants.ResetData();
-                
-                if(MainMenuViewController.Instance)
+
+                if (MainMenuViewController.Instance)
                 {
-                    MainMenuViewController.Instance.ShowToast(3f,"NFT data was changed, game will automatically restart.");
+                    MainMenuViewController.Instance.ShowToast(3f, "NFT data was changed, game will automatically restart.");
                     Invoke("RestartGame", 3.1f);
                 }
 
@@ -593,9 +549,9 @@ public class WalletManager : MonoBehaviour
             metaDataURL.Clear();
             Constants.StoredCarNames.Clear();
             CheckTokenOwnerByIndex();
-        }else
+        } else
         {
-            Debug.Log("nothing new purchased or sold");
+            //Debug.Log("nothing new purchased or sold");
         }
     }
 
@@ -611,10 +567,11 @@ public class WalletManager : MonoBehaviour
         string[] obj = { account, tempNFTCounter.ToString() };
         string argsNFT = JsonConvert.SerializeObject(obj);
         string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
-        print(response);
+        PrintOnConsoleEditor(response);
 
         if (response.Contains("Returned error: internal error"))
         {
+            Debug.Log("Returned error: internal error");
             if (MainMenuViewController.Instance)
             {
                 MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
@@ -636,15 +593,16 @@ public class WalletManager : MonoBehaviour
     }
 
     async public void GetNFTIPFS()
-    {  
+    {
         string methodNFT = "tokenURI";// smart contract method to call
         string[] obj = { NFTTokens[tempNFTCounter].ToString() };
         string argsNFT = JsonConvert.SerializeObject(obj);
         string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
-        print(response);
+        PrintOnConsoleEditor(response);
 
         if (response.Contains("Returned error: internal error"))
         {
+            Debug.Log("Returned error: internal error");
             if (MainMenuViewController.Instance)
             {
                 MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
@@ -658,7 +616,7 @@ public class WalletManager : MonoBehaviour
         {
             tempNFTCounter++;
             GetNFTIPFS();
-        }else
+        } else
         {
             Constants.StoredCarNames.Clear();
             for (int i = 0; i < metaDataURL.Count; i++)
@@ -677,7 +635,7 @@ public class WalletManager : MonoBehaviour
         if (NFTCounter == metaDataURL.Count)
         {
             Constants.CheckAllNFT = true;
-        }else
+        } else
         {
             Invoke("WaitForAllData", 1f);
         }
@@ -698,7 +656,7 @@ public class WalletManager : MonoBehaviour
                     Debug.LogError(": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                   
+
                     IPFSdata dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
 
                     if (!Constants.StoredCarNames.Contains(dataIPFS.name))
@@ -738,10 +696,9 @@ public class WalletManager : MonoBehaviour
             if (Web3GL.eventResponse != "")
             {
                 var details = JObject.Parse(Web3GL.eventResponse);
-
-                Debug.Log("Pid: "+ details["returnValues"]["pid"]);
-                Debug.Log("pNumber: " + details["returnValues"]["pNumber"]);
-                Debug.Log("price: " + details["returnValues"]["price"]);
+                //Debug.Log("Pid: "+ details["returnValues"]["pid"]);
+                //Debug.Log("pNumber: " + details["returnValues"]["pNumber"]);
+                //Debug.Log("price: " + details["returnValues"]["price"]);
 
                 Constants.StoredPID = details["returnValues"]["pid"].ToString();
                 Deposit(Constants.StoredPID);
@@ -751,6 +708,7 @@ public class WalletManager : MonoBehaviour
             }
             else
             {
+                Debug.LogError("Something went wrong for raceCreate");
                 MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                 MainMenuViewController.Instance.ShowToast(3f, "Something went wrong, please try again.");
             }
@@ -801,10 +759,11 @@ public class WalletManager : MonoBehaviour
 
         try
         {
-            string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice,true);
+            string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, true);
 
             if (response.Contains("Returned error: internal error"))
             {
+                Debug.Log("Returned error: internal error");
                 if (MainMenuViewController.Instance)
                 {
                     MainMenuViewController.Instance.LoadingScreen.SetActive(false);
@@ -840,10 +799,11 @@ public class WalletManager : MonoBehaviour
 
         try
         {
-            string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice,true);
+            string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, true);
 
             if (response.Contains("Returned error: internal error"))
             {
+                Debug.Log("Returned error: internal error");
                 if (MainMenuViewController.Instance)
                 {
                     MainMenuViewController.Instance.LoadingScreen.SetActive(false);
@@ -882,6 +842,7 @@ public class WalletManager : MonoBehaviour
 
             if (response.Contains("Returned error: internal error"))
             {
+                Debug.Log("Returned error: internal error");
                 if (MainMenuViewController.Instance)
                 {
                     MainMenuViewController.Instance.LoadingScreen.SetActive(false);
@@ -904,4 +865,12 @@ public class WalletManager : MonoBehaviour
         }
     }
     #endregion
+
+    public void PrintOnConsoleEditor(string _con)
+    {
+#if UNITY_EDITOR
+        Debug.Log(_con);
+#endif
+
+    }
 }

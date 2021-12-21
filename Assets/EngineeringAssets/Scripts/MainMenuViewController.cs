@@ -232,7 +232,6 @@ public class MainMenuViewController : MonoBehaviour
 
     public void OnGetSound(string info)
     {
-        Debug.Log("sound slider: " + info);
         if (info != "null" && info != "" && info != null && info != string.Empty)
         {
 
@@ -243,7 +242,6 @@ public class MainMenuViewController : MonoBehaviour
 
     public void OnGetMusic(string info)
     {
-        Debug.Log("music slider: " + info);
         if (info != "null" && info != "" && info != null && info != string.Empty)
         {
             string[] splitArray = info.Split('"');
@@ -403,7 +401,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     LoadingScreen.SetActive(false);
-                    Debug.LogError("WalletManager instance is null");
+                    Debug.LogError("WM instance is null BuyPassCraceClicked_SelectionUI");
                 }
             }
             else
@@ -481,7 +479,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     LoadingScreen.SetActive(false);
-                    Debug.LogError("WalletManager instance is null");
+                    Debug.LogError("WM instance is null PlayFromPass_SelectionUI");
                 }
             }
             else
@@ -532,7 +530,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     LoadingScreen.SetActive(false);
-                    Debug.LogError("WalletManager instance is null");
+                    Debug.LogError("WM instance is null PlayOnce_SelectionUI");
                 }
             }
             else
@@ -1083,7 +1081,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     LoadingScreen.SetActive(false);
-                    Debug.LogError("WalletManager instance is null");
+                    Debug.LogError("WM instance is null OnGoToCarSelectionTournament");
                 }
             } else
             {
@@ -1194,7 +1192,6 @@ public class MainMenuViewController : MonoBehaviour
         }
         else
         {
-            Debug.Log(_levelsSettings[_currentlySelectedLevelIndex].SceneName);
             SelectedCar = _selecteableCars[_currentSelectedCarIndex].carSettings;
             SceneManager.LoadScene(_levelsSettings[_currentlySelectedLevelIndex].SceneName, LoadSceneMode.Single);
         }
@@ -1355,8 +1352,6 @@ public class MainMenuViewController : MonoBehaviour
 
         UIForgetPassword.SendEmail.gameObject.SetActive(false);
         UIForgetPassword.SendResendEmail.gameObject.SetActive(true);
-
-        Debug.Log("Resend Email confirmation");
     }
 
     public void EnableForgetScreen_PasswordReset()
@@ -1370,8 +1365,6 @@ public class MainMenuViewController : MonoBehaviour
 
         UIForgetPassword.SendEmail.gameObject.SetActive(true);
         UIForgetPassword.SendResendEmail.gameObject.SetActive(false);
-
-        Debug.Log("Reseting password");
     }
 
     public void BackClicked_PasswordReset()
@@ -1501,7 +1494,7 @@ public class MainMenuViewController : MonoBehaviour
             else
             {
                 LoadingScreen.SetActive(false);
-                Debug.LogError("WalletManager instance is null");
+                Debug.LogError("WM instance is null onMultiplayerBtnClick");
             }
         }
         else

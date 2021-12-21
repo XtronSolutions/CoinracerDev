@@ -65,7 +65,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             ActorNumbers.Clear();
             UpdateConnectionText("Connecting...");
-            Debug.Log("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
+            //Debug.Log("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
             PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = Settings.Version.ToString();
         }
@@ -74,7 +74,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void ConnectionMaster()
     {
         UpdateConnectionText("Connected to master...");
-        Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
+        //Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
         PhotonNetwork.AutomaticallySyncScene = true;
 
         float nameSuffix = Random.Range(1000, 9999);
@@ -130,7 +130,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         //Debug.Log("won Custom Properties are: "+winProperty);
 
         int result = (int)PhotonNetwork.CurrentRoom.CustomProperties["winProperty"];
-        Debug.Log("Result is" + result);
+        //Debug.Log("Result is" + result);
 
     }
     #region PunCallbacks
@@ -141,7 +141,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         UpdateConnectionText("Joined Lobby");
-        Debug.Log("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
+        //Debug.Log("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
 
 
      //   private Hashtable expectedCustomRoomProperties = new Hashtable(1) { { "level", MainMenuViewController.Instance.getSelectedLevel() } };
@@ -156,13 +156,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         UpdateConnectionText("Creating Room");
-        Debug.Log("OnJoinRandomFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 6}, null);");
+        //Debug.Log("OnJoinRandomFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 6}, null);");
         CreateRoom();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        Debug.Log("OnDisconnected(" + cause + ")");
+        //Debug.Log("OnDisconnected(" + cause + ")");
         if (cause != DisconnectCause.DisconnectByClientLogic)
         {
             //somethingWentWrongPanel.SetActive(true);
@@ -173,13 +173,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         UpdateConnectionText("Joined Room : "+ PhotonNetwork.CurrentRoom.Name);
-        Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room. From here on, your game would be running : "+ PhotonNetwork.CurrentRoom.Name);
+        //Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room. From here on, your game would be running : "+ PhotonNetwork.CurrentRoom.Name);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-        Debug.Log("OnPlayerEnteredRoom() called by PUN. Connected players " + newPlayer.NickName);
+        //Debug.Log("OnPlayerEnteredRoom() called by PUN. Connected players " + newPlayer.NickName);
 
         if(PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
@@ -192,7 +192,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public IEnumerator LoadAsyncScene()
     {
-       Debug.Log("Selected Level is" + MainMenuViewController.Instance.getSelectedLevel());
+       //Debug.Log("Selected Level is" + MainMenuViewController.Instance.getSelectedLevel());
         PhotonNetwork.LoadLevel(MainMenuViewController.Instance.getSelectedLevel()+1);
         yield return null;
         //AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Level1",LoadSceneMode.Single);
@@ -230,7 +230,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-        Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
+        //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
     }
     #endregion
 
@@ -248,7 +248,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if(ActorNumbers.Count==Settings.MaxPlayers)
             {
-                Debug.Log("all players connected starting game");
+                //Debug.Log("all players connected starting game");
                 PHView.RPC("StartRace", RpcTarget.AllViaServer);
             }
 

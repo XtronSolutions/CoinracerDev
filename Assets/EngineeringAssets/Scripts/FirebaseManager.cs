@@ -47,8 +47,6 @@ public class FirebaseManager : MonoBehaviour
     private string UID = "";
     public UserData PlayerData;
     public UserData[] PlayerDataArray;
-    //private DependencyStatus dependencyStatus;
-    //private FirebaseFirestore DatabaseInstance;
     public static FirebaseManager Instance;
 
     [HideInInspector]
@@ -109,9 +107,7 @@ public class FirebaseManager : MonoBehaviour
 
     public void OnEmailCheck(string info)
     {
-        Debug.Log(info);
-
-        Debug.Log("email existed");
+        Debug.Log("Checked email : email existed");
 
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.EmailAlreadyExisted();
@@ -121,14 +117,13 @@ public class FirebaseManager : MonoBehaviour
     {
         if (error.Contains("Email Not Registered"))
         {
-            Debug.Log("no email existed, creating new user");
+            Debug.Log("Checked email : email does not exist, creating one.");
             CreateNewUser(Constants.SavedEmail, Constants.SavedPass);
         }else
         {
-            Debug.LogError(error);
+            Debug.LogError("Email check error : "+error);
         }
     }
-
 
     public void CreateNewUser(string _email,string _pass)
     {
@@ -141,19 +136,14 @@ public class FirebaseManager : MonoBehaviour
         {
             UID = info;
             FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.CheckCreateUserDB(PlayerPrefs.GetString("Account"), ""));
-            
-            if(MainMenuViewController.Instance)
-            {
-                SendVerEmail();
-                MainMenuViewController.Instance.ShowToast(4f, "Verification link sent to entered email address, please check inbox (or spam) and click on link to verify then login.");
-                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-                Invoke("CallWithDelay", 3f);
-            }
-            //MainMenuViewController.Instance.OnLoginSuccess(true);
+            SendVerEmail();
+            MainMenuViewController.Instance.ShowToast(4f, "Verification link sent to entered email address, please check inbox (or spam) and click on link to verify then login.");
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+            Invoke("CallWithDelay", 3f);
+        }else
+        {
+            Debug.LogError("MMVC is null for OnCreateUser");
         }
-
-        Debug.Log("new user created with below UID");
-        Debug.Log(info);
     }
 
     public void CallWithDelay()
@@ -163,7 +153,7 @@ public class FirebaseManager : MonoBehaviour
 
     public void OnCreateUserError(string error)
     {
-        Debug.LogError(error);
+        Debug.LogError("Create user error : "+error);
     }
 
     public void LoginUser(string _email, string _pass,string _username)
@@ -185,13 +175,11 @@ public class FirebaseManager : MonoBehaviour
         {
             if (MainMenuViewController.Instance)
                 MainMenuViewController.Instance.OnLoginSuccess(false);
-
-            Debug.Log(info);
         }
         else
         {
+            Debug.Log("Email verification pending");
             MainMenuViewController.Instance.ShowResendScreen(5f);
-            //MainMenuViewController.Instance.ShowToast(4f, "Email verification pending, please check your inbox and click on verify link.");
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             MainMenuViewController.Instance.ResetRegisterFields();
         }
@@ -200,12 +188,11 @@ public class FirebaseManager : MonoBehaviour
     public void OnLoginUser(string info)
     { 
         CheckVerification();
-        Debug.Log(info);
     }
 
     public void OnLoginUserError(string error)
     {
-        Debug.LogError(error);
+        Debug.LogError("Login User error: "+error);
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.SomethingWentWrong();
     }
@@ -231,18 +218,19 @@ public class FirebaseManager : MonoBehaviour
     }
     public void OnSignOut(string info)
     {
-        Debug.Log(info);
+        //Debug.Log(info);
     }
 
     public void OnSignOutError(string info)
     {
-        Debug.LogError(info);
+        Debug.LogError("Logout User error : "+info);
     }
-
 
     public void OnAuthChanged()
     {
+        #if UNITY_WEBGL && !UNITY_EDITOR
         FirebaseAuth.OnAuthStateChanged(gameObject.name, "OnAuthChangedSuccess", "OnAuthChangedError");
+        #endif
     }
 
     public void OnAuthChangedSuccess(string user)
@@ -255,7 +243,7 @@ public class FirebaseManager : MonoBehaviour
     public void OnAuthChangedError(string info)
     {
         UID = "";
-        Debug.LogError(info);
+        Debug.LogError("Auth change error : "+info);
     }
 
     public void AddFireStoreData(UserData _data)
@@ -265,13 +253,12 @@ public class FirebaseManager : MonoBehaviour
     }
     public void OnAddData(string info)
     {
-        Debug.Log("Data successfully added");
-        //Debug.Log(info);
+        Debug.Log("Data successfully added on firestore");
     }
 
     public void OnAddDataError(string error)
     {
-        Debug.LogError(error);
+        Debug.LogError("firestore data add error: "+error);
     }
 
     public void GetFireStoreData(string _collectionID,string _docID)
@@ -284,8 +271,6 @@ public class FirebaseManager : MonoBehaviour
 
     public void OnDocGet(string info)
     {
-        Debug.Log("doc was fetched successfully");
-
         if (info == null || info=="null")
         {
             UserDataFetched = false;
@@ -293,18 +278,17 @@ public class FirebaseManager : MonoBehaviour
             DocFetched = false;
             ResultFetched = true;
             FetchUserData = true;
-            Debug.Log("info is null for OnDocGet");
+            Debug.LogError("doc was fetched but is null");
         }
         else
         {
+            Debug.Log("doc was fetched successfully from firestore");
             DataFetchError = false;
             PlayerData = JsonConvert.DeserializeObject<UserData>(info);
             UserDataFetched = true;
             DocFetched = true;
             ResultFetched = true;
             FetchUserData = true;
-           // Debug.Log(info);
-            //Debug.Log("info is not null");
         }
     }
 
@@ -315,7 +299,7 @@ public class FirebaseManager : MonoBehaviour
         DocFetched = false;
         ResultFetched = true;
         FetchUserData = true;
-        Debug.Log(error);
+        Debug.Log("Doc fetching error : "+error);
     }
 
     public IEnumerator FetchUserDB(string _walletID, string _username)
@@ -326,16 +310,15 @@ public class FirebaseManager : MonoBehaviour
         yield return new WaitUntil(() => FetchUserData == true);
         if (UserDataFetched)
         {
-            Debug.Log("user already exists!");
-            Debug.Log(_walletID);
-            Debug.Log(PlayerData.WalletAddress);
-            Debug.Log(PlayerData.UserName);
-            Debug.Log(PlayerData.TimeSeconds);
-            Debug.Log(PlayerData.UID);
-            Debug.Log(PlayerData.NumberOfTries);
-            Debug.Log(PlayerData.PassBought);
-            Debug.Log(PlayerData.Email);
-            Debug.Log(PlayerData.TournamentEndDate);
+            //Debug.Log(_walletID);
+            //Debug.Log(PlayerData.WalletAddress);
+            //Debug.Log(PlayerData.UserName);
+            //Debug.Log(PlayerData.TimeSeconds);
+            //Debug.Log(PlayerData.UID);
+            //Debug.Log(PlayerData.NumberOfTries);
+            //Debug.Log(PlayerData.PassBought);
+            //Debug.Log(PlayerData.Email);
+            //Debug.Log(PlayerData.TournamentEndDate);
             Constants.UserName = PlayerData.UserName;
             Constants.FlagSelectedIndex = PlayerData.AvatarID;
 
@@ -350,13 +333,13 @@ public class FirebaseManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("something went wrong with data fetching, trying again");
+            Debug.LogError("something went wrong with user data fetching, trying again");
             StartCoroutine(FetchUserDB(PlayerPrefs.GetString("Account"), ""));
             yield return null;
         }
     }
 
-        public IEnumerator CheckCreateUserDB(string _walletID,string _username)
+    public IEnumerator CheckCreateUserDB(string _walletID,string _username)
     {
         DataFetchError = false;
         DocFetched = false;
@@ -370,22 +353,20 @@ public class FirebaseManager : MonoBehaviour
 
         if (DocFetched == true) //document existed
         {
-            Debug.Log("user already exists!");
-            Debug.Log(_walletID);
-            Debug.Log(PlayerData.WalletAddress);
-            Debug.Log(PlayerData.UserName);
-            Debug.Log(PlayerData.TimeSeconds);
-            Debug.Log(PlayerData.UID);
-            Debug.Log(PlayerData.NumberOfTries);
-            Debug.Log(PlayerData.PassBought);
-            Debug.Log(PlayerData.Email);
-            Debug.Log(PlayerData.TournamentEndDate);
+            //Debug.Log(_walletID);
+            //Debug.Log(PlayerData.WalletAddress);
+            //Debug.Log(PlayerData.UserName);
+            //Debug.Log(PlayerData.TimeSeconds);
+            //Debug.Log(PlayerData.UID);
+            //Debug.Log(PlayerData.NumberOfTries);
+            //Debug.Log(PlayerData.PassBought);
+            //Debug.Log(PlayerData.Email);
+            //Debug.Log(PlayerData.TournamentEndDate);
             Constants.UserName = PlayerData.UserName;
             Constants.FlagSelectedIndex = PlayerData.AvatarID;
         }
         else
         {
-            Debug.Log("user does not exists, creating new entry in database!");
             PlayerData = new UserData();
             PlayerData.WalletAddress = _walletID;
             PlayerData.UserName = Constants.SavedUserName;
@@ -395,13 +376,10 @@ public class FirebaseManager : MonoBehaviour
             PlayerData.UID = UID;
             PlayerData.NumberOfTries = 0;
             PlayerData.NumberOfTriesPractice = 0;
-            //PlayerData.ProfileCreated = TournamentManager.Instance.DataTournament.timestamp;
             PlayerData.Email = Constants.SavedEmail;
             PlayerData.TournamentEndDate = null;
             PlayerData.AvatarID = Constants.FlagSelectedIndex;
             AddFireStoreData(PlayerData);
-            // Constants.LoggedIn = true;
-
         }
 
         if (MainMenuViewController.Instance)
@@ -420,14 +398,12 @@ public class FirebaseManager : MonoBehaviour
     }
 
     public void OnEmailSent(string info)
-    {
-        Debug.Log("Doc Updated");
-        Debug.Log(info);
+    {  
     }
 
     public void OnEmailSentError(string info)
     {
-        Debug.LogError(info);
+        Debug.LogError("Senfing Verfication email error: "+info);
         Invoke("SendVerEmail", 1f);
     }
 
@@ -436,19 +412,16 @@ public class FirebaseManager : MonoBehaviour
         GetFireStoreData(DocPath, _walletID);
         yield return new WaitUntil(() => ResultFetched == true);
 
-        if (DocFetched == true) //document existed
+        if (MainMenuViewController.Instance)
         {
-            Debug.Log("user already exists!");
-            
-            if(MainMenuViewController.Instance)
+            if (DocFetched == true) //document existed
                 MainMenuViewController.Instance.DBChecked(true);
+            else
+                MainMenuViewController.Instance.DBChecked(false);
         }
         else
         {
-            Debug.Log("user does not exists, creating new entry in database!");
-
-            if (MainMenuViewController.Instance)
-                MainMenuViewController.Instance.DBChecked(false);
+            Debug.LogError("MMVC is null for CheckWalletDB");
         }
     }
 
@@ -468,14 +441,11 @@ public class FirebaseManager : MonoBehaviour
 
         if(RaceManager.Instance)
             RaceManager.Instance.RaceEnded();
-
-        Debug.Log("Doc Updated");
-        Debug.Log(info);
     }
 
     public void OnDocUpdateError(string error)
     {
-        Debug.LogError(error);
+        Debug.LogError("Doc update error : "+error);
     }
 
     public void QueryDB(string _field,string _type)
@@ -484,16 +454,13 @@ public class FirebaseManager : MonoBehaviour
     }
     public void OnQueryUpdate(string info)
     {
-        Debug.Log("leaderboard query completed");
-        //Debug.Log(info);
         PlayerDataArray = JsonConvert.DeserializeObject<UserData[]>(info);
-        //System.Array.Reverse(PlayerDataArray);
         LeaderboardManager.Instance.PopulateLeaderboardData(PlayerDataArray);
     }
 
     public void OnQueryUpdateError(string error)
     {
-        Debug.LogError(error);
+        Debug.LogError("Leaderboard query error : "+error);
     }
 
     public string EncryptDecrypt(string textToEncrypt)
@@ -524,8 +491,7 @@ public class FirebaseManager : MonoBehaviour
 
     public void OnPassEmailSentError(string info)
     {
-        Debug.LogError(info);
-
+        Debug.LogError("Password resent sending error : "+info);
         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
         MainMenuViewController.Instance.BackClicked_PasswordReset();
         MainMenuViewController.Instance.ShowToast(4f, "Something went wrong while sending password reset link, please try again later.");
@@ -546,13 +512,12 @@ public class FirebaseManager : MonoBehaviour
     {
         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
         MainMenuViewController.Instance.DisableResendScreen();
-        //MainMenuViewController.Instance.BackClicked_PasswordReset();
         MainMenuViewController.Instance.ShowToast(4f, "Confirmation link sent again, please click the link in inbox (or spam) to confirm.");
     }
 
     public void ResendEmailSentError(string info)
     {
-        Debug.LogError(info);
+        Debug.LogError("Resend verification email error : "+info);
         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
         MainMenuViewController.Instance.DisableResendScreen();
         MainMenuViewController.Instance.ShowToast(4f, "Something went wrong while sending confirmation link, please try again later.");

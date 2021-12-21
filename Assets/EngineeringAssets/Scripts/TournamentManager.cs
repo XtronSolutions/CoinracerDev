@@ -175,7 +175,9 @@ public class TournamentManager : MonoBehaviour
     }
     public void GetTournamentDataDB()
     {
+        #if UNITY_WEBGL && !UNITY_EDITOR
         FirebaseFirestore.GetTournamentData(CollectionPath, DocPath, gameObject.name, "OnGetTournamentData", "OnGetTournamentDataError");
+        #endif
     }
     public void OnGetTournamentData(string info)
     {

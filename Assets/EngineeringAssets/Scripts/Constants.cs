@@ -77,14 +77,12 @@ public static class Constants
             var _data = JObject.Parse(_json);
             CracePrice = double.Parse(_data["data"]["prices"]["latest"].ToString());
             CracePrice = System.Math.Round(CracePrice, 4);
-            Debug.Log(CracePrice);
         }
         catch (System.Exception)
         {
-            Debug.Log("something went wrong while fetching crace price.");
+            Debug.LogError("something went wrong while fetching crace price from coinbase.");
             CracePrice = 0.0888;
         }
-
     }
 
     public static double ConvertDollarToCrace(double _amount)
@@ -122,11 +120,7 @@ public static class Constants
         GameSeconds = 0;
         WalletAddress = "";
         UserName = "";
-        //TournamentPassPrice = 500;//500
         BuyingPass = false;
-        //DiscountPercentage = 50;
-        //DiscountForCrace = 25000;//25000
-       //TicketPrice = 0;
         FlagSelectedIndex = 0;
         LoggedIn = false;
         RegisterSubmit = false;
@@ -148,5 +142,9 @@ public static class Constants
         CheckAllNFT = false;
         NFTChanged = false;
         StoredCarNames.Clear();
+        //TournamentPassPrice = 500;//500
+        //DiscountPercentage = 50;
+        //DiscountForCrace = 25000;//25000
+        //TicketPrice = 0;
     }
 }

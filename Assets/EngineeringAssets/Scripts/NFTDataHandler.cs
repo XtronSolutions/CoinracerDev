@@ -50,13 +50,12 @@ public class NFTDataHandler : MonoBehaviour
             {
                 case UnityWebRequest.Result.ConnectionError:
                 case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError(": Error: " + webRequest.error);
+                    Debug.LogError("Getting IPFS : Error : " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError(": HTTP Error: " + webRequest.error);
+                    Debug.LogError("Getting IPFS : HTTP Error : " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
                     dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
 
                     if(!Constants.StoredCarNames.Contains(dataIPFS.name))
