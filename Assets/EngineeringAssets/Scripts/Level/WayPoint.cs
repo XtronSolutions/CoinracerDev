@@ -25,6 +25,8 @@ public class WayPoint : MonoBehaviour
     {
         if(other.isTrigger) return;
 
+        if (Constants.IsMultiplayer && !other.GetComponent<TinyCarController>().PHView.IsMine) return;
+            
         TinyCarController carController = other.GetComponent<TinyCarController>();
         if (carController != null)
         {

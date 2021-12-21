@@ -110,6 +110,9 @@ namespace DavidJalbert
 
         virtual protected void Start()
         {
+            if (Constants.IsMultiplayer)
+                PHView = GetComponent<PhotonView>();
+
             body = GetComponent<Rigidbody>();
             sphereCollider = GetComponent<SphereCollider>();
 

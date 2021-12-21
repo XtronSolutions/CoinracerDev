@@ -20,12 +20,25 @@ public class MultiplayerSelectionUI
     public GameObject MainScreen;
     [Tooltip("Text reference for coin price in dollars.")]
     public TextMeshProUGUI CracePriceText;
-    [Tooltip("Text reference for disclaimer")]
-    public TextMeshProUGUI Disclaimer;
     [Tooltip("Button Reference for Cancel")]
     public Button CancelButton;
-    [Tooltip("Button Reference for Play")]
-    public Button PlayButton;
+    [Tooltip("Button Reference for Play  Play for 5$")]
+    public Button PlayButton_5;
+    [Tooltip("Button Reference for Play Play for 10$")]
+    public Button PlayButton_10;
+    [Tooltip("Button Reference for Play Play for 50$")]
+    public Button PlayButton_50;
+    [Tooltip("Button Reference for Play for 100$")]
+    public Button PlayButton_100;
+
+    [Tooltip("Text reference for disclaimer for 5$")]
+    public TextMeshProUGUI Disclaimer_5;
+    [Tooltip("Text reference for disclaimer for 10$")]
+    public TextMeshProUGUI Disclaimer_10;
+    [Tooltip("Text reference for disclaimer for 50$")]
+    public TextMeshProUGUI Disclaimer_50;
+    [Tooltip("Text reference for disclaimer for 100$")]
+    public TextMeshProUGUI Disclaimer_100;
 
 }
 
@@ -1007,7 +1020,6 @@ public class MainMenuViewController : MonoBehaviour
     public int getSelectedLevel()
     {
         return _currentlySelectedLevelIndex;
-      
     }
 
     #endregion
@@ -1166,7 +1178,7 @@ public class MainMenuViewController : MonoBehaviour
         }
     }
 
-    private void StartRace()
+    public void StartRace()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         if (IsPractice)
@@ -1186,9 +1198,13 @@ public class MainMenuViewController : MonoBehaviour
         {
             if (MultiplayerManager.Instance)
             {
+                Constants.SelectedLevel = MainMenuViewController.Instance.getSelectedLevel() + 1;
                 MultiplayerManager.Instance.ConnectToPhotonServer();
                 MainMenuViewController.Instance.SelectMultiplayer_ConnectionUI();
-            } 
+            }else
+            {
+                Debug.LogError("MM Instance is null");
+            }
         }
         else
         {
@@ -1465,7 +1481,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SubscribeEvents_ConnectionUI()
     {
-       // UIConnection.MultiplayerButton.onClick.AddListener(onMultiplayerBtnClick);
+        //UIConnection.MultiplayerButton.onClick.AddListener(onMultiplayerBtnClick);
         UIConnection.MultiplayerButton.onClick.AddListener(EnableSelection_MultiplayerSelection);
         UIConnection.BackButton.onClick.AddListener(DisableScreen_ConnectionUI);
     }
@@ -1535,7 +1551,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void DisableScreen_ConnectionUI()
     {
-        Constants.IsMultiplayer = false;
+        //Constants.IsMultiplayer = false;
         ChangeConnectionText_ConnectionUI("connecting...");
         ChangeRegionText_ConnectionUI("Selected Region : n/a");
         ToggleScreen_ConnectionUI(false);
@@ -1546,10 +1562,14 @@ public class MainMenuViewController : MonoBehaviour
     #endregion
 
     #region Multiplayer Selection
+    public void SelectWage__MultiplayerSelection(int _amount)
+    {
+        Constants.SelectedWage = _amount;
+        onMultiplayerBtnClick();
+    }
     public void SubscribeEvents_MultiplayerSelection()
     {
         UIMultiplayerSelection.CancelButton.onClick.AddListener(DisableScreen_MultiplayerSelection);
-        UIMultiplayerSelection.PlayButton.onClick.AddListener(onMultiplayerBtnClick);
     }
     public void ToggleScreen_MultiplayerSelection(bool _state)
     {
@@ -1563,8 +1583,17 @@ public class MainMenuViewController : MonoBehaviour
 
     public void ChangeDisclaimer_MultiplayerSelection()
     {
-        Constants.ConvertDollarToCrace(Constants.MultiplayerPrice);
-        UIMultiplayerSelection.Disclaimer.text = "*price: " + Constants.MultiplayerPrice + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
+        Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_1);
+        UIMultiplayerSelection.Disclaimer_5.text = "*price: " + Constants.MultiplayerPrice_1 + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
+
+        Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_2);
+        UIMultiplayerSelection.Disclaimer_10.text = "*price: " + Constants.MultiplayerPrice_2 + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
+
+        Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_3);
+        UIMultiplayerSelection.Disclaimer_50.text = "*price: " + Constants.MultiplayerPrice_3 + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
+
+        Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_4);
+        UIMultiplayerSelection.Disclaimer_100.text = "*price: " + Constants.MultiplayerPrice_4 + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
     }
 
     public void EnableSelection_MultiplayerSelection()

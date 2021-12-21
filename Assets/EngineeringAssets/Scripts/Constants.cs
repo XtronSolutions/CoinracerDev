@@ -51,7 +51,7 @@ public static class Constants
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
     public static bool IsTestNet = false;
-    public static bool IsTest = false;
+    public static bool IsTest = true;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
     public static string EmailSent = "";
@@ -61,11 +61,20 @@ public static class Constants
     public static bool IsMultiplayer = false;
     public static string StoredPID = "";
 
-    public static int MultiplayerPrice = 5;
+    public static int MultiplayerPrice_1 = 5;
+    public static int MultiplayerPrice_2 = 10;
+    public static int MultiplayerPrice_3 = 50;
+    public static int MultiplayerPrice_4 = 100;
     public static string CoinBaseURL = "https://www.coinbase.com/api/v2/assets/prices/coinracer?base=USD";
     public static double CracePrice = 0.0888;
     public static int CalculatedCrace = 0;
+    public static string PlayerDataKey = "playerData";
+    public static string RoomDataKey = "roomData";
 
+    public static string MAP_PROP_KEY = "map";
+    public static string WAGE_PROP_KEY = "wage";
+    public static int SelectedLevel = 0;
+    public static int SelectedWage = 0;
     async public static void GetCracePrice()
     {
         UnityWebRequest webRequest = UnityWebRequest.Get(CoinBaseURL);

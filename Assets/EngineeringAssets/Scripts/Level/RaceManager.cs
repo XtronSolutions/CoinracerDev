@@ -103,8 +103,10 @@ public class RaceManager : MonoBehaviour
                 LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
                 if (_lapsCounter == _requiredNumberOfLaps)
                 {
-                    MultiplayerManager.Instance.pushResult();
-                   // OnRaceDone();
+                    if(Constants.IsMultiplayer)
+                        MultiplayerManager.Instance.pushResult();
+                    else
+                        OnRaceDone();
                 }
             }
             else

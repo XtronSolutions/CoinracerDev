@@ -9,6 +9,25 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
+public class CustomPlayerPropData
+{
+    public string name { get; set; }
+    public string walletAddress { get; set; }
+    public string ID { get; set; }
+}
+
+public class CustomRoomPropData
+{
+    public string RoomName;
+    public int RoomMaxPlayer;
+    public int WageAmount;
+    public int LevelSelected;
+    public List<CustomPlayerPropData> Roomdata = new List<CustomPlayerPropData>();
+}
+
 
 [System.Serializable]
 public class PhotonSetting
@@ -27,9 +46,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public PhotonSetting Settings;
     private PhotonView PHView;
     private List<string> ActorNumbers = new List<string>();
+    string _customPlayerPropString = "";
+    string _customRoomPropString = "";
+    private CustomRoomPropData DataRoomPropData;
     private void Start()
     {
-        if(!Instance)
+        if (!Instance)
         {
             Constants.GetCracePrice();
             ActorNumbers.Clear();
@@ -78,11 +100,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;
 
         float nameSuffix = Random.Range(1000, 9999);
-        string name = "Player_"+ nameSuffix.ToString();
+        string name = "Player_" + nameSuffix.ToString();
 
         if (FirebaseManager.Instance)
         {
-            if(FirebaseManager.Instance.PlayerData!=null && FirebaseManager.Instance.PlayerData.UserName!="")
+            if (FirebaseManager.Instance.PlayerData != null && FirebaseManager.Instance.PlayerData.UserName != "")
                 name = FirebaseManager.Instance.PlayerData.UserName;
         }
 
@@ -93,22 +115,21 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void CreateRoom()
     {
         var roomCode = Random.Range(100000, 999999);
-        var customProperties = new ExitGames.Client.Photon.Hashtable();
-        customProperties.Add("m", "1");
-        customProperties.Add("t", "2");
-
         RoomOptions roomOptions = new RoomOptions();
-       // roomOptions.customRoomPropertiesForLobby = new Hashtable(1) { { "level", MainMenuViewController.Instance.getSelectedLevel() } };
         roomOptions.MaxPlayers = Settings.MaxPlayers;
         roomOptions.PublishUserId = true;
         roomOptions.IsVisible = true;
         roomOptions.IsOpen = true;
-        roomOptions.CustomRoomProperties = customProperties;
+        roomOptions.CustomRoomPropertiesForLobby =new string [2]{ Constants.MAP_PROP_KEY,Constants.WAGE_PROP_KEY };
+        roomOptions.CustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, Constants.SelectedLevel }, { Constants.WAGE_PROP_KEY, Constants.SelectedWage } };
 
-        PhotonNetwork.CreateRoom("Room_"+roomCode.ToString(), roomOptions, TypedLobby.Default);
+        PhotonNetwork.CreateRoom("Room_" + roomCode.ToString(), roomOptions, TypedLobby.Default);
+    }
 
-
-       
+    private void JoinRoomRandom(int mapCode, int wageAmount, byte expectedMaxPlayers)
+    {
+        Hashtable expectedCustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, mapCode }, { Constants.WAGE_PROP_KEY, wageAmount } };
+        PhotonNetwork.JoinRandomRoom(expectedCustomRoomProperties, expectedMaxPlayers);
     }
 
     public void DisconnectPhoton()
@@ -133,6 +154,77 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         //Debug.Log("Result is" + result);
 
     }
+
+    public void TestCustom()
+    {
+        #region Setting player custom proeprty Example
+        //Setting player custom property--------------------------------------
+        CustomPlayerPropData _data = new CustomPlayerPropData();
+        _data.name = "humza";
+        _data.walletAddress = "090078601";
+        _data.ID = "001";
+        string _json = JsonConvert.SerializeObject(_data);
+        SetCustomProps(false, Constants.PlayerDataKey, _json);
+        StartCoroutine(callPropertiesWithDelay(false, Constants.PlayerDataKey, 0.6f)); //this should be called with 0.5-1 sec delay after setting properties
+        #endregion
+
+        #region Setting room custom proeprty Example
+        StartCoroutine(SetRoomPropWithDelay());
+        #endregion
+    }
+
+    public void SetCustomProps(bool IsRoom,string _key, string _temp)
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            bool isSet = false;
+            Hashtable myCustomProperties = new Hashtable
+        {
+           {_key, _temp}
+        };
+
+            if (IsRoom)
+                isSet = PhotonNetwork.CurrentRoom.SetCustomProperties(myCustomProperties);
+            else
+                isSet = PhotonNetwork.LocalPlayer.SetCustomProperties(myCustomProperties);
+
+            Debug.Log("prop set : " + isSet);
+        }
+    }
+
+    public void GetCustomProps(bool IsRoom,string _key)
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            string _temp = "";
+
+            if (IsRoom)
+            {
+                if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(_key))
+                    _temp = (string)PhotonNetwork.CurrentRoom.CustomProperties[_key];
+
+                _customRoomPropString = _temp;
+
+                Debug.Log("room data : " + _temp);
+            }
+            else
+            {
+                if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(_key))
+                    _temp = (string)PhotonNetwork.LocalPlayer.CustomProperties[_key];
+
+                _customPlayerPropString = _temp;
+
+                Debug.Log("player data : " + _temp);
+            }
+        }
+    }
+
+    IEnumerator callPropertiesWithDelay(bool isRoom,string _key,float _sec)
+    {
+        yield return new WaitForSeconds(_sec);
+        GetCustomProps(isRoom, _key);
+    }
+
     #region PunCallbacks
     public override void OnConnectedToMaster()
     {
@@ -143,12 +235,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         UpdateConnectionText("Joined Lobby");
         //Debug.Log("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
 
-
-     //   private Hashtable expectedCustomRoomProperties = new Hashtable(1) { { "level", MainMenuViewController.Instance.getSelectedLevel() } };
-
-       /// PhotonNetwork.JoinRandomRoom(expectedCustomRoomProperties, Settings.MaxPlayers);
-        
-        PhotonNetwork.JoinRandomRoom();
+        JoinRoomRandom(Constants.SelectedLevel,Constants.SelectedWage,Settings.MaxPlayers);
 
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : " + PhotonNetwork.CloudRegion);
@@ -173,7 +260,53 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         UpdateConnectionText("Joined Room : "+ PhotonNetwork.CurrentRoom.Name);
-        //Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room. From here on, your game would be running : "+ PhotonNetwork.CurrentRoom.Name);
+        Debug.Log("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+
+        TestCustom();//for testing only
+    }
+
+    IEnumerator SetRoomPropWithDelay()
+    {
+        StartCoroutine(callPropertiesWithDelay(false, Constants.PlayerDataKey, 0.7f));
+        yield return new WaitForSeconds(0.75f);
+
+        //Setting room custom property--------------------------------------
+        if (_customPlayerPropString != "")//data existed for the key
+        {
+            StartCoroutine(callPropertiesWithDelay(true,Constants.RoomDataKey, 0.2f));
+            yield return new WaitForSeconds(0.3f);
+
+            if(_customRoomPropString=="")//if there is entry in room
+            {
+                DataRoomPropData = new CustomRoomPropData();
+                DataRoomPropData.RoomName = PhotonNetwork.CurrentRoom.Name;
+                DataRoomPropData.RoomMaxPlayer = Settings.MaxPlayers;
+                DataRoomPropData.WageAmount = Constants.SelectedWage;
+                DataRoomPropData.LevelSelected = Constants.SelectedLevel;
+
+                CustomPlayerPropData _data = JsonConvert.DeserializeObject<CustomPlayerPropData>(_customPlayerPropString);
+                DataRoomPropData.Roomdata.Add(_data);
+
+                string _json = JsonConvert.SerializeObject(DataRoomPropData);
+                SetCustomProps(true, Constants.RoomDataKey, _json);
+            }else
+            {
+                DataRoomPropData= JsonConvert.DeserializeObject<CustomRoomPropData>(_customRoomPropString);
+
+                CustomPlayerPropData _data = JsonConvert.DeserializeObject<CustomPlayerPropData>(_customPlayerPropString);
+                DataRoomPropData.Roomdata.Add(_data);
+
+                string _json = JsonConvert.SerializeObject(DataRoomPropData);
+                SetCustomProps(true, Constants.RoomDataKey, _json);
+            }
+
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(callPropertiesWithDelay(true, Constants.RoomDataKey, 1f));
+        }
+        else
+        {
+            Debug.LogError("no player property existed with key");
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)

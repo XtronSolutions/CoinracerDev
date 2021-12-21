@@ -450,7 +450,9 @@ public class FirebaseManager : MonoBehaviour
 
     public void QueryDB(string _field,string _type)
     {
+        #if UNITY_WEBGL && !UNITY_EDITOR
         FirebaseFirestore.QueryDB(DocPath,_field, _type, gameObject.name, "OnQueryUpdate", "OnQueryUpdateError");
+        #endif
     }
     public void OnQueryUpdate(string info)
     {
