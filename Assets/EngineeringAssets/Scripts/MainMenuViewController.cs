@@ -13,6 +13,22 @@ using System.Runtime.InteropServices;
 
 #region SuperClasses
 
+[Serializable]
+public class MultiplayerSelectionUI
+{
+    [Tooltip("Main screen for Multiplayer Selection.")]
+    public GameObject MainScreen;
+    [Tooltip("Text reference for coin price in dollars.")]
+    public TextMeshProUGUI CracePriceText;
+    [Tooltip("Text reference for disclaimer")]
+    public TextMeshProUGUI Disclaimer;
+    [Tooltip("Button Reference for Cancel")]
+    public Button CancelButton;
+    [Tooltip("Button Reference for Play")]
+    public Button PlayButton;
+
+}
+
 [System.Serializable]
 public class ConnectionUI
 {
@@ -190,6 +206,7 @@ public class MainMenuViewController : MonoBehaviour
     public GameObject ResendPopUp;
     public SettingsUI UISetting;
     public ConnectionUI UIConnection;
+    public MultiplayerSelectionUI UIMultiplayerSelection;
 
     double RemainingTimeSecondPass;
     private int _currentSelectedCarIndex = 0;
@@ -267,6 +284,7 @@ public class MainMenuViewController : MonoBehaviour
         SubscribeEvents_PasswordReset();
         SubscribeEvents_Settings();
         SubscribeEvents_ConnectionUI();
+        SubscribeEvents_MultiplayerSelection();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
             GetStorage(Constants.SoundKey,this.gameObject.name,"OnGetSound");
@@ -335,7 +353,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void BuyPasswithCrace()
     {
-        if (WalletManager.Instance.CheckBalanceTournament(false, false, true))
+        if (WalletManager.Instance.CheckBalanceTournament(false, false, true,false))
         {
             BuyingPass = true;
             WalletManager.Instance.TransferToken(TournamentPassPrice);
@@ -361,22 +379,25 @@ public class MainMenuViewController : MonoBehaviour
                     }
                     else
                     {
-                        var _data = TournamentManager.Instance.DataTournament;
-                        RemainingTimeSecondPass = FirebaseManager.Instance.PlayerData.TournamentEndDate.seconds - _data.timestamp.seconds;
+                        LoadingScreen.SetActive(false);
+                        ShowToast(3f, "You already own a tournament pass");
 
-                        if (Mathf.Sign((float)RemainingTimeSecondPass) == -1)
-                        {
-                            Debug.LogError("pass time is over, resting it");
-                            LoadingScreen.SetActive(true);
-                            FirebaseManager.Instance.PlayerData.PassBought = false;
-                            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
-                            BuyPasswithCrace();
-                        }
-                        else
-                        {
-                            LoadingScreen.SetActive(false);
-                            ShowToast(3f, "You already own a tournament pass");
-                        }
+                        //var _data = TournamentManager.Instance.DataTournament;
+                        //RemainingTimeSecondPass = FirebaseManager.Instance.PlayerData.TournamentEndDate.seconds - _data.timestamp.seconds;
+
+                        //if (Mathf.Sign((float)RemainingTimeSecondPass) == -1)
+                        //{
+                        //    Debug.LogError("pass time is over, resting it");
+                        //    LoadingScreen.SetActive(true);
+                        //    FirebaseManager.Instance.PlayerData.PassBought = false;
+                        //    FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+                        //    BuyPasswithCrace();
+                        //}
+                        //else
+                        //{
+                        //    LoadingScreen.SetActive(false);
+                        //    ShowToast(3f, "You already own a tournament pass");
+                        //}
                     }
                 }
                 else
@@ -429,22 +450,26 @@ public class MainMenuViewController : MonoBehaviour
                 {
                     if (FirebaseManager.Instance.PlayerData.PassBought)
                     {
-                        var _data = TournamentManager.Instance.DataTournament;
-                        RemainingTimeSecondPass = FirebaseManager.Instance.PlayerData.TournamentEndDate.seconds - _data.timestamp.seconds;
 
-                        if (Mathf.Sign((float)RemainingTimeSecondPass) == -1)
-                        {
-                            Debug.LogError("pass time is over, resting it");
-                            LoadingScreen.SetActive(false);
-                            FirebaseManager.Instance.PlayerData.PassBought = false;
-                            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
-                            ShowToast(3f, "you have not bought tournament pass or pass expired");
-                        }
-                        else
-                        {
-                            BackClickedPassScreen_SelectionUI();
-                            StartTournament(true);
-                        }
+                        BackClickedPassScreen_SelectionUI();
+                        StartTournament(true);
+
+                        //var _data = TournamentManager.Instance.DataTournament;
+                        //RemainingTimeSecondPass = FirebaseManager.Instance.PlayerData.TournamentEndDate.seconds - _data.timestamp.seconds;
+
+                        //if (Mathf.Sign((float)RemainingTimeSecondPass) == -1)
+                        //{
+                        //    Debug.LogError("pass time is over, resting it");
+                        //    LoadingScreen.SetActive(false);
+                        //    FirebaseManager.Instance.PlayerData.PassBought = false;
+                        //    FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+                        //    ShowToast(3f, "you have not bought tournament pass or pass expired");
+                        //}
+                        //else
+                        //{
+                        //    BackClickedPassScreen_SelectionUI();
+                        //    StartTournament(true);
+                        //}
                     }
                     else
                     {
@@ -488,13 +513,13 @@ public class MainMenuViewController : MonoBehaviour
                 if (WalletManager.Instance)
                 {
                     TicketPrice = TournamentManager.Instance.DataTournament.TicketPrice;
-                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false))
+                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false,false))
                     {
                         ShowToast(2f, "Congrats!, You have received "+Constants.DiscountPercentage+"% discount.");
                         TicketPrice = (TicketPrice * DiscountPercentage) / 100;
                     }
 
-                    if (WalletManager.Instance.CheckBalanceTournament(true, false, false))
+                    if (WalletManager.Instance.CheckBalanceTournament(true, false, false,false))
                     {
                         WalletManager.Instance.TransferToken(TicketPrice);
                     }
@@ -1169,8 +1194,9 @@ public class MainMenuViewController : MonoBehaviour
         }
         else
         {
+            Debug.Log(_levelsSettings[_currentlySelectedLevelIndex].SceneName);
             SelectedCar = _selecteableCars[_currentSelectedCarIndex].carSettings;
-            SceneManager.LoadScene(_levelsSettings[_currentlySelectedLevelIndex].SceneName);
+            SceneManager.LoadScene(_levelsSettings[_currentlySelectedLevelIndex].SceneName, LoadSceneMode.Single);
         }
     }
 
@@ -1446,13 +1472,43 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SubscribeEvents_ConnectionUI()
     {
-        UIConnection.MultiplayerButton.onClick.AddListener(onMultiplayerBtnClick);
+       // UIConnection.MultiplayerButton.onClick.AddListener(onMultiplayerBtnClick);
+        UIConnection.MultiplayerButton.onClick.AddListener(EnableSelection_MultiplayerSelection);
         UIConnection.BackButton.onClick.AddListener(DisableScreen_ConnectionUI);
     }
     public void onMultiplayerBtnClick()
     {
-        Constants.IsMultiplayer = true;
-        MainMenuViewController.Instance.OnGoToCarSelection();
+        if (Constants.IsTest)
+            WalletConnected = true;
+
+        if (WalletConnected)
+        {
+            LoadingScreen.SetActive(true);
+            if (WalletManager.Instance)
+            {
+                if (WalletManager.Instance.CheckBalanceTournament(false, false, false, true))
+                {
+                    ToggleScreen_MultiplayerSelection(false);
+                    Constants.IsMultiplayer = true;
+                    MainMenuViewController.Instance.OnGoToCarSelection();
+                }
+                else
+                {
+                    LoadingScreen.SetActive(false);
+                    ShowToast(3f, "Insufficient $CRACE value, need " + Constants.CalculatedCrace + " $CRACE");
+                }
+            }
+            else
+            {
+                LoadingScreen.SetActive(false);
+                Debug.LogError("WalletManager instance is null");
+            }
+        }
+        else
+        {
+            LoadingScreen.SetActive(false);
+            ShowToast(3f, "Please connect your wallet first.");
+        }
     }
 
     public void ToggleScreen_ConnectionUI(bool _state)
@@ -1493,6 +1549,42 @@ public class MainMenuViewController : MonoBehaviour
 
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.DisconnectPhoton();
+    }
+    #endregion
+
+    #region Multiplayer Selection
+    public void SubscribeEvents_MultiplayerSelection()
+    {
+        UIMultiplayerSelection.CancelButton.onClick.AddListener(DisableScreen_MultiplayerSelection);
+        UIMultiplayerSelection.PlayButton.onClick.AddListener(onMultiplayerBtnClick);
+    }
+    public void ToggleScreen_MultiplayerSelection(bool _state)
+    {
+        UIMultiplayerSelection.MainScreen.SetActive(_state);
+    }
+
+    public void ChangeCracePrice_MultiplayerSelection(string _price)
+    {
+        UIMultiplayerSelection.CracePriceText.text = "1 $CRACE : " + _price + "$";
+    }
+
+    public void ChangeDisclaimer_MultiplayerSelection()
+    {
+        Constants.ConvertDollarToCrace(Constants.MultiplayerPrice);
+        UIMultiplayerSelection.Disclaimer.text = "*price: " + Constants.MultiplayerPrice + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
+    }
+
+    public void EnableSelection_MultiplayerSelection()
+    {
+        Constants.GetCracePrice();
+        ChangeCracePrice_MultiplayerSelection(Constants.CracePrice.ToString());
+        ChangeDisclaimer_MultiplayerSelection();
+        ToggleScreen_MultiplayerSelection(true);
+    }
+
+    public void DisableScreen_MultiplayerSelection()
+    {
+        ToggleScreen_MultiplayerSelection(false);
     }
     #endregion
 }

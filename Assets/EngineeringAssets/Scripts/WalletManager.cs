@@ -448,13 +448,30 @@ public class WalletManager : MonoBehaviour
                 Invoke("CheckTransaction", 2f);
             }
         }
+        else if (StoredMethodName == "endRace")
+        {
+            if (txStatus == "success")
+            {
+                Debug.Log("endrace was success");
+                Debug.Log(Web3GL.eventResponse);
+                OnEndRaceCalled(true);
+            }
+            else if (txStatus == "fail")
+            {
+                OnEndRaceCalled(false);
+            }
+            else if (txStatus == "pending")
+            {
+                Invoke("CheckTransaction", 2f);
+            }
+        }
     }
 
     /// <summary>
     /// Called to check amount of  BEP20 (crace) before entering tournament
     /// </summary>
     /// <returns></returns>
-    public bool CheckBalanceTournament(bool _checkBalance,bool _checkDiscountBalance,bool _checkPassBalance)
+    public bool CheckBalanceTournament(bool _checkBalance,bool _checkDiscountBalance,bool _checkPassBalance,bool _checkMultiplayerAmount)
     {
         bool _havebalance = false;
         int _amountToCheck = 0;
@@ -466,6 +483,8 @@ public class WalletManager : MonoBehaviour
                 _amountToCheck = Constants.DiscountForCrace;
             else if (_checkPassBalance)
                 _amountToCheck = Constants.TournamentPassPrice;
+            else if (_checkMultiplayerAmount)
+                _amountToCheck = Constants.CalculatedCrace;
 
 
             if (actualBalance >= _amountToCheck)
@@ -701,6 +720,16 @@ public class WalletManager : MonoBehaviour
         CreateRace(2, 5);
     }
 
+    public void CallDeposit()
+    {
+        Deposit(Constants.StoredPID);
+    }
+
+    public void CallEndRace()
+    {
+        EndRace(Constants.StoredPID);
+    }
+
     public void OnRaceCreateCalled(bool _state)
     {
         if (_state)
@@ -716,7 +745,11 @@ public class WalletManager : MonoBehaviour
 
                 Constants.StoredPID = details["returnValues"]["pid"].ToString();
                 Deposit(Constants.StoredPID);
-            }else
+
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(3f, "Race created.");
+            }
+            else
             {
                 MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                 MainMenuViewController.Instance.ShowToast(3f, "Something went wrong, please try again.");
@@ -733,7 +766,22 @@ public class WalletManager : MonoBehaviour
     {
         if (_state)
         {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+            MainMenuViewController.Instance.ShowToast(3f, "Deposit was done successfully.");
+        }
+        else
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+            MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
+        }
+    }
 
+    public void OnEndRaceCalled(bool _state)
+    {
+        if (_state)
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+            MainMenuViewController.Instance.ShowToast(3f, "Race ended, received reward.");
         }
         else
         {
@@ -808,6 +856,44 @@ public class WalletManager : MonoBehaviour
             {
                 StoredHash = response;
                 StoredMethodName = "deposit";
+                CheckTransaction();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e, this);
+            OnDepositCalled(false);
+        }
+    }
+
+    async public void EndRace(string _pid)
+    {
+        MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+        string methodCSP = "endRace";
+        string[] obj = { _pid, Constants.WalletAddress };
+        string argsCSP = JsonConvert.SerializeObject(obj);
+        string value = "0";
+        string gasLimit = "210000";
+        string gasPrice = "10000000000";
+
+        try
+        {
+            string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, true);
+
+            if (response.Contains("Returned error: internal error"))
+            {
+                if (MainMenuViewController.Instance)
+                {
+                    MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                    MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                    return;
+                }
+            }
+
+            if (response != "")
+            {
+                StoredHash = response;
+                StoredMethodName = "endRace";
                 CheckTransaction();
             }
         }

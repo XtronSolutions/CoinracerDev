@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
+using Newtonsoft.Json.Linq;
+using UnityEngine.Networking;
 
 public static class Constants
 {
@@ -49,7 +51,7 @@ public static class Constants
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
     public static bool IsTestNet = false;
-    public static bool IsTest = true;
+    public static bool IsTest = false;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
     public static string EmailSent = "";
@@ -58,6 +60,51 @@ public static class Constants
     public static bool OnIce = false;
     public static bool IsMultiplayer = false;
     public static string StoredPID = "";
+
+    public static int MultiplayerPrice = 5;
+    public static string CoinBaseURL = "https://www.coinbase.com/api/v2/assets/prices/coinracer?base=USD";
+    public static double CracePrice = 0.0888;
+    public static int CalculatedCrace = 0;
+
+    async public static void GetCracePrice()
+    {
+        UnityWebRequest webRequest = UnityWebRequest.Get(CoinBaseURL);
+        await webRequest.SendWebRequest();
+        string _json = System.Text.Encoding.UTF8.GetString(webRequest.downloadHandler.data);
+
+        try
+        {
+            var _data = JObject.Parse(_json);
+            CracePrice = double.Parse(_data["data"]["prices"]["latest"].ToString());
+            CracePrice = System.Math.Round(CracePrice, 4);
+            Debug.Log(CracePrice);
+        }
+        catch (System.Exception)
+        {
+            Debug.Log("something went wrong while fetching crace price.");
+            CracePrice = 0.0888;
+        }
+
+    }
+
+    public static double ConvertDollarToCrace(double _amount)
+    {
+        double _calulcatedAmount = 0;
+        if (CracePrice != 0)
+            _calulcatedAmount = System.Math.Round(_amount / CracePrice, 4);
+
+        CalculatedCrace = (int)_calulcatedAmount;
+        return _calulcatedAmount;
+    }
+
+    public static double ConvertCraceToDollar(double _amount)
+    {
+        double _calulcatedAmount = 0;
+        if (CracePrice != 0)
+            _calulcatedAmount = System.Math.Round(_amount * CracePrice, 4);
+
+        return _calulcatedAmount;
+    }
 
     public static void ResetData()
     {

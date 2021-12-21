@@ -7,6 +7,8 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using Newtonsoft.Json.Linq;
 
 [System.Serializable]
 public class PhotonSetting
@@ -29,6 +31,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if(!Instance)
         {
+            Constants.GetCracePrice();
             ActorNumbers.Clear();
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
@@ -126,7 +129,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         //winProperty = (Hashtable)PhotonNetwork.CurrentRoom.CustomProperties["winProperty"];
         //Debug.Log("won Custom Properties are: "+winProperty);
 
-        int result = if((int)PhotonNetwork.CurrentRoom.CustomProperties["winProperty"])
+        int result = (int)PhotonNetwork.CurrentRoom.CustomProperties["winProperty"];
         Debug.Log("Result is" + result);
 
     }
