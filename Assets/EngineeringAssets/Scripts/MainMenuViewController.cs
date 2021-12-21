@@ -1216,8 +1216,8 @@ public class MainMenuViewController : MonoBehaviour
 
     public void TempStartRace()
     {
-        IsPractice = true;
-        SelectedCar = _selecteableCars[0].carSettings;
+        //IsPractice = true;
+        //SelectedCar = _selecteableCars[0].carSettings;
     }
     #endregion
 

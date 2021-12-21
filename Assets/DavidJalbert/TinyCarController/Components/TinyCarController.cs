@@ -108,11 +108,15 @@ namespace DavidJalbert
         private float cubicScale = 1;
         private float inverseScaleAdjustment = 1;
 
-        virtual protected void Start()
+
+        private void OnEnable()
         {
             if (Constants.IsMultiplayer)
                 PHView = GetComponent<PhotonView>();
-
+        }
+        virtual protected void Start()
+        {
+            
             body = GetComponent<Rigidbody>();
             sphereCollider = GetComponent<SphereCollider>();
 
