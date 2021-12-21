@@ -1194,6 +1194,8 @@ public class MainMenuViewController : MonoBehaviour
             FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
         }
 #endif
+        SelectedCar = _selecteableCars[_currentSelectedCarIndex].carSettings;
+
         if (Constants.IsMultiplayer)
         {
             if (MultiplayerManager.Instance)
@@ -1208,7 +1210,6 @@ public class MainMenuViewController : MonoBehaviour
         }
         else
         {
-            SelectedCar = _selecteableCars[_currentSelectedCarIndex].carSettings;
             SceneManager.LoadScene(_levelsSettings[_currentlySelectedLevelIndex].SceneName, LoadSceneMode.Single);
         }
     }
@@ -1487,25 +1488,28 @@ public class MainMenuViewController : MonoBehaviour
     }
     public void onMultiplayerBtnClick()
     {
-        if (Constants.IsTest)
-            WalletConnected = true;
+        //WalletConnected = true;
 
-        if (WalletConnected)
+        if (true)//WalletConnected
         {
             LoadingScreen.SetActive(true);
             if (WalletManager.Instance)
             {
-                if (WalletManager.Instance.CheckBalanceTournament(false, false, false, true))
-                {
-                    ToggleScreen_MultiplayerSelection(false);
-                    Constants.IsMultiplayer = true;
-                    MainMenuViewController.Instance.OnGoToCarSelection();
-                }
-                else
-                {
-                    LoadingScreen.SetActive(false);
-                    ShowToast(3f, "Insufficient $CRACE value, need " + Constants.CalculatedCrace + " $CRACE");
-                }
+                ToggleScreen_MultiplayerSelection(false);
+                Constants.IsMultiplayer = true;
+                MainMenuViewController.Instance.OnGoToCarSelection();
+
+                //if (WalletManager.Instance.CheckBalanceTournament(false, false, false, true))
+                //{
+                //    ToggleScreen_MultiplayerSelection(false);
+                //    Constants.IsMultiplayer = true;
+                //    MainMenuViewController.Instance.OnGoToCarSelection();
+                //}
+                //else
+                //{
+                //    LoadingScreen.SetActive(false);
+                //    ShowToast(3f, "Insufficient $CRACE value, need " + Constants.CalculatedCrace + " $CRACE");
+                //}
             }
             else
             {

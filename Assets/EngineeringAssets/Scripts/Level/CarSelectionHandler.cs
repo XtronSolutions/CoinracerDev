@@ -20,7 +20,7 @@ public class CarSelectionHandler : MonoBehaviour
         CarSettings settings = MainMenuViewController.SelectedCar != null ? MainMenuViewController.SelectedCar : _defualtCarSettings;
         //CarSettings settings = _defualtCarSettings;
 
-        Debug.LogError(settings.Name);
+        //Debug.LogError(settings.Name);
         GameObject car;
 
         if (Constants.IsMultiplayer)
