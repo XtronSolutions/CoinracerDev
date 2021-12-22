@@ -319,16 +319,17 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if(PhotonNetwork.IsMasterClient)
             {
-                StartCoroutine(LoadAsyncScene());
+                LoadAsyncScene();
+                //StartCoroutine(LoadAsyncScene());
             }
         }
     }
 
-    public IEnumerator LoadAsyncScene()
+    public void LoadAsyncScene()
     {
        //Debug.Log("Selected Level is" + MainMenuViewController.Instance.getSelectedLevel());
         PhotonNetwork.LoadLevel(MainMenuViewController.Instance.getSelectedLevel()+1);
-        yield return null;
+        //yield return null;
         //AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Level1",LoadSceneMode.Single);
 
         // Wait until the asynchronous scene fully loads

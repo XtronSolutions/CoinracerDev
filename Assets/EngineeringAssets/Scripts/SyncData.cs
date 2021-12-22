@@ -42,8 +42,8 @@ public class SyncData : MonoBehaviourPun, IPunObservable
         PHView = GetComponent<PhotonView>();
         r.isKinematic = !PHView.IsMine;
 
-        PhotonNetwork.SerializationRate = 10;
-        PhotonNetwork.SendRate = 10;
+        //PhotonNetwork.SerializationRate = 10;
+        //PhotonNetwork.SendRate = 10;
 
         for (int i = 0; i < localScripts.Length; i++)
         {
@@ -58,34 +58,34 @@ public class SyncData : MonoBehaviourPun, IPunObservable
 
 
     // Update is called once per frame
-    void Update()
-    {
-        if (!PHView.IsMine)
-        {
-            // Lag compensations
-            timeToReachGoal = currentPacketTime - lastPacketTime;
-            currentTime += Time.deltaTime;
+    //void Update()
+    //{
+    //    if (!PHView.IsMine)
+    //    {
+    //        // Lag compensations
+    //        timeToReachGoal = currentPacketTime - lastPacketTime;
+    //        currentTime += Time.deltaTime;
 
-            // Update car position and velocity
-            transform.position = Vector3.Lerp(positionAtLastPacket, latestPos, (float)(currentTime / timeToReachGoal));
-            transform.rotation = Quaternion.Lerp(rotationAtLastPacket, latestRot, (float)(currentTime / timeToReachGoal));
+    //        // Update car position and velocity
+    //        transform.position = Vector3.Lerp(positionAtLastPacket, latestPos, (float)(currentTime / timeToReachGoal));
+    //        transform.rotation = Quaternion.Lerp(rotationAtLastPacket, latestRot, (float)(currentTime / timeToReachGoal));
 
-            MainBody.transform.position = Vector3.Lerp(positionBodyAtLastPacket, latestBodyPos, (float)(currentTime / timeToReachGoal));
-            MainBody.transform.rotation = Quaternion.Lerp(rotationBodyAtLastPacket, latestBodyRot, (float)(currentTime / timeToReachGoal));
+    //        MainBody.transform.position = Vector3.Lerp(positionBodyAtLastPacket, latestBodyPos, (float)(currentTime / timeToReachGoal));
+    //        MainBody.transform.rotation = Quaternion.Lerp(rotationBodyAtLastPacket, latestBodyRot, (float)(currentTime / timeToReachGoal));
 
-            //r.velocity = Vector3.Lerp(velocityAtLastPacket, latestVelocity, (float)(currentTime / timeToReachGoal));
-            //r.angularVelocity = Vector3.Lerp(angularVelocityAtLastPacket, latestAngularVelocity, (float)(currentTime / timeToReachGoal));
+    //        //r.velocity = Vector3.Lerp(velocityAtLastPacket, latestVelocity, (float)(currentTime / timeToReachGoal));
+    //        //r.angularVelocity = Vector3.Lerp(angularVelocityAtLastPacket, latestAngularVelocity, (float)(currentTime / timeToReachGoal));
 
-            //Apply wheel rotation
-            if (wheelRotations.Length == wheels.Length)
-            {
-                for (int i = 0; i < wheelRotations.Length; i++)
-                {
-                    wheels[i].localRotation = Quaternion.Lerp(wheels[i].localRotation, wheelRotations[i], Time.deltaTime * 6.5f);
-                }
-            }
-        }
-    }
+    //        //Apply wheel rotation
+    //        if (wheelRotations.Length == wheels.Length)
+    //        {
+    //            for (int i = 0; i < wheelRotations.Length; i++)
+    //            {
+    //                wheels[i].localRotation = Quaternion.Lerp(wheels[i].localRotation, wheelRotations[i], Time.deltaTime * 6.5f);
+    //            }
+    //        }
+    //    }
+    //}
 
     private void LateUpdate()
     {
@@ -94,44 +94,44 @@ public class SyncData : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.IsWriting)
-        {
-            // We own this player: send the others our data
-            stream.SendNext(MainBody.transform.position);
-            stream.SendNext(MainBody.transform.rotation);
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-            //stream.SendNext(r.velocity);
-            //stream.SendNext(r.angularVelocity);
+        //    if (stream.IsWriting)
+        //    {
+        //        // We own this player: send the others our data
+        //        stream.SendNext(MainBody.transform.position);
+        //        stream.SendNext(MainBody.transform.rotation);
+        //        stream.SendNext(transform.position);
+        //        stream.SendNext(transform.rotation);
+        //        //stream.SendNext(r.velocity);
+        //        //stream.SendNext(r.angularVelocity);
 
-            wheelRotations = new Quaternion[wheels.Length];
-            for (int i = 0; i < wheels.Length; i++)
-            {
-                wheelRotations[i] = wheels[i].localRotation;
-            }
-            stream.SendNext(wheelRotations);
-        }
-        else
-        {
-            // Network player, receive data
-            latestBodyPos = (Vector3)stream.ReceiveNext();
-            latestBodyRot = (Quaternion)stream.ReceiveNext();
-            latestPos = (Vector3)stream.ReceiveNext();
-            latestRot = (Quaternion)stream.ReceiveNext();
-            //latestVelocity = (Vector3)stream.ReceiveNext();
-            //latestAngularVelocity = (Vector3)stream.ReceiveNext();
-            wheelRotations = (Quaternion[])stream.ReceiveNext();
+        //        wheelRotations = new Quaternion[wheels.Length];
+        //        for (int i = 0; i < wheels.Length; i++)
+        //        {
+        //            wheelRotations[i] = wheels[i].localRotation;
+        //        }
+        //        stream.SendNext(wheelRotations);
+        //    }
+        //    else
+        //    {
+        //        // Network player, receive data
+        //        latestBodyPos = (Vector3)stream.ReceiveNext();
+        //        latestBodyRot = (Quaternion)stream.ReceiveNext();
+        //        latestPos = (Vector3)stream.ReceiveNext();
+        //        latestRot = (Quaternion)stream.ReceiveNext();
+        //        //latestVelocity = (Vector3)stream.ReceiveNext();
+        //        //latestAngularVelocity = (Vector3)stream.ReceiveNext();
+        //        wheelRotations = (Quaternion[])stream.ReceiveNext();
 
-            // Lag compensation
-            currentTime = 0.0f;
-            lastPacketTime = currentPacketTime;
-            currentPacketTime = info.SentServerTime;
-            positionAtLastPacket = transform.position;
-            rotationAtLastPacket = transform.rotation;
-            positionBodyAtLastPacket = MainBody.transform.position;
-            rotationBodyAtLastPacket = MainBody.transform.rotation;
-            //velocityAtLastPacket = r.velocity;
-            //angularVelocityAtLastPacket = r.angularVelocity;
+        //        // Lag compensation
+        //        currentTime = 0.0f;
+        //        lastPacketTime = currentPacketTime;
+        //        currentPacketTime = info.SentServerTime;
+        //        positionAtLastPacket = transform.position;
+        //        rotationAtLastPacket = transform.rotation;
+        //        positionBodyAtLastPacket = MainBody.transform.position;
+        //        rotationBodyAtLastPacket = MainBody.transform.rotation;
+        //        //velocityAtLastPacket = r.velocity;
+        //        //angularVelocityAtLastPacket = r.angularVelocity;
+        //    }
         }
     }
-}
