@@ -50,6 +50,10 @@ public class RaceManager : MonoBehaviour
         if (RaceCounter < -1)
         {
             GameStartTimer.text = "";
+
+            if (Constants.IsMultiplayer)
+                TimeHandler.Instance.timerIsRunning = true;
+
             Constants.MoveCar = true;
             yield return null;
         }
@@ -105,7 +109,6 @@ public class RaceManager : MonoBehaviour
                 LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
                 if (_lapsCounter == _requiredNumberOfLaps)
                 {
-            
                         OnRaceDone();
                 }
             }
@@ -143,11 +146,6 @@ public class RaceManager : MonoBehaviour
             GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseManager.Instance.PlayerData.WalletAddress);
             GamePlayUIHandler.Instance.SetInputUsername_InputFieldUI(FirebaseManager.Instance.PlayerData.UserName);
         }
-        else if(GamePlayUIHandler.Instance && Constants.IsMultiplayer)
-        {
-            //Multiplayer Game end
-           // _raceOverMenuObject.SetActive(true);
-        }
         else if (GamePlayUIHandler.Instance && Constants.IsPractice)
         {
             _raceOverMenuObject.SetActive(true);
@@ -173,10 +171,11 @@ public class RaceManager : MonoBehaviour
         _pasueMenuObject.SetActive(!_pasueMenuObject.activeSelf);
         _pauseRestartButton.SetActive(false);
 
-        if (Constants.IsPractice)
+        if (Constants.IsPractice && !Constants.IsMultiplayer)
             _pauseRestartButton.SetActive(true);
 
-        Time.timeScale = _pasueMenuObject.activeSelf ? 0 : 1;
+        if(!Constants.IsMultiplayer)
+            Time.timeScale = _pasueMenuObject.activeSelf ? 0 : 1;
     }
 
     public void ReplayLevel()
@@ -187,6 +186,9 @@ public class RaceManager : MonoBehaviour
 
     public void MainMenu()
     {
+        if(Constants.IsMultiplayer)
+            MultiplayerManager.Instance.DisconnectPhoton();
+
         Constants.ResetData();
         SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
         Time.timeScale = 1;

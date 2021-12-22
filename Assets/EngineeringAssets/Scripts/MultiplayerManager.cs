@@ -50,20 +50,27 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     string _customPlayerPropString = "";
     string _customRoomPropString = "";
     private CustomRoomPropData DataRoomPropData;
+
+    void Awake()
+    {
+        MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
+
+        if (objs.Length > 1)
+        {
+            Destroy(this.gameObject);
+        }
+
+        DontDestroyOnLoad(this.gameObject);
+    }
     private void Start()
     {
-        if (!Instance)
-        {
             Constants.GetCracePrice();
             ActorNumbers.Clear();
             Instance = this;
-            DontDestroyOnLoad(this.gameObject);
-
             PHView = GetComponent<PhotonView>();
 
             if (Settings.AutoConnect)
                 ConnectToPhotonServer();
-        }
     }
 
     public void UpdateConnectionText(string TxT)
@@ -319,6 +326,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if(PhotonNetwork.IsMasterClient)
             {
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+                PhotonNetwork.CurrentRoom.IsVisible = false;
                 LoadAsyncScene();
                 //StartCoroutine(LoadAsyncScene());
             }

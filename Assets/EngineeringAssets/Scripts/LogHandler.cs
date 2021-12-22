@@ -9,7 +9,7 @@ public class LogHandler : MonoBehaviour
 {
     public static LogHandler Instance;
     string level = "";
-    string logglyURL = "http://logs-01.loggly.com/inputs/727238b0-fd29-4d10-9a73-79a36a700c25/tag/Unity3D";
+    string logglyURL = "https://logs-01.loggly.com/inputs/727238b0-fd29-4d10-9a73-79a36a700c25/tag/Unity3D";
     public void OnEnable(){
 
         if(!Instance)
