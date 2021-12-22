@@ -13,6 +13,8 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private GameObject _pasueMenuObject = null;
     [SerializeField] private GameObject _pauseRestartButton = null;
     [SerializeField] private GameObject _raceOverMenuObject = null;
+    [SerializeField] private TextMeshProUGUI positionText;
+    [SerializeField] private GameObject _gameEndMenuMultiplayer = null;
     [SerializeField] private TextMeshProUGUI LapText;
     [SerializeField] private AudioClip _buttonPressClip = null;
     [SerializeField] private AudioSource _audioSource = null;
@@ -103,9 +105,7 @@ public class RaceManager : MonoBehaviour
                 LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
                 if (_lapsCounter == _requiredNumberOfLaps)
                 {
-                    if(Constants.IsMultiplayer)
-                        MultiplayerManager.Instance.pushResult();
-                    else
+            
                         OnRaceDone();
                 }
             }
@@ -115,7 +115,11 @@ public class RaceManager : MonoBehaviour
             }
         }
     }
-
+    public void showGameOverMenuMultiplayer(int _position)
+    {
+        positionText.text = _position.ToString();
+        _gameEndMenuMultiplayer.SetActive(true);
+    }
     public void OnRaceDone()
     {
         Constants.GameSeconds = 0;
@@ -129,8 +133,11 @@ public class RaceManager : MonoBehaviour
             Debug.LogError("TH is null for OnRaceDone");
         }
 
-
-        if (GamePlayUIHandler.Instance && Constants.IsTournament)
+        if(Constants.IsMultiplayer)
+        {
+            MultiplayerManager.Instance.CallEndMultiplayerGameRPC();
+        }
+        else if (GamePlayUIHandler.Instance && Constants.IsTournament)
         {
             GamePlayUIHandler.Instance.ToggleInputScreen_InputFieldUI(true);
             GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseManager.Instance.PlayerData.WalletAddress);

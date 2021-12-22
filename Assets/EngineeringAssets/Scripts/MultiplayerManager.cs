@@ -46,6 +46,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public PhotonSetting Settings;
     private PhotonView PHView;
     private List<string> ActorNumbers = new List<string>();
+    private List<string> winnerList = new List<string>();
     string _customPlayerPropString = "";
     string _customRoomPropString = "";
     private CustomRoomPropData DataRoomPropData;
@@ -359,6 +360,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             PHView.RPC("StartRace", RpcTarget.AllViaServer);
         }
     }
+    public void CallEndMultiplayerGameRPC()
+    {
+        PHView.RPC("EndMultiplayerRace", RpcTarget.AllViaServer, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+    }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
@@ -397,11 +402,26 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (RaceManager.Instance)
         {
             RaceManager.Instance.StartTheRaceTimer();
+            MultiplayerManager.Instance.winnerList.Clear();
         }
     }
     [PunRPC]
-    public void EndMultiplayerRace()
+    public void EndMultiplayerRace(string _ID)
     {
+        MultiplayerManager.Instance.winnerList.Add(_ID);
+        if(_ID == PhotonNetwork.LocalPlayer.ActorNumber.ToString())
+        {
+            //TODO: Active END screen according to position
+            int positionNumber = 0;
+            foreach(string str in MultiplayerManager.Instance.winnerList)
+            {
+                positionNumber++;
+                if (str == _ID)
+                    break;
+            }
+            Debug.Log("My position is: " + positionNumber);
+            RaceManager.Instance.showGameOverMenuMultiplayer(positionNumber);
+        }
         //var customProperties = new ExitGames.Client.Photon.Hashtable();
 
 
