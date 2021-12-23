@@ -495,7 +495,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         else
         {
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
-            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());
+            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());
         }
     }
 
