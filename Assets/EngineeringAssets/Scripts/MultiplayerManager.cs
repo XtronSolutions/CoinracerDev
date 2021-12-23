@@ -353,7 +353,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             {
                 PhotonNetwork.CurrentRoom.IsOpen = false;
                 PhotonNetwork.CurrentRoom.IsVisible = false;
-                PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber,Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
+                PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
             }
         }
     }
