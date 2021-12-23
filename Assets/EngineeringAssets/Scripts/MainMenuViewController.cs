@@ -1501,6 +1501,11 @@ public class MainMenuViewController : MonoBehaviour
         UIConnection.MultiplayerButton.onClick.AddListener(EnableSelection_MultiplayerSelection);
         UIConnection.BackButton.onClick.AddListener(DisableScreen_ConnectionUI);
     }
+
+    public void ToggleBackButton_ConnectionUI(bool state)
+    {
+        UIConnection.BackButton.gameObject.SetActive(state);
+    }
     public void onMultiplayerBtnClick()
     {
         //WalletConnected = true;
@@ -1562,6 +1567,7 @@ public class MainMenuViewController : MonoBehaviour
     public void SelectMultiplayer_ConnectionUI()
     {
         Constants.IsMultiplayer = true;
+        ToggleBackButton_ConnectionUI(true);
 
         UIConnection.Detail01.DetailScreen.SetActive(true);
         UpdateDetailData(true, Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex);

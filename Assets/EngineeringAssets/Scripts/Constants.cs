@@ -21,7 +21,7 @@ public static class Constants
     public static bool PushingTime = false;
     public static double GameSeconds = 0;
     public static string WalletAddress = "";
-    public static string UserName = "";
+    public static string UserName = "XYZ";
     public static int TournamentPassPrice =200;//500
     public static bool BuyingPass = false;
     public static int DiscountPercentage = 50;

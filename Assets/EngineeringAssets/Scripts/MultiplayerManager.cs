@@ -130,6 +130,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.LocalPlayer.NickName = name;
+
+        if (Constants.IsTest)
+            Constants.UserName = name;
+
         PhotonNetwork.JoinLobby();
     }
 
@@ -284,32 +288,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         UpdateConnectionText("Joined Room : "+ PhotonNetwork.CurrentRoom.Name);
         Debug.Log("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-
-        StartCoroutine(callPropertiesWithDelay(true, Constants.RoomDataKey, 0.0f));
-
-        if (_customRoomPropString != "")
-        {
-            DataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropData>(_customRoomPropString);
-
-            foreach (var item in DataRoomPropData.Roomdata)
-            {
-                if(item.ID!=PhotonNetwork.LocalPlayer.ActorNumber.ToString())
-                {
-                    MainMenuViewController.Instance.ToggleSecondDetail(true, item.name, item.TotalWins.ToString(), item.FlagIndex);
-                    break;
-                }
-            }
-        }
-        
-
-        CustomPlayerPropData _data = new CustomPlayerPropData();
-        _data.name = Constants.UserName;
-        _data.walletAddress = Constants.WalletAddress;
-        _data.ID = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
-        _data.FlagIndex = Constants.FlagSelectedIndex;
-        _data.TotalWins = Constants.TotalWins;
-        StartCoroutine(SetRoomPropWithDelay(_data));
-
     }
 
     IEnumerator SetRoomPropWithDelay(CustomPlayerPropData _data, bool isRemoving=false, string ActorID="")
@@ -369,63 +347,53 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         //Debug.Log("OnPlayerEnteredRoom() called by PUN. Connected players " + newPlayer.NickName);
 
-
-        StartCoroutine(callPropertiesWithDelay(true, Constants.RoomDataKey, 0.0f));
-
-        if (_customRoomPropString != "")
-        {
-            DataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropData>(_customRoomPropString);
-
-            foreach (var item in DataRoomPropData.Roomdata)
-            {
-                if (item.ID != PhotonNetwork.LocalPlayer.ActorNumber.ToString())
-                {
-                    MainMenuViewController.Instance.ToggleSecondDetail(true, item.name, item.TotalWins.ToString(), item.FlagIndex);
-                    break;
-                }
-            }
-        }
-
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
             if(PhotonNetwork.IsMasterClient)
             {
                 PhotonNetwork.CurrentRoom.IsOpen = false;
                 PhotonNetwork.CurrentRoom.IsVisible = false;
-                Invoke("LoadAsyncScene", 2f);
-                //StartCoroutine(LoadAsyncScene());
+                PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber,Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
             }
         }
     }
 
     public void LoadAsyncScene()
     {
-       //Debug.Log("Selected Level is" + MainMenuViewController.Instance.getSelectedLevel());
-        PhotonNetwork.LoadLevel(MainMenuViewController.Instance.getSelectedLevel()+1);
-        //yield return null;
-        //AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Level1",LoadSceneMode.Single);
+        if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
+        {
+            PhotonNetwork.LoadLevel(MainMenuViewController.Instance.getSelectedLevel() + 1);
+        }
+        else
+        {
+            MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(true);
+        }
+            //Debug.Log("Selected Level is" + MainMenuViewController.Instance.getSelectedLevel());
 
-        // Wait until the asynchronous scene fully loads
-        //while (!asyncLoad.isDone)
-        //{
-        //    yield return null;
-        //}
+            //yield return null;
+            //AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Level1",LoadSceneMode.Single);
 
-        //if(asyncLoad.isDone)
-        //{
-        //    Debug.Log("is loaded");
+            // Wait until the asynchronous scene fully loads
+            //while (!asyncLoad.isDone)
+            //{
+            //    yield return null;
+            //}
 
-        //    if (PhotonNetwork.InRoom)
-        //    {
-        //        if (!ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
-        //        {
-        //            ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
-        //        }
+            //if(asyncLoad.isDone)
+            //{
+            //    Debug.Log("is loaded");
 
-        //        PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
-        //    }
-        //}
-    }
+            //    if (PhotonNetwork.InRoom)
+            //    {
+            //        if (!ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
+            //        {
+            //            ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+            //        }
+
+            //        PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+            //    }
+            //}
+        }
 
     public void CallStartRPC()
     {
@@ -451,7 +419,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-        StartCoroutine(SetRoomPropWithDelay(null, true, otherPlayer.ActorNumber.ToString()));
         MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
         //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
     }
@@ -514,6 +481,22 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
 
         //PhotonNetwork.room.SetCustomProperty("mapIndex", 1);
+    }
+
+    [PunRPC]
+    public void SyncConnectionData(string _actor,string _name,string _wins,string _index)
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
+            MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
+            Invoke("LoadAsyncScene", 3f);
+        }
+        else
+        {
+            MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
+            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());
+        }
     }
 
     #endregion
