@@ -40,13 +40,24 @@ public class PhotonSetting
     public byte MaxPlayers;
 }
 
+public class WinData
+{
+    public string ID;
+    public string Name;
+    public int FlagIndex;
+    public int TotalWins;
+    public int TotalBetValue;
+    public string RunTime;
+}
+
 public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
     public static MultiplayerManager Instance;
     public PhotonSetting Settings;
     private PhotonView PHView;
     private List<string> ActorNumbers = new List<string>();
-    private List<string> winnerList = new List<string>();
+    [HideInInspector]
+    public List<WinData> winnerList = new List<WinData>();
     string _customPlayerPropString = "";
     string _customRoomPropString = "";
     private CustomRoomPropData DataRoomPropData;
@@ -372,7 +383,16 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
     public void CallEndMultiplayerGameRPC()
     {
-        PHView.RPC("EndMultiplayerRace", RpcTarget.AllViaServer, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+        WinData _data = new WinData();
+        _data.Name = PhotonNetwork.LocalPlayer.NickName;
+        _data.ID = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
+        _data.TotalBetValue = Constants.SelectedWage+ Constants.SelectedWage;
+        _data.RunTime = Constants.GameSeconds.ToString();
+        _data.TotalWins = 0;
+        _data.FlagIndex = FirebaseManager.Instance.PlayerData.AvatarID;
+
+
+        PHView.RPC("EndMultiplayerRace", RpcTarget.AllViaServer, _data);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -416,19 +436,21 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
     [PunRPC]
-    public void EndMultiplayerRace(string _ID)
+    public void EndMultiplayerRace(WinData _data)
     {
-        MultiplayerManager.Instance.winnerList.Add(_ID);
-        if(_ID == PhotonNetwork.LocalPlayer.ActorNumber.ToString())
+        MultiplayerManager.Instance.winnerList.Add(_data);
+        if(_data.ID == PhotonNetwork.LocalPlayer.ActorNumber.ToString())
         {
             //TODO: Active END screen according to position
-            int positionNumber = 0;
-            foreach(string str in MultiplayerManager.Instance.winnerList)
+            int positionNumber = -1;
+
+            foreach (var item in MultiplayerManager.Instance.winnerList)
             {
                 positionNumber++;
-                if (str == _ID)
+                if (item.ID == _data.ID)
                     break;
             }
+
             Debug.Log("My position is: " + positionNumber);
             RaceManager.Instance.showGameOverMenuMultiplayer(positionNumber);
         }

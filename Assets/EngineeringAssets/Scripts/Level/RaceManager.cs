@@ -5,7 +5,18 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UI;
 
+[Serializable]
+public class MultiplayerUI
+{
+    public GameObject MainScreen;
+    public TextMeshProUGUI WinText;
+    public TextMeshProUGUI WinnerNameText;
+    public TextMeshProUGUI AmountWinText;
+    public TextMeshProUGUI RunTimeText;
+    public Image FlagReference;
+}
 public class RaceManager : MonoBehaviour
 {
     [SerializeField] private List<WayPoint> _wayPoints = new List<WayPoint>();
@@ -24,6 +35,7 @@ public class RaceManager : MonoBehaviour
 
     public static RaceManager Instance;
     int RaceCounter = 3;
+    public MultiplayerUI UIMultiplayer;
     private void OnEnable()
     {
         Instance = this;
@@ -120,9 +132,34 @@ public class RaceManager : MonoBehaviour
     }
     public void showGameOverMenuMultiplayer(int _position)
     {
+        WinData _data = MultiplayerManager.Instance.winnerList[0];
         positionText.text = _position.ToString();
-        _gameEndMenuMultiplayer.SetActive(true);
+        ToggleScreen_MultiplayerUI(true);
+
+        ChangeName_MultiplayerUI(_data.Name);
+        ChangeWinAmount_MultiplayerUI(_data.TotalWins);
+        ChangeAmount_MultiplayerUI(_data.TotalBetValue);
+        ConvertTimeAndDisplay(double.Parse(_data.RunTime));
+        UpdateFlag_MultiplayerUI(_data.FlagIndex);
     }
+
+    public void ConvertTimeAndDisplay(double _sec)
+    {
+        //Store TimeSpan into variable.
+        float timeSpanConversionHours = TimeSpan.FromSeconds(_sec).Hours;
+        float timeSpanConversiondMinutes = TimeSpan.FromSeconds(_sec).Minutes;
+        float timeSpanConversionSeconds = TimeSpan.FromSeconds(_sec).Seconds;
+        float timeSpanConversionMiliSeconds = TimeSpan.FromSeconds(_sec).Milliseconds / 10;
+
+        //Convert TimeSpan variables into strings for textfield display
+        string textfieldHours = timeSpanConversionHours.ToString();
+        string textfieldMinutes = timeSpanConversiondMinutes.ToString();
+        string textfieldSeconds = timeSpanConversionSeconds.ToString();
+        string textfieldMiliSeconds = timeSpanConversionMiliSeconds.ToString();
+
+        ChangeRunTime_MultiplayerUI(textfieldHours+":"+ textfieldMinutes+":"+ textfieldSeconds+":"+ textfieldMiliSeconds);
+    }
+
     public void OnRaceDone()
     {
         Constants.GameSeconds = 0;
@@ -151,6 +188,10 @@ public class RaceManager : MonoBehaviour
             _raceOverMenuObject.SetActive(true);
         }
 
+
+        if(Constants.IsMultiplayer)
+            Time.timeScale = 1f;
+        else
             Time.timeScale = 0.1f;
     }
     public void RaceEnded()
@@ -203,5 +244,36 @@ public class RaceManager : MonoBehaviour
     {
         _audioSource.PlayOneShot(_buttonPressClip);
     }
+
+    #region Multiplayer UI
+    public void ToggleScreen_MultiplayerUI(bool state)
+    {
+        UIMultiplayer.MainScreen.SetActive(state);
+    }
+
+    public void ChangeName_MultiplayerUI(string _name)
+    {
+        UIMultiplayer.WinnerNameText.text = _name;
+    }
+
+    public void ChangeWinAmount_MultiplayerUI(int _wins)
+    {
+        UIMultiplayer.WinText.text = "WINS : "+ _wins.ToString();
+    }
+    public void ChangeAmount_MultiplayerUI(int _amount)
+    {
+        UIMultiplayer.AmountWinText.text = "AMOUNT : " + _amount.ToString()+" $CRACE";
+    }
+
+    public void ChangeRunTime_MultiplayerUI(string _time)
+    {
+        UIMultiplayer.RunTimeText.text = "RUN TIME : " + _time;
+    }
+
+    public void UpdateFlag_MultiplayerUI(int index)
+    {
+        UIMultiplayer.FlagReference.sprite= FlagSkins.Instance.FlagSpriteWithIndex(index);
+    }
+    #endregion
 
 }
