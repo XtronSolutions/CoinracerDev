@@ -17,6 +17,8 @@ public class CustomPlayerPropData
     public string name { get; set; }
     public string walletAddress { get; set; }
     public string ID { get; set; }
+    public int FlagIndex { get; set; }
+    public int TotalWins { get; set; }
 }
 
 public class CustomRoomPropData
@@ -133,7 +135,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        var roomCode = Random.Range(100000, 999999);
+        var roomCode = Random.Range(10000, 99999);
+        string roomName = "Room_" + roomCode.ToString();
+
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = Settings.MaxPlayers;
         roomOptions.PublishUserId = true;
@@ -142,7 +146,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         roomOptions.CustomRoomPropertiesForLobby =new string [2]{ Constants.MAP_PROP_KEY,Constants.WAGE_PROP_KEY };
         roomOptions.CustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, Constants.SelectedLevel }, { Constants.WAGE_PROP_KEY, Constants.SelectedWage } };
 
-        PhotonNetwork.CreateRoom("Room_" + roomCode.ToString(), roomOptions, TypedLobby.Default);
+        PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
     }
 
     private void JoinRoomRandom(int mapCode, int wageAmount, byte expectedMaxPlayers)
@@ -174,23 +178,23 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     }
 
-    public void TestCustom()
-    {
-        #region Setting player custom proeprty Example
-        //Setting player custom property--------------------------------------
-        CustomPlayerPropData _data = new CustomPlayerPropData();
-        _data.name = "humza";
-        _data.walletAddress = "090078601";
-        _data.ID = "001";
-        string _json = JsonConvert.SerializeObject(_data);
-        SetCustomProps(false, Constants.PlayerDataKey, _json);
-        StartCoroutine(callPropertiesWithDelay(false, Constants.PlayerDataKey, 0.6f)); //this should be called with 0.5-1 sec delay after setting properties
-        #endregion
+    //public void TestCustom()
+    //{
+    //    #region Setting player custom proeprty Example
+    //    //Setting player custom property--------------------------------------
+    //    CustomPlayerPropData _data = new CustomPlayerPropData();
+    //    _data.name = "humza";
+    //    _data.walletAddress = "090078601";
+    //    _data.ID = "001";
+    //    string _json = JsonConvert.SerializeObject(_data);
+    //    SetCustomProps(false, Constants.PlayerDataKey, _json);
+    //    StartCoroutine(callPropertiesWithDelay(false, Constants.PlayerDataKey, 0.6f)); //this should be called with 0.5-1 sec delay after setting properties
+    //    #endregion
 
-        #region Setting room custom proeprty Example
-        StartCoroutine(SetRoomPropWithDelay());
-        #endregion
-    }
+    //    #region Setting room custom proeprty Example
+    //    StartCoroutine(SetRoomPropWithDelay());
+    //    #endregion
+    //}
 
     public void SetCustomProps(bool IsRoom,string _key, string _temp)
     {
@@ -281,38 +285,74 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         UpdateConnectionText("Joined Room : "+ PhotonNetwork.CurrentRoom.Name);
         Debug.Log("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
 
-        TestCustom();//for testing only
+        StartCoroutine(callPropertiesWithDelay(true, Constants.RoomDataKey, 0.0f));
+
+        if (_customRoomPropString != "")
+        {
+            DataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropData>(_customRoomPropString);
+
+            foreach (var item in DataRoomPropData.Roomdata)
+            {
+                if(item.ID!=PhotonNetwork.LocalPlayer.ActorNumber.ToString())
+                {
+                    MainMenuViewController.Instance.ToggleSecondDetail(true, item.name, item.TotalWins.ToString(), item.FlagIndex);
+                    break;
+                }
+            }
+        }
+        
+
+        CustomPlayerPropData _data = new CustomPlayerPropData();
+        _data.name = Constants.UserName;
+        _data.walletAddress = Constants.WalletAddress;
+        _data.ID = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
+        _data.FlagIndex = Constants.FlagSelectedIndex;
+        _data.TotalWins = Constants.TotalWins;
+        StartCoroutine(SetRoomPropWithDelay(_data));
+
     }
 
-    IEnumerator SetRoomPropWithDelay()
+    IEnumerator SetRoomPropWithDelay(CustomPlayerPropData _data, bool isRemoving=false, string ActorID="")
     {
-        StartCoroutine(callPropertiesWithDelay(false, Constants.PlayerDataKey, 0.7f));
-        yield return new WaitForSeconds(0.75f);
+        StartCoroutine(callPropertiesWithDelay(true, Constants.RoomDataKey, 0.5f));
+        yield return new WaitForSeconds(0.55f);
 
-        //Setting room custom property--------------------------------------
-        if (_customPlayerPropString != "")//data existed for the key
+        if (isRemoving)
         {
-            StartCoroutine(callPropertiesWithDelay(true,Constants.RoomDataKey, 0.2f));
-            yield return new WaitForSeconds(0.3f);
+            if (_customRoomPropString == "")//if there is entry in room
+            {
+                DataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropData>(_customRoomPropString);
 
-            if(_customRoomPropString=="")//if there is entry in room
+                foreach (var item in DataRoomPropData.Roomdata)
+                {
+                    if (item.ID == ActorID)
+                    {
+                        DataRoomPropData.Roomdata.Remove(item);
+                        break;
+                    }
+                }
+
+                string _json = JsonConvert.SerializeObject(DataRoomPropData);
+                SetCustomProps(true, Constants.RoomDataKey, _json);
+            }
+        }
+        else
+        {
+            if (_customRoomPropString == "")//if there is entry in room
             {
                 DataRoomPropData = new CustomRoomPropData();
                 DataRoomPropData.RoomName = PhotonNetwork.CurrentRoom.Name;
                 DataRoomPropData.RoomMaxPlayer = Settings.MaxPlayers;
                 DataRoomPropData.WageAmount = Constants.SelectedWage;
                 DataRoomPropData.LevelSelected = Constants.SelectedLevel;
-
-                CustomPlayerPropData _data = JsonConvert.DeserializeObject<CustomPlayerPropData>(_customPlayerPropString);
                 DataRoomPropData.Roomdata.Add(_data);
 
                 string _json = JsonConvert.SerializeObject(DataRoomPropData);
                 SetCustomProps(true, Constants.RoomDataKey, _json);
-            }else
+            }
+            else
             {
-                DataRoomPropData= JsonConvert.DeserializeObject<CustomRoomPropData>(_customRoomPropString);
-
-                CustomPlayerPropData _data = JsonConvert.DeserializeObject<CustomPlayerPropData>(_customPlayerPropString);
+                DataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropData>(_customRoomPropString);
                 DataRoomPropData.Roomdata.Add(_data);
 
                 string _json = JsonConvert.SerializeObject(DataRoomPropData);
@@ -322,10 +362,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(1f);
             StartCoroutine(callPropertiesWithDelay(true, Constants.RoomDataKey, 1f));
         }
-        else
-        {
-            Debug.LogError("no player property existed with key");
-        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -333,13 +369,30 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         //Debug.Log("OnPlayerEnteredRoom() called by PUN. Connected players " + newPlayer.NickName);
 
-        if(PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
+
+        StartCoroutine(callPropertiesWithDelay(true, Constants.RoomDataKey, 0.0f));
+
+        if (_customRoomPropString != "")
+        {
+            DataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropData>(_customRoomPropString);
+
+            foreach (var item in DataRoomPropData.Roomdata)
+            {
+                if (item.ID != PhotonNetwork.LocalPlayer.ActorNumber.ToString())
+                {
+                    MainMenuViewController.Instance.ToggleSecondDetail(true, item.name, item.TotalWins.ToString(), item.FlagIndex);
+                    break;
+                }
+            }
+        }
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
             if(PhotonNetwork.IsMasterClient)
             {
                 PhotonNetwork.CurrentRoom.IsOpen = false;
                 PhotonNetwork.CurrentRoom.IsVisible = false;
-                LoadAsyncScene();
+                Invoke("LoadAsyncScene", 2f);
                 //StartCoroutine(LoadAsyncScene());
             }
         }
@@ -398,6 +451,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+        StartCoroutine(SetRoomPropWithDelay(null, true, otherPlayer.ActorNumber.ToString()));
+        MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
         //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
     }
     #endregion

@@ -75,6 +75,7 @@ public static class Constants
     public static string WAGE_PROP_KEY = "wage";
     public static int SelectedLevel = 0;
     public static int SelectedWage = 0;
+    public static int TotalWins = 0;
     async public static void GetCracePrice()
     {
         UnityWebRequest webRequest = UnityWebRequest.Get(CoinBaseURL);

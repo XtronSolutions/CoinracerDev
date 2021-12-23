@@ -14,6 +14,15 @@ using System.Runtime.InteropServices;
 #region SuperClasses
 
 [Serializable]
+public class ConnectionDetail
+{
+    public GameObject DetailScreen;
+    public TextMeshProUGUI WinText;
+    public TextMeshProUGUI WinnerNameText;
+    public Image FlagImage;
+}
+
+[Serializable]
 public class MultiplayerSelectionUI
 {
     [Tooltip("Main screen for Multiplayer Selection.")]
@@ -57,6 +66,12 @@ public class ConnectionUI
     public TextMeshProUGUI RegionText;
     [Tooltip("Player Count text for connection screen.")]
     public TextMeshProUGUI PlayerCountText;
+    [Tooltip("Detail reference for one player")]
+    public ConnectionDetail Detail01;
+    [Tooltip("Detail reference for other player")]
+    public ConnectionDetail Detail02;
+    [Tooltip("Text reference for Verses")]
+    public TextMeshProUGUI VSText;
 }
 
 [Serializable]
@@ -1547,10 +1562,31 @@ public class MainMenuViewController : MonoBehaviour
     public void SelectMultiplayer_ConnectionUI()
     {
         Constants.IsMultiplayer = true;
+
+        UIConnection.Detail01.DetailScreen.SetActive(true);
+        UpdateDetailData(true, Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex);
+
+        UIConnection.Detail02.DetailScreen.SetActive(false);
+        UIConnection.VSText.gameObject.SetActive(false);
+
         ToggleScreen_ConnectionUI(true);
         
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.ConnectToPhotonServer();
+    }
+
+    public void ToggleSecondDetail(bool _enable,string _name,string _wins,int _index)
+    {
+        if (_enable)
+        {
+            UIConnection.Detail02.DetailScreen.SetActive(true);
+            UIConnection.VSText.gameObject.SetActive(true);
+            UpdateDetailData(false, _name, _wins, _index);
+        }else
+        {
+            UIConnection.Detail02.DetailScreen.SetActive(false);
+            UIConnection.VSText.gameObject.SetActive(false);
+        }
     }
 
     public void DisableScreen_ConnectionUI()
@@ -1562,6 +1598,23 @@ public class MainMenuViewController : MonoBehaviour
 
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.DisconnectPhoton();
+    }
+
+    public void UpdateDetailData(bool isPlayer1, string _name,string _wins,int index)
+    {
+        if (isPlayer1)
+        {
+            UIConnection.Detail01.WinnerNameText.text = _name;
+            UIConnection.Detail01.WinText.text = _wins;
+            UIConnection.Detail01.FlagImage.sprite = FlagSkins.Instance.FlagSpriteWithIndex(index);
+        }
+        else
+        {
+            UIConnection.Detail02.WinnerNameText.text = _name;
+            UIConnection.Detail02.WinText.text = _wins;
+            UIConnection.Detail02.FlagImage.sprite = FlagSkins.Instance.FlagSpriteWithIndex(index);
+        }
+
     }
     #endregion
 
