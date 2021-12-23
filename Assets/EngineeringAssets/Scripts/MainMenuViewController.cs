@@ -1611,13 +1611,13 @@ public class MainMenuViewController : MonoBehaviour
         if (isPlayer1)
         {
             UIConnection.Detail01.WinnerNameText.text = _name;
-            UIConnection.Detail01.WinText.text = _wins;
+            UIConnection.Detail01.WinText.text = "WINS : "+_wins;
             UIConnection.Detail01.FlagImage.sprite = FlagSkins.Instance.FlagSpriteWithIndex(index);
         }
         else
         {
             UIConnection.Detail02.WinnerNameText.text = _name;
-            UIConnection.Detail02.WinText.text = _wins;
+            UIConnection.Detail02.WinText.text = "WINS : " + _wins;
             UIConnection.Detail02.FlagImage.sprite = FlagSkins.Instance.FlagSpriteWithIndex(index);
         }
 
