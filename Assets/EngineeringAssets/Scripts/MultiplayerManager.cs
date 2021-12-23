@@ -389,10 +389,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         _data.TotalBetValue = Constants.SelectedWage+ Constants.SelectedWage;
         _data.RunTime = Constants.GameSeconds.ToString();
         _data.TotalWins = 0;
-        _data.FlagIndex = FirebaseManager.Instance.PlayerData.AvatarID;
+        _data.FlagIndex = Constants.FlagSelectedIndex;
 
-
-        PHView.RPC("EndMultiplayerRace", RpcTarget.AllViaServer, _data);
+        string _Json = JsonConvert.SerializeObject(_data);
+        PHView.RPC("EndMultiplayerRace", RpcTarget.AllViaServer, _Json);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -436,10 +436,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
     [PunRPC]
-    public void EndMultiplayerRace(WinData _data)
+    public void EndMultiplayerRace(string _data)
     {
-        MultiplayerManager.Instance.winnerList.Add(_data);
-        if(_data.ID == PhotonNetwork.LocalPlayer.ActorNumber.ToString())
+        WinData _mainData = JsonConvert.DeserializeObject<WinData>(_data);
+        MultiplayerManager.Instance.winnerList.Add(_mainData);
+        if(_mainData.ID == PhotonNetwork.LocalPlayer.ActorNumber.ToString())
         {
             //TODO: Active END screen according to position
             int positionNumber = -1;
@@ -447,7 +448,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             foreach (var item in MultiplayerManager.Instance.winnerList)
             {
                 positionNumber++;
-                if (item.ID == _data.ID)
+                if (item.ID == _mainData.ID)
                     break;
             }
 
