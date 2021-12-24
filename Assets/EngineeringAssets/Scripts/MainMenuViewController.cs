@@ -1578,7 +1578,7 @@ public class MainMenuViewController : MonoBehaviour
         UIConnection.VSText.gameObject.SetActive(false);
 
         ToggleScreen_ConnectionUI(true);
-        
+        AnimateConnectingDetail_ConnectionUI(UIConnection.Detail01.DetailScreen,true);
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.ConnectToPhotonServer();
     }
@@ -1590,7 +1590,9 @@ public class MainMenuViewController : MonoBehaviour
             UIConnection.Detail02.DetailScreen.SetActive(true);
             UIConnection.VSText.gameObject.SetActive(true);
             UpdateDetailData(false, _name, _wins, _index);
-        }else
+            AnimateConnectingDetail_ConnectionUI(UIConnection.Detail02.DetailScreen, false);
+        }
+        else
         {
             UIConnection.Detail02.DetailScreen.SetActive(false);
             UIConnection.VSText.gameObject.SetActive(false);
@@ -1642,7 +1644,23 @@ public class MainMenuViewController : MonoBehaviour
                 dropdown.value = i+1;
             }
         }
-        //regionResult.transform.SetParent(UIConnection.RegionPingsContainer.transform, false);
+    }
+
+    //this function will be used to animate the connecting details screen
+    //@param {_screen,_isMyScreen}, _screen: type(gameobject), contains reference to the screen to animate
+    //_isMyScreen, _isMyScreen: type(bool), indicates if this is my player's screen that you are animating
+    //@return {} no return
+    private void AnimateConnectingDetail_ConnectionUI(GameObject _screen,Boolean _isMyScreen)
+    {
+        //save the initial position of this screen
+        Vector3 initialPos = _screen.transform.position;
+        //if this is my player's screen then move it to the left otherwise move it to the right
+        if (_isMyScreen)
+            _screen.transform.position = initialPos - new Vector3(300, 0, 0);
+        else
+            _screen.transform.position = initialPos + new Vector3(300, 0, 0);
+        //start tweening the screen
+        iTween.MoveTo(_screen, iTween.Hash("position", initialPos, "time", 1.5f, "easetype", iTween.EaseType.easeInOutSine));
     }
     #endregion
 
