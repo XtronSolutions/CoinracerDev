@@ -126,6 +126,26 @@ namespace Photon.Realtime
             return sb.ToString();
         }
 
+        public string[] getRegionsList()
+        {
+            string[] regionsList = new string[this.pingerList.Count];
+            for (int i = 0; i < this.pingerList.Count; i++)
+            {
+                regionsList[i] = this.pingerList[i].getRegionCode();
+            }
+            return regionsList;
+        }
+
+        public string[] getPingsList()
+        {
+            string[] pingsList = new string[this.pingerList.Count];
+            for (int i = 0; i < this.pingerList.Count; i++)
+            {
+                pingsList[i] = this.pingerList[i].getRegionPing();
+            }
+            return pingsList;
+        }
+
         public void SetRegions(OperationResponse opGetRegions)
         {
             if (opGetRegions.OperationCode != OperationCode.GetRegions)
@@ -598,6 +618,16 @@ namespace Photon.Realtime
         public string GetResults()
         {
             return string.Format("{0}: {1} ({2})", this.region.Code, this.region.Ping, this.rttResults.ToStringFull());
+        }
+
+        public string getRegionCode()
+        {
+            return this.region.Code;
+        }
+
+        public string getRegionPing()
+        {
+            return this.region.Ping.ToString();
         }
 
         /// <summary>

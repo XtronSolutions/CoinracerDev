@@ -32,6 +32,9 @@ namespace Photon.Pun
 
         private static HashSet<PhotonView> reusablePVHashset = new HashSet<PhotonView>();
 
+        //these two variable are created by ijlal for the purpose of getting pinged regions and their pings
+        public static string[] pingedRegions;
+        public static string[] pingedRegionPings;
 
         /// <summary>
         /// The photon view list.
@@ -2515,6 +2518,8 @@ namespace Photon.Pun
             if (PhotonNetwork.LogLevel >= PunLogLevel.Informational)
             {
                 Debug.Log(regionHandler.GetResults());
+                pingedRegions = regionHandler.getRegionsList();
+                pingedRegionPings = regionHandler.getPingsList();
             }
 
             _cachedRegionHandler = regionHandler;

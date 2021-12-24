@@ -64,6 +64,8 @@ public class ConnectionUI
     public TextMeshProUGUI ConnectionText;
     [Tooltip("Region text for connection screen.")]
     public TextMeshProUGUI RegionText;
+    [Tooltip("Dropdown game object that will show list of pinged regions")]
+    public GameObject RegionPingsDropdown;
     [Tooltip("Player Count text for connection screen.")]
     public TextMeshProUGUI PlayerCountText;
     [Tooltip("Detail reference for one player")]
@@ -1621,6 +1623,26 @@ public class MainMenuViewController : MonoBehaviour
             UIConnection.Detail02.FlagImage.sprite = FlagSkins.Instance.FlagSpriteWithIndex(index);
         }
 
+    }
+
+    public void ShowPingedRegionList_ConnectionUI(string[] regions,string[] pings)
+    {
+        //RegionPingsDropdown
+        var dropdown = UIConnection.RegionPingsDropdown.GetComponent<Dropdown>();
+        int minimumPing = int.Parse(pings[0]);
+        int currentPing;
+        dropdown.value = 1;
+        for (int i = 0; i < regions.Length; i++)
+        {
+            dropdown.options.Add(new Dropdown.OptionData() { text= regions[i] + " " + pings[i] + "ms" });
+            currentPing = int.Parse(pings[i]);
+            if(currentPing < minimumPing)
+            {
+                minimumPing = currentPing;
+                dropdown.value = i+1;
+            }
+        }
+        //regionResult.transform.SetParent(UIConnection.RegionPingsContainer.transform, false);
     }
     #endregion
 

@@ -255,6 +255,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     #region PunCallbacks
     public override void OnConnectedToMaster()
     {
+        MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
         ConnectionMaster();
     }
     public override void OnJoinedLobby()
