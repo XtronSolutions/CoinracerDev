@@ -132,15 +132,18 @@ public class RaceManager : MonoBehaviour
     }
     public void showGameOverMenuMultiplayer(int _position)
     {
-        WinData _data = MultiplayerManager.Instance.winnerList[0];
-        positionText.text = _position.ToString();
-        ToggleScreen_MultiplayerUI(true);
+        if (_position >= 0)
+        {
+            WinData _data = MultiplayerManager.Instance.winnerList[_position];
+            positionText.text = _position.ToString();
+            ToggleScreen_MultiplayerUI(true);
 
-        ChangeName_MultiplayerUI(_data.Name);
-        ChangeWinAmount_MultiplayerUI(_data.TotalWins);
-        ChangeAmount_MultiplayerUI(_data.TotalBetValue);
-        ConvertTimeAndDisplay(double.Parse(_data.RunTime));
-        UpdateFlag_MultiplayerUI(_data.FlagIndex);
+            ChangeName_MultiplayerUI(_data.Name);
+            ChangeWinAmount_MultiplayerUI(_data.TotalWins);
+            ChangeAmount_MultiplayerUI(_data.TotalBetValue);
+            ConvertTimeAndDisplay(double.Parse(_data.RunTime));
+            UpdateFlag_MultiplayerUI(_data.FlagIndex);
+        }
     }
 
     public void ConvertTimeAndDisplay(double _sec)
