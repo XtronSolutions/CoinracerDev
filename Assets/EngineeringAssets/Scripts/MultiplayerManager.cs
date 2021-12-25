@@ -131,9 +131,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.LocalPlayer.NickName = name;
 
-        if (Constants.IsTest)
-            Constants.UserName = name;
-
+        //if (Constants.IsTest)
+        //    Constants.UserName = name;
+        //MainMenuViewController.Instance.UIConnection.Detail01.WinnerNameText.text = name;
         PhotonNetwork.JoinLobby();
     }
 
@@ -162,6 +162,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void DisconnectPhoton()
     {
         ActorNumbers.Clear();
+        PhotonNetwork.Destroy(PHView);
+        PhotonNetwork.LeaveRoom();
         PhotonNetwork.Disconnect();
     }
     public void pushResult()
@@ -274,6 +276,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         //Debug.Log("OnJoinRandomFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 6}, null);");
         CreateRoom();
     }
+    public override void OnLeftRoom()
+    {
+        Debug.LogError("Left Room due to disconnection");
+        //base.OnLeftRoom();
+    }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
@@ -346,12 +353,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-        //Debug.Log("OnPlayerEnteredRoom() called by PUN. Connected players " + newPlayer.NickName);
-
+        Debug.Log("OnPlayerEnteredRoom() called by PUN. Connected players " + newPlayer.NickName);
+        Debug.Log("Maximum Players allowed: " + Settings.MaxPlayers);
+        Debug.Log("is MasterClient: " + PhotonNetwork.IsMasterClient);
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
             if(PhotonNetwork.IsMasterClient)
             {
+                Debug.Log("calling sync connection Data to invoke load scene");
                 PhotonNetwork.CurrentRoom.IsOpen = false;
                 PhotonNetwork.CurrentRoom.IsVisible = false;
                 PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
@@ -489,12 +498,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if(PhotonNetwork.IsMasterClient)
         {
+        
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
             //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
             Invoke("LoadAsyncScene", 3f);
         }
         else
         {
+           
             //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
             PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());

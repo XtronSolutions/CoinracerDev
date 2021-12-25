@@ -230,9 +230,10 @@ public class RaceManager : MonoBehaviour
 
     public void MainMenu()
     {
-        if(Constants.IsMultiplayer)
+        if (Constants.IsMultiplayer)
+        {
             MultiplayerManager.Instance.DisconnectPhoton();
-
+        }
         Constants.ResetData();
         SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
         Time.timeScale = 1;
