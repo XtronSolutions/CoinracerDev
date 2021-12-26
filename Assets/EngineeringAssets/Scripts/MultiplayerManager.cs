@@ -78,6 +78,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     private void Start()
     {
             Constants.GetCracePrice();
+            Constants.isMultiplayerGameEnded = false;
             ActorNumbers.Clear();
             Instance = this;
             PHView = GetComponent<PhotonView>();
@@ -278,8 +279,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
     public override void OnLeftRoom()
     {
-        Debug.LogError("Left Room due to disconnection");
+        Debug.Log("Left Room due to disconnection");
         //base.OnLeftRoom();
+        if(!Constants.isMultiplayerGameEnded)
+        {
+            RaceManager.Instance.showDisconnectScreen();
+        }
     }
 
     public override void OnDisconnected(DisconnectCause cause)

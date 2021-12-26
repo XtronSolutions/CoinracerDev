@@ -28,6 +28,7 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private GameObject _raceOverMenuObject = null;
     [SerializeField] private TextMeshProUGUI positionText;
     [SerializeField] private GameObject _gameEndMenuMultiplayer = null;
+    [SerializeField] private GameObject _disconnectPopup = null;
     [SerializeField] private TextMeshProUGUI LapText;
     [SerializeField] private AudioClip _buttonPressClip = null;
     [SerializeField] private AudioSource _audioSource = null;
@@ -132,8 +133,13 @@ public class RaceManager : MonoBehaviour
             }
         }
     }
+    public void showDisconnectScreen()
+    {
+        _disconnectPopup.SetActive(true);
+    }
     public void showGameOverMenuMultiplayer(int _position)
     {
+        Constants.isMultiplayerGameEnded = true;
         if (_position >= 0)
         {
             bool isWinner = false;

@@ -51,7 +51,7 @@ public static class Constants
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
     public static bool IsTestNet = false;
-    public static bool IsTest = true;
+    public static bool IsTest = false;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
     public static string EmailSent = "";
@@ -70,6 +70,7 @@ public static class Constants
     public static int CalculatedCrace = 0;
     public static string PlayerDataKey = "playerData";
     public static string RoomDataKey = "roomData";
+    public static bool isMultiplayerGameEnded = false;
 
     public static string MAP_PROP_KEY = "map";
     public static string WAGE_PROP_KEY = "wage";
