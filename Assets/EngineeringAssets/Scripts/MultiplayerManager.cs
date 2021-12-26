@@ -476,7 +476,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             //TODO: Active END screen according to position
             int positionNumber = -1;
-
+            Debug.Log("_mainData.ID: " + _mainData.ID);
+            foreach(var item in MultiplayerManager.Instance.winnerList)
+            {
+                Debug.Log("item.ID: " + item.ID);
+            }
             foreach (var item in MultiplayerManager.Instance.winnerList)
             {
                 positionNumber++;

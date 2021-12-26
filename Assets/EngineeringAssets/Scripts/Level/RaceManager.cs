@@ -15,7 +15,9 @@ public class MultiplayerUI
     public TextMeshProUGUI WinnerNameText;
     public TextMeshProUGUI AmountWinText;
     public TextMeshProUGUI RunTimeText;
+    public TextMeshProUGUI RaceOutcome;
     public Image FlagReference;
+    
 }
 public class RaceManager : MonoBehaviour
 {
@@ -134,15 +136,18 @@ public class RaceManager : MonoBehaviour
     {
         if (_position >= 0)
         {
+            bool isWinner = false;
+            if (_position == 0)
+                isWinner = true;
             WinData _data = MultiplayerManager.Instance.winnerList[_position];
-            positionText.text = _position.ToString();
+            positionText.text = (_position + 1).ToString();
             ToggleScreen_MultiplayerUI(true);
-
             ChangeName_MultiplayerUI(_data.Name);
             ChangeWinAmount_MultiplayerUI(_data.TotalWins);
-            ChangeAmount_MultiplayerUI(_data.TotalBetValue);
+            ChangeAmount_MultiplayerUI(isWinner, _data.TotalBetValue);
             ConvertTimeAndDisplay(double.Parse(_data.RunTime));
             UpdateFlag_MultiplayerUI(_data.FlagIndex);
+            UpdateRaceOutcome_MultiplayerUI(isWinner);
         }
     }
 
@@ -264,9 +269,12 @@ public class RaceManager : MonoBehaviour
     {
         UIMultiplayer.WinText.text = "WINS : "+ _wins.ToString();
     }
-    public void ChangeAmount_MultiplayerUI(int _amount)
+    public void ChangeAmount_MultiplayerUI(bool isWinner,int _amount)
     {
-        UIMultiplayer.AmountWinText.text = "AMOUNT : " + _amount.ToString()+" $CRACE";
+        if(isWinner)
+            UIMultiplayer.AmountWinText.text = "AMOUNT : " + _amount.ToString()+" $CRACE";
+        else
+            UIMultiplayer.AmountWinText.text = "AMOUNT : 0 $CRACE";
     }
 
     public void ChangeRunTime_MultiplayerUI(string _time)
@@ -277,6 +285,14 @@ public class RaceManager : MonoBehaviour
     public void UpdateFlag_MultiplayerUI(int index)
     {
         UIMultiplayer.FlagReference.sprite= FlagSkins.Instance.FlagSpriteWithIndex(index);
+    }
+
+    public void UpdateRaceOutcome_MultiplayerUI(bool isWinner)
+    {
+        if (isWinner)
+            UIMultiplayer.RaceOutcome.text = "WINNER";
+        else
+            UIMultiplayer.RaceOutcome.text = "LOSER";
     }
     #endregion
 
