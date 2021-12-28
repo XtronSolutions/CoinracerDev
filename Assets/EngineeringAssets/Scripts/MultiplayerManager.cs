@@ -85,12 +85,18 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        //MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
+        MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
 
-        // if (objs.Length > 1)
-        //   Destroy(this.gameObject);
+         if (objs.Length > 1)
+            Destroy(this.gameObject);
 
         DontDestroyOnLoad(this.gameObject);
+
+    }
+
+    public void CheckReference()
+    {
+        PHView = GameObject.FindGameObjectWithTag("View").GetComponent<PhotonView>();
 
     }
 
@@ -101,7 +107,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             ActorNumbers.Clear(); //clear list of ActorNumbers
 
             Instance = this;//initializing static instance of this class
-            PHView = this.GetComponent<PhotonView>(); //getting component of PhotonView place on gameobject
+            CheckReference();
 
         if (Settings.AutoConnect)//auto connect to server if true
                 ConnectToPhotonServer();
@@ -356,6 +362,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 Debug.Log("calling sync connection Data to invoke load scene");
                 PhotonNetwork.CurrentRoom.IsOpen = false;
                 PhotonNetwork.CurrentRoom.IsVisible = false;
+                CheckReference();
                 PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
             }
         }
@@ -403,6 +410,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (!ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
             ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
 
+        CheckReference();
         PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
     }
 
@@ -410,6 +418,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if(PhotonNetwork.IsMasterClient)
         {
+            CheckReference();
             PHView.RPC("StartRace", RpcTarget.AllViaServer);
         }
     }
@@ -425,6 +434,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         _data.WalletAddress = Constants.WalletAddress;
 
         string _Json = JsonConvert.SerializeObject(_data);
+        CheckReference();
         PHView.RPC("EndMultiplayerRace", RpcTarget.AllViaServer, _Json);
     }
 
@@ -462,6 +472,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         }else
         {
+            CheckReference();
             PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
         }
     }
@@ -530,7 +541,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
         else
         {
-           
+            CheckReference();
             //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
             PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());

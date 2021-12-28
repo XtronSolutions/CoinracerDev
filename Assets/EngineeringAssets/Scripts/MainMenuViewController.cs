@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using static Constants;
 using System.Runtime.InteropServices;
+using Photon.Pun;
 
 #region SuperClasses
 
@@ -263,12 +264,6 @@ public class MainMenuViewController : MonoBehaviour
     private void OnEnable()
     {
         Instance = this;
-
-
-        MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
-
-        if (objs.Length == 0)
-            GameObject.Instantiate(MultiplayerPrefab);
     }
 
     public void OnGetSound(string info)
