@@ -1631,6 +1631,7 @@ public class MainMenuViewController : MonoBehaviour
     {
         //RegionPingsDropdown
         var dropdown = UIConnection.RegionPingsDropdown.GetComponent<Dropdown>();
+        dropdown.options.Clear();
         int minimumPing = int.Parse(pings[0]);
         int currentPing;
         dropdown.value = 1;

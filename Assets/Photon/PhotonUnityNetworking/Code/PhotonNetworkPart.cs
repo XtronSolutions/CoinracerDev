@@ -2477,6 +2477,9 @@ namespace Photon.Pun
                     {
                         string previousBestRegionSummary = PhotonNetwork.BestRegionSummaryInPreferences;
 
+                        PhotonNetwork.BestRegionSummaryInPreferences = null;
+                        previousBestRegionSummary = "";
+
                         if (PhotonNetwork.LogLevel >= PunLogLevel.Informational)
                         {
                             Debug.Log("PUN got region list. Going to ping minimum regions, based on this previous result summary: " + previousBestRegionSummary);

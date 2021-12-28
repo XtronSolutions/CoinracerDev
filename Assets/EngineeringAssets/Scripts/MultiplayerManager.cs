@@ -163,8 +163,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void DisconnectPhoton()
     {
         ActorNumbers.Clear();
-        PhotonNetwork.Destroy(PHView);
-        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.Destroy(PHView);
+        //PhotonNetwork.LeaveRoom();
         PhotonNetwork.Disconnect();
     }
     public void pushResult()
@@ -281,7 +281,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Left Room due to disconnection");
         //base.OnLeftRoom();
-        if(!Constants.isMultiplayerGameEnded)
+        if(!Constants.isMultiplayerGameEnded && RaceManager.Instance)
         {
             RaceManager.Instance.showDisconnectScreen();
         }
