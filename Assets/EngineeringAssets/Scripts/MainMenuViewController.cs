@@ -241,6 +241,7 @@ public class MainMenuViewController : MonoBehaviour
     public SettingsUI UISetting;
     public ConnectionUI UIConnection;
     public MultiplayerSelectionUI UIMultiplayerSelection;
+    public GameObject MultiplayerPrefab;
 
     double RemainingTimeSecondPass;
     private int _currentSelectedCarIndex = 0;
@@ -262,6 +263,12 @@ public class MainMenuViewController : MonoBehaviour
     private void OnEnable()
     {
         Instance = this;
+
+
+        MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
+
+        if (objs.Length == 0)
+            GameObject.Instantiate(MultiplayerPrefab);
     }
 
     public void OnGetSound(string info)

@@ -85,12 +85,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
+        //MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
 
-        if (objs.Length > 1)
-            Destroy(this.gameObject);
+        // if (objs.Length > 1)
+        //   Destroy(this.gameObject);
 
         DontDestroyOnLoad(this.gameObject);
+
     }
 
     private void Start()
@@ -100,7 +101,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             ActorNumbers.Clear(); //clear list of ActorNumbers
 
             Instance = this;//initializing static instance of this class
-            PHView = this.gameObject.AddComponent<PhotonView>(); //getting component of PhotonView place on gameobject
+            PHView = this.GetComponent<PhotonView>(); //getting component of PhotonView place on gameobject
 
         if (Settings.AutoConnect)//auto connect to server if true
                 ConnectToPhotonServer();
