@@ -12,24 +12,34 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
+#region SuperClasses
 public class CustomPlayerPropData
 {
-    public string name { get; set; }
-    public string walletAddress { get; set; }
-    public string ID { get; set; }
-    public int FlagIndex { get; set; }
-    public int TotalWins { get; set; }
+    [Tooltip("name of the player on PUN")]
+    public string name;
+    [Tooltip("Wallet address of the player on PUN")]
+    public string walletAddress;
+    [Tooltip("ID of the player on PUN")]
+    public string ID;
+    [Tooltip("Flag index of the player on PUN")]
+    public int FlagIndex;
+    [Tooltip("Total wins of the player on PUN")]
+    public int TotalWins;
 }
 
 public class CustomRoomPropData
 {
+    [Tooltip("Room name on PUN")]
     public string RoomName;
+    [Tooltip("Max room players on PUN")]
     public int RoomMaxPlayer;
+    [Tooltip("Total wage amount of room on PUN")]
     public int WageAmount;
+    [Tooltip("Level selected for room on PUN")]
     public int LevelSelected;
+    [Tooltip("player data stored in room on PUN")]
     public List<CustomPlayerPropData> Roomdata = new List<CustomPlayerPropData>();
 }
-
 
 [System.Serializable]
 public class PhotonSetting
@@ -44,46 +54,55 @@ public class PhotonSetting
 
 public class WinData
 {
+    [Tooltip("ID of the winner of the race")]
     public string ID;
+    [Tooltip("name of the race winner")]
     public string Name;
+    [Tooltip("flag index of the race winner")]
     public int FlagIndex;
+    [Tooltip("Total wins of the race winner")]
     public int TotalWins;
+    [Tooltip("Total bet value combined for the race winner")]
     public int TotalBetValue;
+    [Tooltip("lap runtime of the race winner")]
     public string RunTime;
+    [Tooltip("Wallet address of the race winner")]
+    public string WalletAddress;
 }
+
+#endregion
 
 public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
-    public static MultiplayerManager Instance;
-    public PhotonSetting Settings;
-    private PhotonView PHView;
-    private List<string> ActorNumbers = new List<string>();
-    [HideInInspector]
-    public List<WinData> winnerList = new List<WinData>();
-    string _customPlayerPropString = "";
-    string _customRoomPropString = "";
-    private CustomRoomPropData DataRoomPropData;
+    public static MultiplayerManager Instance; //static instance of the class
+    public PhotonSetting Settings; //class instance for PhotonSetting
+    private PhotonView PHView; //class instance of PhotonView
+    private List<string> ActorNumbers = new List<string>(); //list of string to store actor numbers in room
+    [HideInInspector] public List<WinData> winnerList = new List<WinData>(); //list to store instances of class WinData
+    string _customPlayerPropString = ""; //string to store response of player data from PUN
+    string _customRoomPropString = ""; //string to store response of room data from PUN
+    private CustomRoomPropData DataRoomPropData; //class instance of CustomRoomPropData
 
     void Awake()
     {
         MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
 
         if (objs.Length > 1)
-        {
             Destroy(this.gameObject);
-        }
 
         DontDestroyOnLoad(this.gameObject);
     }
+
     private void Start()
     {
-            Constants.GetCracePrice();
-            Constants.isMultiplayerGameEnded = false;
-            ActorNumbers.Clear();
-            Instance = this;
-            PHView = GetComponent<PhotonView>();
+            Constants.GetCracePrice();//get current crace price from coinbase
+            Constants.isMultiplayerGameEnded = false; //reset isMultiplayerGameEnded bool 
+            ActorNumbers.Clear(); //clear list of ActorNumbers
 
-            if (Settings.AutoConnect)
+            Instance = this;//initializing static instance of this class
+            PHView = GetComponent<PhotonView>(); //getting component of PhotonView place on gameobject
+
+        if (Settings.AutoConnect)//auto connect to server if true
                 ConnectToPhotonServer();
     }
 
@@ -103,12 +122,17 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
         {
+            ActorNumbers.Clear();
             ConnectionMaster();
         }
         else
         {
             ActorNumbers.Clear();
             UpdateConnectionText("Connecting...");
+
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("", false);
+
             //Debug.Log("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
             PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = Settings.Version.ToString();
@@ -131,17 +155,16 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.LocalPlayer.NickName = name;
-
-        //if (Constants.IsTest)
-        //    Constants.UserName = name;
-        //MainMenuViewController.Instance.UIConnection.Detail01.WinnerNameText.text = name;
         PhotonNetwork.JoinLobby();
     }
 
     public void CreateRoom()
     {
         var roomCode = Random.Range(10000, 99999);
-        string roomName = "Room_" + roomCode.ToString();
+
+        Constants.StoredPID= roomCode.ToString(); 
+        //string roomName = "Room_" + roomCode.ToString();
+        string roomName = roomCode.ToString();
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = Settings.MaxPlayers;
@@ -163,45 +186,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void DisconnectPhoton()
     {
         ActorNumbers.Clear();
-        //PhotonNetwork.Destroy(PHView);
-        //PhotonNetwork.LeaveRoom();
         PhotonNetwork.Disconnect();
     }
-    public void pushResult()
-    {
-        //var winProperty = new ExitGames.Client.Photon.Hashtable();
-        //for (int i = 0; i < 5; i++)
-        //{
-        //    winProperty.Add(i.ToString(), i + 1.ToString());
-        //}
-        //PhotonNetwork.CurrentRoom.SetCustomProperties(winProperty);
-        //Debug.Log(winProperty);
-
-        //winProperty = (Hashtable)PhotonNetwork.CurrentRoom.CustomProperties["winProperty"];
-        //Debug.Log("won Custom Properties are: "+winProperty);
-
-        int result = (int)PhotonNetwork.CurrentRoom.CustomProperties["winProperty"];
-        //Debug.Log("Result is" + result);
-
-    }
-
-    //public void TestCustom()
-    //{
-    //    #region Setting player custom proeprty Example
-    //    //Setting player custom property--------------------------------------
-    //    CustomPlayerPropData _data = new CustomPlayerPropData();
-    //    _data.name = "humza";
-    //    _data.walletAddress = "090078601";
-    //    _data.ID = "001";
-    //    string _json = JsonConvert.SerializeObject(_data);
-    //    SetCustomProps(false, Constants.PlayerDataKey, _json);
-    //    StartCoroutine(callPropertiesWithDelay(false, Constants.PlayerDataKey, 0.6f)); //this should be called with 0.5-1 sec delay after setting properties
-    //    #endregion
-
-    //    #region Setting room custom proeprty Example
-    //    StartCoroutine(SetRoomPropWithDelay());
-    //    #endregion
-    //}
 
     public void SetCustomProps(bool IsRoom,string _key, string _temp)
     {
@@ -300,6 +286,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         UpdateConnectionText("Joined Room : "+ PhotonNetwork.CurrentRoom.Name);
+        Constants.StoredPID = PhotonNetwork.CurrentRoom.Name;
         Debug.Log("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
     }
 
@@ -410,6 +397,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             //}
         }
 
+    public void SuccessDeposit()
+    {
+        if (!ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
+            ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+
+        PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+    }
+
     public void CallStartRPC()
     {
         if(PhotonNetwork.IsMasterClient)
@@ -426,6 +421,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         _data.RunTime = Constants.GameSeconds.ToString();
         _data.TotalWins = 0;
         _data.FlagIndex = Constants.FlagSelectedIndex;
+        _data.WalletAddress = Constants.WalletAddress;
 
         string _Json = JsonConvert.SerializeObject(_data);
         PHView.RPC("EndMultiplayerRace", RpcTarget.AllViaServer, _Json);
@@ -443,6 +439,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SyncScene(string ID)
     {
+        if (MainMenuViewController.Instance)
+            MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to finish...", false);
+
         if (!ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
             ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
 
@@ -453,8 +452,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if(ActorNumbers.Count==Settings.MaxPlayers)
             {
+                Invoke("LoadAsyncScene", 3f);
                 //Debug.Log("all players connected starting game");
-                PHView.RPC("StartRace", RpcTarget.AllViaServer);
+                //PHView.RPC("StartRace", RpcTarget.AllViaServer);
             }
 
         }else
@@ -472,6 +472,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             MultiplayerManager.Instance.winnerList.Clear();
         }
     }
+
     [PunRPC]
     public void EndMultiplayerRace(string _data)
     {
@@ -494,12 +495,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             }
 
             Debug.Log("My position is: " + positionNumber);
+
+            if(positionNumber==0 && !Constants.IsTest)
+            {
+                if (WalletManager.Instance)
+                    WalletManager.Instance.CallRaceWinner(MultiplayerManager.Instance.winnerList[positionNumber].WalletAddress);
+            }
+
             RaceManager.Instance.showGameOverMenuMultiplayer(positionNumber);
         }
-        //var customProperties = new ExitGames.Client.Photon.Hashtable();
-
-
-        //PhotonNetwork.room.SetCustomProperty("mapIndex", 1);
     }
 
     [PunRPC]
@@ -510,7 +514,16 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
             //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
-            Invoke("LoadAsyncScene", 3f);
+            //Invoke("LoadAsyncScene", 3f);
+
+            if (!Constants.IsTest)
+            {
+                if (MainMenuViewController.Instance)
+                    MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to deposit...", true);
+            }else
+            {
+                Invoke("LoadAsyncScene", 3f);
+            }
         }
         else
         {
@@ -518,6 +531,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
             PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());
+
+            if (!Constants.IsTest)
+            {
+                if (MainMenuViewController.Instance)
+                    MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to deposit...", true);
+            }
         }
     }
 

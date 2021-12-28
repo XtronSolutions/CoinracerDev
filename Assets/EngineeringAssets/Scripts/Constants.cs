@@ -51,7 +51,7 @@ public static class Constants
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
     public static bool IsTestNet = false;
-    public static bool IsTest = false;
+    public static bool IsTest = true;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
     public static string EmailSent = "";
@@ -77,6 +77,11 @@ public static class Constants
     public static int SelectedLevel = 0;
     public static int SelectedWage = 0;
     public static int TotalWins = 0;
+    public static int SelectedCrace = 0;
+    public static int SelectedMaxPlayer = 2;
+    public static int TotalPlayingTime = 600;
+    public static bool DepositDone = false;
+
     async public static void GetCracePrice()
     {
         UnityWebRequest webRequest = UnityWebRequest.Get(CoinBaseURL);

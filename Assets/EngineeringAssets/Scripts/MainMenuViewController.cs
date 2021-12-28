@@ -74,6 +74,10 @@ public class ConnectionUI
     public ConnectionDetail Detail02;
     [Tooltip("Text reference for Verses")]
     public TextMeshProUGUI VSText;
+    [Tooltip("Button reference for deposit")]
+    public Button DepositButton;
+    [Tooltip("Text reference for deposit")]
+    public TextMeshProUGUI DepositWaitText;
 }
 
 [Serializable]
@@ -1502,12 +1506,35 @@ public class MainMenuViewController : MonoBehaviour
         //UIConnection.MultiplayerButton.onClick.AddListener(onMultiplayerBtnClick);
         UIConnection.MultiplayerButton.onClick.AddListener(EnableSelection_MultiplayerSelection);
         UIConnection.BackButton.onClick.AddListener(DisableScreen_ConnectionUI);
+        UIConnection.DepositButton.onClick.AddListener(DepositAmount);
+    }
+    public void ToggleDepositButton_ConnectionUI(bool _state)
+    {
+        UIConnection.DepositButton.interactable = _state;
+    }
+
+    public void ChangeDepositText_ConnectionUI(string _txt)
+    {
+        UIConnection.DepositWaitText.text = _txt;
+    }
+
+    public void UpdateDeposit_ConnectionUI(string _txt,bool _toggle)
+    {
+        ChangeDepositText_ConnectionUI(_txt);
+        ToggleDepositButton_ConnectionUI(_toggle);
+    }
+
+    public void DepositAmount()
+    {
+        if (WalletManager.Instance)
+            WalletManager.Instance.CallDeposit();
     }
 
     public void ToggleBackButton_ConnectionUI(bool state)
     {
         UIConnection.BackButton.gameObject.SetActive(state);
     }
+
     public void onMultiplayerBtnClick()
     {
         //WalletConnected = true;
@@ -1669,6 +1696,10 @@ public class MainMenuViewController : MonoBehaviour
     public void SelectWage__MultiplayerSelection(int _amount)
     {
         Constants.SelectedWage = _amount;
+
+        Constants.ConvertDollarToCrace(Constants.SelectedWage);
+        Constants.SelectedCrace = Constants.CalculatedCrace;
+
         onMultiplayerBtnClick();
     }
     public void SubscribeEvents_MultiplayerSelection()

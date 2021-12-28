@@ -145,6 +145,7 @@ public class RaceManager : MonoBehaviour
             bool isWinner = false;
             if (_position == 0)
                 isWinner = true;
+
             WinData _data = MultiplayerManager.Instance.winnerList[_position];
             positionText.text = (_position + 1).ToString();
             ToggleScreen_MultiplayerUI(true);
