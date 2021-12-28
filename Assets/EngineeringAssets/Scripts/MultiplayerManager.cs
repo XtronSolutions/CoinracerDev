@@ -100,7 +100,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             ActorNumbers.Clear(); //clear list of ActorNumbers
 
             Instance = this;//initializing static instance of this class
-            PHView = GetComponent<PhotonView>(); //getting component of PhotonView place on gameobject
+            PHView = this.gameObject.AddComponent<PhotonView>(); //getting component of PhotonView place on gameobject
 
         if (Settings.AutoConnect)//auto connect to server if true
                 ConnectToPhotonServer();
@@ -430,7 +430,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-        MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
+
+        if (MainMenuViewController.Instance)
+            MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
         //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
     }
     #endregion
