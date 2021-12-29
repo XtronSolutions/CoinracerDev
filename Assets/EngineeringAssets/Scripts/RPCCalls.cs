@@ -100,7 +100,7 @@ public class RPCCalls : MonoBehaviour
             }
             else
             {
-                Invoke("LoadAsyncScene", 3f);
+                MultiplayerManager.Instance.LoadSceneDelay();
             }
         }
         else
