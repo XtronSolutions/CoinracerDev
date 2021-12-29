@@ -119,10 +119,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void ConnectToPhotonServer()
     {
+        Debug.Log("Calling connect to photon : " + PhotonNetwork.IsConnected);
         if (PhotonNetwork.IsConnected)
         {
             ActorNumbers.Clear();
             ConnectionMaster();
+
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("", false);
         }
         else
         {
@@ -154,7 +158,22 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.LocalPlayer.NickName = name;
-        PhotonNetwork.JoinLobby();
+
+        if (PhotonNetwork.InLobby)
+            LobbyConnection();
+        else
+            PhotonNetwork.JoinLobby();
+    }
+
+    public void LobbyConnection()
+    {
+        UpdateConnectionText("Joined Lobby");
+        //Debug.Log("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
+
+        JoinRoomRandom(Constants.SelectedLevel, Constants.SelectedWage, Settings.MaxPlayers);
+
+        if (MainMenuViewController.Instance)
+            MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : " + PhotonNetwork.CloudRegion);
     }
 
     public void CreateRoom()
@@ -185,7 +204,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void DisconnectPhoton()
     {
         ActorNumbers.Clear();
-        PhotonNetwork.Disconnect();
+
+        if(PhotonNetwork.IsConnected)
+            PhotonNetwork.Disconnect();
     }
 
     public void SetCustomProps(bool IsRoom,string _key, string _temp)
@@ -248,13 +269,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedLobby()
     {
-        UpdateConnectionText("Joined Lobby");
-        //Debug.Log("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
-
-        JoinRoomRandom(Constants.SelectedLevel,Constants.SelectedWage,Settings.MaxPlayers);
-
-        if (MainMenuViewController.Instance)
-            MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : " + PhotonNetwork.CloudRegion);
+        LobbyConnection();
     }
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
@@ -266,8 +281,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Left Room due to disconnection: "+ !Constants.isMultiplayerGameEnded);
         //base.OnLeftRoom();
-        Debug.Log("Race Manager Instance: " + RaceManager.Instance);
-        if(!Constants.isMultiplayerGameEnded)
+        if(!Constants.isMultiplayerGameEnded && RaceManager.Instance)
         {
             RaceManager.Instance.showDisconnectScreen();
         }

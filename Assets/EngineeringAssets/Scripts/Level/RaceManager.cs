@@ -39,9 +39,20 @@ public class RaceManager : MonoBehaviour
     public static RaceManager Instance;
     int RaceCounter = 3;
     public MultiplayerUI UIMultiplayer;
+
     private void OnEnable()
     {
         Instance = this;
+
+    }
+
+    private void Start()
+    {
+        LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
+        foreach (var wayPoint in _wayPoints)
+        {
+            wayPoint.WayPointDataObservable.Subscribe(OnWayPointData).AddTo(this);
+        }
 
         if (Constants.IsMultiplayer)
             MultiplayerManager.Instance.CallStartRPC();
@@ -89,15 +100,6 @@ public class RaceManager : MonoBehaviour
                 GameStartTimer.text = "GO!";
                 StartCoroutine(StartTimerCountDown());
             }
-        }
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
-        foreach (var wayPoint in _wayPoints)
-        {
-            wayPoint.WayPointDataObservable.Subscribe(OnWayPointData).AddTo(this);
         }
     }
 
@@ -242,7 +244,7 @@ public class RaceManager : MonoBehaviour
 
     public void MainMenu()
     {
-        if (Constants.IsMultiplayer)
+        if (MultiplayerManager.Instance)
         {
             MultiplayerManager.Instance.DisconnectPhoton();
         }
