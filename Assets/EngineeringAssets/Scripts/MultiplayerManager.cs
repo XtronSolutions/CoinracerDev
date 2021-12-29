@@ -76,8 +76,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
     public static MultiplayerManager Instance; //static instance of the class
     public PhotonSetting Settings; //class instance for PhotonSetting
-    private PhotonView PHView; //class instance of PhotonView
-    private List<string> ActorNumbers = new List<string>(); //list of string to store actor numbers in room
+    [HideInInspector] public List<string> ActorNumbers = new List<string>(); //list of string to store actor numbers in room
     [HideInInspector] public List<WinData> winnerList = new List<WinData>(); //list to store instances of class WinData
     string _customPlayerPropString = ""; //string to store response of player data from PUN
     string _customRoomPropString = ""; //string to store response of room data from PUN
@@ -94,12 +93,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     }
 
-    public void CheckReference()
-    {
-        PHView = GameObject.FindGameObjectWithTag("View").GetComponent<PhotonView>();
-
-    }
-
     private void Start()
     {
             Constants.GetCracePrice();//get current crace price from coinbase
@@ -107,7 +100,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             ActorNumbers.Clear(); //clear list of ActorNumbers
 
             Instance = this;//initializing static instance of this class
-            CheckReference();
 
         if (Settings.AutoConnect)//auto connect to server if true
                 ConnectToPhotonServer();
@@ -362,10 +354,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 Debug.Log("calling sync connection Data to invoke load scene");
                 PhotonNetwork.CurrentRoom.IsOpen = false;
                 PhotonNetwork.CurrentRoom.IsVisible = false;
-                CheckReference();
-                PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
+                RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
             }
         }
+    }
+
+    public void LoadSceneDelay()
+    {
+        Invoke("LoadAsyncScene", 3f);
     }
 
     public void LoadAsyncScene()
@@ -410,16 +406,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (!ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
             ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
 
-        CheckReference();
-        PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+        RPCCalls.Instance.PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
     }
 
     public void CallStartRPC()
     {
         if(PhotonNetwork.IsMasterClient)
         {
-            CheckReference();
-            PHView.RPC("StartRace", RpcTarget.AllViaServer);
+            RPCCalls.Instance.PHView.RPC("StartRace", RpcTarget.AllViaServer);
         }
     }
     public void CallEndMultiplayerGameRPC()
@@ -434,8 +428,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         _data.WalletAddress = Constants.WalletAddress;
 
         string _Json = JsonConvert.SerializeObject(_data);
-        CheckReference();
-        PHView.RPC("EndMultiplayerRace", RpcTarget.AllViaServer, _Json);
+        RPCCalls.Instance.PHView.RPC("EndMultiplayerRace", RpcTarget.AllViaServer, _Json);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -448,113 +441,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region RPC Calls
-    [PunRPC]
-    public void SyncScene(string ID)
-    {
-        if (MainMenuViewController.Instance)
-            MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to finish...", false);
-
-        if (!ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
-            ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
-
-        if (!ActorNumbers.Contains(ID))
-            ActorNumbers.Add(ID);
-
-       if(PhotonNetwork.IsMasterClient)
-        {
-            if(ActorNumbers.Count==Settings.MaxPlayers)
-            {
-                Invoke("LoadAsyncScene", 3f);
-                //Debug.Log("all players connected starting game");
-                //PHView.RPC("StartRace", RpcTarget.AllViaServer);
-            }
-
-        }else
-        {
-            CheckReference();
-            PHView.RPC("SyncScene", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString());
-        }
-    }
-
-    [PunRPC]
-    public void StartRace()
-    {
-        if (RaceManager.Instance)
-        {
-            RaceManager.Instance.StartTheRaceTimer();
-            MultiplayerManager.Instance.winnerList.Clear();
-        }
-    }
-
-    [PunRPC]
-    public void EndMultiplayerRace(string _data)
-    {
-        WinData _mainData = JsonConvert.DeserializeObject<WinData>(_data);
-        MultiplayerManager.Instance.winnerList.Add(_mainData);
-        if(_mainData.ID == PhotonNetwork.LocalPlayer.ActorNumber.ToString())
-        {
-            //TODO: Active END screen according to position
-            int positionNumber = -1;
-            Debug.Log("_mainData.ID: " + _mainData.ID);
-            foreach(var item in MultiplayerManager.Instance.winnerList)
-            {
-                Debug.Log("item.ID: " + item.ID);
-            }
-            foreach (var item in MultiplayerManager.Instance.winnerList)
-            {
-                positionNumber++;
-                if (item.ID == _mainData.ID)
-                    break;
-            }
-
-            Debug.Log("My position is: " + positionNumber);
-
-            if(positionNumber==0 && !Constants.IsTest)
-            {
-                if (WalletManager.Instance)
-                    WalletManager.Instance.CallRaceWinner(MultiplayerManager.Instance.winnerList[positionNumber].WalletAddress);
-            }
-
-            RaceManager.Instance.showGameOverMenuMultiplayer(positionNumber);
-        }
-    }
-
-    [PunRPC]
-    public void SyncConnectionData(string _actor,string _name,string _wins,string _index)
-    {
-        if(PhotonNetwork.IsMasterClient)
-        {
-        
-            MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
-            //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
-            //Invoke("LoadAsyncScene", 3f);
-
-            if (!Constants.IsTest)
-            {
-                if (MainMenuViewController.Instance)
-                    MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to deposit...", true);
-            }else
-            {
-                Invoke("LoadAsyncScene", 3f);
-            }
-        }
-        else
-        {
-            CheckReference();
-            //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
-            MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
-            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());
-
-            if (!Constants.IsTest)
-            {
-                if (MainMenuViewController.Instance)
-                    MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to deposit...", true);
-            }
-        }
-    }
-
-    #endregion
 }
 
 
