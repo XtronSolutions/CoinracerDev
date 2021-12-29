@@ -290,7 +290,7 @@ public class MainMenuViewController : MonoBehaviour
     {
         ResetRegisterFields();
         _audioSource.GetComponent<AudioSource>();
-        _singlePlayerButton.onClick.AddListener(OnGoToCarSelection);
+        _singlePlayerButton.onClick.AddListener(OnGoToCarSelectionPractice);
         _tournamentButton.onClick.AddListener(OnGoToCarSelectionTournament);
         _backToModeSelectionButton.onClick.AddListener(OnGoBackToModeSelection);
         _goToMapSelectionButton.onClick.AddListener(OnGoToMapSelection);
@@ -1084,7 +1084,7 @@ public class MainMenuViewController : MonoBehaviour
             CheckBoughtCars();
             IsTournament = false;
             IsPractice = true;
-            //IsMultiplayer = false;
+           // IsMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
             CarSelection3dObject.SetActive(true);
@@ -1096,7 +1096,11 @@ public class MainMenuViewController : MonoBehaviour
             ShowToast(3f, "Please connect your wallet first.");
         }
     }
-
+    public void OnGoToCarSelectionPractice()
+    {
+        Constants.IsMultiplayer = false;
+        OnGoToCarSelection();
+    }
     public void OnGoToCarSelectionTournament()
     {
         if (Constants.IsTest)

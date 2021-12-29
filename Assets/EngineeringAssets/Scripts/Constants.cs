@@ -51,7 +51,7 @@ public static class Constants
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
     public static bool IsTestNet = false;
-    public static bool IsTest = false;
+    public static bool IsTest = true;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
     public static string EmailSent = "";
@@ -135,7 +135,7 @@ public static class Constants
         PushingTime = false;
         GameSeconds = 0;
         WalletAddress = "";
-        UserName = "";
+        UserName = "XYZ";
         BuyingPass = false;
         FlagSelectedIndex = 0;
         LoggedIn = false;

@@ -264,9 +264,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
     public override void OnLeftRoom()
     {
-        Debug.Log("Left Room due to disconnection");
+        Debug.Log("Left Room due to disconnection: "+ !Constants.isMultiplayerGameEnded);
         //base.OnLeftRoom();
-        if(!Constants.isMultiplayerGameEnded && RaceManager.Instance)
+        Debug.Log("Race Manager Instance: " + RaceManager.Instance);
+        if(!Constants.isMultiplayerGameEnded)
         {
             RaceManager.Instance.showDisconnectScreen();
         }

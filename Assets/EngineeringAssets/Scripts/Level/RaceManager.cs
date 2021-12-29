@@ -204,9 +204,9 @@ public class RaceManager : MonoBehaviour
         }
 
 
-        if(Constants.IsMultiplayer)
-            Time.timeScale = 1f;
-        else
+        //if(Constants.IsMultiplayer)
+        //    Time.timeScale = 1f;
+        //else
             Time.timeScale = 0.1f;
     }
     public void RaceEnded()
