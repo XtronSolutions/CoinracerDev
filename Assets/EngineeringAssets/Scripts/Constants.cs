@@ -82,7 +82,7 @@ public static class Constants
     public static int TotalPlayingTime = 600;
     public static bool DepositDone = false;
     public static bool CanWithdraw = false;
-    public static int WithdrawTime = 300; //time in seconds
+    public static int WithdrawTime = 60; //time in seconds//300
     public static bool DisableCSP = false;
 
     async public static void GetCracePrice()

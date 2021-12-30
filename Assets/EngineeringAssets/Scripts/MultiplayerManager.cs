@@ -468,6 +468,17 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
+
+        if(PhotonNetwork.IsMasterClient)
+        {
+            if (!Constants.DepositDone)
+            {
+                if (PhotonNetwork.CurrentRoom.PlayerCount < Settings.MaxPlayers)
+                {
+                    UpdateTransactionData(false, false, "", false, false, true);
+                }
+            }
+        }
         //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
     }
     #endregion
