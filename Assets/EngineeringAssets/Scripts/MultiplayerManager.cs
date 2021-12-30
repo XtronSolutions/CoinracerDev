@@ -469,14 +469,21 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
 
-        if(PhotonNetwork.IsMasterClient)
+        Invoke("CheckLeftPlayer", 1f);
+
+        //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
+    }
+
+    public void CheckLeftPlayer()
+    {
+
+        if (PhotonNetwork.IsMasterClient)
         {
             if (!Constants.DepositDone)
             {
-               UpdateTransactionData(false, false, "", false, false, true);
+                UpdateTransactionData(false, false, "", false, false, true);
             }
         }
-        //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)
