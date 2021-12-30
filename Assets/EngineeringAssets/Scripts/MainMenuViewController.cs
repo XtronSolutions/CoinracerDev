@@ -79,6 +79,14 @@ public class ConnectionUI
     public Button DepositButton;
     [Tooltip("Text reference for deposit")]
     public TextMeshProUGUI DepositWaitText;
+    [Tooltip("Button reference for withdraw")]
+    public Button WithdrawButton;
+    [Tooltip("GameObject reference for Timer")]
+    public GameObject TimerObject;
+    [Tooltip("Text reference for Timer for withdraw")]
+    public TextMeshProUGUI TimerText;
+    [HideInInspector]
+    public int TimerTemp;
 }
 
 [Serializable]
@@ -341,7 +349,7 @@ public class MainMenuViewController : MonoBehaviour
     #region SeletionUI (MainData/Selections)
     public void ToggleScreen_SelectionUI(bool _state)
     {
-        if(_state)
+        if (_state)
             ChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.TournamentPassPrice + " $crace. unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + Constants.TicketPrice + " $crace, if you hold " + Constants.DiscountForCrace + " $crace - " + Constants.DiscountPercentage + "% discount.");
 
         UISelection.MainScreen.SetActive(_state);
@@ -387,7 +395,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void BuyPasswithCrace()
     {
-        if (WalletManager.Instance.CheckBalanceTournament(false, false, true,false))
+        if (WalletManager.Instance.CheckBalanceTournament(false, false, true, false))
         {
             BuyingPass = true;
             WalletManager.Instance.TransferToken(TournamentPassPrice);
@@ -547,13 +555,13 @@ public class MainMenuViewController : MonoBehaviour
                 if (WalletManager.Instance)
                 {
                     TicketPrice = TournamentManager.Instance.DataTournament.TicketPrice;
-                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false,false))
+                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false, false))
                     {
-                        ShowToast(2f, "Congrats!, You have received "+Constants.DiscountPercentage+"% discount.");
+                        ShowToast(2f, "Congrats!, You have received " + Constants.DiscountPercentage + "% discount.");
                         TicketPrice = (TicketPrice * DiscountPercentage) / 100;
                     }
 
-                    if (WalletManager.Instance.CheckBalanceTournament(true, false, false,false))
+                    if (WalletManager.Instance.CheckBalanceTournament(true, false, false, false))
                     {
                         WalletManager.Instance.TransferToken(TicketPrice);
                     }
@@ -1084,7 +1092,7 @@ public class MainMenuViewController : MonoBehaviour
             CheckBoughtCars();
             IsTournament = false;
             IsPractice = true;
-           // IsMultiplayer = false;
+            // IsMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
             CarSelection3dObject.SetActive(true);
@@ -1230,7 +1238,7 @@ public class MainMenuViewController : MonoBehaviour
                 Constants.SelectedLevel = MainMenuViewController.Instance.getSelectedLevel() + 1;
                 MultiplayerManager.Instance.ConnectToPhotonServer();
                 MainMenuViewController.Instance.SelectMultiplayer_ConnectionUI();
-            }else
+            } else
             {
                 Debug.LogError("MM Instance is null");
             }
@@ -1313,7 +1321,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void CheckBoughtCars()
     {
-        if(Constants.IsTestNet)
+        if (Constants.IsTestNet)
         {
             _selecteableCars.Clear();
             _selecteableCars.Add(_allCars[0].CarDetail);
@@ -1513,10 +1521,54 @@ public class MainMenuViewController : MonoBehaviour
         UIConnection.MultiplayerButton.onClick.AddListener(EnableSelection_MultiplayerSelection);
         UIConnection.BackButton.onClick.AddListener(DisableScreen_ConnectionUI);
         UIConnection.DepositButton.onClick.AddListener(DepositAmount);
+        UIConnection.WithdrawButton.onClick.AddListener(WithDrawDeposit);
     }
     public void ToggleDepositButton_ConnectionUI(bool _state)
     {
         UIConnection.DepositButton.interactable = _state;
+    }
+
+    public void ToggleWithdrawButton_ConnectionUI(bool _state)
+    {
+        UIConnection.DepositButton.interactable = _state;
+    }
+
+    public void ChangeTimerText_ConnectionUI(string _txt)
+    {
+        UIConnection.TimerText.text = _txt;
+    }
+
+    public void DisableWithDrawTimer_ConnectionUI()
+    {
+        UIConnection.TimerObject.SetActive(false);
+        StopCoroutine(WithDrawTimer_ConnectionUI());
+    }
+    public void EnableWithDrawTimer_ConnectionUI()
+    {
+        UIConnection.TimerObject.SetActive(true);
+        ToggleWithdrawButton_ConnectionUI(false);
+        UIConnection.TimerTemp = Constants.WithdrawTime;
+        ChangeTimerText_ConnectionUI(UIConnection.TimerTemp.ToString());
+
+        if (Constants.DepositDone && !Constants.CanWithdraw)
+            StartCoroutine(WithDrawTimer_ConnectionUI());
+    }
+
+    IEnumerator WithDrawTimer_ConnectionUI()
+    {
+        while (!Constants.CanWithdraw)
+        {
+            UIConnection.TimerTemp -= 1;
+            ChangeTimerText_ConnectionUI(UIConnection.TimerTemp.ToString());
+            yield return new WaitForSeconds(1f);
+
+            if(UIConnection.TimerTemp<=0)
+            {
+                UIConnection.TimerObject.SetActive(false);
+                Constants.CanWithdraw = true;
+                ToggleWithdrawButton_ConnectionUI(true);
+            }
+        }
     }
 
     public void ChangeDepositText_ConnectionUI(string _txt)
@@ -1530,10 +1582,12 @@ public class MainMenuViewController : MonoBehaviour
         {
             ChangeDepositText_ConnectionUI(_txt);
             ToggleDepositButton_ConnectionUI(_toggle);
-        }else
+        }
+        else
         {
             ChangeDepositText_ConnectionUI("");
             UIConnection.DepositButton.gameObject.SetActive(false);
+            UIConnection.WithdrawButton.gameObject.SetActive(false);
         }
     }
 
@@ -1541,6 +1595,11 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (WalletManager.Instance)
             WalletManager.Instance.CallDeposit();
+    }
+
+    public void WithDrawDeposit()
+    {
+        Debug.Log("calling to withdraw");
     }
 
     public void ToggleBackButton_ConnectionUI(bool state)

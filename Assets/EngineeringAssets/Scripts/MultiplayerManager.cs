@@ -296,12 +296,33 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void UpdateTransactionData(bool _canWithdraw,bool _depositDone, string _context, bool _depostButtonActive, bool _withdrawButtonActive, bool _canDisableTimer)
+    {
+        if (MainMenuViewController.Instance)
+        {
+            Constants.CanWithdraw = _canWithdraw;
+            Constants.DepositDone = _depositDone;
+
+            MainMenuViewController.Instance.UpdateDeposit_ConnectionUI(_context, _depostButtonActive);
+            MainMenuViewController.Instance.ToggleWithdrawButton_ConnectionUI(_withdrawButtonActive);
+
+            if(_canDisableTimer)
+                MainMenuViewController.Instance.DisableWithDrawTimer_ConnectionUI();
+            else
+                MainMenuViewController.Instance.EnableWithDrawTimer_ConnectionUI();
+        }
+    }
     public override void OnJoinedRoom()
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-        UpdateConnectionText("Joined Room : "+ PhotonNetwork.CurrentRoom.Name);
+        UpdateConnectionText("Joined Room");
         Constants.StoredPID = PhotonNetwork.CurrentRoom.Name;
-        Debug.Log("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+                UpdateTransactionData(false, false, "waiting for other player to deposit", false, false, true);
+        }
     }
 
     IEnumerator SetRoomPropWithDelay(CustomPlayerPropData _data, bool isRemoving=false, string ActorID="")
@@ -359,24 +380,19 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-        Debug.Log("OnPlayerEnteredRoom() called by PUN. Connected players " + newPlayer.NickName);
-        Debug.Log("Maximum Players allowed: " + Settings.MaxPlayers);
-        Debug.Log("is MasterClient: " + PhotonNetwork.IsMasterClient);
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
             if(PhotonNetwork.IsMasterClient)
             {
-                Debug.Log("calling sync connection Data to invoke load scene");
-                PhotonNetwork.CurrentRoom.IsOpen = false;
-                PhotonNetwork.CurrentRoom.IsVisible = false;
+                UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
             }
         }
     }
 
-    public void LoadSceneDelay()
+    public void LoadSceneDelay(float time=3f)
     {
-        Invoke("LoadAsyncScene", 3f);
+        Invoke("LoadAsyncScene", time);
     }
 
     public void LoadAsyncScene()

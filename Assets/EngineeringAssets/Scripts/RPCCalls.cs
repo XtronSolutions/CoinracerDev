@@ -76,7 +76,7 @@ public class RPCCalls : MonoBehaviour
             if (positionNumber == 0 && !Constants.IsTest)
             {
                 if (WalletManager.Instance)
-                    WalletManager.Instance.CallRaceWinner(MultiplayerManager.Instance.winnerList[positionNumber].WalletAddress);
+                    WalletManager.Instance.CallRaceWinner();
             }
 
             RaceManager.Instance.showGameOverMenuMultiplayer(positionNumber);
@@ -88,32 +88,28 @@ public class RPCCalls : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
-            //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
-            //Invoke("LoadAsyncScene", 3f);
-
-            if (!Constants.DisableCSP)
-            {
-                if (MainMenuViewController.Instance)
-                    MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to deposit...", true);
-            }
-            else
-            {
+            if (Constants.DisableCSP)
                 MultiplayerManager.Instance.LoadSceneDelay();
-            }
         }
         else
         {
-            //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
             PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());
+        }
+    }
 
-            if (!Constants.DisableCSP)
-            {
-                if (MainMenuViewController.Instance)
-                    MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to deposit...", true);
-            }
+    [PunRPC]
+    public void DepositCompleted()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if(MultiplayerManager.Instance)
+                MultiplayerManager.Instance.LoadSceneDelay(1f);
+        }
+        else
+        {
+            MultiplayerManager.Instance.UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
         }
     }
 
