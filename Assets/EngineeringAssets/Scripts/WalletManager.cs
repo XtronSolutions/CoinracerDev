@@ -703,6 +703,14 @@ public class WalletManager : MonoBehaviour
         }
     }
 
+    public void CallWithdraw()
+    {
+        if (Constants.IsMultiplayer && Constants.CanWithdraw)
+        {
+            WithdrawDeposit(Constants.StoredPID);
+        }
+    }
+
     public void CallEndRace()
     {
         EndRace(Constants.StoredPID);
@@ -718,7 +726,7 @@ public class WalletManager : MonoBehaviour
         if (_state)
         {
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-            MainMenuViewController.Instance.ShowToast(3f, "Transaction was successful.");
+            MainMenuViewController.Instance.ShowToast(1f, "Transaction was successful.");
 
             if (MultiplayerManager.Instance)
             {
@@ -759,7 +767,7 @@ public class WalletManager : MonoBehaviour
         if (_state)
         {
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-            MainMenuViewController.Instance.ShowToast(3f, "Transaction was successful.");
+            MainMenuViewController.Instance.ShowToast(1f, "Transaction was successful.");
 
             if (MultiplayerManager.Instance)
             {
@@ -793,7 +801,8 @@ public class WalletManager : MonoBehaviour
         if (_state)
         {
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-            MainMenuViewController.Instance.ShowToast(3f, "Winner saved, reward will be sent shortly.");
+            MainMenuViewController.Instance.ShowToast(1f, "funds returned.");
+            MultiplayerManager.Instance.UpdateTransactionData(false, false, "", false, false, true);
         }
         else
         {
@@ -936,40 +945,47 @@ public class WalletManager : MonoBehaviour
 
     async public void WithdrawDeposit(string _pid)
     {
-        MainMenuViewController.Instance.LoadingScreen.SetActive(true);
-        string methodCSP = "emergencyWithdraw";
-        string[] obj = {_pid};
-        string argsCSP = JsonConvert.SerializeObject(obj);
-        string value = "0";
-        string gasLimit = "210000";
-        string gasPrice = "10000000000";
-
-        try
+        if (Constants.IsTest)
         {
-            string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, false);
+            OnDepositBackCalled(true);
+        }
+        else
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+            string methodCSP = "emergencyWithdraw";
+            string[] obj = { _pid };
+            string argsCSP = JsonConvert.SerializeObject(obj);
+            string value = "0";
+            string gasLimit = "210000";
+            string gasPrice = "10000000000";
 
-            if (response.Contains("Returned error: internal error"))
+            try
             {
-                Debug.Log("Returned error: internal error");
-                if (MainMenuViewController.Instance)
+                string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, false);
+
+                if (response.Contains("Returned error: internal error"))
                 {
-                    MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-                    MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
-                    return;
+                    Debug.Log("Returned error: internal error");
+                    if (MainMenuViewController.Instance)
+                    {
+                        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                        MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        return;
+                    }
+                }
+
+                if (response != "")
+                {
+                    StoredHash = response;
+                    StoredMethodName = "emergencyWithdraw";
+                    CheckTransaction();
                 }
             }
-
-            if (response != "")
+            catch (Exception e)
             {
-                StoredHash = response;
-                StoredMethodName = "emergencyWithdraw";
-                CheckTransaction();
+                Debug.LogException(e, this);
+                OnDepositBackCalled(false);
             }
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e, this);
-            OnDepositBackCalled(false);
         }
     }
 

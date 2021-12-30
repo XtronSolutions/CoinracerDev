@@ -1599,7 +1599,8 @@ public class MainMenuViewController : MonoBehaviour
 
     public void WithDrawDeposit()
     {
-        Debug.Log("calling to withdraw");
+        if (WalletManager.Instance)
+            WalletManager.Instance.CallWithdraw();
     }
 
     public void ToggleBackButton_ConnectionUI(bool state)

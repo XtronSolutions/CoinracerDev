@@ -384,7 +384,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if(PhotonNetwork.IsMasterClient)
             {
-                UpdateTransactionData(false, false, "please deposit the wage amount...",true,false,true);
+                if(!Constants.DepositDone)
+                    UpdateTransactionData(false, false, "please deposit the wage amount...",true,false,true);
+                else
+                    UpdateTransactionData(false, false, "", false, false, true);
+
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
             }
         }
@@ -469,7 +473,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
 
-        Invoke("CheckLeftPlayer", 1f);
+        Invoke("CheckLeftPlayer", 0.5f);
 
         //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
     }
