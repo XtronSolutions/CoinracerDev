@@ -473,13 +473,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if (!Constants.DepositDone)
             {
-                if (PhotonNetwork.CurrentRoom.PlayerCount < Settings.MaxPlayers)
-                {
-                    UpdateTransactionData(false, false, "", false, false, true);
-                }
+               UpdateTransactionData(false, false, "", false, false, true);
             }
         }
         //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        Debug.Log("Master Switched");
     }
     #endregion
 
