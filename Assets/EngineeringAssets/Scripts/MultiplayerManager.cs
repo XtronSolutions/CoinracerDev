@@ -384,7 +384,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if(PhotonNetwork.IsMasterClient)
             {
-                UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
+                UpdateTransactionData(false, false, "please deposit the wage amount...",true,false,true);
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
             }
         }

@@ -18,9 +18,6 @@ public class RPCCalls : MonoBehaviour
     [PunRPC]
     public void SyncScene(string ID)
     {
-        if (MainMenuViewController.Instance)
-            MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to finish...", false);
-
         if (!MultiplayerManager.Instance.ActorNumbers.Contains(PhotonNetwork.LocalPlayer.ActorNumber.ToString()))
             MultiplayerManager.Instance.ActorNumbers.Add(PhotonNetwork.LocalPlayer.ActorNumber.ToString());
 

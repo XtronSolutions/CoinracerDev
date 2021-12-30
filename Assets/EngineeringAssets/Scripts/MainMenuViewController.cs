@@ -1530,7 +1530,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void ToggleWithdrawButton_ConnectionUI(bool _state)
     {
-        UIConnection.DepositButton.interactable = _state;
+        UIConnection.WithdrawButton.interactable = _state;
     }
 
     public void ChangeTimerText_ConnectionUI(string _txt)
