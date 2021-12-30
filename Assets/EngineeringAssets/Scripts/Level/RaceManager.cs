@@ -148,15 +148,15 @@ public class RaceManager : MonoBehaviour
             if (_position == 0)
                 isWinner = true;
 
-            WinData _data = MultiplayerManager.Instance.winnerList[_position];
+            WinData _data = MultiplayerManager.Instance.winnerList[0];
             positionText.text = (_position + 1).ToString();
             ToggleScreen_MultiplayerUI(true);
             ChangeName_MultiplayerUI(_data.Name);
             ChangeWinAmount_MultiplayerUI(_data.TotalWins);
-            ChangeAmount_MultiplayerUI(isWinner, _data.TotalBetValue);
+            ChangeAmount_MultiplayerUI(true, _data.TotalBetValue);
             ConvertTimeAndDisplay(double.Parse(_data.RunTime));
             UpdateFlag_MultiplayerUI(_data.FlagIndex);
-            UpdateRaceOutcome_MultiplayerUI(isWinner);
+            //UpdateRaceOutcome_MultiplayerUI(isWinner);
         }
     }
 
@@ -192,6 +192,7 @@ public class RaceManager : MonoBehaviour
 
         if(Constants.IsMultiplayer)
         {
+            Constants.MoveCar = false;
             MultiplayerManager.Instance.CallEndMultiplayerGameRPC();
         }
         else if (GamePlayUIHandler.Instance && Constants.IsTournament)
@@ -206,9 +207,9 @@ public class RaceManager : MonoBehaviour
         }
 
 
-        //if(Constants.IsMultiplayer)
-        //    Time.timeScale = 1f;
-        //else
+        if(Constants.IsMultiplayer)
+            Time.timeScale = 1f;
+        else
             Time.timeScale = 0.1f;
     }
     public void RaceEnded()

@@ -1526,8 +1526,15 @@ public class MainMenuViewController : MonoBehaviour
 
     public void UpdateDeposit_ConnectionUI(string _txt,bool _toggle)
     {
-        ChangeDepositText_ConnectionUI(_txt);
-        ToggleDepositButton_ConnectionUI(_toggle);
+        if (!Constants.DisableCSP)
+        {
+            ChangeDepositText_ConnectionUI(_txt);
+            ToggleDepositButton_ConnectionUI(_toggle);
+        }else
+        {
+            ChangeDepositText_ConnectionUI("");
+            UIConnection.DepositButton.gameObject.SetActive(false);
+        }
     }
 
     public void DepositAmount()

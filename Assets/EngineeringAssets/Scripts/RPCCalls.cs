@@ -93,7 +93,7 @@ public class RPCCalls : MonoBehaviour
             //MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(false);
             //Invoke("LoadAsyncScene", 3f);
 
-            if (!Constants.IsTest)
+            if (!Constants.DisableCSP)
             {
                 if (MainMenuViewController.Instance)
                     MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to deposit...", true);
@@ -109,7 +109,7 @@ public class RPCCalls : MonoBehaviour
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
             PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());
 
-            if (!Constants.IsTest)
+            if (!Constants.DisableCSP)
             {
                 if (MainMenuViewController.Instance)
                     MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("waiting for other player to deposit...", true);
