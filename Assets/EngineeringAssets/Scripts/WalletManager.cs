@@ -718,7 +718,7 @@ public class WalletManager : MonoBehaviour
 
     public void CallRaceWinner()
     {
-        WithdrawDeposit(Constants.StoredPID);
+        EndRace(Constants.StoredPID);
     }
 
     public void OnRaceCreateCalled(bool _state)
@@ -787,7 +787,7 @@ public class WalletManager : MonoBehaviour
         if (_state)
         {
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-            MainMenuViewController.Instance.ShowToast(3f, "Race ended, received reward.");
+            MainMenuViewController.Instance.ShowToast(2f, "Race ended, received reward.");
         }
         else
         {
@@ -906,40 +906,47 @@ public class WalletManager : MonoBehaviour
 
     async public void EndRace(string _pid)
     {
-        MainMenuViewController.Instance.LoadingScreen.SetActive(true);
-        string methodCSP = "endRace";
-        string[] obj = { _pid, Constants.WalletAddress };
-        string argsCSP = JsonConvert.SerializeObject(obj);
-        string value = "0";
-        string gasLimit = "210000";
-        string gasPrice = "10000000000";
-
-        try
+        if (Constants.IsTest)
         {
-            string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, false);
+            OnEndRaceCalled(true);
+        }
+        else
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+            string methodCSP = "endRace";
+            string[] obj = { _pid, Constants.WalletAddress };
+            string argsCSP = JsonConvert.SerializeObject(obj);
+            string value = "0";
+            string gasLimit = "210000";
+            string gasPrice = "10000000000";
 
-            if (response.Contains("Returned error: internal error"))
+            try
             {
-                Debug.Log("Returned error: internal error");
-                if (MainMenuViewController.Instance)
+                string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, false);
+
+                if (response.Contains("Returned error: internal error"))
                 {
-                    MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-                    MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
-                    return;
+                    Debug.Log("Returned error: internal error");
+                    if (MainMenuViewController.Instance)
+                    {
+                        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                        MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        return;
+                    }
+                }
+
+                if (response != "")
+                {
+                    StoredHash = response;
+                    StoredMethodName = "endRace";
+                    CheckTransaction();
                 }
             }
-
-            if (response != "")
+            catch (Exception e)
             {
-                StoredHash = response;
-                StoredMethodName = "endRace";
-                CheckTransaction();
+                Debug.LogException(e, this);
+                OnEndRaceCalled(false);
             }
-        }
-        catch (Exception e)
-        {
-            Debug.LogException(e, this);
-            OnEndRaceCalled(false);
         }
     }
 

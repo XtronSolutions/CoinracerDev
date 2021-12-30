@@ -1545,13 +1545,17 @@ public class MainMenuViewController : MonoBehaviour
     }
     public void EnableWithDrawTimer_ConnectionUI()
     {
-        UIConnection.TimerObject.SetActive(true);
-        ToggleWithdrawButton_ConnectionUI(false);
-        UIConnection.TimerTemp = Constants.WithdrawTime;
-        ChangeTimerText_ConnectionUI(UIConnection.TimerTemp.ToString());
+        if (!Constants.TimerRunning)
+        {
+            TimerRunning = true;
+            UIConnection.TimerObject.SetActive(true);
+            ToggleWithdrawButton_ConnectionUI(false);
+            UIConnection.TimerTemp = Constants.WithdrawTime;
+            ChangeTimerText_ConnectionUI(UIConnection.TimerTemp.ToString());
 
-        if (Constants.DepositDone && !Constants.CanWithdraw)
-            StartCoroutine(WithDrawTimer_ConnectionUI());
+            if (Constants.DepositDone && !Constants.CanWithdraw)
+                StartCoroutine(WithDrawTimer_ConnectionUI());
+        }
     }
 
     IEnumerator WithDrawTimer_ConnectionUI()

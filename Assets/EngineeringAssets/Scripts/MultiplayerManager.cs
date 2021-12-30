@@ -119,10 +119,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void ConnectToPhotonServer()
     {
-        Debug.Log("Calling connect to photon : " + PhotonNetwork.IsConnected);
+        UpdatePlayerCountText("Player Count : 0");
+        Constants.DepositDone = false;
+        Constants.CanWithdraw = false;
+        Constants.TimerRunning = false;
+        ActorNumbers.Clear();
+
         if (PhotonNetwork.IsConnected)
         {
-            ActorNumbers.Clear();
+       
             ConnectionMaster();
 
             if (MainMenuViewController.Instance)
@@ -130,7 +135,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            ActorNumbers.Clear();
             UpdateConnectionText("Connecting...");
 
             if (MainMenuViewController.Instance)
@@ -387,7 +391,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 if(!Constants.DepositDone)
                     UpdateTransactionData(false, false, "please deposit the wage amount...",true,false,true);
                 else
-                    UpdateTransactionData(false, false, "", false, false, true);
+                    UpdateTransactionData(false, false, "", false, false, false);
 
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
             }
