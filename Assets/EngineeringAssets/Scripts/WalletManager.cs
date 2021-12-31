@@ -98,6 +98,8 @@ public class WalletManager : MonoBehaviour
     int NFTCounter = 0;
     string StoredHash = "";
     string StoredMethodName = "";
+
+    public bool IsGamePlay = false;
     #endregion
 
     #region Start Functionality
@@ -107,7 +109,9 @@ public class WalletManager : MonoBehaviour
     private void OnEnable()
     {
         Instance = this;
-        Constants.WalletConnected = false;
+
+        if(!IsGamePlay)
+            Constants.WalletConnected = false;
 
         if (Constants.IsTestNet)
         {
@@ -133,7 +137,8 @@ public class WalletManager : MonoBehaviour
     {
         //get wallet address stored inside local storage (call only inisde browser not in editor)
 #if UNITY_WEBGL && !UNITY_EDITOR
-            GetStorage(Constants.WalletAccoutKey,this.gameObject.name,"OnGetAcount");
+            if(!IsGamePlay)
+                GetStorage(Constants.WalletAccoutKey,this.gameObject.name,"OnGetAcount");
 #endif
     }
 
@@ -719,6 +724,7 @@ public class WalletManager : MonoBehaviour
 
     public void CallRaceWinner()
     {
+        Debug.Log("calling eace winner");
         EndRace(Constants.StoredPID);
     }
 
@@ -787,13 +793,31 @@ public class WalletManager : MonoBehaviour
     {
         if (_state)
         {
-            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-            MainMenuViewController.Instance.ShowToast(2f, "Race ended, received reward.");
+            Debug.Log("Race ended, received reward.");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(2f, "Race ended, received reward.");
+            }
+
+            if (GamePlayUIHandler.Instance)
+            {
+                GamePlayUIHandler.Instance.ShowToast(2f, "Race ended, received reward.");
+            }
         }
         else
         {
-            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-            MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
+            Debug.Log("Transaction was not successful");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
+            }
+
+            if (GamePlayUIHandler.Instance)
+            {
+                GamePlayUIHandler.Instance.ShowToast(3f, "Transaction was not successful, please try again or contact support.");
+            }
         }
     }
 
@@ -914,7 +938,9 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
-            MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+            if(MainMenuViewController.Instance)
+                MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+
             string methodCSP = "endRace";
             string[] obj = { _pid, Constants.WalletAddress };
             string argsCSP = JsonConvert.SerializeObject(obj);

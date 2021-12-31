@@ -72,6 +72,7 @@ public class RPCCalls : MonoBehaviour
 
             if (positionNumber == 0)
             {
+                Debug.Log("inside position");
                 if (WalletManager.Instance)
                     WalletManager.Instance.CallRaceWinner();
             }
