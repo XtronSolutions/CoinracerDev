@@ -50,8 +50,8 @@ public static class Constants
     public static List<string> StoredCarNames = new List<string>();
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
-    public static bool IsTestNet = true;
-    public static bool IsTest = false;
+    public static bool IsTestNet = false;
+    public static bool IsTest = true;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
     public static string EmailSent = "";

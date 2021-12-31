@@ -65,6 +65,7 @@ public class WalletManager : MonoBehaviour
     //address of the BEP20 (Crace) contract
     //mainnet : 0xFBb4F2f342c6DaaB63Ab85b0226716C4D1e26F36
     //testnet : 0x08Da683F43fCAe68119602d838979F056CD3f3aD
+    //testnet02:0xe9852a19b7E15993d99a51099eb3f8DAC4f51997
     private string contract = "0xFBb4F2f342c6DaaB63Ab85b0226716C4D1e26F36";
 
     //address of the BEP721 contract
@@ -112,9 +113,9 @@ public class WalletManager : MonoBehaviour
         {
             chain = "binance";
             network = "testnet";
-            contract = "0x08Da683F43fCAe68119602d838979F056CD3f3aD";
-            contractNFT = "0x5D60CADfd0a205d3D40E98662d1ec860b898E98a";
-            CSPContract = "0x112EFCA673Bba55a11e4685CCa9998a96b065565";
+            contract = "0xe9852a19b7E15993d99a51099eb3f8DAC4f51997";
+            contractNFT = "0x312b151a0e87785649ed835d946c2b0de5745c30";
+            CSPContract = "0x5D60CADfd0a205d3D40E98662d1ec860b898E98a";
         }
 
         if (Constants.IsTest && !Constants.IsTestNet)
@@ -819,11 +820,12 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
+            BigInteger _totalPrice = (int)_price * (BigInteger)Math.Pow(10, 18);
             string methodCSP = "createRace";
-            string[] obj = { _pid, _price.ToString(), _maxPlayers.ToString() };
+            string[] obj = { _pid, _totalPrice.ToString(), _maxPlayers.ToString() };
             string argsCSP = JsonConvert.SerializeObject(obj);
             string value = "0";
-            string gasLimit = "210000";
+            string gasLimit = "2100000";
             string gasPrice = "10000000000";
 
             try
@@ -871,7 +873,7 @@ public class WalletManager : MonoBehaviour
             string[] obj = { _pid.ToString(), _totalPrice.ToString() };
             string argsCSP = JsonConvert.SerializeObject(obj);
             string value = "0";
-            string gasLimit = "210000";
+            string gasLimit = "2100000";
             string gasPrice = "10000000000";
 
             try
@@ -917,7 +919,7 @@ public class WalletManager : MonoBehaviour
             string[] obj = { _pid, Constants.WalletAddress };
             string argsCSP = JsonConvert.SerializeObject(obj);
             string value = "0";
-            string gasLimit = "210000";
+            string gasLimit = "2100000";
             string gasPrice = "10000000000";
 
             try
@@ -963,7 +965,7 @@ public class WalletManager : MonoBehaviour
             string[] obj = { _pid };
             string argsCSP = JsonConvert.SerializeObject(obj);
             string value = "0";
-            string gasLimit = "210000";
+            string gasLimit = "2100000";
             string gasPrice = "10000000000";
 
             try

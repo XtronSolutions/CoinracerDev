@@ -460,7 +460,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         WinData _data = new WinData();
         _data.Name = PhotonNetwork.LocalPlayer.NickName;
         _data.ID = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
-        _data.TotalBetValue = Constants.SelectedWage+ Constants.SelectedWage;
+        _data.TotalBetValue = Constants.SelectedCrace+ Constants.SelectedCrace;
         _data.RunTime = Constants.GameSeconds.ToString();
         _data.TotalWins = 0;
         _data.FlagIndex = Constants.FlagSelectedIndex;

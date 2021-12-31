@@ -70,7 +70,7 @@ public class RPCCalls : MonoBehaviour
 
             Debug.Log("My position is: " + positionNumber);
 
-            if (positionNumber == 0 && !Constants.IsTest)
+            if (positionNumber == 0)
             {
                 if (WalletManager.Instance)
                     WalletManager.Instance.CallRaceWinner();
