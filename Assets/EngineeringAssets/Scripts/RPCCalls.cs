@@ -72,9 +72,13 @@ public class RPCCalls : MonoBehaviour
 
             if (positionNumber == 0)
             {
-                Debug.Log("inside position");
-                if (WalletManager.Instance)
-                    WalletManager.Instance.CallRaceWinner();
+                if (RaceManager.Instance)
+                    RaceManager.Instance.ToggleClaimReward(true);
+            }
+            else
+            {
+                if (RaceManager.Instance)
+                    RaceManager.Instance.ToggleClaimReward(false);
             }
 
             RaceManager.Instance.showGameOverMenuMultiplayer(positionNumber);

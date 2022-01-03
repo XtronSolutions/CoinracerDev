@@ -100,6 +100,7 @@ public class WalletManager : MonoBehaviour
     string StoredMethodName = "";
 
     public bool IsGamePlay = false;
+    bool isConnected = false;
     #endregion
 
     #region Start Functionality
@@ -210,6 +211,10 @@ public class WalletManager : MonoBehaviour
             Constants.WalletChanged = false;
         }
 
+        SetConnectAccount(""); // reset login message
+        BEPBalanceOf();//calculte and display BEP20 (crace) balance on screen
+
+
         //store connected wallet address in local storage by a key
 #if UNITY_WEBGL && !UNITY_EDITOR
             SetStorage("Account", PlayerPrefs.GetString(Constants.WalletAccoutKey));
@@ -217,14 +222,21 @@ public class WalletManager : MonoBehaviour
         Constants.WalletConnected = true;
         FirebaseManager.Instance.DocFetched = false;
         FirebaseManager.Instance.ResultFetched = true;
-        SetConnectAccount(""); // reset login message
-        MainUI.ConnectBtn.SetActive(false); //disable connect button
-        MainUI.ConnectedBtn.SetActive(true);// enable connected button
-        PrintWalletAddress(); // print wallet address on connected button
-        BEPBalanceOf();//calculte and display BEP20 (crace) balance on screen
 
-        if (!Constants.IsTestNet)
-            InvokeRepeating("CheckNFTBalance", 0.1f, 10f);//check number of NFT purchased after every 10 seconds of interval
+        if (!IsGamePlay)
+        {
+            MainUI.ConnectBtn.SetActive(false); //disable connect button
+            MainUI.ConnectedBtn.SetActive(true);// enable connected button
+            PrintWalletAddress(); // print wallet address on connected button
+
+            if (!Constants.IsTestNet)
+                InvokeRepeating("CheckNFTBalance", 0.1f, 10f);//check number of NFT purchased after every 10 seconds of interval
+        }
+        else
+        {
+            isConnected = true;
+            EndRace(Constants.StoredPID);
+        }
     }
 
     /// <summary>
@@ -252,7 +264,9 @@ public class WalletManager : MonoBehaviour
     async public void BEPBalanceOf()
     {
         mainbalanceOf = await ERC20.BalanceOf(chain, network, contract, account);
-        DisplayBalance();
+
+        if(!IsGamePlay)
+            DisplayBalance();
     }
 
     /// <summary>
@@ -724,8 +738,15 @@ public class WalletManager : MonoBehaviour
 
     public void CallRaceWinner()
     {
-        Debug.Log("calling eace winner");
-        EndRace(Constants.StoredPID);
+        if (isConnected)
+        {
+            Debug.Log("calling race winner");
+            EndRace(Constants.StoredPID);
+        }
+        else
+        {
+            ConnectWallet();
+        }
     }
 
     public void OnRaceCreateCalled(bool _state)
