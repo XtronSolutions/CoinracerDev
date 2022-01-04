@@ -34,6 +34,8 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private AudioSource _audioSource = null;
     [SerializeField] private TextMeshProUGUI GameStartTimer = null;
     [SerializeField] private Button ClaimRewardButton = null;
+    [SerializeField] private GameObject LoadingScreen = null;
+
 
     private int _currentWayPointIndex = 1;
     private int _lapsCounter;
@@ -49,6 +51,11 @@ public class RaceManager : MonoBehaviour
 
     }
 
+    public void ToggleLoadingScreen(bool _state)
+    {
+        LoadingScreen.SetActive(_state);
+    }
+
     public void ToggleClaimReward(bool _state)
     {
         ClaimRewardButton.gameObject.SetActive(_state);
@@ -56,8 +63,16 @@ public class RaceManager : MonoBehaviour
 
     public void ClaimReward()
     {
-        if (WalletManager.Instance)
-            WalletManager.Instance.CallRaceWinner();
+        if (!Constants.ClaimedReward)
+        {
+            if (WalletManager.Instance)
+                WalletManager.Instance.CallRaceWinner();
+        }
+        else
+        {
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.ShowToast(3f, "Reward already claimed.");
+        }
     }
 
     private void Start()

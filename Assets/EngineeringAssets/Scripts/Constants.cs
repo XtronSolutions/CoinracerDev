@@ -50,7 +50,7 @@ public static class Constants
     public static List<string> StoredCarNames = new List<string>();
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
-    public static bool IsTestNet = true;
+    public static bool IsTestNet = false;
     public static bool IsTest = false;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
@@ -85,6 +85,7 @@ public static class Constants
     public static int WithdrawTime = 60; //time in seconds//300
     public static bool DisableCSP = false;
     public static bool TimerRunning = false;
+    public static bool ClaimedReward = false;
 
     async public static void GetCracePrice()
     {

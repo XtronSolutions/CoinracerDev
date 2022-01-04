@@ -72,6 +72,8 @@ public class RPCCalls : MonoBehaviour
 
             if (positionNumber == 0)
             {
+                Constants.ClaimedReward = false;
+
                 if (RaceManager.Instance)
                     RaceManager.Instance.ToggleClaimReward(true);
             }

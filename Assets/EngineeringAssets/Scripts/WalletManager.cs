@@ -121,6 +121,11 @@ public class WalletManager : MonoBehaviour
             contract = "0xe9852a19b7E15993d99a51099eb3f8DAC4f51997";
             contractNFT = "0x312b151a0e87785649ed835d946c2b0de5745c30";
             CSPContract = "0x5D60CADfd0a205d3D40E98662d1ec860b898E98a";
+
+            //SetAcount("0xAE79Dc61917d0de544db72C75de727421AcD7566");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
+            //Constants.WalletAddress = "0xAE79Dc61917d0de544db72C75de727421AcD7566";
+            //CheckCraceApproval();
+
         }
 
         if (Constants.IsTest && !Constants.IsTestNet)
@@ -225,6 +230,7 @@ public class WalletManager : MonoBehaviour
 
         if (!IsGamePlay)
         {
+            CheckCraceApproval();
             MainUI.ConnectBtn.SetActive(false); //disable connect button
             MainUI.ConnectedBtn.SetActive(true);// enable connected button
             PrintWalletAddress(); // print wallet address on connected button
@@ -418,6 +424,9 @@ public class WalletManager : MonoBehaviour
                 case "emergencyWithdraw":
                     OnDepositBackCalled(true);
                     break;
+                case "approve":
+                    OnApproveCalled(true);
+                    break;
             }
         }
         else if (txStatus == "fail")
@@ -447,6 +456,9 @@ public class WalletManager : MonoBehaviour
                     break;
                 case "emergencyWithdraw":
                     OnDepositBackCalled(false);
+                    break;
+                case "approve":
+                    OnApproveCalled(false);
                     break;
             }
         }
@@ -703,22 +715,23 @@ public class WalletManager : MonoBehaviour
 
     #region CSP Contract
 
-    public void CallCreateRace()
-    {
-        MainMenuViewController.Instance.LoadingScreen.SetActive(true);
-        CreateRace(Constants.StoredPID, Constants.SelectedCrace, Constants.SelectedMaxPlayer);
-    }
-
     public void CallDeposit()
     {
         if (Constants.IsMultiplayer)
         {
             if (PhotonNetwork.IsConnected)
             {
-                if(PhotonNetwork.IsMasterClient)
-                    CreateRace(Constants.StoredPID, Constants.SelectedCrace, Constants.SelectedMaxPlayer);
+                if (Constants.ApproveCrace)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                        CreateRace(Constants.StoredPID, Constants.SelectedCrace, Constants.SelectedMaxPlayer);
+                    else
+                        Deposit(Constants.StoredPID, Constants.SelectedCrace);
+                }
                 else
-                    Deposit(Constants.StoredPID, Constants.SelectedCrace);
+                {
+                    ApproveCrace();
+                }
             }
         }
     }
@@ -814,6 +827,7 @@ public class WalletManager : MonoBehaviour
     {
         if (_state)
         {
+            Constants.ClaimedReward = true;
             Debug.Log("Race ended, received reward.");
             if (MainMenuViewController.Instance)
             {
@@ -822,9 +836,10 @@ public class WalletManager : MonoBehaviour
             }
 
             if (GamePlayUIHandler.Instance)
-            {
-                GamePlayUIHandler.Instance.ShowToast(2f, "Race ended, received reward.");
-            }
+                GamePlayUIHandler.Instance.ShowToast(2f, "Reward received successfully.");
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
         }
         else
         {
@@ -836,9 +851,10 @@ public class WalletManager : MonoBehaviour
             }
 
             if (GamePlayUIHandler.Instance)
-            {
                 GamePlayUIHandler.Instance.ShowToast(3f, "Transaction was not successful, please try again or contact support.");
-            }
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
         }
     }
 
@@ -857,6 +873,21 @@ public class WalletManager : MonoBehaviour
         }
     }
 
+    public void OnApproveCalled(bool _state)
+    {
+        if (_state)
+        {
+            Constants.ApproveCrace = true;
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+            MainMenuViewController.Instance.ShowToast(2f, "Allocated allowance");
+        }
+        else
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+            MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
+        }
+    }
+
     async public void CreateRace(string _pid, double _price,int _maxPlayers)
     {
         if (Constants.IsTest)
@@ -865,6 +896,7 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(true);
             BigInteger _totalPrice = (int)_price * (BigInteger)Math.Pow(10, 18);
             string methodCSP = "createRace";
             string[] obj = { _pid, _totalPrice.ToString(), _maxPlayers.ToString() };
@@ -962,6 +994,9 @@ public class WalletManager : MonoBehaviour
             if(MainMenuViewController.Instance)
                 MainMenuViewController.Instance.LoadingScreen.SetActive(true);
 
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(true);
+
             string methodCSP = "endRace";
             string[] obj = { _pid, Constants.WalletAddress };
             string argsCSP = JsonConvert.SerializeObject(obj);
@@ -980,6 +1015,12 @@ public class WalletManager : MonoBehaviour
                     {
                         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                         MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        return;
+                    }
+
+                    if (RaceManager.Instance)
+                    {
+                        RaceManager.Instance.ToggleLoadingScreen(false);
                         return;
                     }
                 }
@@ -1045,7 +1086,84 @@ public class WalletManager : MonoBehaviour
         }
     }
 
-        #endregion
+    async public void ApproveCrace()
+    {
+        if (Constants.IsTest)
+        {
+            OnApproveCalled(true);
+        }
+        else
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+            string methodCrace = "approve";
+            string[] obj = { CSPContract,"20000000000000000000000" };
+            string argsCSP = JsonConvert.SerializeObject(obj);
+            string value = "0";
+            string gasLimit = "2100000";
+            string gasPrice = "10000000000";
+
+            try
+            {
+                string response = await Web3GL.SendContract(methodCrace, abi, contract, argsCSP, value, gasLimit, gasPrice, false);
+
+                if (response.Contains("Returned error: internal error"))
+                {
+                    Debug.Log("Returned error: internal error");
+                    if (MainMenuViewController.Instance)
+                    {
+                        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                        MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        return;
+                    }
+                }
+
+                if (response != "")
+                {
+                    StoredHash = response;
+                    StoredMethodName = "approve";
+                    CheckTransaction();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e, this);
+                OnApproveCalled(false);
+            }
+        }
+    }
+
+    async public void CheckCraceApproval()
+    {
+        string methodCrace = "allowance";// smart contract method to call
+        string[] obj = { Constants.WalletAddress, CSPContract };
+        string argsCSP = JsonConvert.SerializeObject(obj);
+
+        string response = await EVM.Call(chain, network, contract, abi, methodCrace, argsCSP);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Debug.Log("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return;
+            }
+        }
+
+        Debug.Log(response);
+
+        if(response!="")
+        {
+            BigInteger _val = BigInteger.Parse(response);
+            if (_val > 0)
+                Constants.ApproveCrace = true;
+            else
+                ApproveCrace();
+        }
+
+    }
+
+    #endregion
 
     public void PrintOnConsoleEditor(string _con)
     {
