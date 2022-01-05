@@ -11,6 +11,9 @@ public class Web3GL
     private static extern void SendContractJs(string method, string abi, string contract, string args, string value, string gasLimit, string gasPrice);
 
     [DllImport("__Internal")]
+    private static extern void ContractHashJs(string key, string address);
+
+    [DllImport("__Internal")]
     private static extern string SendContractResponse();
 
     [DllImport("__Internal")]
@@ -20,6 +23,9 @@ public class Web3GL
     private static extern void SetContractResponse(string value);
 
     [DllImport("__Internal")]
+    private static extern void SetEncodedResponse(string value);
+
+    [DllImport("__Internal")]
     private static extern void SetContractEventResponse(string value);
 
     [DllImport("__Internal")]
@@ -27,6 +33,9 @@ public class Web3GL
 
     [DllImport("__Internal")]
     private static extern string SendTransactionResponse();
+
+    [DllImport("__Internal")]
+    private static extern string SendEncodedResponse();
 
     [DllImport("__Internal")]
     private static extern void SetTransactionResponse(string value);
@@ -83,6 +92,34 @@ public class Web3GL
         {
             throw new Exception(response);
         }
+    }
+
+    async public static Task<string> GetEncodedHash(string _key, string _address)
+    {
+        // Set response to empty
+        SetEncodedResponse("");
+        ContractHashJs(_key, _address);
+        string response = SendEncodedResponse();
+        while (response == "")
+        {
+           // Debug.Log("encoded response is empty");
+            await new WaitForSeconds(1f);
+            response = SendEncodedResponse();
+        }
+        SetEncodedResponse("");
+
+        //Debug.Log(response);
+        return response;
+
+        // check if user submmited or user rejected
+        //if (response.Length == 66)
+       // {
+         //   return response;
+       // }
+       // else
+        //{
+         //   throw new Exception(response);
+       // }
     }
 
     async public static Task<string> SendTransaction(string _to, string _value, string _gasLimit = "", string _gasPrice = "")

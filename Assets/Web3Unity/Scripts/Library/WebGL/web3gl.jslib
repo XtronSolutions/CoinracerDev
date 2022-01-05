@@ -82,6 +82,15 @@ mergeInto(LibraryManager.library, {
 		}
   },
 
+
+   ContractHashJs: function (key, address) {
+		var parsedKey=Pointer_stringify(key);
+		var parsedAddress=Pointer_stringify(address);
+
+		window.web3gl.ContractHash(parsedKey, parsedAddress);
+
+	},
+
   SendContractResponse: function () {
     var bufferSize = lengthBytesUTF8(window.web3gl.sendContractResponse) + 1;
     var buffer = _malloc(bufferSize);
@@ -91,6 +100,17 @@ mergeInto(LibraryManager.library, {
 
   SetContractResponse: function (value) {
     window.web3gl.sendContractResponse = value;
+  },
+
+  SetEncodedResponse: function (value) {
+    window.web3gl.EncodedResponse = value;
+  },
+  
+  SendEncodedResponse: function () {
+    var bufferSize = lengthBytesUTF8(window.web3gl.EncodedResponse) + 1;
+    var buffer = _malloc(bufferSize);
+    stringToUTF8(window.web3gl.EncodedResponse, buffer, bufferSize);
+    return buffer;
   },
   
   SendContractEventResponse: function () {

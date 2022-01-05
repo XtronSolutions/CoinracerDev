@@ -42,6 +42,13 @@
                 sendContract: function (n, e, t, o, s, c, r) {
                     return m.apply(this, arguments);
                 },
+
+                EncodedResponse: "",
+                ContractHash: function (n, e) {
+                    var hash = o.utils.keccak256(o.eth.abi.encodeParameters(['string', 'address'], [n, e]));
+                    window.web3gl.EncodedResponse = hash;
+                },
+               
                 sendContractResponse: "",
 				sendContractEventResponse: "",
                 sendTransaction: function (n, e, t, o) {
@@ -150,12 +157,10 @@
 												if(error==null)
 												{
 													window.web3gl.sendContractEventResponse=JSON.stringify(event);
-													console.log(window.web3gl.sendContractEventResponse);
 												}
 												else
 												{
 													window.web3gl.sendContractEventResponse="error";
-													console.log(error);
 												}
 											});
 												f.methods[e]

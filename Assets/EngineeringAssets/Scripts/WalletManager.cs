@@ -79,6 +79,9 @@ public class WalletManager : MonoBehaviour
     //testnet3: 0x21F1D67cE612208f7F08ee9487Ec9e62A375190B
     private string CSPContract = "0x21F1D67cE612208f7F08ee9487Ec9e62A375190B";
 
+    private string TestContract = "0xc91618907d17aC466f3F80bbeBE9a70a86F64083";
+    private readonly string abiTest = "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_winner\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"_hash\",\"type\":\"bytes32\"}],\"name\":\"checkHash\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true}]";
+
     private string toAccount = "0xe1E4160F4AcDf756AA0d2B02D786a42527560E82"; //wallet address to send BEP20 (crace) amount for transactions
 
     private string amount = "";
@@ -244,6 +247,8 @@ public class WalletManager : MonoBehaviour
             isConnected = true;
             EndRace(Constants.StoredPID);
         }
+
+        GetHashEncoded();
     }
 
     /// <summary>
@@ -1157,6 +1162,49 @@ public class WalletManager : MonoBehaviour
                 ApproveCrace();
         }
 
+    }
+
+    async public void GetHashEncoded()
+    {
+        if (Constants.IsTest)
+        {
+            //OnApproveCalled(true);
+        }
+        else
+        {
+            //MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+            string privatekey = "testkey";
+            string address = Constants.WalletAddress;
+
+            Debug.Log("private key: " + privatekey);
+            Debug.Log("wallet address : " + address);
+            try
+            {
+                string response = await Web3GL.GetEncodedHash(privatekey, address);
+                Debug.Log("encoded hash :"+ response);
+                CheckHashMatched(response);
+                //if (response != "")
+                //{
+                //  Debug.Log(response);
+                //}
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e, this);
+                //OnApproveCalled(false);
+            }
+        }
+    }
+
+    async public void CheckHashMatched(string hash)
+    {
+        string methodNFT = "checkHash";// smart contract method to call
+        string[] obj = { Constants.WalletAddress, hash };
+        string argsNFT = JsonConvert.SerializeObject(obj);
+        string response = await EVM.Call(chain, network, TestContract, abiTest, methodNFT, argsNFT);
+
+
+        Debug.Log("Check hash response : " + response);        
     }
 
     #endregion
