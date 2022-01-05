@@ -145,6 +145,7 @@ public class SelectionUI
     public Button BuyPassCraceButton;
     public Button BuyPassCancelButton;
     public GameObject TournamentPassScreen;
+    public TMP_InputField pinField;
 }
 
 
@@ -159,6 +160,7 @@ public class TournamentUI
     public TextMeshProUGUI DisclaimerText;
     public GameObject LoaderObj;
     public TextMeshProUGUI TournamentStartText;
+    
 }
 
 [Serializable]
@@ -294,6 +296,7 @@ public class MainMenuViewController : MonoBehaviour
     }
 
 
+
     void Start()
     {
         ResetRegisterFields();
@@ -347,10 +350,11 @@ public class MainMenuViewController : MonoBehaviour
     #endregion
 
     #region SeletionUI (MainData/Selections)
+
     public void ToggleScreen_SelectionUI(bool _state)
     {
-        if (_state)
-            ChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.TournamentPassPrice + " $crace. unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + Constants.TicketPrice + " $crace, if you hold " + Constants.DiscountForCrace + " $crace - " + Constants.DiscountPercentage + "% discount.");
+        //if (_state)
+        //    ChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.TournamentPassPrice + " $crace. unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + Constants.TicketPrice + " $crace, if you hold " + Constants.DiscountForCrace + " $crace - " + Constants.DiscountPercentage + "% discount.");
 
         UISelection.MainScreen.SetActive(_state);
     }
@@ -368,6 +372,12 @@ public class MainMenuViewController : MonoBehaviour
         UISelection.BuyPassCraceButton.onClick.AddListener(BuyPassCraceClicked_SelectionUI);
         UISelection.BuyPassCancelButton.onClick.AddListener(BackClickedPassScreen_SelectionUI);
         UISelection.SingleTryButton.onClick.AddListener(PlayOnce_SelectionUI);
+        UISelection.pinField.GetComponent<TMP_InputField>().onEndEdit.AddListener(submitPin);
+    }
+    public void submitPin(string pin)
+    {
+        if (pin == "1234")
+            MainMenuViewController.Instance.OnGoToCarSelection();
     }
     public void ChangeDisclaimerTexts_SelectionUI(string txt1, string txt2, string txt3)
     {
@@ -1028,8 +1038,9 @@ public class MainMenuViewController : MonoBehaviour
     }
     private void OnGoToMapSelection()
     {
+        Debug.Log("In Map Selection");
         _levelsSettings.Clear();
-
+        Debug.Log(IsPractice);
         if (IsPractice)
         {
             _levelsSettings.Add(_allLevelsSettings[0]);
@@ -1038,8 +1049,8 @@ public class MainMenuViewController : MonoBehaviour
         }
         else if (IsTournament)
         {
-            //_levelsSettings.Add(_allLevelsSettings[1]);
-            _levelsSettings.Add(_allLevelsSettings[2]);
+            _levelsSettings.Add(_allLevelsSettings[1]);
+            //_levelsSettings.Add(_allLevelsSettings[2]);
         }
 
         OnLevelSelected(0);
@@ -1088,10 +1099,11 @@ public class MainMenuViewController : MonoBehaviour
 
         if (WalletConnected)//WalletConnected
         {
+            Debug.Log("OnGoToCarSelection");
             LoadingScreen.SetActive(true);
             CheckBoughtCars();
-            IsTournament = false;
-            IsPractice = true;
+            IsTournament = true;
+            IsPractice = false;
             // IsMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
@@ -1205,13 +1217,16 @@ public class MainMenuViewController : MonoBehaviour
             CarSelectionObject.SetActive(true);
             CarSelection3dObject.SetActive(true);
             MapSelection.SetActive(false);
-        } else
+        }
+        else
         {
             LoadingScreen.SetActive(false);
             ShowToast(3f, "Transaction was not successful, please try again.");
             //Invoke("StartWithDelay", 4f);
         }
     }
+
+
 
     public void StartRace()
     {
@@ -1249,6 +1264,7 @@ public class MainMenuViewController : MonoBehaviour
         }
     }
 
+    
 
     public void TempStartRace()
     {
