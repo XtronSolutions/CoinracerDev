@@ -141,7 +141,7 @@ public class SelectionUI
     public TextMeshProUGUI PlayFromPassText;
     public Button SingleTryButton;
     public TextMeshProUGUI SingleTryText;
-    public Button CancelButton;
+    public Button SubmitButton;
     public Button BuyPassCraceButton;
     public Button BuyPassCancelButton;
     public GameObject TournamentPassScreen;
@@ -368,16 +368,26 @@ public class MainMenuViewController : MonoBehaviour
     {
         UISelection.BuyPassButton.onClick.AddListener(BuyPassClicked_SelectionUI);
         UISelection.PlayFromPassButton.onClick.AddListener(PlayFromPass_SelectionUI);
-        UISelection.CancelButton.onClick.AddListener(CancelSelection_SelectionUI);
+        UISelection.SubmitButton.onClick.AddListener(submitPin);
         UISelection.BuyPassCraceButton.onClick.AddListener(BuyPassCraceClicked_SelectionUI);
         UISelection.BuyPassCancelButton.onClick.AddListener(BackClickedPassScreen_SelectionUI);
         UISelection.SingleTryButton.onClick.AddListener(PlayOnce_SelectionUI);
-        UISelection.pinField.GetComponent<TMP_InputField>().onEndEdit.AddListener(submitPin);
+        //UISelection.pinField.GetComponent<TMP_InputField>().onEndEdit.AddListener(submitPin);
     }
-    public void submitPin(string pin)
+
+    public void submitPin()
     {
-        if (pin == "1234")
+        if (UISelection.pinField.text == Constants.SavedPassword.ToString())
+        {
             MainMenuViewController.Instance.OnGoToCarSelection();
+            ToggleScreen_SelectionUI(false);
+        }
+        else
+        {
+            ShowToast(3f, "Password incorrect, please try again.");
+        }
+
+        UISelection.pinField.text = "";
     }
     public void ChangeDisclaimerTexts_SelectionUI(string txt1, string txt2, string txt3)
     {
@@ -1049,7 +1059,7 @@ public class MainMenuViewController : MonoBehaviour
         }
         else if (IsTournament)
         {
-            _levelsSettings.Add(_allLevelsSettings[1]);
+            _levelsSettings.Add(_allLevelsSettings[2]);
             //_levelsSettings.Add(_allLevelsSettings[2]);
         }
 
@@ -1341,6 +1351,7 @@ public class MainMenuViewController : MonoBehaviour
         {
             _selecteableCars.Clear();
             _selecteableCars.Add(_allCars[0].CarDetail);
+            _selecteableCars.Add(_allCars[8].CarDetail);
             LoadingScreen.SetActive(false);
             _currentSelectedCarIndex = 0;
             UpdateSelectedCarVisual(_currentSelectedCarIndex);
@@ -1354,6 +1365,8 @@ public class MainMenuViewController : MonoBehaviour
             {
                 _selecteableCars.Clear();
                 _selecteableCars.Add(_allCars[0].CarDetail);
+                _selecteableCars.Add(_allCars[8].CarDetail);
+
 
                 LoadingScreen.SetActive(false);
                 _currentSelectedCarIndex = 0;
@@ -1365,6 +1378,7 @@ public class MainMenuViewController : MonoBehaviour
                 //clearing list and adding BOLT car
                 _selecteableCars.Clear();
                 _selecteableCars.Add(_allCars[0].CarDetail);
+                _selecteableCars.Add(_allCars[8].CarDetail);
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
                 {

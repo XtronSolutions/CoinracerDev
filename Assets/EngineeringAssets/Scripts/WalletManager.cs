@@ -230,7 +230,7 @@ public class WalletManager : MonoBehaviour
 
         if (!IsGamePlay)
         {
-            CheckCraceApproval();
+            //CheckCraceApproval();
             MainUI.ConnectBtn.SetActive(false); //disable connect button
             MainUI.ConnectedBtn.SetActive(true);// enable connected button
             PrintWalletAddress(); // print wallet address on connected button

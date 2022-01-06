@@ -31,6 +31,7 @@ public class TournamentData
     public int PassPrice { get; set; }
     public int DiscountPercentage { get; set; }
     public int DiscountOnCrace { get; set; }
+    public int Password { get; set; }
 }
 public class TournamentManager : MonoBehaviour
 {
@@ -191,6 +192,7 @@ public class TournamentManager : MonoBehaviour
             Constants.DiscountPercentage = DataTournament.DiscountPercentage;
             Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
             Constants.TicketPrice = DataTournament.TicketPrice;
+            Constants.SavedPassword = DataTournament.Password;
 
             StartTournamentCounter(false, DataTournament);
         }
