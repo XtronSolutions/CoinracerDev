@@ -963,6 +963,7 @@ public class MainMenuViewController : MonoBehaviour
     }
     public void SubmitLogin()
     {
+        WalletConnected = true; //set temporary will remove later
         if (!WalletConnected)
         {
             LoadingScreen.SetActive(false);
@@ -1514,7 +1515,10 @@ public class MainMenuViewController : MonoBehaviour
     #endregion
 
     #region ConnectionUI
-
+    public void callAPI()
+    {
+        apiRequestHandler.Instance.onClick();
+    }
     public void SubscribeEvents_ConnectionUI()
     {
         //UIConnection.MultiplayerButton.onClick.AddListener(onMultiplayerBtnClick);

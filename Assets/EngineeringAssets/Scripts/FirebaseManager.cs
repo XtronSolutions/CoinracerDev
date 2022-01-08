@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json.Linq;
 
 public class UserData
 {
@@ -43,7 +44,7 @@ public class FirebaseManager : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void SetStorage(string key, string val);
 
-    private int key=129;
+    private int key = 129;
     private string UID = "";
     public UserData PlayerData;
     public UserData[] PlayerDataArray;
@@ -74,13 +75,57 @@ public class FirebaseManager : MonoBehaviour
         OnAuthChanged();
     }
 
-    public void SetLocalStorage(string key,string data)
+    public void SetLocalStorage(string key, string data)
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         SetStorage(key, data);
 #endif
     }
+    //Setting playerData got from Login API
+    public void SetPlayerData(string _response)
+    {
+        JToken response = JObject.Parse(_response);
+        PlayerData = new UserData();
+        PlayerData.Email = (string)response.SelectToken("data").SelectToken("Email");
+        PlayerData.UserName = (string)response.SelectToken("data").SelectToken("UserName");
+        PlayerData.WalletAddress = (string)response.SelectToken("data").SelectToken("WalletAddress");
+        PlayerData.TimeSeconds = (double)response.SelectToken("data").SelectToken("TimeSeconds");
+        PlayerData.UID = (string)response.SelectToken("data").SelectToken("UID");
+        PlayerData.NumberOfTries = (double)response.SelectToken("data").SelectToken("NumberOfTries");
+        PlayerData.NumberOfTriesPractice = (double)response.SelectToken("data").SelectToken("NumberOfTriesPractice");
+        PlayerData.PassBought = (bool)response.SelectToken("data").SelectToken("PassBought");
+        PlayerData.AvatarID = (int)response.SelectToken("data").SelectToken("AvatarID");
 
+        PlayerData.TournamentEndDate = new EndDate();
+        PlayerData.TournamentEndDate.nanoseconds = (double)response.SelectToken("data").SelectToken("TournamentEndDate").SelectToken("nanoseconds");
+        PlayerData.TournamentEndDate.seconds = (double)response.SelectToken("data").SelectToken("TournamentEndDate").SelectToken("seconds");
+
+        PlayerData.ProfileCreated = new Timestamp();
+        PlayerData.ProfileCreated.nanoseconds = (double)response.SelectToken("data").SelectToken("ProfileCreated").SelectToken("nanoseconds");
+        PlayerData.ProfileCreated.seconds = (double)response.SelectToken("data").SelectToken("ProfileCreated").SelectToken("seconds");
+
+
+
+        Constants.UserName = PlayerData.UserName;
+        Constants.FlagSelectedIndex = PlayerData.AvatarID;
+
+        if (MainMenuViewController.Instance)
+            MainMenuViewController.Instance.ChangeUserNameText(Constants.UserName);
+
+        if (Constants.PushingTime)
+        {
+            Constants.PushingTime = false;
+            GamePlayUIHandler.Instance.SubmitTime();
+        }
+
+
+        string message = (string)response.SelectToken("message");
+        if (message == "User BO")
+        {
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.OnLoginSuccess(false);
+        }
+    }
     public void AuthenticateFirebase()
     {
         FirebaseAuth.AuthenticateAnonymous(gameObject.name, "OnAuthSuccess", "OnAuthError");
@@ -161,7 +206,25 @@ public class FirebaseManager : MonoBehaviour
         Credentails.Email = _email;
         Credentails.Password = _pass;
         Credentails.UserName = _username;
-        FirebaseAuth.SignInWithEmailAndPassword(_email, _pass, gameObject.name, "OnLoginUser", "OnLoginUserError");
+        apiRequestHandler.Instance.signInWithEmail(_email, _pass);
+
+       // FirebaseAuth.SignInWithEmailAndPassword(_email, _pass, gameObject.name, "OnLoginUser", "OnLoginUserError");
+        //FirebaseAuth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task => {
+        //    if (task.IsCanceled)
+        //    {
+        //        Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+        //        return;
+        //    }
+        //    if (task.IsFaulted)
+        //    {
+        //        Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+        //        return;
+        //    }
+
+        //    Firebase.Auth.FirebaseUser newUser = task.Result;
+        //    Debug.LogFormat("User signed in successfully: {0} ({1})",
+        //        newUser.DisplayName, newUser.UserId);
+        //});
     }
 
     public void CheckVerification()
@@ -187,6 +250,9 @@ public class FirebaseManager : MonoBehaviour
 
     public void OnLoginUser(string info)
     { 
+       // FirebaseAuth.
+       
+       // FirebaseUser.
         CheckVerification();
     }
 
@@ -237,6 +303,10 @@ public class FirebaseManager : MonoBehaviour
     {
         var parsedUser = StringSerializationAPI.Deserialize(typeof(FirebaseUser), user) as FirebaseUser;
         UID = parsedUser.uid;
+
+        
+       // parsedUser.
+       
         //DisplayData($"Email: {parsedUser.email}, UserId: {parsedUser.uid}, EmailVerified: {parsedUser.isEmailVerified}");
     }
 
