@@ -805,6 +805,10 @@ public class MainMenuViewController : MonoBehaviour
 
     public void EnabledRegisterScreen()
     {
+        if(Constants.IsTest)
+        {
+            WalletConnected = true;
+        }
         if (WalletConnected)
         {
             ToggleRegisterScreen(true);
@@ -918,7 +922,10 @@ public class MainMenuViewController : MonoBehaviour
 
         LoadingScreen.SetActive(true);
         Constants.RegisterSubmit = true;
-        FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.CheckWalletDB(PlayerPrefs.GetString("Account")));
+        Debug.LogError("Registering");
+        //Signing up through rest api now
+        apiRequestHandler.Instance.signUpWithEmail(email, pass, userName);
+      //  FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.CheckWalletDB(PlayerPrefs.GetString("Account")));
         //FirebaseManager.Instance.CheckEmailForAuth(email, pass, userName);
 
     }
@@ -963,7 +970,10 @@ public class MainMenuViewController : MonoBehaviour
     }
     public void SubmitLogin()
     {
-        WalletConnected = true; //set temporary will remove later
+        if (Constants.IsTest)
+        {
+            WalletConnected = true; //set temporary will remove later
+        }
         if (!WalletConnected)
         {
             LoadingScreen.SetActive(false);
