@@ -14,6 +14,10 @@ public class UserDataBO
     public string email { get; set; }
     public string walletAddress { get; set; }
 }
+public class userDataPayload
+{
+    public UserDataBO data { get; set; }
+}
 public class apiRequestHandler : MonoBehaviour
 {
     private const string loginURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Login";
@@ -87,13 +91,13 @@ public class apiRequestHandler : MonoBehaviour
         }
     }
 
-    private IEnumerator signupBORequest(string _email, string _username,string _pwd,string _token)
+    private IEnumerator signupBORequest(string _email, string _username,string _pwd,string _BOtoken)
     {
         string _walletAddress = "";
         Debug.Log(WalletManager.Instance.GetAccount());
         if (Constants.IsTest)
         {
-            _walletAddress = "12345";
+            _walletAddress = "12347985";
         }
         else
             _walletAddress = WalletManager.Instance.GetAccount();
@@ -103,18 +107,16 @@ public class apiRequestHandler : MonoBehaviour
         userDataObj.email = _email;
         userDataObj.walletAddress = _walletAddress;
 
-        //WWWForm form = new WWWForm();
-        //form.AddField("userName", _username);
-        //form.AddField("email", _email);
-        //form.AddField("walletAddress", _walletAddress);
-        WWWForm formData = new WWWForm();
-        string jsonData = JsonConvert.SerializeObject(userDataObj);
-        formData.AddField("data", jsonData);
-      //  Debug.Log(data);
-        //Debug.Log(JsonConvert.SerializeObject(data));
-        using UnityWebRequest request = UnityWebRequest.Post(signupBOUserURL, formData);
-        request.SetRequestHeader("Authorization", "Bearer " + _token);
-
+        userDataPayload obj = new userDataPayload();
+        obj.data = userDataObj;
+        Debug.Log(JsonConvert.SerializeObject(obj));
+       // Debug.Log(_BOtoken);
+        string req = JsonConvert.SerializeObject(obj);
+        using UnityWebRequest request = UnityWebRequest.Put(signupBOUserURL, req);
+        request.SetRequestHeader("Content-Type", "application/json");
+        string _reqToken = "Bearer " + _BOtoken;
+        Debug.Log(_reqToken);
+        request.SetRequestHeader("Authorization", _reqToken);
 
         yield return request.SendWebRequest();
 
