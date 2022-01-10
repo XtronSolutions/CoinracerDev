@@ -61,8 +61,11 @@ namespace DavidJalbert
         void Update()
         {
             if (!Constants.MoveCar)
+            {
+                stopCar();
                 return;
-
+            }
+                
             if (carController.IsMultiplayer)
             {
                 if (!carController.PHView.IsMine)
@@ -97,6 +100,14 @@ namespace DavidJalbert
 
             float steeringDelta = getInput(steerRightInput) - getInput(steerLeftInput);
             carController.setSteering(steeringDelta);
+        }
+
+        //this function will stop a moving car immediately
+        //@param {} no param
+        //@return {} no return
+        public void stopCar()
+        {
+            carController.clearVelocity();
         }
 
         public float getInput(InputValue v)
