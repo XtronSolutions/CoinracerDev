@@ -93,7 +93,7 @@ public class RPCCalls : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
         {
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
-            if (Constants.DisableCSP)
+            if (Constants.FreeMultiplayer)
                 MultiplayerManager.Instance.LoadSceneDelay();
         }
         else

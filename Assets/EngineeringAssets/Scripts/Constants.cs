@@ -83,9 +83,10 @@ public static class Constants
     public static bool DepositDone = false;
     public static bool CanWithdraw = false;
     public static int WithdrawTime = 60; //time in seconds//300
-    public static bool DisableCSP = false;
     public static bool TimerRunning = false;
     public static bool ClaimedReward = false;
+    public static readonly string HashKey = "testingkey";
+    public static bool FreeMultiplayer = false;
 
     async public static void GetCracePrice()
     {

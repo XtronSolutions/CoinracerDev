@@ -50,6 +50,13 @@ public class MultiplayerSelectionUI
     [Tooltip("Text reference for disclaimer for 100$")]
     public TextMeshProUGUI Disclaimer_100;
 
+    [Tooltip("Gameobject reference for multiplayer selection selection")]
+    public GameObject MultiplayerSelection;
+    [Tooltip("Button Reference for free play multiplayer")]
+    public Button FreeMultiplayerButton;
+    [Tooltip("Button Reference for waging multiplayer")]
+    public Button WageMultiplayerButton;
+
 }
 
 [System.Serializable]
@@ -925,7 +932,6 @@ public class MainMenuViewController : MonoBehaviour
     #endregion
 
     #region Login UI/Data
-
     public void ToggleLoginScreen_Login(bool _state)
     {
         UILogin.MainScreen.SetActive(_state);
@@ -1056,7 +1062,6 @@ public class MainMenuViewController : MonoBehaviour
     #endregion
 
     #region CarSelection UI/Data
-
     private void BackToGoToCarSelection()
     {
         if (Constants.IsTest)
@@ -1481,7 +1486,6 @@ public class MainMenuViewController : MonoBehaviour
     #endregion
 
     #region Settings UI/data
-
     public void ToggleScreen_Settings(bool _state)
     {
         UISetting.MainScreen.SetActive(_state);
@@ -1514,7 +1518,6 @@ public class MainMenuViewController : MonoBehaviour
     #endregion
 
     #region ConnectionUI
-
     public void SubscribeEvents_ConnectionUI()
     {
         //UIConnection.MultiplayerButton.onClick.AddListener(onMultiplayerBtnClick);
@@ -1566,7 +1569,7 @@ public class MainMenuViewController : MonoBehaviour
             ChangeTimerText_ConnectionUI(UIConnection.TimerTemp.ToString());
             yield return new WaitForSeconds(1f);
 
-            if(UIConnection.TimerTemp<=0)
+            if (UIConnection.TimerTemp <= 0)
             {
                 UIConnection.TimerObject.SetActive(false);
                 Constants.CanWithdraw = true;
@@ -1580,18 +1583,25 @@ public class MainMenuViewController : MonoBehaviour
         UIConnection.DepositWaitText.text = _txt;
     }
 
-    public void UpdateDeposit_ConnectionUI(string _txt,bool _toggle)
+    public void ToggleButton_ConnectionUI(bool _state)
     {
-        if (!Constants.DisableCSP)
+        UIConnection.DepositButton.gameObject.SetActive(_state);
+        UIConnection.WithdrawButton.gameObject.SetActive(_state);
+    }
+
+    public void UpdateDeposit_ConnectionUI(string _txt, bool _toggle)
+    {
+
+        if (!Constants.FreeMultiplayer)
         {
+            ToggleButton_ConnectionUI(true);
             ChangeDepositText_ConnectionUI(_txt);
             ToggleDepositButton_ConnectionUI(_toggle);
         }
         else
         {
             ChangeDepositText_ConnectionUI("");
-            UIConnection.DepositButton.gameObject.SetActive(false);
-            UIConnection.WithdrawButton.gameObject.SetActive(false);
+            ToggleButton_ConnectionUI(false);
         }
     }
 
@@ -1614,9 +1624,10 @@ public class MainMenuViewController : MonoBehaviour
 
     public void onMultiplayerBtnClick()
     {
-        //WalletConnected = true;
+        if(IsTest)
+            WalletConnected = true;
 
-        if (true)//WalletConnected
+        if (WalletConnected)
         {
             LoadingScreen.SetActive(true);
             if (WalletManager.Instance)
@@ -1624,18 +1635,6 @@ public class MainMenuViewController : MonoBehaviour
                 ToggleScreen_MultiplayerSelection(false);
                 Constants.IsMultiplayer = true;
                 MainMenuViewController.Instance.OnGoToCarSelection();
-
-                //if (WalletManager.Instance.CheckBalanceTournament(false, false, false, true))
-                //{
-                //    ToggleScreen_MultiplayerSelection(false);
-                //    Constants.IsMultiplayer = true;
-                //    MainMenuViewController.Instance.OnGoToCarSelection();
-                //}
-                //else
-                //{
-                //    LoadingScreen.SetActive(false);
-                //    ShowToast(3f, "Insufficient $CRACE value, need " + Constants.CalculatedCrace + " $CRACE");
-                //}
             }
             else
             {
@@ -1770,6 +1769,10 @@ public class MainMenuViewController : MonoBehaviour
     #endregion
 
     #region Multiplayer Selection
+    public void ToggleSelection_MultiplayerSelection(bool _state)
+    {
+        UIMultiplayerSelection.MultiplayerSelection.SetActive(_state);
+    }
     public void SelectWage__MultiplayerSelection(int _amount)
     {
         Constants.SelectedWage = _amount;
@@ -1782,6 +1785,8 @@ public class MainMenuViewController : MonoBehaviour
     public void SubscribeEvents_MultiplayerSelection()
     {
         UIMultiplayerSelection.CancelButton.onClick.AddListener(DisableScreen_MultiplayerSelection);
+        UIMultiplayerSelection.FreeMultiplayerButton.onClick.AddListener(FreeMultiplayer_MultiplayerSelection);
+        UIMultiplayerSelection.WageMultiplayerButton.onClick.AddListener(EnableWage_MultiplayerSelection);
     }
     public void ToggleScreen_MultiplayerSelection(bool _state)
     {
@@ -1810,10 +1815,24 @@ public class MainMenuViewController : MonoBehaviour
 
     public void EnableSelection_MultiplayerSelection()
     {
+        ToggleSelection_MultiplayerSelection(true);
+    }
+
+    public void EnableWage_MultiplayerSelection()
+    {
+        Constants.FreeMultiplayer = false;
+        ToggleSelection_MultiplayerSelection(false); 
         Constants.GetCracePrice();
         ChangeCracePrice_MultiplayerSelection(Constants.CracePrice.ToString());
         ChangeDisclaimer_MultiplayerSelection();
         ToggleScreen_MultiplayerSelection(true);
+    }
+
+    public void FreeMultiplayer_MultiplayerSelection()
+    {
+        ToggleSelection_MultiplayerSelection(false);
+        Constants.FreeMultiplayer = true;
+        onMultiplayerBtnClick();
     }
 
     public void DisableScreen_MultiplayerSelection()
