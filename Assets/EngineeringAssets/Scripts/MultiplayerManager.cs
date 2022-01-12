@@ -490,6 +490,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
 
+        if(PhotonNetwork.CurrentRoom.PlayerCount>0)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = true;
+            PhotonNetwork.CurrentRoom.IsVisible = true;
+        }
+
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
 

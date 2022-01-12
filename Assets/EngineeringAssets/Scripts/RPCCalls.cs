@@ -56,10 +56,10 @@ public class RPCCalls : MonoBehaviour
         {
             //TODO: Active END screen according to position
             int positionNumber = -1;
-            Debug.Log("_mainData.ID: " + _mainData.ID);
+            //Debug.Log("_mainData.ID: " + _mainData.ID);
             foreach (var item in MultiplayerManager.Instance.winnerList)
             {
-                Debug.Log("item.ID: " + item.ID);
+                //Debug.Log("item.ID: " + item.ID);
             }
             foreach (var item in MultiplayerManager.Instance.winnerList)
             {
@@ -68,7 +68,7 @@ public class RPCCalls : MonoBehaviour
                     break;
             }
 
-            Debug.Log("My position is: " + positionNumber);
+            //Debug.Log("My position is: " + positionNumber);
 
             if (positionNumber == 0)
             {
