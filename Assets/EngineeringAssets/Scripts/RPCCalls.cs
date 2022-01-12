@@ -75,7 +75,12 @@ public class RPCCalls : MonoBehaviour
                 Constants.ClaimedReward = false;
 
                 if (RaceManager.Instance)
-                    RaceManager.Instance.ToggleClaimReward(true);
+                {
+                    if(!Constants.FreeMultiplayer)
+                        RaceManager.Instance.ToggleClaimReward(true);
+                    else
+                        RaceManager.Instance.ToggleClaimReward(false);
+                }
             }
             else
             {
