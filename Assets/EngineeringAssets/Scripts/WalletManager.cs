@@ -741,7 +741,11 @@ public class WalletManager : MonoBehaviour
                 }
                 else
                 {
-                    ApproveCrace();
+                    if (MainMenuViewController.Instance)
+                    {
+                        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                        MainMenuViewController.Instance.ToogleScreen_CraceUI(true);
+                    }
                 }
             }
         }
@@ -753,6 +757,11 @@ public class WalletManager : MonoBehaviour
         {
             WithdrawDeposit(Constants.StoredPID);
         }
+    }
+
+    public void CallApproveCrace()
+    {
+        ApproveCrace();
     }
 
     public void CallRaceWinner()
@@ -882,6 +891,7 @@ public class WalletManager : MonoBehaviour
     {
         if (_state)
         {
+            MainMenuViewController.Instance.ToogleScreen_CraceUI(false);
             Constants.ApproveCrace = true;
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             MainMenuViewController.Instance.ShowToast(2f, "Allocated allowance");
@@ -1156,15 +1166,23 @@ public class WalletManager : MonoBehaviour
             }
         }
 
-        Debug.Log(response);
+        //Debug.Log(response);
 
         if(response!="")
         {
             BigInteger _val = BigInteger.Parse(response);
             if (_val > 0)
+            {
                 Constants.ApproveCrace = true;
+            }
             else
-                ApproveCrace();
+            {
+                if (MainMenuViewController.Instance)
+                {
+                    MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                    MainMenuViewController.Instance.ToogleScreen_CraceUI(true);
+                }
+            }
         }
 
     }

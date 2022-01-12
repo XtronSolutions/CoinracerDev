@@ -15,6 +15,14 @@ using Photon.Pun;
 #region SuperClasses
 
 [Serializable]
+public class CraceApprovalUI
+{
+    public GameObject MainScreen;
+    public Button ApproveButton;
+    public Button CancelButton;
+}
+
+[Serializable]
 public class ConnectionDetail
 {
     public GameObject DetailScreen;
@@ -257,6 +265,7 @@ public class MainMenuViewController : MonoBehaviour
     public SettingsUI UISetting;
     public ConnectionUI UIConnection;
     public MultiplayerSelectionUI UIMultiplayerSelection;
+    public CraceApprovalUI UICraceApproval;
     public GameObject MultiplayerPrefab;
 
     double RemainingTimeSecondPass;
@@ -1838,6 +1847,31 @@ public class MainMenuViewController : MonoBehaviour
     public void DisableScreen_MultiplayerSelection()
     {
         ToggleScreen_MultiplayerSelection(false);
+    }
+    #endregion
+
+    #region Crace Aproval UI
+    public void ToogleScreen_CraceUI(bool _state)
+    {
+        UICraceApproval.MainScreen.SetActive(_state);
+    }
+
+    public void SubscribeButton_CraceUI()
+    {
+        UICraceApproval.ApproveButton.onClick.AddListener(ApproveCrace_CraceUI);
+        UICraceApproval.CancelButton.onClick.AddListener(CancelApprove_CraceUI);
+
+    }
+
+    public void ApproveCrace_CraceUI()
+    {
+        if (WalletManager.Instance)
+            WalletManager.Instance.CallApproveCrace();
+    }
+
+    public void CancelApprove_CraceUI()
+    {
+        ToogleScreen_CraceUI(false);
     }
     #endregion
 }
