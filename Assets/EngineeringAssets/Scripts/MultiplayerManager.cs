@@ -193,15 +193,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         roomOptions.PublishUserId = true;
         roomOptions.IsVisible = true;
         roomOptions.IsOpen = true;
-        roomOptions.CustomRoomPropertiesForLobby =new string [2]{ Constants.MAP_PROP_KEY,Constants.WAGE_PROP_KEY };
-        roomOptions.CustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, Constants.SelectedLevel }, { Constants.WAGE_PROP_KEY, Constants.SelectedWage } };
+        roomOptions.CustomRoomPropertiesForLobby =new string [3]{ Constants.MAP_PROP_KEY,Constants.WAGE_PROP_KEY,Constants.MODE_PROP_KEY };
+        roomOptions.CustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, Constants.SelectedLevel }, { Constants.WAGE_PROP_KEY, Constants.SelectedWage }, { Constants.MODE_PROP_KEY, Constants.FreeMultiplayer } };
 
         PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
     }
 
     private void JoinRoomRandom(int mapCode, int wageAmount, byte expectedMaxPlayers)
     {
-        Hashtable expectedCustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, mapCode }, { Constants.WAGE_PROP_KEY, wageAmount } };
+        Hashtable expectedCustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, mapCode }, { Constants.WAGE_PROP_KEY, wageAmount }, { Constants.MODE_PROP_KEY, Constants.FreeMultiplayer } };
         PhotonNetwork.JoinRandomRoom(expectedCustomRoomProperties, expectedMaxPlayers);
     }
 
@@ -324,8 +324,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
-            if (!PhotonNetwork.IsMasterClient)
-                UpdateTransactionData(false, false, "waiting for other player to deposit", false, false, true);
+            if (!Constants.FreeMultiplayer)
+            {
+                if (!PhotonNetwork.IsMasterClient)
+                    UpdateTransactionData(false, false, "waiting for other player to deposit", false, false, true);
+            }
         }
     }
 
@@ -388,10 +391,16 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if(PhotonNetwork.IsMasterClient)
             {
-                if(!Constants.DepositDone)
-                    UpdateTransactionData(false, false, "please deposit the wage amount...",true,false,true);
-                else
-                    UpdateTransactionData(false, false, "", false, false, false);
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+                PhotonNetwork.CurrentRoom.IsVisible = false;
+
+                if (!Constants.FreeMultiplayer)
+                {
+                    if (!Constants.DepositDone)
+                        UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
+                    else
+                        UpdateTransactionData(false, false, "", false, false, false);
+                }
 
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
             }

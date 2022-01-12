@@ -74,6 +74,7 @@ public static class Constants
 
     public static string MAP_PROP_KEY = "map";
     public static string WAGE_PROP_KEY = "wage";
+    public static string MODE_PROP_KEY = "mode";
     public static int SelectedLevel = 0;
     public static int SelectedWage = 0;
     public static int TotalWins = 0;
