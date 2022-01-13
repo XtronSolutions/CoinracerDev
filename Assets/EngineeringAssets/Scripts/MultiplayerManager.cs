@@ -423,9 +423,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void LoadSceneDelay(float time=3f)
+    public void LoadSceneDelay(float time=3f, bool loadWithoutAsycn=false)
     {
-        Invoke("LoadAsyncScene", time);
+        if (loadWithoutAsycn)
+            MainMenuViewController.Instance.LoadDesiredScene();
+        else
+            Invoke("LoadAsyncScene", time);
     }
 
     public void LoadAsyncScene()

@@ -1260,8 +1260,13 @@ public class MainMenuViewController : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene(_levelsSettings[_currentlySelectedLevelIndex].SceneName, LoadSceneMode.Single);
+            LoadDesiredScene();
         }
+    }
+
+    public void LoadDesiredScene()
+    {
+        SceneManager.LoadScene(_levelsSettings[_currentlySelectedLevelIndex].SceneName, LoadSceneMode.Single);
     }
 
 
@@ -1573,7 +1578,7 @@ public class MainMenuViewController : MonoBehaviour
 
     IEnumerator WithDrawTimer_ConnectionUI()
     {
-        while (!Constants.CanWithdraw)
+        while (!Constants.CanWithdraw && TimerRunning)
         {
             UIConnection.TimerTemp -= 1;
             ChangeTimerText_ConnectionUI(UIConnection.TimerTemp.ToString());
