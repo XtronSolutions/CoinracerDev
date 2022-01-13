@@ -734,7 +734,7 @@ public class WalletManager : MonoBehaviour
             {
                 if (Constants.ApproveCrace)
                 {
-                    if (PhotonNetwork.IsMasterClient)
+                    if (PhotonNetwork.IsMasterClient && !Constants.OtherPlayerDeposit)
                         CreateRace(Constants.StoredPID, Constants.SelectedCrace, Constants.SelectedMaxPlayer);
                     else
                         Deposit(Constants.StoredPID, Constants.SelectedCrace);
