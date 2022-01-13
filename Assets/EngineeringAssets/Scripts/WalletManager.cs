@@ -829,6 +829,15 @@ public class WalletManager : MonoBehaviour
                 MultiplayerManager.Instance.UpdateTransactionData(false, true, "waiting for other player to deposit...", false, true, false);
                 RPCCalls.Instance.PHView.RPC("DepositCompleted", RpcTarget.Others);
             }
+
+            if(Constants.OtherPlayerDeposit)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    if (MultiplayerManager.Instance)
+                        MultiplayerManager.Instance.LoadSceneDelay(1f);
+                }
+            }
         }
         else
         {
@@ -879,6 +888,7 @@ public class WalletManager : MonoBehaviour
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             MainMenuViewController.Instance.ShowToast(1f, "funds returned.");
             MultiplayerManager.Instance.UpdateTransactionData(false, false, "", false, false, true);
+            MainMenuViewController.Instance.DisableScreen_ConnectionUI();
         }
         else
         {

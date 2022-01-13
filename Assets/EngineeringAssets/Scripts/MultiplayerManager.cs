@@ -124,6 +124,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Constants.CanWithdraw = false;
         Constants.TimerRunning = false;
         Constants.OtherPlayerDeposit = false;
+        UpdateTransactionData(false, false, "", false, false, true);
+
         ActorNumbers.Clear();
 
         if (PhotonNetwork.IsConnected)
