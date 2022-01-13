@@ -118,6 +118,7 @@ public class RPCCalls : MonoBehaviour
         }
         else
         {
+            Constants.OtherPlayerDeposit = true;
             MultiplayerManager.Instance.UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
         }
     }

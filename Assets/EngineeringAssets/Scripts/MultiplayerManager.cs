@@ -123,6 +123,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Constants.DepositDone = false;
         Constants.CanWithdraw = false;
         Constants.TimerRunning = false;
+        Constants.OtherPlayerDeposit = false;
         ActorNumbers.Clear();
 
         if (PhotonNetwork.IsConnected)
@@ -496,7 +497,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
 
-        if(PhotonNetwork.CurrentRoom.PlayerCount>0)
+        if(PhotonNetwork.CurrentRoom.PlayerCount>0 && !Constants.OtherPlayerDeposit)
         {
             PhotonNetwork.CurrentRoom.IsOpen = true;
             PhotonNetwork.CurrentRoom.IsVisible = true;
@@ -505,7 +506,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
 
-        Invoke("CheckLeftPlayer", 0.5f);
+        if(!Constants.OtherPlayerDeposit)
+            Invoke("CheckLeftPlayer", 0.5f);
 
         //Debug.Log("OnPlayerLeftRoom() called by PUN."+otherPlayer.NickName);
     }

@@ -88,6 +88,7 @@ public static class Constants
     public static bool ClaimedReward = false;
     public static readonly string HashKey = "testingkey";
     public static bool FreeMultiplayer = false;
+    public static bool OtherPlayerDeposit = false;
 
     async public static void GetCracePrice()
     {
