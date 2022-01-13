@@ -1558,8 +1558,8 @@ public class MainMenuViewController : MonoBehaviour
 
     public void DisableWithDrawTimer_ConnectionUI()
     {
-        UIConnection.TimerObject.SetActive(false);
         StopCoroutine(WithDrawTimer_ConnectionUI());
+        UIConnection.TimerObject.SetActive(false);
     }
     public void EnableWithDrawTimer_ConnectionUI()
     {

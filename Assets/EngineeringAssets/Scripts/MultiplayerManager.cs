@@ -121,10 +121,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerCountText("Player Count : 0");
         Constants.DepositDone = false;
-        Constants.CanWithdraw = false;
         Constants.TimerRunning = false;
         Constants.OtherPlayerDeposit = false;
         UpdateTransactionData(false, false, "", false, false, true);
+
+        if(MainMenuViewController.Instance)
+            MainMenuViewController.Instance.ToggleWithdrawButton_ConnectionUI(false);
+          
+        Constants.CanWithdraw = false;
 
         ActorNumbers.Clear();
 
@@ -428,18 +432,30 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (loadWithoutAsycn)
             MainMenuViewController.Instance.LoadDesiredScene();
         else
-            Invoke("LoadAsyncScene", time);
+            StartCoroutine(LoadAsyncScene());
     }
 
-    public void LoadAsyncScene()
+    public IEnumerator LoadAsyncScene()
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
+            //MainMenuViewController.Instance.LoadDesiredScene();
             PhotonNetwork.LoadLevel(MainMenuViewController.Instance.getSelectedLevel() + 1);
+
+            while (PhotonNetwork.LevelLoadingProgress < 1)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            CallStartRPC();
+
         }
         else
         {
-            MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(true);
+            if(Constants.OtherPlayerDeposit)
+                MainMenuViewController.Instance.LoadDesiredScene();
+            else
+                MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(true);
         }
             //Debug.Log("Selected Level is" + MainMenuViewController.Instance.getSelectedLevel());
 
@@ -480,7 +496,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if(PhotonNetwork.IsMasterClient)
         {
-            RPCCalls.Instance.PHView.RPC("StartRace", RpcTarget.AllViaServer);
+            RPCCalls.Instance.PHView.RPC("StartRace", RpcTarget.AllBufferedViaServer);
         }
     }
     public void CallEndMultiplayerGameRPC()
@@ -500,6 +516,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
+        if (SceneManager.GetActiveScene().name != "MainMenu")
+            return;
+
         UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
 
         if(PhotonNetwork.CurrentRoom.PlayerCount>0 && !Constants.OtherPlayerDeposit)

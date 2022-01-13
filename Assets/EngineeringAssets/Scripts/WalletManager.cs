@@ -835,7 +835,7 @@ public class WalletManager : MonoBehaviour
                 if (PhotonNetwork.IsMasterClient)
                 {
                     if (MultiplayerManager.Instance)
-                        MultiplayerManager.Instance.LoadSceneDelay(1f,true);
+                        MultiplayerManager.Instance.LoadSceneDelay(0.5f,true);
                 }
             }
         }

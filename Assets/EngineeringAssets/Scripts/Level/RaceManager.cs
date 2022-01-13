@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+using Photon.Pun;
 
 [Serializable]
 public class MultiplayerUI
@@ -84,7 +85,13 @@ public class RaceManager : MonoBehaviour
         }
 
         if (Constants.IsMultiplayer)
-            MultiplayerManager.Instance.CallStartRPC();
+        {
+            if(PhotonNetwork.IsConnected)
+            {
+                if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+                    StartTheRaceTimer();
+            }
+        }
         else
             StartTheRaceTimer();
 

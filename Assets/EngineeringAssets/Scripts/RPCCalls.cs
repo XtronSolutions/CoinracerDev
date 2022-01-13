@@ -114,7 +114,7 @@ public class RPCCalls : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
         {
             if(MultiplayerManager.Instance)
-                MultiplayerManager.Instance.LoadSceneDelay(1f);
+                MultiplayerManager.Instance.LoadSceneDelay(0.5f);
         }
         else
         {
