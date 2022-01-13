@@ -51,7 +51,7 @@ public static class Constants
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
     public static bool IsTestNet = true;
-    public static bool IsTest = false;
+    public static bool IsTest = true;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
     public static string EmailSent = "";
@@ -83,7 +83,7 @@ public static class Constants
     public static int TotalPlayingTime = 600;
     public static bool DepositDone = false;
     public static bool CanWithdraw = false;
-    public static int WithdrawTime = 60; //time in seconds//300
+    public static int WithdrawTime = 10; //time in seconds//300
     public static bool TimerRunning = false;
     public static bool ClaimedReward = false;
     public static readonly string HashKey = "testingkey";

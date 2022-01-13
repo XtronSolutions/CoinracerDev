@@ -343,6 +343,7 @@ public class MainMenuViewController : MonoBehaviour
         SubscribeEvents_Settings();
         SubscribeEvents_ConnectionUI();
         SubscribeEvents_MultiplayerSelection();
+        SubscribeButton_CraceUI();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
             GetStorage(Constants.SoundKey,this.gameObject.name,"OnGetSound");

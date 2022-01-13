@@ -394,6 +394,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
             if(PhotonNetwork.IsMasterClient)
@@ -403,10 +404,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
                 if (!Constants.FreeMultiplayer)
                 {
-                    if (!Constants.DepositDone)
-                        UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
-                    else
-                        UpdateTransactionData(false, false, "", false, false, false);
+                    if (Constants.DepositDone)
+                        RPCCalls.Instance.PHView.RPC("DepositCompleted", RpcTarget.Others);
                 }
 
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString());
