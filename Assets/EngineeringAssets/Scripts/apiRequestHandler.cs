@@ -18,6 +18,10 @@ public class userDataPayload
 {
     public UserDataBO data { get; set; }
 }
+
+
+
+
 public class apiRequestHandler : MonoBehaviour
 {
     private const string loginURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Login";
@@ -26,6 +30,7 @@ public class apiRequestHandler : MonoBehaviour
 
     private const string firebaseApiKey = "AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
     private const string signupBOUserURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/SignUp";
+    private const string updateUserBoURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/UpdateUserBO";
     public static apiRequestHandler Instance;
 
     private void OnEnable()
@@ -42,9 +47,15 @@ public class apiRequestHandler : MonoBehaviour
         Instance = this;
     }
 
+    public void updatePlayerData()
+    {
+        StartCoroutine(processTokenRequest(FirebaseManager.Instance.Credentails.Email,
+            FirebaseManager.Instance.Credentails.Password, true));
+    }
+
     public void signInWithEmail(string _email,string _pwd)
     {
-        StartCoroutine(processTokenRequest(_email, _pwd));
+        StartCoroutine(processTokenRequest(_email, _pwd,false));
     }
     public void signUpWithEmail(string _email,string _pwd,string _username)
     {
@@ -131,12 +142,12 @@ public class apiRequestHandler : MonoBehaviour
             Debug.Log(request.downloadHandler.text);
             JToken token = JObject.Parse(request.downloadHandler.text);
             string tID = (string)token.SelectToken("idToken");
-            StartCoroutine(processTokenRequest(_email,_pwd));
+            StartCoroutine(processTokenRequest(_email,_pwd,false));
             Debug.Log(tID);
         }
     }
 
-    private IEnumerator processTokenRequest(string _email, string _pwd)
+    private IEnumerator processTokenRequest(string _email, string _pwd, bool flag = false)
     {
         WWWForm form = new WWWForm();
         form.AddField("email", _email);
@@ -159,11 +170,46 @@ public class apiRequestHandler : MonoBehaviour
             Debug.Log(request.downloadHandler.text);
             JToken token = JObject.Parse(request.downloadHandler.text);
             string tID = (string)token.SelectToken("idToken");
-            StartCoroutine(processRequest(tID));
+            if (flag)
+            {
+                //TODO: Update Request
+                StartCoroutine(processUpdateRequest(tID));
+            }
+            else
+            {
+                StartCoroutine(processRequest(tID)); //Login Request
+            }
             Debug.Log(tID);
         }
     }
 
+    private IEnumerator processUpdateRequest(string _tID)
+    {
+        FirebaseManager.Instance.updatePlayerDataPayload();
+        string req = JsonConvert.SerializeObject(FirebaseManager.Instance.PlayerDataPayload);
+        using UnityWebRequest request = UnityWebRequest.Put(updateUserBoURL, req);
+        request.SetRequestHeader("Content-Type", "application/json");
+        string _reqToken = "Bearer " + _tID;
+        Debug.Log(_reqToken);
+        request.SetRequestHeader("Authorization", _reqToken);
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.Log(request.error);
+        }
+        else
+        {
+            Debug.Log("Result is: ");
+            Debug.Log(request.result);
+            Debug.Log(request.downloadHandler.text);
+            //JToken token = JObject.Parse(request.downloadHandler.text);
+            // string tID = (string)token.SelectToken("idToken");
+            // Debug.Log(tID);
+        }
+    }
+    
 
     private IEnumerator processRequest(string _token)
     {
@@ -188,6 +234,7 @@ public class apiRequestHandler : MonoBehaviour
         }
     }
 
+ 
     private void Update()
     {
      

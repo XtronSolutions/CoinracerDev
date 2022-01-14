@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
+using Photon.Realtime;
 
 public class UserData
 {
@@ -25,6 +26,10 @@ public class UserData
     public EndDate TournamentEndDate { get; set; }
 
     public Timestamp ProfileCreated { get; set; }
+}
+public class updateDataPayload
+{
+    public UserData data { get; set; }
 }
 
 public class AuthCredentials
@@ -47,6 +52,7 @@ public class FirebaseManager : MonoBehaviour
     private int key = 129;
     private string UID = "";
     public UserData PlayerData;
+    public updateDataPayload PlayerDataPayload;
     public UserData[] PlayerDataArray;
     public static FirebaseManager Instance;
 
@@ -73,6 +79,12 @@ public class FirebaseManager : MonoBehaviour
 
         //AuthenticateFirebase();
         OnAuthChanged();
+    }
+
+    public void updatePlayerDataPayload()
+    {
+        PlayerDataPayload = new updateDataPayload();
+        PlayerDataPayload.data = PlayerData;
     }
 
     public void SetLocalStorage(string key, string data)
@@ -375,8 +387,8 @@ public class FirebaseManager : MonoBehaviour
     public IEnumerator FetchUserDB(string _walletID, string _username)
     {
         UserDataFetched = false;
-        FetchUserData = false;
-        GetFireStoreData(DocPath, _walletID);
+        FetchUserData = true;
+       // GetFireStoreData(DocPath, _walletID);
         yield return new WaitUntil(() => FetchUserData == true);
         if (UserDataFetched)
         {
@@ -498,7 +510,9 @@ public class FirebaseManager : MonoBehaviour
     public void UpdatedFireStoreData(UserData _data)
     {
         string _json = JsonConvert.SerializeObject(_data);
-        FirebaseFirestore.UpdateDocument(DocPath, _data.WalletAddress, _json, gameObject.name, "OnDocUpdate", "OnDocUpdateError");
+        //TODO: call update api to update the data
+        apiRequestHandler.Instance.updatePlayerData();
+       // FirebaseFirestore.UpdateDocument(DocPath, _data.WalletAddress, _json, gameObject.name, "OnDocUpdate", "OnDocUpdateError");
     }
 
     public void OnDocUpdate(string info)
