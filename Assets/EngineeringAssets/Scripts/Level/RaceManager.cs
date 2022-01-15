@@ -12,6 +12,7 @@ using Photon.Pun;
 public class MultiplayerUI
 {
     public GameObject MainScreen;
+    public GameObject confirmationScreen;
     public TextMeshProUGUI WinText;
     public TextMeshProUGUI WinnerNameText;
     public TextMeshProUGUI AmountWinText;
@@ -281,6 +282,17 @@ public class RaceManager : MonoBehaviour
 
     public void MainMenu()
     {
+        //if user has not claimed the reward then activate the confirmation screen for going back to main menu and return from this function
+        if (!Constants.ClaimedReward)
+        {
+            ToggleScreen_ConfirmationScreen(true);
+            return;
+        }
+        OpenMainMenu();
+    }
+
+    public void OpenMainMenu()
+    {
         if (MultiplayerManager.Instance)
         {
             MultiplayerManager.Instance.DisconnectPhoton();
@@ -301,6 +313,10 @@ public class RaceManager : MonoBehaviour
     }
 
     #region Multiplayer UI
+    public void ToggleScreen_ConfirmationScreen(bool state)
+    {
+        UIMultiplayer.confirmationScreen.SetActive(state);
+    }
     public void ToggleScreen_MultiplayerUI(bool state)
     {
         UIMultiplayer.MainScreen.SetActive(state);
