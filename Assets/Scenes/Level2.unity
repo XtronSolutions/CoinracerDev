@@ -148,13 +148,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1920547}
-  m_LocalRotation: {x: -0.4055798, y: -0.579228, z: -0.579228, w: 0.4055798}
-  m_LocalPosition: {x: 0.32623407, y: 2.14, z: 13.936333}
+  m_LocalRotation: {x: 0, y: -0.8191521, z: 0, w: 0.57357645}
+  m_LocalPosition: {x: 0.32623407, y: 2.585, z: 13.936333}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 439881455}
   m_RootOrder: 67
-  m_LocalEulerAnglesHint: {x: -90, y: -110, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -110, z: 0}
 --- !u!23 &1920549
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5691,9 +5691,9 @@ RectTransform:
   - {fileID: 267997447}
   - {fileID: 4195841}
   - {fileID: 875543286}
+  - {fileID: 1189825700}
   - {fileID: 643723113}
   - {fileID: 1231266985}
-  - {fileID: 1189825700}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9034,7 +9034,7 @@ RectTransform:
   m_Children:
   - {fileID: 1037594955}
   m_Father: {fileID: 427494614}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -10360,8 +10360,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainMenuViewController, Assembly-CSharp
+      - m_Target: {fileID: 610202714}
+        m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: PlayButtonDownAudioClip
         m_Mode: 1
         m_Arguments:
@@ -10372,7 +10372,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 610202714}
         m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: OpenMainMenu
         m_Mode: 1
@@ -14438,13 +14438,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1075764405}
-  m_LocalRotation: {x: -0.3970326, y: -0.5890492, z: -0.5738263, w: 0.40756533}
-  m_LocalPosition: {x: -11.142, y: 2.81, z: 9.632}
+  m_LocalRotation: {x: 0, y: -0.82234764, z: 0, w: 0.5689854}
+  m_LocalPosition: {x: -11.142, y: 3.21, z: 9.632}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 439881455}
   m_RootOrder: 69
-  m_LocalEulerAnglesHint: {x: -88.5, y: -110.641, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -110.641, z: 0}
 --- !u!23 &1075764407
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -15072,8 +15072,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainMenuViewController, Assembly-CSharp
+      - m_Target: {fileID: 610202714}
+        m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: PlayButtonDownAudioClip
         m_Mode: 1
         m_Arguments:
@@ -15084,7 +15084,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 610202714}
         m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: ToggleScreen_ConfirmationScreen
         m_Mode: 6
@@ -15694,7 +15694,7 @@ RectTransform:
   m_Children:
   - {fileID: 122796876}
   m_Father: {fileID: 427494614}
-  m_RootOrder: 12
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -15846,13 +15846,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1192666300}
-  m_LocalRotation: {x: -0.67734826, y: 0.183376, z: 0.18020307, w: 0.68927467}
-  m_LocalPosition: {x: 1.4343262, y: 8.03, z: -14.877143}
+  m_LocalRotation: {x: 0, y: 0.257099, z: 0, w: 0.96638507}
+  m_LocalPosition: {x: 1.4343262, y: 8.42, z: -14.877143}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 439881455}
   m_RootOrder: 68
-  m_LocalEulerAnglesHint: {x: -89, y: 29.796, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 29.796, z: 0}
 --- !u!23 &1192666302
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -16220,7 +16220,7 @@ RectTransform:
   - {fileID: 2066771589}
   - {fileID: 1035452258}
   m_Father: {fileID: 427494614}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}

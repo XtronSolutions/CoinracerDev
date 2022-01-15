@@ -49,6 +49,7 @@ public static class Constants
     public static bool NFTChanged = false;
     public static List<string> StoredCarNames = new List<string>();
     public static bool PushingTries = false;
+    public static bool PushingWins = false;
     public static bool WalletChanged = false;
     public static bool IsTestNet = true;
     public static bool IsTest = false;
@@ -89,6 +90,7 @@ public static class Constants
     public static readonly string HashKey = "testingkey";
     public static bool FreeMultiplayer = false;
     public static bool OtherPlayerDeposit = false;
+    public static string PIDString = "";
 
     async public static void GetCracePrice()
     {

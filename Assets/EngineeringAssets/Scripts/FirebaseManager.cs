@@ -24,6 +24,7 @@ public class UserData
     public EndDate TournamentEndDate { get; set; }
 
     public Timestamp ProfileCreated { get; set; }
+    public int TotalWins { get; set; }
 }
 
 public class AuthCredentials
@@ -321,6 +322,7 @@ public class FirebaseManager : MonoBehaviour
             //Debug.Log(PlayerData.TournamentEndDate);
             Constants.UserName = PlayerData.UserName;
             Constants.FlagSelectedIndex = PlayerData.AvatarID;
+            Constants.TotalWins = PlayerData.TotalWins;
 
             if (MainMenuViewController.Instance)
                 MainMenuViewController.Instance.ChangeUserNameText(Constants.UserName);
@@ -364,6 +366,8 @@ public class FirebaseManager : MonoBehaviour
             //Debug.Log(PlayerData.TournamentEndDate);
             Constants.UserName = PlayerData.UserName;
             Constants.FlagSelectedIndex = PlayerData.AvatarID;
+            Constants.TotalWins = PlayerData.TotalWins;
+
         }
         else
         {
@@ -371,6 +375,7 @@ public class FirebaseManager : MonoBehaviour
             PlayerData.WalletAddress = _walletID;
             PlayerData.UserName = Constants.SavedUserName;
             Constants.UserName = PlayerData.UserName;
+            PlayerData.TotalWins = Constants.TotalWins;
             PlayerData.PassBought = false;
             PlayerData.TimeSeconds = 0;
             PlayerData.UID = UID;
@@ -439,7 +444,13 @@ public class FirebaseManager : MonoBehaviour
             return;
         }
 
-        if(RaceManager.Instance)
+        if (Constants.PushingWins)
+        {
+            Constants.PushingWins = false;
+            return;
+        }
+
+        if (RaceManager.Instance)
             RaceManager.Instance.RaceEnded();
     }
 

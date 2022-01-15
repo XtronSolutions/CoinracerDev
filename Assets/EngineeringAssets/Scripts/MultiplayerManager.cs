@@ -191,6 +191,19 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         var roomCode = Random.Range(10000, 99999);
 
+        if (!Constants.FreeMultiplayer)
+        {
+            if (WalletManager.Instance)
+                WalletManager.Instance.getRaceIds();
+
+            if (Constants.PIDString.Contains(roomCode.ToString()))
+            {
+                Debug.Log("Room id already exists creating new one");
+                Invoke("CreateRoom", 0.5f);
+                return;
+            }
+        }
+
         Constants.StoredPID= roomCode.ToString(); 
         //string roomName = "Room_" + roomCode.ToString();
         string roomName = roomCode.ToString();
@@ -506,7 +519,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         _data.ID = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
         _data.TotalBetValue = Constants.SelectedCrace+ Constants.SelectedCrace;
         _data.RunTime = Constants.GameSeconds.ToString();
-        _data.TotalWins = 0;
+        _data.TotalWins = Constants.TotalWins;
         _data.FlagIndex = Constants.FlagSelectedIndex;
         _data.WalletAddress = Constants.WalletAddress;
 

@@ -76,10 +76,18 @@ public class RPCCalls : MonoBehaviour
 
                 if (RaceManager.Instance)
                 {
-                    if(!Constants.FreeMultiplayer)
+                    if (!Constants.FreeMultiplayer)
+                    {
                         RaceManager.Instance.ToggleClaimReward(true);
+                        Constants.PushingWins = true;
+                        FirebaseManager.Instance.PlayerData.TotalWins++;
+                        Constants.TotalWins = FirebaseManager.Instance.PlayerData.TotalWins;
+                        FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+                    }
                     else
+                    {
                         RaceManager.Instance.ToggleClaimReward(false);
+                    }
                 }
             }
             else

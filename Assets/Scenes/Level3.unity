@@ -10220,9 +10220,9 @@ RectTransform:
   - {fileID: 267997447}
   - {fileID: 4195841}
   - {fileID: 875543286}
+  - {fileID: 1103792129}
   - {fileID: 777655469}
   - {fileID: 514610279}
-  - {fileID: 1103792129}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11825,7 +11825,7 @@ RectTransform:
   - {fileID: 972277330}
   - {fileID: 1716515338}
   m_Father: {fileID: 427494614}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -17603,7 +17603,7 @@ RectTransform:
   m_Children:
   - {fileID: 1250656750}
   m_Father: {fileID: 427494614}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -25429,7 +25429,7 @@ RectTransform:
   m_Children:
   - {fileID: 924352861}
   m_Father: {fileID: 427494614}
-  m_RootOrder: 12
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -47751,8 +47751,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainMenuViewController, Assembly-CSharp
+      - m_Target: {fileID: 610202714}
+        m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: PlayButtonDownAudioClip
         m_Mode: 1
         m_Arguments:
@@ -47763,7 +47763,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 610202714}
         m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: OpenMainMenu
         m_Mode: 1
@@ -47912,8 +47912,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainMenuViewController, Assembly-CSharp
+      - m_Target: {fileID: 610202714}
+        m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: PlayButtonDownAudioClip
         m_Mode: 1
         m_Arguments:
@@ -47924,7 +47924,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 610202714}
         m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: ToggleScreen_ConfirmationScreen
         m_Mode: 6
