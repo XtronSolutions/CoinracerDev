@@ -388,6 +388,7 @@ public class FirebaseManager : MonoBehaviour
     {
         UserDataFetched = false;
         FetchUserData = true;
+        UserDataFetched = true;
        // GetFireStoreData(DocPath, _walletID);
         yield return new WaitUntil(() => FetchUserData == true);
         if (UserDataFetched)
@@ -534,9 +535,12 @@ public class FirebaseManager : MonoBehaviour
 
     public void QueryDB(string _field,string _type)
     {
-        #if UNITY_WEBGL && !UNITY_EDITOR
-        FirebaseFirestore.QueryDB(DocPath,_field, _type, gameObject.name, "OnQueryUpdate", "OnQueryUpdateError");
-        #endif
+       // #if UNITY_WEBGL && !UNITY_EDITOR
+        //FirebaseFirestore.QueryDB(DocPath,_field, _type, gameObject.name, "OnQueryUpdate", "OnQueryUpdateError");
+        //#endif
+        //Send Leaderboard request to api
+        apiRequestHandler.Instance.getLeaderboard();
+
     }
     public void OnQueryUpdate(string info)
     {

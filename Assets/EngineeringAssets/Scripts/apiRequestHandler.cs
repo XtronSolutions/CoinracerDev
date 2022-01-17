@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -31,6 +32,7 @@ public class apiRequestHandler : MonoBehaviour
     private const string firebaseApiKey = "AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
     private const string signupBOUserURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/SignUp";
     private const string updateUserBoURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/UpdateUserBO";
+    private const string leaderboardBOURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Leaderboard";
     public static apiRequestHandler Instance;
 
     private void OnEnable()
@@ -44,7 +46,11 @@ public class apiRequestHandler : MonoBehaviour
     }
     public void Start()
     {
-        Instance = this;
+        if (!Instance)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
     }
 
     public void updatePlayerData()
@@ -90,15 +96,31 @@ public class apiRequestHandler : MonoBehaviour
             Debug.LogError(request.result);
             Debug.Log(request.error);
         }
+        else if(request.result == UnityWebRequest.Result.Success)
+        {
+         Debug.Log("Result is: ");
+                    Debug.Log(request.result);
+                    Debug.Log(request.downloadHandler.text);
+                    JToken token = JObject.Parse(request.downloadHandler.text);
+                    string tID = (string)token.SelectToken("idToken");
+                    StartCoroutine(signupBORequest(_email,_username,_pwd,tID));
+                  Debug.Log(tID);
+        }
         else
         {
-            Debug.Log("Result is: ");
-            Debug.Log(request.result);
-            Debug.Log(request.downloadHandler.text);
-            JToken token = JObject.Parse(request.downloadHandler.text);
-            string tID = (string)token.SelectToken("idToken");
-            StartCoroutine(signupBORequest(_email,_username,_pwd,tID));
-            Debug.Log(tID);
+         Debug.Log("Result is: ");
+         Debug.Log(request.result);
+         JToken res = JObject.Parse(request.downloadHandler.text);
+         Debug.Log((string)res.SelectToken("error").SelectToken("message"));
+         if ((string) res.SelectToken("error").SelectToken("message") == "EMAIL_EXISTS")
+         {
+             MainMenuViewController.Instance.EmailAlreadyExisted();
+         }
+         else if ((string) res.SelectToken("error").SelectToken("message") == "EMAIL_NOT_FOUND")//2nd error
+         {
+             MainMenuViewController.Instance.SomethingWentWrong();
+         }
+           
         }
     }
 
@@ -163,7 +185,7 @@ public class apiRequestHandler : MonoBehaviour
         {
             Debug.Log(request.error);
         }
-        else
+        else if(request.result == UnityWebRequest.Result.Success)
         {
             Debug.Log("Result is: ");
             Debug.Log(request.result);
@@ -181,12 +203,28 @@ public class apiRequestHandler : MonoBehaviour
             }
             Debug.Log(tID);
         }
+        else
+        {
+            Debug.Log("Result is: ");
+            Debug.Log(request.result);
+            JToken res = JObject.Parse(request.downloadHandler.text);
+            Debug.Log((string)res.SelectToken("error").SelectToken("message"));
+            if ((string) res.SelectToken("error").SelectToken("message") == "INVALID_PASSWORD")
+            {
+                MainMenuViewController.Instance.SomethingWentWrong();
+            }
+            else if ((string) res.SelectToken("error").SelectToken("message") == "EMAIL_NOT_FOUND")
+            {
+                MainMenuViewController.Instance.SomethingWentWrong();
+            }
+        }
     }
 
     private IEnumerator processUpdateRequest(string _tID)
     {
         FirebaseManager.Instance.updatePlayerDataPayload();
         string req = JsonConvert.SerializeObject(FirebaseManager.Instance.PlayerDataPayload);
+        Debug.Log(req);
         using UnityWebRequest request = UnityWebRequest.Put(updateUserBoURL, req);
         request.SetRequestHeader("Content-Type", "application/json");
         string _reqToken = "Bearer " + _tID;
@@ -225,6 +263,10 @@ public class apiRequestHandler : MonoBehaviour
         }
         else
         {
+            //"message": "Unauthorized" //wrong password
+            // JToken response = JObject.Parse(request.downloadHandler.text);
+            // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
+            
             Debug.Log("Result is: ");
             Debug.Log(request.result);
             Debug.Log(request.downloadHandler.text);
@@ -234,7 +276,76 @@ public class apiRequestHandler : MonoBehaviour
         }
     }
 
- 
+    public void getLeaderboard()
+    {
+        StartCoroutine(processLeaderboardToken(FirebaseManager.Instance.Credentails.Email,
+            FirebaseManager.Instance.Credentails.Password));
+    }
+
+    private IEnumerator processLeaderboardToken(string _email, string _password)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("email", _email);
+        form.AddField("password", _password);
+        form.AddField("returnSecureToken", "true");
+        using UnityWebRequest request = UnityWebRequest.Post(firebaseLoginUrl+firebaseApiKey,form);
+        
+
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.Log(request.error);
+        }
+        else if(request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Result is: ");
+            Debug.Log(request.result);
+            Debug.Log(request.downloadHandler.text);
+            JToken token = JObject.Parse(request.downloadHandler.text);
+            string tID = (string)token.SelectToken("idToken");
+            StartCoroutine(processLeaderBoardRequest(tID));
+            Debug.Log(tID);
+        }
+        else
+        {
+            MainMenuViewController.Instance.SomethingWentWrong();
+        }
+
+    }
+
+    private IEnumerator processLeaderBoardRequest(string _tID)
+    {
+        using UnityWebRequest request = UnityWebRequest.Get(leaderboardBOURL);
+        request.SetRequestHeader("Authorization","Bearer "+ _tID);
+
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.Log(request.error);
+        }
+        else
+        {
+            //"message": "Unauthorized" //wrong password
+            // JToken response = JObject.Parse(request.downloadHandler.text);
+            // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
+            
+            Debug.Log("LeaderBoard Result is: ");
+            Debug.Log(request.result);
+            Debug.Log(request.downloadHandler.text);
+           // JToken response = JObject.Parse(request.downloadHandler.text);
+           // string reqResponse = (string) response.SelectToken("data");
+            FirebaseManager.Instance.OnQueryUpdate(request.downloadHandler.text);
+            //  FirebaseManager.Instance.SetPlayerData(request.downloadHandler.text);
+            //UserData _player;
+            //_player.UserName = 
+        }   
+    }
+    
+    
     private void Update()
     {
      

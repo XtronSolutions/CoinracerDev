@@ -110,6 +110,10 @@ public class GamePlayUIHandler : MonoBehaviour
         }
         else
         {
+            //Temporary
+            //FirebaseManager.Instance.PlayerData.TimeSeconds = Constants.GameSeconds;
+            //FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            //Temporary End
             RaceManager.Instance.RaceEnded();
             Debug.Log("no pushing time, as current is greater than previous");
         }
