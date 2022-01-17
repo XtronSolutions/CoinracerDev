@@ -446,7 +446,7 @@ public class MainMenuViewController : MonoBehaviour
 
                         //if (Mathf.Sign((float)RemainingTimeSecondPass) == -1)
                         //{
-                        //    Debug.LogError("pass time is over, resting it");
+                        //    Constants.PrintError("pass time is over, resting it");
                         //    LoadingScreen.SetActive(true);
                         //    FirebaseManager.Instance.PlayerData.PassBought = false;
                         //    FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
@@ -462,7 +462,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     LoadingScreen.SetActive(false);
-                    Debug.LogError("WM instance is null BuyPassCraceClicked_SelectionUI");
+                    Constants.PrintError("WM instance is null BuyPassCraceClicked_SelectionUI");
                 }
             }
             else
@@ -518,7 +518,7 @@ public class MainMenuViewController : MonoBehaviour
 
                         //if (Mathf.Sign((float)RemainingTimeSecondPass) == -1)
                         //{
-                        //    Debug.LogError("pass time is over, resting it");
+                        //   Constants.PrintError("pass time is over, resting it");
                         //    LoadingScreen.SetActive(false);
                         //    FirebaseManager.Instance.PlayerData.PassBought = false;
                         //    FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
@@ -540,7 +540,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     LoadingScreen.SetActive(false);
-                    Debug.LogError("WM instance is null PlayFromPass_SelectionUI");
+                    Constants.PrintError("WM instance is null PlayFromPass_SelectionUI");
                 }
             }
             else
@@ -591,7 +591,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     LoadingScreen.SetActive(false);
-                    Debug.LogError("WM instance is null PlayOnce_SelectionUI");
+                    Constants.PrintError("WM instance is null PlayOnce_SelectionUI");
                 }
             }
             else
@@ -1143,7 +1143,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     LoadingScreen.SetActive(false);
-                    Debug.LogError("WM instance is null OnGoToCarSelectionTournament");
+                    Constants.PrintError("WM instance is null OnGoToCarSelectionTournament");
                 }
             } else
             {
@@ -1255,7 +1255,7 @@ public class MainMenuViewController : MonoBehaviour
                 MainMenuViewController.Instance.SelectMultiplayer_ConnectionUI();
             } else
             {
-                Debug.LogError("MM Instance is null");
+                Constants.PrintError("MM Instance is null");
             }
         }
         else
@@ -1654,7 +1654,7 @@ public class MainMenuViewController : MonoBehaviour
             else
             {
                 LoadingScreen.SetActive(false);
-                Debug.LogError("WM instance is null onMultiplayerBtnClick");
+                Constants.PrintError("WM instance is null onMultiplayerBtnClick");
             }
         }
         else

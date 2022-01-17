@@ -408,8 +408,8 @@ public class FirebaseManager : MonoBehaviour
 
     public void OnEmailSentError(string info)
     {
-        Debug.LogError("Senfing Verfication email error: "+info);
-        Invoke("SendVerEmail", 1f);
+        Debug.LogError("Sending Verfication email error: "+info);
+        //Invoke("SendVerEmail", 1f);
     }
 
     public IEnumerator CheckWalletDB(string _walletID)

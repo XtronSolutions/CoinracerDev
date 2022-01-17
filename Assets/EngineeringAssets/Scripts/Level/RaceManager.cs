@@ -109,7 +109,6 @@ public class RaceManager : MonoBehaviour
 
     IEnumerator StartTimerCountDown()
     {
-        //Debug.Log(RaceCounter);
         if (RaceCounter < -1)
         {
             GameStartTimer.text = "";
@@ -224,7 +223,7 @@ public class RaceManager : MonoBehaviour
             TimeHandler.Instance.timerIsRunning = false;
         }else
         {
-            Debug.LogError("TH is null for OnRaceDone");
+            Constants.PrintError("TH is null for OnRaceDone");
         }
 
         if(Constants.IsMultiplayer)
@@ -258,7 +257,7 @@ public class RaceManager : MonoBehaviour
             LeaderboardManager.Instance.EnableGameplayLeaderboard();
         }else
         {
-            Debug.LogError("GUH is null for RaceEnded");
+            Constants.PrintError("GUH is null for RaceEnded");
         }
     }
 

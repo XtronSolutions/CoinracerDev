@@ -78,6 +78,7 @@ public class Web3GL
                 Debug.Log(eventResponse);
                 await new WaitForSeconds(1f);
                 eventResponse = SendContractEventResponse();
+                Constants.EventData = eventResponse;
             }
 
             SetContractEventResponse("");

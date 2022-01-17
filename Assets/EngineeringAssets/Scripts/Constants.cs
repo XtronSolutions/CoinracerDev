@@ -4,10 +4,11 @@ using System.Numerics;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using UnityEngine.Networking;
+using System;
 
 public static class Constants
 {
-    public static string APP_VERSION = "Alpha 1.7";
+    public static string APP_VERSION = "Alpha 2.0";
     public static string WalletAccoutKey = "Account";
     public static string SoundKey = "Sound";
     public static string MusicKey = "Music";
@@ -51,7 +52,7 @@ public static class Constants
     public static bool PushingTries = false;
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
-    public static bool IsTestNet = true;
+    public static bool IsTestNet = false;
     public static bool IsTest = false;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
@@ -84,13 +85,15 @@ public static class Constants
     public static int TotalPlayingTime = 600;
     public static bool DepositDone = false;
     public static bool CanWithdraw = false;
-    public static int WithdrawTime = 10; //time in seconds//300
+    public static int WithdrawTime = 300; //time in seconds//300
     public static bool TimerRunning = false;
     public static bool ClaimedReward = false;
-    public static readonly string HashKey = "testingkey";
+    public static readonly string HashKey = "@Hhg4*NnMQM5sf$W";
     public static bool FreeMultiplayer = false;
     public static bool OtherPlayerDeposit = false;
     public static string PIDString = "";
+    public static bool EventRaised = false;
+    public static string EventData = "";
 
     async public static void GetCracePrice()
     {
@@ -106,7 +109,7 @@ public static class Constants
         }
         catch (System.Exception)
         {
-            Debug.LogError("something went wrong while fetching crace price from coinbase.");
+            //Debug.LogError("something went wrong while fetching crace price from coinbase.");
             CracePrice = 0.0888;
         }
     }
@@ -130,10 +133,25 @@ public static class Constants
         return _calulcatedAmount;
     }
 
+    public static void PrintLog(string Txt)
+    {
+        //Debug.Log(Txt);
+    }
+
+    public static void PrintError(string Txt)
+    {
+        //Debug.LogError(Txt);
+    }
+
+    public static void PrintExp(Exception Txt,UnityEngine.Object ins)
+    {
+        //Debug.LogException(Txt,ins);
+    }
+
     public static void ResetData()
     {
         WalletChanged=false;
-        APP_VERSION = "Alpha 1.7";
+        APP_VERSION = "Alpha 2.0";
         WalletAccoutKey = "Account";
         CredKey = "Credentails";
         MAIN_MENU_SCENE_NAME = "MainMenu";
