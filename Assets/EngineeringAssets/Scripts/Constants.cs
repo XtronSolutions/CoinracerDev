@@ -86,6 +86,7 @@ public static class Constants
     public static bool DisableCSP = false;
     public static bool TimerRunning = false;
     public static bool ClaimedReward = false;
+    public static int LeaderboardCount = 100;
 
     async public static void GetCracePrice()
     {

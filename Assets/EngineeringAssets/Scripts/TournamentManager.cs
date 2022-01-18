@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using FirebaseWebGL.Scripts.FirebaseBridge;
 using Newtonsoft.Json;
 using System;
+using Newtonsoft.Json.Linq;
+using UnityEngine.Networking;
 
 public class Timestamp
 {
@@ -58,6 +60,11 @@ public class TournamentManager : MonoBehaviour
     string textfieldHours;//string store converstion of hours into string for display
     string textfieldMinutes;//string store converstion of minutes into string for display
     string textfieldSeconds;//string store converstion of seconds into string for display
+    
+    
+    private const string firebaseLoginUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
+    private const string firebaseApiKey = "AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
+    private const string torunamentDataURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Tournament";
     private void OnEnable()
     {
         Instance = this;
@@ -175,9 +182,11 @@ public class TournamentManager : MonoBehaviour
     }
     public void GetTournamentDataDB()
     {
-        #if UNITY_WEBGL && !UNITY_EDITOR
-        FirebaseFirestore.GetTournamentData(CollectionPath, DocPath, gameObject.name, "OnGetTournamentData", "OnGetTournamentDataError");
-        #endif
+       getTournamentData();
+       //  #if UNITY_WEBGL && !UNITY_EDITOR
+       //  apiRequestHandler.Instance.getTournamentData();
+       // // FirebaseFirestore.GetTournamentData(CollectionPath, DocPath, gameObject.name, "OnGetTournamentData", "OnGetTournamentDataError");
+       //  #endif
     }
     public void OnGetTournamentData(string info)
     {
@@ -231,6 +240,72 @@ public class TournamentManager : MonoBehaviour
         if (MainMenuViewController.Instance) //if instance of UI class is created
         {
             MainMenuViewController.Instance.UITournament.TimerText.text = TimerText;
+        }
+    }
+     public void getTournamentData()
+    {
+        StartCoroutine(processTournamentToken(FirebaseManager.Instance.Credentails.Email,
+            FirebaseManager.Instance.Credentails.Password));
+    }
+    private IEnumerator processTournamentToken(string _email, string _password)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("email", _email);
+        form.AddField("password", _password);
+        form.AddField("returnSecureToken", "true");
+        using UnityWebRequest request = UnityWebRequest.Post(firebaseLoginUrl+firebaseApiKey,form);
+        
+
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.Log(request.error);
+        }
+        else if(request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Result is: ");
+            Debug.Log(request.result);
+            Debug.Log(request.downloadHandler.text);
+            JToken token = JObject.Parse(request.downloadHandler.text);
+            string tID = (string)token.SelectToken("idToken");
+            StartCoroutine(processTournamentRequest(tID));
+            Debug.Log(tID);
+        }
+        else
+        {
+            MainMenuViewController.Instance.SomethingWentWrong();
+        }
+
+    }
+    
+    private IEnumerator processTournamentRequest(string _token)
+    {
+        using UnityWebRequest request = UnityWebRequest.Get(torunamentDataURL);
+        request.SetRequestHeader("Authorization","Bearer "+ _token);
+
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.Log(request.error);
+        }
+        else
+        {
+            //"message": "Unauthorized" //wrong password
+            // JToken response = JObject.Parse(request.downloadHandler.text);
+            // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
+            
+            Debug.Log("Result is: ");
+            Debug.Log(request.result);
+            Debug.Log(request.downloadHandler.text);
+            JToken token = JObject.Parse(request.downloadHandler.text);
+            string tID = (string)token.SelectToken("data");
+            OnGetTournamentData(tID);
+            //UserData _player;
+            //_player.UserName = 
         }
     }
 }

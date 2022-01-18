@@ -285,7 +285,7 @@ public class FirebaseManager : MonoBehaviour
             MainMenuViewController.Instance.ToggleMainMenuScreen(false);
         }
 
-        FirebaseAuth.SignOut(gameObject.name, "OnSignOut", "OnSignOutError");
+        //FirebaseAuth.SignOut(gameObject.name, "OnSignOut", "OnSignOutError");
     }
 
     public void ResetStorage()

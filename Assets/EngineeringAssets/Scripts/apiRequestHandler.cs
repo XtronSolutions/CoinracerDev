@@ -21,6 +21,17 @@ public class userDataPayload
 }
 
 
+public class LeaderboardCounter
+{
+    public int number { get; set; }
+}
+
+public class LeaderboardPayload
+{
+    public LeaderboardCounter data { get; set; }
+}
+
+
 
 
 public class apiRequestHandler : MonoBehaviour
@@ -33,6 +44,7 @@ public class apiRequestHandler : MonoBehaviour
     private const string signupBOUserURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/SignUp";
     private const string updateUserBoURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/UpdateUserBO";
     private const string leaderboardBOURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Leaderboard";
+      
     public static apiRequestHandler Instance;
 
     private void OnEnable()
@@ -317,9 +329,17 @@ public class apiRequestHandler : MonoBehaviour
 
     private IEnumerator processLeaderBoardRequest(string _tID)
     {
-        using UnityWebRequest request = UnityWebRequest.Get(leaderboardBOURL);
-        request.SetRequestHeader("Authorization","Bearer "+ _tID);
-
+        LeaderboardCounter _count = new LeaderboardCounter();
+        _count.number = Constants.LeaderboardCount;
+        LeaderboardPayload obj = new LeaderboardPayload();
+        obj.data = _count;
+        string req = JsonConvert.SerializeObject(obj);
+        Debug.Log(req);
+        using UnityWebRequest request = UnityWebRequest.Put(leaderboardBOURL, req);
+        request.SetRequestHeader("Content-Type", "application/json");
+        string _reqToken = "Bearer " + _tID;
+        Debug.Log(_reqToken);
+        request.SetRequestHeader("Authorization", _reqToken);
 
         yield return request.SendWebRequest();
 
@@ -344,10 +364,12 @@ public class apiRequestHandler : MonoBehaviour
             //_player.UserName = 
         }   
     }
+
+   
     
     
-    private void Update()
-    {
-     
-    }
+    // private void Update()
+    // {
+    //  
+    // }
 }
