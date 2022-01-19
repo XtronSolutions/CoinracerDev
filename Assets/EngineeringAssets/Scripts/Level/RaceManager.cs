@@ -49,7 +49,7 @@ public class RaceManager : MonoBehaviour
     private void OnEnable()
     {
         Instance = this;
-        ClaimRewardButton.onClick.AddListener(ClaimReward);
+        //ClaimRewardButton.onClick.AddListener(ClaimReward);
 
     }
 

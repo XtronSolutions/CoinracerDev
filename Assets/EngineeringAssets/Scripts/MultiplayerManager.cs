@@ -194,9 +194,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (!Constants.FreeMultiplayer)
         {
             if (WalletManager.Instance)
-                WalletManager.Instance.getRaceIds();
+                WalletManager.Instance.isExistRoom(roomCode.ToString());
 
-            if (Constants.PIDString.Contains(roomCode.ToString()))
+            if (Constants.PIDString=="true")
             {
                 Constants.PrintLog("Room id already exists creating new one");
                 Invoke("CreateRoom", 0.5f);

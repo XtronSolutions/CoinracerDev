@@ -171,7 +171,8 @@ public class TournamentUI
     public TextMeshProUGUI TimerText;
     public TextMeshProUGUI FotterText;
     public TextMeshProUGUI Fotter2Text;
-    public TextMeshProUGUI DisclaimerText;
+    public GameObject NextWeekScreen;
+    public GameObject ActiveScreen;
     public GameObject LoaderObj;
     public TextMeshProUGUI TournamentStartText;
 }
@@ -253,6 +254,7 @@ public class MainMenuViewController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI UserNameText = null;
     [SerializeField] private Image FlagIcon = null;
 
+    public GameObject TournamentMiniScreen;
     public TournamentUI UITournament;
     public RegisterUI UIRegister;
     public LoginUI UILogin;
@@ -316,7 +318,7 @@ public class MainMenuViewController : MonoBehaviour
         _audioSource.GetComponent<AudioSource>();
         _singlePlayerButton.onClick.AddListener(OnGoToCarSelectionPractice);
         _tournamentButton.onClick.AddListener(OnGoToCarSelectionTournament);
-        _backToModeSelectionButton.onClick.AddListener(OnGoBackToModeSelection);
+        //_backToModeSelectionButton.onClick.AddListener(OnGoBackToModeSelection);
         _goToMapSelectionButton.onClick.AddListener(OnGoToMapSelection);
         _backToCarSelectionButton.onClick.AddListener(BackToGoToCarSelection);
         _startRaceButton.onClick.AddListener(StartRace);
@@ -648,6 +650,7 @@ public class MainMenuViewController : MonoBehaviour
     {
         Constants.LoggedIn = false;
         ResetRegisterFields();
+        TournamentMiniScreen.SetActive(true);
 
         if (FirebaseManager.Instance)
             FirebaseManager.Instance.LogoutUser();
@@ -693,7 +696,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     Constants.WalletChanged = false;
-                    ShowToast(3f, "Previous Conneted wallet was changed, auto login will not work.");
+                    ShowToast(3f, "Previous connected wallet was changed, auto login will not work.");
                     LoadingScreen.SetActive(false);
 
                     if (FirebaseManager.Instance)
@@ -761,7 +764,7 @@ public class MainMenuViewController : MonoBehaviour
     {
         ResendPopUp.SetActive(false); ;
     }
-    private void OnGoBackToModeSelection()
+    public void OnGoBackToModeSelection()
     {
         GameModeSelectionObject.SetActive(true);
         CarSelectionObject.SetActive(false);
@@ -960,6 +963,7 @@ public class MainMenuViewController : MonoBehaviour
         ChangeUserNameText(Constants.UserName);
         LoadingScreen.SetActive(false);
         DisableRegisterLogin();
+        TournamentMiniScreen.SetActive(false);
         MenuScreen.SetActive(true);
 
         if (!_newUser)

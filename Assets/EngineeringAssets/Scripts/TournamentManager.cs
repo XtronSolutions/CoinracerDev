@@ -75,7 +75,7 @@ public class TournamentManager : MonoBehaviour
 
             if(RemainingTimeSeconds<=0)
             {
-                MainMenuViewController.Instance.UITournament.TimerText.text = "0:0:0:0";
+                MainMenuViewController.Instance.UITournament.TimerText.text = "0:00:00:00";
                 StartTimer = false;
                 GetTournamentDataDB();
             }
@@ -87,7 +87,7 @@ public class TournamentManager : MonoBehaviour
 
             if (StartTimeDiffSeconds <= 0)
             {
-                MainMenuViewController.Instance.UITournament.TimerText.text = "0:0:0:0";
+                MainMenuViewController.Instance.UITournament.TimerText.text = "0:00:00:00";
                 TournamentStartTimer = false;
                 GetTournamentDataDB();
             }
@@ -104,7 +104,8 @@ public class TournamentManager : MonoBehaviour
             if (isError)
             {
                 Constants.TournamentActive = false;
-                ManipulateTournamnetUIActivness(false, false, false, false, true,false);
+                ManipulateTournamnetUIActivness(false, true, false, false, true,false,false);
+                ManipulateTournamnetStartTimer("0:00:00:00");
                 StartTimer = false;
                 TournamentStartTimer = false;
             }
@@ -117,7 +118,7 @@ public class TournamentManager : MonoBehaviour
                 {
                     StartTimeDiffSeconds = Mathf.Abs((float)StartTimeDiffSeconds);
                     TournamentRemainingTime = TimeSpan.FromSeconds(StartTimeDiffSeconds);
-                    ManipulateTournamnetUIActivness(false, true, false, false, false,true);
+                    ManipulateTournamnetUIActivness(false, true, false, false, true,true,false);
                     StartTimer = false;
                     TournamentStartTimer = true;
                     ManipulateTournamnetStartTimer(TournamentRemainingTime.Days.ToString() + ":" + TournamentRemainingTime.Hours.ToString() + ":" + TournamentRemainingTime.Minutes.ToString() + ":" + TournamentRemainingTime.Seconds.ToString());
@@ -129,7 +130,8 @@ public class TournamentManager : MonoBehaviour
                     if (Mathf.Sign((float)RemainingTimeSeconds) == -1)
                     {
                         Constants.TournamentActive = false;
-                        ManipulateTournamnetUIActivness(false, false, false, false, true, false);
+                        ManipulateTournamnetUIActivness(false, true, false, false, true, false,false);
+                        ManipulateTournamnetStartTimer("0:00:00:00");
                         StartTimer = false;
                         TournamentStartTimer = false;
                     }
@@ -140,8 +142,8 @@ public class TournamentManager : MonoBehaviour
 
                         //Debug.LogError(RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString());
 
-                        ManipulateTournamnetUIActivness(true, true, true, false, false, false);
-                        ManipulateTournamnetUIData("Week " + _data.Week.ToString(), RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.TicketPrice.ToString() + " $CRACE", "*"+Constants.DiscountPercentage.ToString()+"% off if you hold "+Constants.DiscountForCrace.ToString()+" $crace or more");
+                        ManipulateTournamnetUIActivness(true, true, true, false, false, false,true);
+                        ManipulateTournamnetUIData("", RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.TicketPrice.ToString() + " $CRACE", "*"+Constants.DiscountPercentage.ToString()+"% off if you hold "+Constants.DiscountForCrace.ToString()+" $crace or more");
                         StartTimer = true;
                         TournamentStartTimer = false;
                     }
@@ -204,7 +206,7 @@ public class TournamentManager : MonoBehaviour
         Debug.LogError(error);
         StartTournamentCounter(true,null);
     }
-    public void ManipulateTournamnetUIActivness(bool LowerHeaderActive, bool TimerActive, bool FotterActive, bool LoaderObjActive, bool DisclaimerActive, bool DisclaimerActive2)
+    public void ManipulateTournamnetUIActivness(bool LowerHeaderActive, bool TimerActive, bool FotterActive, bool LoaderObjActive, bool DisclaimerActive, bool DisclaimerActive2,bool _isActive)
     {
         if (MainMenuViewController.Instance) //if instance of UI class is created
         {
@@ -212,8 +214,9 @@ public class TournamentManager : MonoBehaviour
             MainMenuViewController.Instance.UITournament.TimerText.gameObject.SetActive(TimerActive);
             MainMenuViewController.Instance.UITournament.FotterText.gameObject.SetActive(FotterActive);
             MainMenuViewController.Instance.UITournament.LoaderObj.gameObject.SetActive(LoaderObjActive);
-            MainMenuViewController.Instance.UITournament.DisclaimerText.gameObject.SetActive(DisclaimerActive);
+            MainMenuViewController.Instance.UITournament.NextWeekScreen.gameObject.SetActive(DisclaimerActive);
             MainMenuViewController.Instance.UITournament.TournamentStartText.gameObject.SetActive(DisclaimerActive2);
+            MainMenuViewController.Instance.UITournament.ActiveScreen.SetActive(_isActive);
         }
     }
     public void ManipulateTournamnetUIData(string LowerHeaderText, string TimerText, string FotterText, string Fotter2Text)
