@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using Newtonsoft.Json;
 using Photon.Pun;
 using UnityEngine;
@@ -101,7 +102,7 @@ public class RPCCalls : MonoBehaviour
     }
 
     [PunRPC]
-    public void SyncConnectionData(string _actor, string _name, string _wins, string _index)
+    public void SyncConnectionData(string _actor, string _name, string _wins, string _index,string _crace)
     {
         if (PhotonNetwork.IsMasterClient)
         {
@@ -111,8 +112,9 @@ public class RPCCalls : MonoBehaviour
         }
         else
         {
+            Constants.SelectedCrace = int.Parse(_crace);
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
-            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString());
+            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString());
         }
     }
 

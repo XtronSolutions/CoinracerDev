@@ -942,6 +942,12 @@ public class WalletManager : MonoBehaviour
         }
     }
 
+    public BigInteger GetPrice(double _price)
+    {
+        BigInteger _totalPrice = (int)_price * (BigInteger)Math.Pow(10, 18);
+        return _totalPrice;
+    }
+
     async public void CreateRace(string _pid, double _price,int _maxPlayers)
     {
         if (Constants.IsTest)
@@ -951,7 +957,7 @@ public class WalletManager : MonoBehaviour
         else
         {
             MainMenuViewController.Instance.LoadingScreen.SetActive(true);
-            BigInteger _totalPrice = (int)_price * (BigInteger)Math.Pow(10, 18);
+            BigInteger _totalPrice = GetPrice(_price);
             string methodCSP = "createRace";
             string[] obj = { _pid, _totalPrice.ToString(), _maxPlayers.ToString() };
             string argsCSP = JsonConvert.SerializeObject(obj);
@@ -1005,8 +1011,8 @@ public class WalletManager : MonoBehaviour
             string[] obj = { _pid.ToString(), _totalPrice.ToString() };
             string argsCSP = JsonConvert.SerializeObject(obj);
             string value = "0";
-            string gasLimit = "";//310000//2100000
-            string gasPrice = "";//10000000000
+            string gasLimit = "310000";//310000//2100000
+            string gasPrice = "10000000000";//10000000000
             bool _raiseEvent = false;
 
             try
