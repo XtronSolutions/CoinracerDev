@@ -77,6 +77,9 @@ public class apiRequestHandler : MonoBehaviour
     }
     public void signUpWithEmail(string _email,string _pwd,string _username)
     {
+        FirebaseManager.Instance.Credentails.Email = _email;
+        FirebaseManager.Instance.Credentails.Password = _pwd;
+        FirebaseManager.Instance.Credentails.UserName = _username;
       //  Debug.Log("In Signup Email");
         StartCoroutine(processSignUpRequest(_email,_pwd,_username));
       //  Debug.Log(_email);
@@ -145,7 +148,7 @@ public class apiRequestHandler : MonoBehaviour
             _walletAddress = "12347985";
         }
         else
-            _walletAddress = WalletManager.Instance.GetAccount();
+            _walletAddress = Constants.WalletAddress;
 
         UserDataBO userDataObj = new UserDataBO();
         userDataObj.userName = _username;
@@ -254,6 +257,7 @@ public class apiRequestHandler : MonoBehaviour
             Debug.Log("Result is: ");
             Debug.Log(request.result);
             Debug.Log(request.downloadHandler.text);
+            FirebaseManager.Instance.OnDocUpdate("");
             //JToken token = JObject.Parse(request.downloadHandler.text);
             // string tID = (string)token.SelectToken("idToken");
             // Debug.Log(tID);
@@ -282,7 +286,14 @@ public class apiRequestHandler : MonoBehaviour
             Debug.Log("Result is: ");
             Debug.Log(request.result);
             Debug.Log(request.downloadHandler.text);
-            FirebaseManager.Instance.SetPlayerData(request.downloadHandler.text);
+            JToken res = JObject.Parse(request.downloadHandler.text);
+           // Debug.Log((string)res.SelectToken("error").SelectToken("message"));
+            if ((string) res.SelectToken("message") == "No User Found.")
+            {
+                MainMenuViewController.Instance.SomethingWentWrong();
+            }
+            else
+                FirebaseManager.Instance.SetPlayerData(request.downloadHandler.text);
             //UserData _player;
             //_player.UserName = 
         }

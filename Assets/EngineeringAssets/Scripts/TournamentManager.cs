@@ -34,6 +34,11 @@ public class TournamentData
     public int DiscountPercentage { get; set; }
     public int DiscountOnCrace { get; set; }
 }
+
+public class TournamentClassData
+{
+    public TournamentData data { get; set; }
+}
 public class TournamentManager : MonoBehaviour
 {
     [HideInInspector]
@@ -188,13 +193,13 @@ public class TournamentManager : MonoBehaviour
        // // FirebaseFirestore.GetTournamentData(CollectionPath, DocPath, gameObject.name, "OnGetTournamentData", "OnGetTournamentDataError");
        //  #endif
     }
-    public void OnGetTournamentData(string info)
+    public void OnGetTournamentData()
     {
         Debug.Log("Data successfully fetched for tournament");
 
-        if (info != null && info != "null")
+        if (DataTournament != null )
         {
-            DataTournament = JsonConvert.DeserializeObject<TournamentData>(info);
+          //  DataTournament = JsonConvert.DeserializeObject<TournamentData>(info);
 
             Constants.TournamentPassPrice = DataTournament.PassPrice;
             Constants.DiscountPercentage = DataTournament.DiscountPercentage;
@@ -205,7 +210,7 @@ public class TournamentManager : MonoBehaviour
         }
         else
         {
-            OnGetTournamentDataError(info);
+            OnGetTournamentDataError("Info Not Found");
         }
     }
     public void OnGetTournamentDataError(string error)
@@ -244,8 +249,7 @@ public class TournamentManager : MonoBehaviour
     }
      public void getTournamentData()
     {
-        StartCoroutine(processTournamentToken(FirebaseManager.Instance.Credentails.Email,
-            FirebaseManager.Instance.Credentails.Password));
+        StartCoroutine(processTournamentRequest());
     }
     private IEnumerator processTournamentToken(string _email, string _password)
     {
@@ -270,7 +274,7 @@ public class TournamentManager : MonoBehaviour
             Debug.Log(request.downloadHandler.text);
             JToken token = JObject.Parse(request.downloadHandler.text);
             string tID = (string)token.SelectToken("idToken");
-            StartCoroutine(processTournamentRequest(tID));
+            StartCoroutine(processTournamentRequest());
             Debug.Log(tID);
         }
         else
@@ -280,10 +284,10 @@ public class TournamentManager : MonoBehaviour
 
     }
     
-    private IEnumerator processTournamentRequest(string _token)
+    private IEnumerator processTournamentRequest()
     {
         using UnityWebRequest request = UnityWebRequest.Get(torunamentDataURL);
-        request.SetRequestHeader("Authorization","Bearer "+ _token);
+       // request.SetRequestHeader("Authorization","Bearer "+ _token);
 
 
         yield return request.SendWebRequest();
@@ -302,8 +306,31 @@ public class TournamentManager : MonoBehaviour
             Debug.Log(request.result);
             Debug.Log(request.downloadHandler.text);
             JToken token = JObject.Parse(request.downloadHandler.text);
-            string tID = (string)token.SelectToken("data");
-            OnGetTournamentData(tID);
+            
+           // JsonConvert.DeserializeObject<TournamentClassData>(token.SelectToken("data"));
+            // string tID = (string)token.SelectToken("data");
+
+            DataTournament = new TournamentData();
+            DataTournament.PassPrice = (int)token.SelectToken("data").SelectToken("PassPrice");
+            DataTournament.DiscountPercentage = (int)token.SelectToken("data").SelectToken("DiscountPercentage");
+            DataTournament.Week = (int)token.SelectToken("data").SelectToken("Week");
+            DataTournament.TicketPrice = (int)token.SelectToken("data").SelectToken("TicketPrice");
+            DataTournament.DiscountOnCrace = (int)token.SelectToken("data").SelectToken("DiscountOnCrace");
+
+            DataTournament.timestamp = new Timestamp();
+            DataTournament.timestamp.nanoseconds = (double)token.SelectToken("data").SelectToken("timestamp").SelectToken("_nanoseconds");
+            DataTournament.timestamp.seconds = (double)token.SelectToken("data").SelectToken("timestamp").SelectToken("_seconds");
+
+            DataTournament.StartDate = new StartDate();
+            DataTournament.StartDate.nanoseconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_nanoseconds");
+            DataTournament.StartDate.seconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_seconds");
+            
+            DataTournament.EndDate = new EndDate();
+            DataTournament.EndDate.nanoseconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_nanoseconds");
+            DataTournament.EndDate.seconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_seconds");
+            
+            
+            OnGetTournamentData();
             //UserData _player;
             //_player.UserName = 
         }
