@@ -460,7 +460,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 yield return new WaitForEndOfFrame();
             }
 
-            CallStartRPC();
+            //CallStartRPC();
         }
         else
         {

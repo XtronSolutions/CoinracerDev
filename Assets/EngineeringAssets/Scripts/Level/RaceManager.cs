@@ -89,14 +89,21 @@ public class RaceManager : MonoBehaviour
         {
             if(PhotonNetwork.IsConnected)
             {
-                if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-                    StartTheRaceTimer();
+                StartCoroutine(StartGameWithDelay());
+                //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+                  //  StartTheRaceTimer();
             }
         }
         else
             StartTheRaceTimer();
 
 
+    }
+
+    IEnumerator StartGameWithDelay()
+    {
+        yield return new WaitForSeconds(1f);
+        StartTheRaceTimer();
     }
 
     public void StartTheRaceTimer()

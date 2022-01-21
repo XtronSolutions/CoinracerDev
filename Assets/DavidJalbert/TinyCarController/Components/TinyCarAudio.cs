@@ -108,11 +108,22 @@ namespace DavidJalbert
 
         public void DisableAudio()
         {
+            if(audioSourceTemplate)
             audioSourceTemplate.enabled = false;
+
+            if(sourceEngine)
             sourceEngine.enabled = false;
+
+            if(sourceBrake)
             sourceBrake.enabled = false;
+
+            if(sourceGrinding)
             sourceGrinding.enabled = false;
+
+            if(sourceBump)
             sourceBump.enabled = false;
+
+            if(sourceLanding)
             sourceLanding.enabled = false;
         }
 
