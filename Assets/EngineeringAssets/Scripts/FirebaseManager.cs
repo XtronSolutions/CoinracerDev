@@ -78,7 +78,7 @@ public class FirebaseManager : MonoBehaviour
         }
 
         //AuthenticateFirebase();
-        OnAuthChanged();
+        //OnAuthChanged();
     }
 
     public void updatePlayerDataPayload()
@@ -431,7 +431,7 @@ public class FirebaseManager : MonoBehaviour
         if (TournamentManager.Instance)
             TournamentManager.Instance.GetTournamentDataDB();
 
-        GetFireStoreData(DocPath, _walletID);
+        //GetFireStoreData(DocPath, _walletID);
         yield return new WaitUntil(() => ResultFetched == true);
 
         if (DocFetched == true) //document existed
@@ -462,7 +462,7 @@ public class FirebaseManager : MonoBehaviour
             PlayerData.Email = Constants.SavedEmail;
             PlayerData.TournamentEndDate = null;
             PlayerData.AvatarID = Constants.FlagSelectedIndex;
-            AddFireStoreData(PlayerData);
+            //AddFireStoreData(PlayerData);
         }
 
         if (MainMenuViewController.Instance)

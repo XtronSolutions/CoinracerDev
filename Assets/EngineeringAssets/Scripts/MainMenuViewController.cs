@@ -671,7 +671,9 @@ public class MainMenuViewController : MonoBehaviour
 
                 if (!Constants.WalletChanged)
                 {
-                    FirebaseManager.Instance.LoginUser(FirebaseManager.Instance.Credentails.Email, FirebaseManager.Instance.Credentails.Password, FirebaseManager.Instance.Credentails.UserName);
+                    apiRequestHandler.Instance.signInWithEmail(FirebaseManager.Instance.Credentails.Email,
+                        FirebaseManager.Instance.Credentails.Password);
+                    // FirebaseManager.Instance.LoginUser(FirebaseManager.Instance.Credentails.Email, FirebaseManager.Instance.Credentails.Password, FirebaseManager.Instance.Credentails.UserName);
                 }
                 else
                 {
