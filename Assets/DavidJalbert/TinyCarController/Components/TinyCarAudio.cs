@@ -100,6 +100,12 @@ namespace DavidJalbert
 
         void Update()
         {
+            if (carController.IsMultiplayer)
+            {
+                if (!carController.PHView.IsMine)
+                    return;
+            }
+
             setAudioSourceFromTemplate(ref sourceEngine, audioSourceTemplate);
             setAudioSourceFromTemplate(ref sourceBrake, audioSourceTemplate);
             setAudioSourceFromTemplate(ref sourceGrinding, audioSourceTemplate);
