@@ -56,6 +56,12 @@ namespace DavidJalbert
 
         void Start()
         {
+            if (carController.IsMultiplayer)
+            {
+                if (!carController.PHView.IsMine)
+                    return;
+            }
+
             audioSourceTemplate = GetComponent<AudioSource>();
             float vol = Mathf.Clamp(Constants.SoundSliderValue, 0f, 0.5f);
 
