@@ -52,6 +52,8 @@ namespace DavidJalbert
         private AudioSource sourceGrinding;
         private AudioSource sourceBump;
         private AudioSource sourceLanding;
+
+        private bool AudioDisabled = false;
         float vol;
 
         void Start()
@@ -104,12 +106,30 @@ namespace DavidJalbert
             sourceLanding.volume = vol;
         }
 
+        public void DisableAudio()
+        {
+            audioSourceTemplate.enabled = false;
+            sourceEngine.enabled = false;
+            sourceBrake.enabled = false;
+            sourceGrinding.enabled = false;
+            sourceBump.enabled = false;
+            sourceLanding.enabled = false;
+        }
+
         void Update()
         {
             if (carController.IsMultiplayer)
             {
                 if (!carController.PHView.IsMine)
+                {
+                    if(!AudioDisabled)
+                    {
+                        AudioDisabled = true;
+                        DisableAudio();
+                    }
+
                     return;
+                }
             }
 
             setAudioSourceFromTemplate(ref sourceEngine, audioSourceTemplate);
