@@ -102,7 +102,7 @@ public class RaceManager : MonoBehaviour
 
     IEnumerator StartGameWithDelay()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         StartTheRaceTimer();
     }
 
@@ -340,9 +340,9 @@ public class RaceManager : MonoBehaviour
     public void ChangeAmount_MultiplayerUI(bool isWinner,int _amount)
     {
         if(isWinner)
-            UIMultiplayer.AmountWinText.text = "AMOUNT : " + _amount.ToString()+" $CRACE";
+            UIMultiplayer.AmountWinText.text =  _amount.ToString();
         else
-            UIMultiplayer.AmountWinText.text = "AMOUNT : 0 $CRACE";
+            UIMultiplayer.AmountWinText.text = "0";
     }
 
     public void ChangeRunTime_MultiplayerUI(string _time)
