@@ -41,6 +41,9 @@ public class apiRequestHandler : MonoBehaviour
     private const string firebaseLoginUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
     private const string firebaseSignupUrl = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=";
 
+    private const string forgetPassword = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
+    private const string emailVerification =
+        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
     private const string firebaseApiKey = "AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
     private const string signupBOUserURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/SignUp";
     private const string updateUserBoURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/UpdateUserBO";
@@ -152,7 +155,7 @@ public class apiRequestHandler : MonoBehaviour
         Debug.Log(WalletManager.Instance.GetAccount());
         if (Constants.IsTest)
         {
-            _walletAddress = "12347985";
+            _walletAddress = "124779857867";
         }
         else
             _walletAddress = Constants.WalletAddress;
@@ -188,10 +191,17 @@ public class apiRequestHandler : MonoBehaviour
            
             if (request.result == UnityWebRequest.Result.Success)
             {
-                string tID = (string)res.SelectToken("idToken");
-                StartCoroutine(processTokenRequest(_email,_pwd,false));
-                Debug.Log(tID);
+               // string tID = (string)res.SelectToken("idToken");
+                //StartCoroutine(processTokenRequest(_email,_pwd,false));
+                Debug.Log(_BOtoken);
+                StartCoroutine(sendVerificationLink(_BOtoken));
+               
             }
+            else if ((string) res.SelectToken("message") == "Same WalletAddress already in Use")
+            {
+                MainMenuViewController.Instance.ErrorMessage("Same WalletAddress already in Use");
+            }
+            
             else if ((string) res.SelectToken("message") == "No User Found.")
             {
                 MainMenuViewController.Instance.SomethingWentWrong();
@@ -215,6 +225,25 @@ public class apiRequestHandler : MonoBehaviour
             
             
             
+        }
+    }
+
+    private IEnumerator sendVerificationLink(string _tokenId)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("requestType", "VERIFY_EMAIL");
+        form.AddField("idToken", _tokenId);
+        using UnityWebRequest request = UnityWebRequest.Post(emailVerification,form);
+
+        yield return request.SendWebRequest();
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            Debug.Log(request.error);
+        }
+        else if (request.result == UnityWebRequest.Result.Success)
+        {
+            MainMenuViewController.Instance.ErrorMessage("Verification link sent to Email");
         }
     }
 
@@ -358,9 +387,13 @@ public class apiRequestHandler : MonoBehaviour
             Debug.Log(request.downloadHandler.text);
             JToken res = JObject.Parse(request.downloadHandler.text);
             // Debug.Log((string)res.SelectToken("error").SelectToken("message"));
-             if (request.result == UnityWebRequest.Result.Success)
+            if (request.result == UnityWebRequest.Result.Success)
             {
                 FirebaseManager.Instance.SetPlayerData(request.downloadHandler.text);
+            }
+            else if ((string) res.SelectToken("message") == "Email is not verified")
+            {
+                MainMenuViewController.Instance.ErrorMessage("Email is not verified");
             }
             else if ((string) res.SelectToken("message") == "No User Found.")
             {
@@ -469,6 +502,36 @@ public class apiRequestHandler : MonoBehaviour
             //UserData _player;
             //_player.UserName = 
         }   
+    }
+
+    public void onForgetPassword(string _email)
+    {
+        StartCoroutine(processForgetRequest(_email));
+    }
+
+    private IEnumerator processForgetRequest(string _email)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("requestType", "PASSWORD_RESET");
+        form.AddField("email", _email);
+        using UnityWebRequest request = UnityWebRequest.Post(forgetPassword,form);
+        
+        yield return request.SendWebRequest();
+        
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrong();
+            Debug.Log(request.error);
+        }
+        else if(request.result == UnityWebRequest.Result.Success)
+        {
+            FirebaseManager.Instance.OnPassEmailSent("");
+        }
+        else
+        {
+            FirebaseManager.Instance.OnPassEmailSentError("");
+        }
+
     }
 
    

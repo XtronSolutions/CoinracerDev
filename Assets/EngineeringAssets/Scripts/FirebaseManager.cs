@@ -570,7 +570,8 @@ public class FirebaseManager : MonoBehaviour
     public void SendPasswordResetEmail(string _email)
     {
         Constants.EmailSent = _email;
-        FirebaseAuth.SendPasswordResetEmail(_email,gameObject.name, "OnPassEmailSent", "OnPassEmailSentError");
+        apiRequestHandler.Instance.onForgetPassword(_email);
+      //  FirebaseAuth.SendPasswordResetEmail(_email,gameObject.name, "OnPassEmailSent", "OnPassEmailSentError");
     }
     public void OnPassEmailSent(string info)
     {
