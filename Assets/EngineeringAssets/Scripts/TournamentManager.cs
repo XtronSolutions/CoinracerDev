@@ -251,40 +251,41 @@ public class TournamentManager : MonoBehaviour
     {
         StartCoroutine(processTournamentRequest());
     }
-    private IEnumerator processTournamentToken(string _email, string _password)
-    {
-        WWWForm form = new WWWForm();
-        form.AddField("email", _email);
-        form.AddField("password", _password);
-        form.AddField("returnSecureToken", "true");
-        using UnityWebRequest request = UnityWebRequest.Post(firebaseLoginUrl+firebaseApiKey,form);
-        
+
+     private IEnumerator processTournamentToken(string _email, string _password)
+     {
+         WWWForm form = new WWWForm();
+         form.AddField("email", _email);
+         form.AddField("password", _password);
+         form.AddField("returnSecureToken", "true");
+         using UnityWebRequest request = UnityWebRequest.Post(firebaseLoginUrl + firebaseApiKey, form);
 
 
-        yield return request.SendWebRequest();
 
-        if (request.result == UnityWebRequest.Result.ConnectionError)
-        {
-            Debug.Log(request.error);
-        }
-        else if(request.result == UnityWebRequest.Result.Success)
-        {
-            Debug.Log("Result is: ");
-            Debug.Log(request.result);
-            Debug.Log(request.downloadHandler.text);
-            JToken token = JObject.Parse(request.downloadHandler.text);
-            string tID = (string)token.SelectToken("idToken");
-            StartCoroutine(processTournamentRequest());
-            Debug.Log(tID);
-        }
-        else
-        {
-            MainMenuViewController.Instance.SomethingWentWrong();
-        }
+         yield return request.SendWebRequest();
 
-    }
-    
-    private IEnumerator processTournamentRequest()
+         if (request.result == UnityWebRequest.Result.ConnectionError)
+         {
+             Debug.Log(request.error);
+         }
+         else if (request.result == UnityWebRequest.Result.Success)
+         {
+             Debug.Log("Result is: ");
+             Debug.Log(request.result);
+             Debug.Log(request.downloadHandler.text);
+             JToken token = JObject.Parse(request.downloadHandler.text);
+             string tID = (string) token.SelectToken("idToken");
+             StartCoroutine(processTournamentRequest());
+             Debug.Log(tID);
+         }
+         else
+         {
+             MainMenuViewController.Instance.SomethingWentWrong();
+         }
+
+     }
+
+     private IEnumerator processTournamentRequest()
     {
         using UnityWebRequest request = UnityWebRequest.Get(torunamentDataURL);
        // request.SetRequestHeader("Authorization","Bearer "+ _token);
@@ -294,6 +295,7 @@ public class TournamentManager : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
+            //MainMenuViewController.Instance.SomethingWentWrongMessage();
             Debug.Log(request.error);
         }
         else
@@ -310,27 +312,54 @@ public class TournamentManager : MonoBehaviour
            // JsonConvert.DeserializeObject<TournamentClassData>(token.SelectToken("data"));
             // string tID = (string)token.SelectToken("data");
 
-            DataTournament = new TournamentData();
-            DataTournament.PassPrice = (int)token.SelectToken("data").SelectToken("PassPrice");
-            DataTournament.DiscountPercentage = (int)token.SelectToken("data").SelectToken("DiscountPercentage");
-            DataTournament.Week = (int)token.SelectToken("data").SelectToken("Week");
-            DataTournament.TicketPrice = (int)token.SelectToken("data").SelectToken("TicketPrice");
-            DataTournament.DiscountOnCrace = (int)token.SelectToken("data").SelectToken("DiscountOnCrace");
+          
+            
+            
+            if ((string) token.SelectToken("message") == "No User Found.")
+            {
+                MainMenuViewController.Instance.SomethingWentWrong();
+            }
+            else if ((string) token.SelectToken("message") == "Unauthorized")
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+            }
+            else if ((string) token.SelectToken("message") == "Required parameters are missing")
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+            }
+            else if ((string) token.SelectToken("message") == "Invalid request.")
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+            }
+            else if (request.result == UnityWebRequest.Result.Success)
+            {
+                DataTournament = new TournamentData();
+                DataTournament.PassPrice = (int)token.SelectToken("data").SelectToken("PassPrice");
+                DataTournament.DiscountPercentage = (int)token.SelectToken("data").SelectToken("DiscountPercentage");
+                DataTournament.Week = (int)token.SelectToken("data").SelectToken("Week");
+                DataTournament.TicketPrice = (int)token.SelectToken("data").SelectToken("TicketPrice");
+                DataTournament.DiscountOnCrace = (int)token.SelectToken("data").SelectToken("DiscountOnCrace");
 
-            DataTournament.timestamp = new Timestamp();
-            DataTournament.timestamp.nanoseconds = (double)token.SelectToken("data").SelectToken("timestamp").SelectToken("_nanoseconds");
-            DataTournament.timestamp.seconds = (double)token.SelectToken("data").SelectToken("timestamp").SelectToken("_seconds");
+                DataTournament.timestamp = new Timestamp();
+                DataTournament.timestamp.nanoseconds = (double)token.SelectToken("data").SelectToken("timestamp").SelectToken("_nanoseconds");
+                DataTournament.timestamp.seconds = (double)token.SelectToken("data").SelectToken("timestamp").SelectToken("_seconds");
 
-            DataTournament.StartDate = new StartDate();
-            DataTournament.StartDate.nanoseconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_nanoseconds");
-            DataTournament.StartDate.seconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_seconds");
+                DataTournament.StartDate = new StartDate();
+                DataTournament.StartDate.nanoseconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_nanoseconds");
+                DataTournament.StartDate.seconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_seconds");
             
-            DataTournament.EndDate = new EndDate();
-            DataTournament.EndDate.nanoseconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_nanoseconds");
-            DataTournament.EndDate.seconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_seconds");
+                DataTournament.EndDate = new EndDate();
+                DataTournament.EndDate.nanoseconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_nanoseconds");
+                DataTournament.EndDate.seconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_seconds");
             
             
-            OnGetTournamentData();
+                OnGetTournamentData();
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+            }
+            
             //UserData _player;
             //_player.UserName = 
         }

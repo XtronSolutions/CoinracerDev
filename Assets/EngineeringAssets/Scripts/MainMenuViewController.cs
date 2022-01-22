@@ -721,12 +721,24 @@ public class MainMenuViewController : MonoBehaviour
         ResetRegisterFields();
         ShowToast(3f, "User with entered email already registered.");
     }
+    public void ErrorMessage(string message = "Something went wrong, Please try again")
+    {
+        LoadingScreen.SetActive(false);
+        ResetRegisterFields();
+        ShowToast(3f, message);
+    }
 
     public void SomethingWentWrong()
     {
         LoadingScreen.SetActive(false);
         ResetRegisterFields();
         ShowToast(3f, "credentails invalid, please try again.");
+    }
+    public void SomethingWentWrongMessage()
+    {
+        LoadingScreen.SetActive(false);
+        ResetRegisterFields();
+        ShowToast(3f, "Something went wrong, Please try again");
     }
 
     public void ShowToast(float _time, string _msg)
