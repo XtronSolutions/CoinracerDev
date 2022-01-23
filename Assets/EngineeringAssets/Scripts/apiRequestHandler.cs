@@ -155,7 +155,7 @@ public class apiRequestHandler : MonoBehaviour
         Debug.Log(WalletManager.Instance.GetAccount());
         if (Constants.IsTest)
         {
-            _walletAddress = "124779857867";
+            _walletAddress = "1234157867";
         }
         else
             _walletAddress = Constants.WalletAddress;
@@ -228,6 +228,12 @@ public class apiRequestHandler : MonoBehaviour
         }
     }
 
+    public void sendVerificationAgain()
+    {
+        string _token = Constants.ResendTokenID;
+        StartCoroutine(sendVerificationLink(_token));
+    }
+
     private IEnumerator sendVerificationLink(string _tokenId)
     {
         WWWForm form = new WWWForm();
@@ -243,6 +249,7 @@ public class apiRequestHandler : MonoBehaviour
         }
         else if (request.result == UnityWebRequest.Result.Success)
         {
+           // FirebaseManager.Instance.ResendEmailSent("");
             MainMenuViewController.Instance.ErrorMessage("Verification link sent to Email");
         }
     }
@@ -393,7 +400,12 @@ public class apiRequestHandler : MonoBehaviour
             }
             else if ((string) res.SelectToken("message") == "Email is not verified")
             {
-                MainMenuViewController.Instance.ErrorMessage("Email is not verified");
+                Constants.ResendTokenID = _token;
+                FirebaseManager.Instance.showVerificationScreen();
+                
+                //MainMenuViewController.Instance.ErrorMessage("Email is not verified");
+
+                //  MainMenuViewController.Instance.sendEmailConfirmationAgain(_token);
             }
             else if ((string) res.SelectToken("message") == "No User Found.")
             {

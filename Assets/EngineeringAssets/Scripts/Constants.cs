@@ -33,6 +33,7 @@ public static class Constants
     public static string SavedEmail = "";
     public static string SavedPass = "";
     public static string SavedConfirmPass = "";
+    public static string ResendTokenID = "";
     public static string SavedUserName = "";
     public static BigInteger NFTAmount = BigInteger.Parse("370000000000000000000");//200000000000000000000
     public static BigInteger BnBValue = BigInteger.Parse("120000000000000000");
@@ -51,7 +52,7 @@ public static class Constants
     public static bool PushingTries = false;
     public static bool WalletChanged = false;
     public static bool IsTestNet = false;
-    public static bool IsTest = true;
+    public static bool IsTest = false;
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
     public static string EmailSent = "";

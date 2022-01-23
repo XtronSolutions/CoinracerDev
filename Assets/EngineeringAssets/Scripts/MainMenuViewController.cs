@@ -1462,6 +1462,7 @@ public class MainMenuViewController : MonoBehaviour
     }
     public void SendEmailClicked_PasswordReset()
     {
+        Debug.LogError("On resend button clicked");
         LoadingScreen.SetActive(true);
         if (UIForgetPassword.EmailInput.text == "")
         {
@@ -1484,6 +1485,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SendEmailConfirmationClicked_PasswordReset()
     {
+        Debug.LogError("On resend button clicked");
         LoadingScreen.SetActive(true);
         if (UIForgetPassword.EmailInput.text == "")
         {
@@ -1503,6 +1505,8 @@ public class MainMenuViewController : MonoBehaviour
             FirebaseManager.Instance.ResendVerificationEmail();
         }
     }
+
+    
     #endregion
 
     #region Settings UI/data

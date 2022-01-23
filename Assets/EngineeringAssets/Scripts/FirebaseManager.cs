@@ -593,10 +593,19 @@ public class FirebaseManager : MonoBehaviour
         SendPasswordResetEmail(Constants.EmailSent);
     }
 
+    public void showVerificationScreen()
+    {
+        Debug.Log("Email verification pending");
+        MainMenuViewController.Instance.ShowResendScreen(5f);
+        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+        MainMenuViewController.Instance.ResetRegisterFields();
+    }
+
     public void ResendVerificationEmail()
     {
         MainMenuViewController.Instance.LoadingScreen.SetActive(true);
-        FirebaseAuth.SendEmailVerification(gameObject.name, "ResendEmailSent", "ResendEmailSentError");
+        apiRequestHandler.Instance.sendVerificationAgain();
+        // FirebaseAuth.SendEmailVerification(gameObject.name, "ResendEmailSent", "ResendEmailSentError");
     }
 
     public void ResendEmailSent(string info)
