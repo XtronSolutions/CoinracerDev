@@ -43,7 +43,7 @@ public class RaceManager : MonoBehaviour
     private int _lapsCounter;
 
     public static RaceManager Instance;
-    int RaceCounter = 3;
+    int RaceCounter = 5;//3
     public MultiplayerUI UIMultiplayer;
 
     private void OnEnable()
@@ -89,6 +89,9 @@ public class RaceManager : MonoBehaviour
         {
             if(PhotonNetwork.IsConnected)
             {
+                if (MultiplayerManager.Instance)
+                    MultiplayerManager.Instance.winnerList.Clear();
+
                 StartCoroutine(StartGameWithDelay());
                 //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
                   //  StartTheRaceTimer();
@@ -108,7 +111,10 @@ public class RaceManager : MonoBehaviour
 
     public void StartTheRaceTimer()
     {
-        RaceCounter = 3;
+        if(MultiplayerManager.Instance)
+            MultiplayerManager.Instance.winnerList.Clear();
+
+        RaceCounter = 5;//3
         Constants.MoveCar = false;
         GameStartTimer.text = RaceCounter.ToString();
         StartCoroutine(StartTimerCountDown());

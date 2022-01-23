@@ -1849,8 +1849,8 @@ public class MainMenuViewController : MonoBehaviour
 
     public void FreeMultiplayer_MultiplayerSelection()
     {
-        ToggleSelection_MultiplayerSelection(false);
         Constants.FreeMultiplayer = true;
+        ToggleSelection_MultiplayerSelection(false);
         onMultiplayerBtnClick();
     }
 
