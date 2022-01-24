@@ -21,6 +21,8 @@ public class UserData
     public double NumberOfTriesPractice { get; set; }
     public bool PassBought { get; set; }
     public string Email { get; set; }
+    
+    public int TotalWins {get; set;}
 
     public int AvatarID { get; set; }
     public EndDate TournamentEndDate { get; set; }
@@ -107,6 +109,9 @@ public class FirebaseManager : MonoBehaviour
         PlayerData.NumberOfTriesPractice = (double)response.SelectToken("data").SelectToken("NumberOfTriesPractice");
         PlayerData.PassBought = (bool)response.SelectToken("data").SelectToken("PassBought");
         PlayerData.AvatarID = (int)response.SelectToken("data").SelectToken("AvatarID");
+        PlayerData.TotalWins = (int)response.SelectToken("data").SelectToken("TotalWins");
+
+        Constants.TotalWins = PlayerData.TotalWins;
 
         PlayerData.TournamentEndDate = new EndDate();
         PlayerData.TournamentEndDate.nanoseconds = (double)response.SelectToken("data").SelectToken("TournamentEndDate").SelectToken("nanoseconds");
@@ -459,6 +464,7 @@ public class FirebaseManager : MonoBehaviour
             PlayerData.UID = UID;
             PlayerData.NumberOfTries = 0;
             PlayerData.NumberOfTriesPractice = 0;
+            PlayerData.TotalWins = 0;
             PlayerData.Email = Constants.SavedEmail;
             PlayerData.TournamentEndDate = null;
             PlayerData.AvatarID = Constants.FlagSelectedIndex;
