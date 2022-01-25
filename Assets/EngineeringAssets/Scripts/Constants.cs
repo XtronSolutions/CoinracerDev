@@ -34,6 +34,7 @@ public static class Constants
     public static string SavedEmail = "";
     public static string SavedPass = "";
     public static string SavedConfirmPass = "";
+    public static string ResendTokenID = "";
     public static string SavedUserName = "";
     public static BigInteger NFTAmount = BigInteger.Parse("370000000000000000000");//200000000000000000000
     public static BigInteger BnBValue = BigInteger.Parse("120000000000000000");
@@ -96,6 +97,9 @@ public static class Constants
     public static string PIDString = "";
     public static bool EventRaised = false;
     public static string EventData = "";
+    
+    public static bool isUsingFirebaseSDK = true;
+    public static int LeaderboardCount = 100;
 
     async public static void GetCracePrice()
     {

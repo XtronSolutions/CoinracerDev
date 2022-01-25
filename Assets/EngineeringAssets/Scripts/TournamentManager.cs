@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using FirebaseWebGL.Scripts.FirebaseBridge;
 using Newtonsoft.Json;
 using System;
+using Newtonsoft.Json.Linq;
+using UnityEngine.Networking;
 
 public class Timestamp
 {
@@ -32,6 +34,11 @@ public class TournamentData
     public int DiscountPercentage { get; set; }
     public int DiscountOnCrace { get; set; }
 }
+public class TournamentClassData
+{
+    public TournamentData data { get; set; }
+}
+
 public class TournamentManager : MonoBehaviour
 {
     [HideInInspector]
@@ -58,6 +65,10 @@ public class TournamentManager : MonoBehaviour
     string textfieldHours;//string store converstion of hours into string for display
     string textfieldMinutes;//string store converstion of minutes into string for display
     string textfieldSeconds;//string store converstion of seconds into string for display
+    
+    private const string firebaseLoginUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
+    private const string firebaseApiKey = "AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
+    private const string torunamentDataURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Tournament";
     private void OnEnable()
     {
         Instance = this;
@@ -175,30 +186,60 @@ public class TournamentManager : MonoBehaviour
         MainTime = textfielddays + ":" + textfieldHours + ":" + textfieldMinutes + ":" + textfieldSeconds;
         MainMenuViewController.Instance.UITournament.TimerText.text = MainTime;
     }
+
     public void GetTournamentDataDB()
     {
+        if (Constants.isUsingFirebaseSDK)
+        {
         #if UNITY_WEBGL && !UNITY_EDITOR
         FirebaseFirestore.GetTournamentData(CollectionPath, DocPath, gameObject.name, "OnGetTournamentData", "OnGetTournamentDataError");
         #endif
+        }
+        else
+        {
+            getTournamentData();
+        }
     }
+
     public void OnGetTournamentData(string info)
     {
         Debug.Log("Data successfully fetched for tournament");
 
-        if (info != null && info != "null")
+        if (Constants.isUsingFirebaseSDK)
         {
-            DataTournament = JsonConvert.DeserializeObject<TournamentData>(info);
+            if (info != null && info != "null")
+            {
+                DataTournament = JsonConvert.DeserializeObject<TournamentData>(info);
 
-            Constants.TournamentPassPrice = DataTournament.PassPrice;
-            Constants.DiscountPercentage = DataTournament.DiscountPercentage;
-            Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
-            Constants.TicketPrice = DataTournament.TicketPrice;
+                Constants.TournamentPassPrice = DataTournament.PassPrice;
+                Constants.DiscountPercentage = DataTournament.DiscountPercentage;
+                Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
+                Constants.TicketPrice = DataTournament.TicketPrice;
 
-            StartTournamentCounter(false, DataTournament);
+                StartTournamentCounter(false, DataTournament);
+            }
+            else
+            {
+                OnGetTournamentDataError(info);
+            }
         }
         else
         {
-            OnGetTournamentDataError(info);
+            if (DataTournament != null )
+            {
+               // DataTournament = JsonConvert.DeserializeObject<TournamentData>(info);
+
+                Constants.TournamentPassPrice = DataTournament.PassPrice;
+                Constants.DiscountPercentage = DataTournament.DiscountPercentage;
+                Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
+                Constants.TicketPrice = DataTournament.TicketPrice;
+
+                StartTournamentCounter(false, DataTournament);
+            }
+            else
+            {
+                OnGetTournamentDataError("Info Not Found");
+            }
         }
     }
     public void OnGetTournamentDataError(string error)
@@ -234,6 +275,110 @@ public class TournamentManager : MonoBehaviour
         if (MainMenuViewController.Instance) //if instance of UI class is created
         {
             MainMenuViewController.Instance.UITournament.TimerText.text = TimerText;
+        }
+    }
+    public void getTournamentData()
+    {
+        StartCoroutine(processTournamentRequest());
+    }
+     private IEnumerator processTournamentToken(string _email, string _password)
+     {
+         WWWForm form = new WWWForm();
+         form.AddField("email", _email);
+         form.AddField("password", _password);
+         form.AddField("returnSecureToken", "true");
+         using UnityWebRequest request = UnityWebRequest.Post(firebaseLoginUrl + firebaseApiKey, form);
+         yield return request.SendWebRequest();
+         if (request.result == UnityWebRequest.Result.ConnectionError)
+         {
+             Debug.Log(request.error);
+         }
+         else if (request.result == UnityWebRequest.Result.Success)
+         {
+             Debug.Log("Result is: ");
+             Debug.Log(request.result);
+             Debug.Log(request.downloadHandler.text);
+             JToken token = JObject.Parse(request.downloadHandler.text);
+             string tID = (string) token.SelectToken("idToken");
+             StartCoroutine(processTournamentRequest());
+             Debug.Log(tID);
+         }
+         else
+         {
+             MainMenuViewController.Instance.SomethingWentWrong();
+         }
+     }
+     private IEnumerator processTournamentRequest()
+    {
+        using UnityWebRequest request = UnityWebRequest.Get(torunamentDataURL);
+       // request.SetRequestHeader("Authorization","Bearer "+ _token);
+        yield return request.SendWebRequest();
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            //MainMenuViewController.Instance.SomethingWentWrongMessage();
+            Debug.Log(request.error);
+        }
+        else
+        {
+            //"message": "Unauthorized" //wrong password
+            // JToken response = JObject.Parse(request.downloadHandler.text);
+            // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
+            
+            Debug.Log("Result is: ");
+            Debug.Log(request.result);
+            Debug.Log(request.downloadHandler.text);
+            JToken token = JObject.Parse(request.downloadHandler.text);
+            
+           // JsonConvert.DeserializeObject<TournamentClassData>(token.SelectToken("data"));
+            // string tID = (string)token.SelectToken("data");
+          
+            
+            
+            if ((string) token.SelectToken("message") == "No User Found.")
+            {
+                MainMenuViewController.Instance.SomethingWentWrong();
+            }
+            else if ((string) token.SelectToken("message") == "Unauthorized")
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+            }
+            else if ((string) token.SelectToken("message") == "Required parameters are missing")
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+            }
+            else if ((string) token.SelectToken("message") == "Invalid request.")
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+            }
+            else if (request.result == UnityWebRequest.Result.Success)
+            {
+                DataTournament = new TournamentData();
+                DataTournament.PassPrice = (int)token.SelectToken("data").SelectToken("PassPrice");
+                DataTournament.DiscountPercentage = (int)token.SelectToken("data").SelectToken("DiscountPercentage");
+                DataTournament.Week = (int)token.SelectToken("data").SelectToken("Week");
+                DataTournament.TicketPrice = (int)token.SelectToken("data").SelectToken("TicketPrice");
+                DataTournament.DiscountOnCrace = (int)token.SelectToken("data").SelectToken("DiscountOnCrace");
+                DataTournament.timestamp = new Timestamp();
+                DataTournament.timestamp.nanoseconds = (double)token.SelectToken("data").SelectToken("timestamp").SelectToken("_nanoseconds");
+                DataTournament.timestamp.seconds = (double)token.SelectToken("data").SelectToken("timestamp").SelectToken("_seconds");
+                DataTournament.StartDate = new StartDate();
+                DataTournament.StartDate.nanoseconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_nanoseconds");
+                DataTournament.StartDate.seconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_seconds");
+            
+                DataTournament.EndDate = new EndDate();
+                DataTournament.EndDate.nanoseconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_nanoseconds");
+                DataTournament.EndDate.seconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_seconds");
+            
+            
+                OnGetTournamentData("");
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+            }
+            
+            //UserData _player;
+            //_player.UserName = 
         }
     }
 }

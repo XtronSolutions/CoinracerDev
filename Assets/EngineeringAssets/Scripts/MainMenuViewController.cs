@@ -691,7 +691,13 @@ public class MainMenuViewController : MonoBehaviour
 
                 if (!Constants.WalletChanged)
                 {
-                    FirebaseManager.Instance.LoginUser(FirebaseManager.Instance.Credentails.Email, FirebaseManager.Instance.Credentails.Password, FirebaseManager.Instance.Credentails.UserName);
+                    if(Constants.isUsingFirebaseSDK)
+                        FirebaseManager.Instance.LoginUser(FirebaseManager.Instance.Credentails.Email, FirebaseManager.Instance.Credentails.Password, FirebaseManager.Instance.Credentails.UserName);
+                    else
+                    {
+                        apiRequestHandler.Instance.signInWithEmail(FirebaseManager.Instance.Credentails.Email,
+                            FirebaseManager.Instance.Credentails.Password);
+                    }
                 }
                 else
                 {
@@ -739,14 +745,24 @@ public class MainMenuViewController : MonoBehaviour
         ResetRegisterFields();
         ShowToast(3f, "User with entered email already registered.");
     }
-
+    public void ErrorMessage(string message = "Something went wrong, Please try again")
+    {
+        LoadingScreen.SetActive(false);
+        ResetRegisterFields();
+        ShowToast(3f, message);
+    }
     public void SomethingWentWrong()
     {
         LoadingScreen.SetActive(false);
         ResetRegisterFields();
         ShowToast(3f, "credentails invalid, please try again.");
     }
-
+    public void SomethingWentWrongMessage()
+    {
+        LoadingScreen.SetActive(false);
+        ResetRegisterFields();
+        ShowToast(3f, "Something went wrong, Please try again");
+    }
     public void ShowToast(float _time, string _msg)
     {
         MessageUI.SetActive(true);
@@ -825,6 +841,10 @@ public class MainMenuViewController : MonoBehaviour
 
     public void EnabledRegisterScreen()
     {
+        if(Constants.IsTest)
+        {
+            WalletConnected = true;
+        }
         if (WalletConnected)
         {
             ToggleRegisterScreen(true);
@@ -938,7 +958,12 @@ public class MainMenuViewController : MonoBehaviour
 
         LoadingScreen.SetActive(true);
         Constants.RegisterSubmit = true;
-        FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.CheckWalletDB(PlayerPrefs.GetString("Account")));
+        if(Constants.isUsingFirebaseSDK)
+            FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.CheckWalletDB(PlayerPrefs.GetString("Account")));
+        else
+        {
+            apiRequestHandler.Instance.signUpWithEmail(email, pass, userName);
+        }
         //FirebaseManager.Instance.CheckEmailForAuth(email, pass, userName);
 
     }
@@ -983,6 +1008,10 @@ public class MainMenuViewController : MonoBehaviour
     }
     public void SubmitLogin()
     {
+        if (Constants.IsTest)
+        {
+            WalletConnected = true; //set temporary will remove later
+        }
         if (!WalletConnected)
         {
             LoadingScreen.SetActive(false);

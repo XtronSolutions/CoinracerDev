@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json.Linq;
 
 public class UserData
 {
@@ -36,7 +37,10 @@ public class AuthCredentials
 
     public string WalletAddress { get; set; }
 }
-
+public class updateDataPayload
+{
+    public UserData data { get; set; }
+}
 
 public class FirebaseManager : MonoBehaviour
 {
@@ -47,6 +51,9 @@ public class FirebaseManager : MonoBehaviour
     private int key=129;
     private string UID = "";
     public UserData PlayerData;
+    public updateDataPayload PlayerDataPayload;
+    
+    
     public UserData[] PlayerDataArray;
     public static FirebaseManager Instance;
 
@@ -72,9 +79,55 @@ public class FirebaseManager : MonoBehaviour
         }
 
         //AuthenticateFirebase();
-        OnAuthChanged();
+        if(Constants.isUsingFirebaseSDK)
+            OnAuthChanged();
     }
-
+    public void updatePlayerDataPayload()
+    {
+        PlayerDataPayload = new updateDataPayload();
+        PlayerDataPayload.data = PlayerData;
+    }
+    
+     //Setting playerData got from Login API
+     //Call this Function if Constants.isUsingSDK is false
+    public void SetPlayerData(string _response)
+    {
+        JToken response = JObject.Parse(_response);
+        PlayerData = new UserData();
+        PlayerData.Email = (string)response.SelectToken("data").SelectToken("Email");
+        PlayerData.UserName = (string)response.SelectToken("data").SelectToken("UserName");
+        PlayerData.WalletAddress = (string)response.SelectToken("data").SelectToken("WalletAddress");
+        PlayerData.TimeSeconds = (double)response.SelectToken("data").SelectToken("TimeSeconds");
+        PlayerData.UID = (string)response.SelectToken("data").SelectToken("UID");
+        PlayerData.NumberOfTries = (double)response.SelectToken("data").SelectToken("NumberOfTries");
+        PlayerData.NumberOfTriesPractice = (double)response.SelectToken("data").SelectToken("NumberOfTriesPractice");
+        PlayerData.PassBought = (bool)response.SelectToken("data").SelectToken("PassBought");
+        PlayerData.AvatarID = (int)response.SelectToken("data").SelectToken("AvatarID");
+        PlayerData.TotalWins = (int)response.SelectToken("data").SelectToken("TotalWins");
+        Constants.TotalWins = PlayerData.TotalWins;
+        PlayerData.TournamentEndDate = new EndDate();
+        PlayerData.TournamentEndDate.nanoseconds = (double)response.SelectToken("data").SelectToken("TournamentEndDate").SelectToken("nanoseconds");
+        PlayerData.TournamentEndDate.seconds = (double)response.SelectToken("data").SelectToken("TournamentEndDate").SelectToken("seconds");
+        PlayerData.ProfileCreated = new Timestamp();
+        PlayerData.ProfileCreated.nanoseconds = (double)response.SelectToken("data").SelectToken("ProfileCreated").SelectToken("nanoseconds");
+        PlayerData.ProfileCreated.seconds = (double)response.SelectToken("data").SelectToken("ProfileCreated").SelectToken("seconds");
+        Constants.UserName = PlayerData.UserName;
+        Constants.FlagSelectedIndex = PlayerData.AvatarID;
+        if (MainMenuViewController.Instance)
+            MainMenuViewController.Instance.ChangeUserNameText(Constants.UserName);
+        if (Constants.PushingTime)
+        {
+            Constants.PushingTime = false;
+            GamePlayUIHandler.Instance.SubmitTime();
+        }
+        string message = (string)response.SelectToken("message");
+        if (message == "User BO")
+        {
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.OnLoginSuccess(false);
+        }
+    }
+    
     public void SetLocalStorage(string key,string data)
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -162,7 +215,13 @@ public class FirebaseManager : MonoBehaviour
         Credentails.Email = _email;
         Credentails.Password = _pass;
         Credentails.UserName = _username;
-        FirebaseAuth.SignInWithEmailAndPassword(_email, _pass, gameObject.name, "OnLoginUser", "OnLoginUserError");
+        //Login with Firebase SDK and API
+        if(Constants.isUsingFirebaseSDK)
+            FirebaseAuth.SignInWithEmailAndPassword(_email, _pass, gameObject.name, "OnLoginUser", "OnLoginUserError");
+        else
+        {
+            apiRequestHandler.Instance.signInWithEmail(_email, _pass);
+        }
     }
 
     public void CheckVerification()
@@ -208,7 +267,8 @@ public class FirebaseManager : MonoBehaviour
             MainMenuViewController.Instance.ToggleMainMenuScreen(false);
         }
 
-        FirebaseAuth.SignOut(gameObject.name, "OnSignOut", "OnSignOutError");
+        if(Constants.isUsingFirebaseSDK)
+            FirebaseAuth.SignOut(gameObject.name, "OnSignOut", "OnSignOutError");
     }
 
     public void ResetStorage()
@@ -305,9 +365,18 @@ public class FirebaseManager : MonoBehaviour
 
     public IEnumerator FetchUserDB(string _walletID, string _username)
     {
-        UserDataFetched = false;
-        FetchUserData = false;
-        GetFireStoreData(DocPath, _walletID);
+        if (Constants.isUsingFirebaseSDK)
+        {
+            UserDataFetched = false;
+            FetchUserData = false;
+            GetFireStoreData(DocPath, _walletID);
+        }
+        else
+        {
+            UserDataFetched = true;
+            FetchUserData = true;
+        }
+
         yield return new WaitUntil(() => FetchUserData == true);
         if (UserDataFetched)
         {
@@ -350,7 +419,8 @@ public class FirebaseManager : MonoBehaviour
         if (TournamentManager.Instance)
             TournamentManager.Instance.GetTournamentDataDB();
 
-        GetFireStoreData(DocPath, _walletID);
+        if(Constants.isUsingFirebaseSDK)
+            GetFireStoreData(DocPath, _walletID);
         yield return new WaitUntil(() => ResultFetched == true);
 
         if (DocFetched == true) //document existed
@@ -384,7 +454,8 @@ public class FirebaseManager : MonoBehaviour
             PlayerData.Email = Constants.SavedEmail;
             PlayerData.TournamentEndDate = null;
             PlayerData.AvatarID = Constants.FlagSelectedIndex;
-            AddFireStoreData(PlayerData);
+            if(Constants.isUsingFirebaseSDK)
+                AddFireStoreData(PlayerData);
         }
 
         if (MainMenuViewController.Instance)
@@ -433,7 +504,16 @@ public class FirebaseManager : MonoBehaviour
     public void UpdatedFireStoreData(UserData _data)
     {
         string _json = JsonConvert.SerializeObject(_data);
-        FirebaseFirestore.UpdateDocument(DocPath, _data.WalletAddress, _json, gameObject.name, "OnDocUpdate", "OnDocUpdateError");
+        if (Constants.isUsingFirebaseSDK)
+        {
+            FirebaseFirestore.UpdateDocument(DocPath, _data.WalletAddress, _json, gameObject.name, "OnDocUpdate",
+                "OnDocUpdateError");
+        }
+        else
+        {
+            //TODO: call update api to update the data
+            apiRequestHandler.Instance.updatePlayerData();
+        }
     }
 
     public void OnDocUpdate(string info)
@@ -459,12 +539,21 @@ public class FirebaseManager : MonoBehaviour
         Debug.LogError("Doc update error : "+error);
     }
 
-    public void QueryDB(string _field,string _type)
+    public void QueryDB(string _field, string _type)
     {
+        if (Constants.isUsingFirebaseSDK)
+        {
         #if UNITY_WEBGL && !UNITY_EDITOR
-        FirebaseFirestore.QueryDB(DocPath,_field, _type, gameObject.name, "OnQueryUpdate", "OnQueryUpdateError");
+            FirebaseFirestore.QueryDB(DocPath, _field, _type, gameObject.name, "OnQueryUpdate", "OnQueryUpdateError");
         #endif
+        }
+        else
+        {
+            //Send Leaderboard request to api
+            apiRequestHandler.Instance.getLeaderboard();
+        }
     }
+
     public void OnQueryUpdate(string info)
     {
         PlayerDataArray = JsonConvert.DeserializeObject<UserData[]>(info);
@@ -493,7 +582,12 @@ public class FirebaseManager : MonoBehaviour
     public void SendPasswordResetEmail(string _email)
     {
         Constants.EmailSent = _email;
-        FirebaseAuth.SendPasswordResetEmail(_email,gameObject.name, "OnPassEmailSent", "OnPassEmailSentError");
+        if(Constants.isUsingFirebaseSDK)
+            FirebaseAuth.SendPasswordResetEmail(_email,gameObject.name, "OnPassEmailSent", "OnPassEmailSentError");
+        else
+        {
+            apiRequestHandler.Instance.onForgetPassword(_email);
+        }
     }
     public void OnPassEmailSent(string info)
     {
@@ -514,11 +608,23 @@ public class FirebaseManager : MonoBehaviour
     {
         SendPasswordResetEmail(Constants.EmailSent);
     }
+    public void showVerificationScreen()
+    {
+        Debug.Log("Email verification pending");
+        MainMenuViewController.Instance.ShowResendScreen(5f);
+        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+        MainMenuViewController.Instance.ResetRegisterFields();
+    }
 
     public void ResendVerificationEmail()
     {
         MainMenuViewController.Instance.LoadingScreen.SetActive(true);
-        FirebaseAuth.SendEmailVerification(gameObject.name, "ResendEmailSent", "ResendEmailSentError");
+        if(Constants.isUsingFirebaseSDK)
+            FirebaseAuth.SendEmailVerification(gameObject.name, "ResendEmailSent", "ResendEmailSentError");
+        else
+        {
+            apiRequestHandler.Instance.sendVerificationAgain();
+        }
     }
 
     public void ResendEmailSent(string info)
