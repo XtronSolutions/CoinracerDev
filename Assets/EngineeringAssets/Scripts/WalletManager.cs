@@ -1296,7 +1296,7 @@ public class WalletManager : MonoBehaviour
     public void PrintOnConsoleEditor(string _con)
     {
 #if UNITY_EDITOR
-        Debug.Log(_con);
+        //Debug.Log(_con);
 #endif
 
     }
