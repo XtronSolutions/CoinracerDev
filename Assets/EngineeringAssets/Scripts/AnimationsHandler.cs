@@ -45,6 +45,7 @@ public class AnimationsHandler : MonoBehaviour
     private float mainMenuAnimationTime = 0.25f; //this variable will store the time of animation for each button on main menu screen
     private float scaleAnimationValue = 1.10f; //this variable will store the scale to which the buttons will be scaled when the mouse is hovered over them
     private bool onGameModeButton = false; // this varaible will store if the user has any hovered on any game mode button
+    private Button utilityButton = null; //this variable will be used to store the reference of button component of the entity that is getting hovered on
     #endregion
 
     #region public
@@ -113,15 +114,17 @@ public class AnimationsHandler : MonoBehaviour
     //@return {}, no return
     public void scaleUpButton(GameObject g)
     {
-        if (g.GetComponent<Button>().interactable)
+        utilityButton = g.GetComponent<Button>();
+        if(utilityButton != null && !utilityButton.interactable)
         {
-            iTween.ScaleTo(g, iTween.Hash(
-                "x", scaleAnimationValue,
-                "y", scaleAnimationValue,
-                "time", 0.25f
-            ));
+                return;
         }
-        
+        iTween.ScaleTo(g, iTween.Hash(
+            "x", scaleAnimationValue,
+            "y", scaleAnimationValue,
+            "time", 0.25f
+        ));
+
     }
     //this function will be called when user performs mouse exit event on any of the buttons
     //@param {gameObject}, gameObject that was hovered
