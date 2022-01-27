@@ -28,6 +28,12 @@ public class LoginScreenUI
     public TMP_InputField password;
     public Button login;
 }
+
+[Serializable]
+public class PopupScreen
+{
+    public GameObject mainScreen;
+}
 #endregion
 
 
@@ -44,6 +50,8 @@ public class AnimationsHandler : MonoBehaviour
     private int mainMenuButtonsPositionX = -750; //this variable will store that value of Y where the buttons will be positioned before the animation starts
     private float mainMenuAnimationTime = 0.25f; //this variable will store the time of animation for each button on main menu screen
     private float scaleAnimationValue = 1.10f; //this variable will store the scale to which the buttons will be scaled when the mouse is hovered over them
+    private float popupAnimationTime = 0.20f; //this variable will store the time for which each popup animation cycle will run
+    private float popupAnimationCycles = 2; //the number of cycle that the popup animation will complete
     private bool onGameModeButton = false; // this varaible will store if the user has any hovered on any game mode button
     private Button utilityButton = null; //this variable will be used to store the reference of button component of the entity that is getting hovered on
     #endregion
@@ -52,6 +60,7 @@ public class AnimationsHandler : MonoBehaviour
     public static AnimationsHandler Instance;
     public MainMenuUI UIMainMenu;
     public LoginScreenUI UILoginScreen;
+    public PopupScreen PopupUI;
     #endregion
 
     #endregion
@@ -274,6 +283,43 @@ public class AnimationsHandler : MonoBehaviour
             UILoginScreen.login.interactable = true;
         else
             UILoginScreen.login.interactable = false;
+    }
+    #endregion
+
+    #region Popup Animations
+    //this function will be used to animate popups in this game
+    //@param {g}, gameobject to animate
+    //@return {} no return
+    public void runPopupAnimation(GameObject g)
+    {
+        animateRotation(g,0,-15f);
+    }
+
+    //this function will be used to rotate right the passed gameobject to the desired rotation
+    //@param {gameobject, count}
+    //@return {} no return
+    private void animateRotation(GameObject g, int _count, float rotationAngle)
+    {
+        if(_count <= popupAnimationCycles)
+        {
+            iTween.RotateTo(g, iTween.Hash(
+                "z", (_count < popupAnimationCycles) ? rotationAngle : 0,
+                "time", popupAnimationTime,
+                "easetype", iTween.EaseType.easeOutQuint,
+                "oncomplete", "rotationAnimationHelper",
+                "oncompleteparams", iTween.Hash("gameobject", g, "count", _count, "angle", rotationAngle),
+                "oncompletetarget", gameObject
+            ));
+        }
+    }
+
+    //this function will be used help in the rotation animation
+    //@param {object}
+    //@return {} no return
+    private void rotationAnimationHelper(object _data)
+    {
+        Hashtable data = (Hashtable)_data;
+        animateRotation((GameObject)data["gameobject"], (int)data["count"] + 1, -(float)data["angle"]);
     }
     #endregion
 }

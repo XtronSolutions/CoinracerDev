@@ -250,6 +250,7 @@ public class MainMenuViewController : MonoBehaviour
     [SerializeField] private AudioSource _audioSource = null;
 
     [SerializeField] private GameObject MessageUI;
+    [SerializeField] private GameObject MessageUIContainer;
     [SerializeField] private TextMeshProUGUI ToastMsgText = null;
     [SerializeField] private TextMeshProUGUI UserNameText = null;
     [SerializeField] private Image FlagIcon = null;
@@ -264,6 +265,7 @@ public class MainMenuViewController : MonoBehaviour
     public ForgetPasswordUI UIForgetPassword;
     private string[] CarNames = new string[5] { "Bonecrusher", "Merky", "CyberCar", "Coinrarri", "Malibu Express" };
     public GameObject ResendPopUp;
+    public GameObject ResendPopUpContainer;
     public SettingsUI UISetting;
     public ConnectionUI UIConnection;
     public MultiplayerSelectionUI UIMultiplayerSelection;
@@ -767,12 +769,14 @@ public class MainMenuViewController : MonoBehaviour
     {
         MessageUI.SetActive(true);
         ToastMsgText.text = _msg;
+        AnimationsHandler.Instance.runPopupAnimation(MessageUIContainer);
         StartCoroutine(DisableToast(_time));
     }
 
     public void ShowResendScreen(float _Sec)
     {
         ResendPopUp.SetActive(true);
+        AnimationsHandler.Instance.runPopupAnimation(ResendPopUpContainer);
         Invoke("DisableResendScreen", _Sec);
     }
 
