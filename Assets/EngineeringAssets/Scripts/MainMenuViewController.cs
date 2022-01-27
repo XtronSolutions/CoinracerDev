@@ -1512,6 +1512,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SendEmailConfirmationClicked_PasswordReset()
     {
+        Debug.LogError(("Sending email verification"));
         LoadingScreen.SetActive(true);
         if (UIForgetPassword.EmailInput.text == "")
         {

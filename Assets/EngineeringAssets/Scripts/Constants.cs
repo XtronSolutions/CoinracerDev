@@ -98,7 +98,7 @@ public static class Constants
     public static bool EventRaised = false;
     public static string EventData = "";
     
-    public static bool isUsingFirebaseSDK = true;
+    public static bool isUsingFirebaseSDK = false;
     public static int LeaderboardCount = 100;
 
     async public static void GetCracePrice()
