@@ -2560,7 +2560,14 @@ namespace Photon.Pun
 
             if (NetworkClientState == ClientState.ConnectedToNameServer)
             {
-                PhotonNetwork.NetworkingClient.ConnectToRegionMaster(regionHandler.BestRegion.Code);
+                string connectedRegion = "";
+
+                if (SelectedRegion != "")
+                    connectedRegion = SelectedRegion;
+                else
+                    SelectedRegion = regionHandler.BestRegion.Code;
+
+                PhotonNetwork.NetworkingClient.ConnectToRegionMaster(SelectedRegion);
             }
         }
     }

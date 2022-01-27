@@ -250,6 +250,7 @@ public class MainMenuViewController : MonoBehaviour
     [SerializeField] private AudioSource _audioSource = null;
 
     [SerializeField] private GameObject MessageUI;
+    [SerializeField] private GameObject MessageUIContainer;
     [SerializeField] private TextMeshProUGUI ToastMsgText = null;
     [SerializeField] private TextMeshProUGUI UserNameText = null;
     [SerializeField] private Image FlagIcon = null;
@@ -264,6 +265,7 @@ public class MainMenuViewController : MonoBehaviour
     public ForgetPasswordUI UIForgetPassword;
     private string[] CarNames = new string[5] { "Bonecrusher", "Merky", "CyberCar", "Coinrarri", "Malibu Express" };
     public GameObject ResendPopUp;
+    public GameObject ResendPopUpContainer;
     public SettingsUI UISetting;
     public ConnectionUI UIConnection;
     public MultiplayerSelectionUI UIMultiplayerSelection;
@@ -767,12 +769,14 @@ public class MainMenuViewController : MonoBehaviour
     {
         MessageUI.SetActive(true);
         ToastMsgText.text = _msg;
+        AnimationsHandler.Instance.runPopupAnimation(MessageUIContainer);
         StartCoroutine(DisableToast(_time));
     }
 
     public void ShowResendScreen(float _Sec)
     {
         ResendPopUp.SetActive(true);
+        AnimationsHandler.Instance.runPopupAnimation(ResendPopUpContainer);
         Invoke("DisableResendScreen", _Sec);
     }
 
@@ -1731,6 +1735,7 @@ public class MainMenuViewController : MonoBehaviour
 
         ToggleScreen_ConnectionUI(true);
         AnimateConnectingDetail_ConnectionUI(UIConnection.Detail01.DetailScreen,true);
+
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.ConnectToPhotonServer();
     }
@@ -1758,6 +1763,17 @@ public class MainMenuViewController : MonoBehaviour
         ChangeRegionText_ConnectionUI("Selected Region : n/a");
         ToggleScreen_ConnectionUI(false);
 
+        RegionPinged = false;
+
+        Dropdown RegionList = UIConnection.RegionPingsDropdown.GetComponent<Dropdown>();
+        RegionList.interactable = false;
+        RegionList.options.Clear();
+        RegionList.options.Add(new Dropdown.OptionData() { text = "Select Region" });
+        RegionList.value = 0;
+        Constants.RegionChanged = false;
+        PhotonNetwork.SelectedRegion = "";
+        RegionList.interactable = true;
+
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.DisconnectPhoton();
     }
@@ -1781,21 +1797,30 @@ public class MainMenuViewController : MonoBehaviour
 
     public void ShowPingedRegionList_ConnectionUI(string[] regions,string[] pings)
     {
-        //RegionPingsDropdown
-        var dropdown = UIConnection.RegionPingsDropdown.GetComponent<Dropdown>();
-        dropdown.options.Clear();
-        int minimumPing = int.Parse(pings[0]);
-        int currentPing;
-        dropdown.value = 1;
-        for (int i = 0; i < regions.Length; i++)
+        if (!RegionPinged)
         {
-            dropdown.options.Add(new Dropdown.OptionData() { text= regions[i] + " " + pings[i] + "ms" });
-            currentPing = int.Parse(pings[i]);
-            if(currentPing < minimumPing)
+            RegionPinged = true;
+            //RegionPingsDropdown
+            var dropdown = UIConnection.RegionPingsDropdown.GetComponent<Dropdown>();
+            SetManualRegion _RegionRef = UIConnection.RegionPingsDropdown.GetComponent<SetManualRegion>();
+            dropdown.options.Clear();
+            List<string> _regions = new List<string>();
+            int minimumPing = int.Parse(pings[0]);
+            int currentPing;
+            dropdown.value = 1;
+            for (int i = 0; i < regions.Length; i++)
             {
-                minimumPing = currentPing;
-                dropdown.value = i+1;
+                dropdown.options.Add(new Dropdown.OptionData() { text = regions[i] + " " + pings[i] + "ms" });
+                _regions.Add(regions[i]);
+                currentPing = int.Parse(pings[i]);
+                if (currentPing < minimumPing)
+                {
+                    minimumPing = currentPing;
+                    dropdown.value = i + 1;
+                }
             }
+
+            _RegionRef.SetRegionString(_regions);
         }
     }
 

@@ -114,12 +114,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void UpdatePlayerCountText(string TxT)
     {
         if (MainMenuViewController.Instance)
-            MainMenuViewController.Instance.ChangePlayerCountText_ConnectionUI(TxT);
+            MainMenuViewController.Instance.ChangePlayerCountText_ConnectionUI("Online Players : " + TxT);
     }
 
     public void ConnectToPhotonServer()
     {
-        UpdatePlayerCountText("Player Count : 0");
+        UpdatePlayerCountText("0");
         Constants.DepositDone = false;
         Constants.TimerRunning = false;
         Constants.OtherPlayerDeposit = false;
@@ -181,11 +181,22 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         UpdateConnectionText("Joined Lobby");
         Constants.PrintLog("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
 
+        CancelInvoke("UpdateOnlineStatus");
+        UpdateOnlineStatus();
         JoinRoomRandom(Constants.SelectedLevel, Constants.SelectedWage, Settings.MaxPlayers);
 
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : " + PhotonNetwork.CloudRegion);
     }
+
+    public void UpdateOnlineStatus()
+    {
+        if(PhotonNetwork.IsConnected && PhotonNetwork.InLobby)
+        {
+            UpdatePlayerCountText(PhotonNetwork.CountOfPlayers.ToString());
+            Invoke("UpdateOnlineStatus", 1f);
+        }
+    }  
 
     public void CreateRoom()
     {
@@ -321,6 +332,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
+        if (Constants.RegionChanged == true)
+        {
+            Constants.RegionChanged = false;
+            ConnectToPhotonServer();
+        }
+
         Constants.PrintLog("OnDisconnected(" + cause + ")");
         if (cause != DisconnectCause.DisconnectByClientLogic)
         {
@@ -346,7 +363,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+        //UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         UpdateConnectionText("Joined Room");
         Constants.StoredPID = PhotonNetwork.CurrentRoom.Name;
 
@@ -414,7 +431,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+        //UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
@@ -506,7 +523,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (SceneManager.GetActiveScene().name != "MainMenu")
             return;
 
-        UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
+        //UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
 
         if(PhotonNetwork.CurrentRoom.PlayerCount>0 && !Constants.OtherPlayerDeposit)
         {

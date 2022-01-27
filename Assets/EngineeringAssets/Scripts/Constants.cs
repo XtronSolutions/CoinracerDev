@@ -55,7 +55,7 @@ public static class Constants
     public static bool WalletChanged = false;
 
     public static bool IsTestNet = false;
-    public static bool IsTest = false;
+    public static bool IsTest = true;
 
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
@@ -97,6 +97,9 @@ public static class Constants
     public static string PIDString = "";
     public static bool EventRaised = false;
     public static string EventData = "";
+    public static string SelectedRegion = "";
+    public static bool RegionChanged = false;
+    public static bool RegionPinged = false;
     
     public static bool isUsingFirebaseSDK = false;
     public static int LeaderboardCount = 100;
