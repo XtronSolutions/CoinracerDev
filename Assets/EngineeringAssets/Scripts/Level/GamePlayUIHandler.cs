@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class PopMessageUI
 {
     public GameObject PopUpScreen;
+    public GameObject PopUpScreenContainer;
     public TextMeshProUGUI MsgText;
 }
 
@@ -54,6 +55,7 @@ public class GamePlayUIHandler : MonoBehaviour
     public void ToggleInputScreen_InputFieldUI(bool _state)
     {
         UIInputField.InputScreen.SetActive(_state);
+        AnimationsHandler.Instance.runPopupAnimation(UIInputField.InputScreen);
         UIInputField.UsernameInput.text = "";
     }
 
@@ -121,6 +123,7 @@ public class GamePlayUIHandler : MonoBehaviour
     {
         MessagePopUI.PopUpScreen.SetActive(true);
         MessagePopUI.MsgText.text = _msg;
+        AnimationsHandler.Instance.runPopupAnimation(MessagePopUI.PopUpScreenContainer);
         StartCoroutine(DisableToast(_time));
     }
 

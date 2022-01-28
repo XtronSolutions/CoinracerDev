@@ -12,7 +12,8 @@ using Photon.Pun;
 public class MultiplayerUI
 {
     public GameObject MainScreen;
-    public GameObject confirmationScreen;
+    public GameObject confirmationScreen; 
+    public GameObject confirmationScreenContainer;
     public TextMeshProUGUI WinText;
     public TextMeshProUGUI WinnerNameText;
     public TextMeshProUGUI AmountWinText;
@@ -253,6 +254,7 @@ public class RaceManager : MonoBehaviour
         else if (GamePlayUIHandler.Instance && Constants.IsPractice)
         {
             _raceOverMenuObject.SetActive(true);
+            AnimationsHandler.Instance.runPopupAnimation(_raceOverMenuObject);
         }
 
 
@@ -277,6 +279,8 @@ public class RaceManager : MonoBehaviour
     public void TogglePauseMenu()
     {
         _pasueMenuObject.SetActive(!_pasueMenuObject.activeSelf);
+        if(_pasueMenuObject.activeSelf)
+            AnimationsHandler.Instance.runPopupAnimation(_pasueMenuObject);
         _pauseRestartButton.SetActive(false);
 
         if (Constants.IsPractice && !Constants.IsMultiplayer)
@@ -328,6 +332,7 @@ public class RaceManager : MonoBehaviour
     public void ToggleScreen_ConfirmationScreen(bool state)
     {
         UIMultiplayer.confirmationScreen.SetActive(state);
+        AnimationsHandler.Instance.runPopupAnimation(UIMultiplayer.confirmationScreenContainer);
     }
     public void ToggleScreen_MultiplayerUI(bool state)
     {

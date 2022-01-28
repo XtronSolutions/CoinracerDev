@@ -746,8 +746,6 @@ MonoBehaviour:
     email: {fileID: 0}
     password: {fileID: 0}
     login: {fileID: 0}
-  PopupUI:
-    mainScreen: {fileID: 0}
 --- !u!4 &26971035
 Transform:
   m_ObjectHideFlags: 0
@@ -9786,6 +9784,7 @@ MonoBehaviour:
   UIMultiplayer:
     MainScreen: {fileID: 2038117669}
     confirmationScreen: {fileID: 576185238}
+    confirmationScreenContainer: {fileID: 889275030}
     WinText: {fileID: 999684926}
     WinnerNameText: {fileID: 1356298141}
     AmountWinText: {fileID: 1704296228}
@@ -12088,6 +12087,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1662186048}
+  - {fileID: 1146360579}
   m_Father: {fileID: 1288785391}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -17381,7 +17381,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1288785391}
+  m_Father: {fileID: 720539031}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -19408,7 +19408,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 720539031}
-  - {fileID: 1146360579}
   m_Father: {fileID: 1557233538}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -23806,6 +23805,7 @@ MonoBehaviour:
     SubmitButton: {fileID: 75074035}
   MessagePopUI:
     PopUpScreen: {fileID: 1288785390}
+    PopUpScreenContainer: {fileID: 720539030}
     MsgText: {fileID: 1662186046}
   GameplaySource: {fileID: 0}
   _username: 

@@ -28,12 +28,6 @@ public class LoginScreenUI
     public TMP_InputField password;
     public Button login;
 }
-
-[Serializable]
-public class PopupScreen
-{
-    public GameObject mainScreen;
-}
 #endregion
 
 
@@ -60,7 +54,6 @@ public class AnimationsHandler : MonoBehaviour
     public static AnimationsHandler Instance;
     public MainMenuUI UIMainMenu;
     public LoginScreenUI UILoginScreen;
-    public PopupScreen PopupUI;
     #endregion
 
     #endregion
