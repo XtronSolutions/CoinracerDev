@@ -93,6 +93,7 @@ public class FirebaseManager : MonoBehaviour
     public void SetPlayerData(string _response)
     {
         JToken response = JObject.Parse(_response);
+        Debug.Log(response);
         PlayerData = new UserData();
         PlayerData.Email = (string)response.SelectToken("data").SelectToken("Email");
         PlayerData.UserName = (string)response.SelectToken("data").SelectToken("UserName");

@@ -1088,6 +1088,7 @@ public class MainMenuViewController : MonoBehaviour
             _levelsSettings.Add(_allLevelsSettings[0]);
             _levelsSettings.Add(_allLevelsSettings[1]);
             _levelsSettings.Add(_allLevelsSettings[2]);
+            _levelsSettings.Add(_allLevelsSettings[3]);
         }
         else if (IsTournament)
         {

@@ -4743,6 +4743,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &188854051
 GameObject:
   m_ObjectHideFlags: 0
@@ -8265,6 +8271,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &327983653
 GameObject:
   m_ObjectHideFlags: 0
@@ -11691,6 +11703,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &492776310
 GameObject:
   m_ObjectHideFlags: 0
@@ -18209,6 +18227,7 @@ GameObject:
   - component: {fileID: 796878388}
   - component: {fileID: 796878387}
   - component: {fileID: 796878386}
+  - component: {fileID: 796878390}
   m_Layer: 5
   m_Name: claimReward
   m_TagString: Untagged
@@ -18358,6 +18377,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 796878384}
   m_CullTransparentMesh: 1
+--- !u!114 &796878390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 796878384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &797797027
 GameObject:
   m_ObjectHideFlags: 0
@@ -27232,6 +27269,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &1148590356
 GameObject:
   m_ObjectHideFlags: 0
@@ -27770,6 +27813,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &1159689948
 GameObject:
   m_ObjectHideFlags: 0
@@ -29443,6 +29492,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &1222833550
 GameObject:
   m_ObjectHideFlags: 0
@@ -31598,6 +31653,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &1313743836
 GameObject:
   m_ObjectHideFlags: 0
@@ -35025,7 +35086,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 6.29, y: 8.408692}
-  m_SizeDelta: {x: 59.8773, y: 56.578}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1415122322
 MonoBehaviour:
@@ -40651,6 +40712,7 @@ GameObject:
   - component: {fileID: 1693686499}
   - component: {fileID: 1693686498}
   - component: {fileID: 1693686497}
+  - component: {fileID: 1693686500}
   m_Layer: 5
   m_Name: Btn
   m_TagString: Untagged
@@ -40783,6 +40845,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1693686495}
   m_CullTransparentMesh: 1
+--- !u!114 &1693686500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1693686495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &1696306918
 GameObject:
   m_ObjectHideFlags: 0
@@ -44307,6 +44387,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &1831148501
 GameObject:
   m_ObjectHideFlags: 0
@@ -51516,6 +51602,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &1949924321
 GameObject:
   m_ObjectHideFlags: 0
@@ -54823,6 +54915,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02194e05e2347ce4bb1de88e34eee4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutomateHover: 0
+  TweenSetting:
+    AxisOffset: 0
+    TweenSpeed: 0
+    EaseType: 0
+    LoopType: 0
 --- !u!1 &2127983037
 GameObject:
   m_ObjectHideFlags: 0

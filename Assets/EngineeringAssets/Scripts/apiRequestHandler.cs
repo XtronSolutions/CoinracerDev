@@ -36,17 +36,20 @@ public class LeaderboardPayload
 
 public class apiRequestHandler : MonoBehaviour
 {
-        //Staging:   https://us-central1-coinracer-stagging.cloudfunctions.net/
-        //Production:   https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/
+    //Staging : https://us-central1-coinracer-stagging.cloudfunctions.net/
+    //Production : https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/
     private const  string BaseURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/";
     private const string loginURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Login";
     private const string firebaseLoginUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
     private const string firebaseSignupUrl = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=";
 
     private const string forgetPassword = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
-    private const string emailVerification =
-        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
+    private const string emailVerification ="https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
+
+    //Staging : AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE
+    //Production : AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8
     private const string firebaseApiKey = "AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
+
     private const string signupBOUserURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/SignUp";
     private const string updateUserBoURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/UpdateUserBO";
     private const string leaderboardBOURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Leaderboard";
@@ -458,6 +461,9 @@ public class apiRequestHandler : MonoBehaviour
 
     private IEnumerator processLeaderboardToken(string _email, string _password)
     {
+        if(LeaderboardManager.Instance)
+            LeaderboardManager.Instance.ClearLeaderboard();
+
         WWWForm form = new WWWForm();
         form.AddField("email", _email);
         form.AddField("password", _password);
@@ -522,6 +528,7 @@ public class apiRequestHandler : MonoBehaviour
            
             if (request.result == UnityWebRequest.Result.Success)
             {
+                Debug.Log(request.downloadHandler.text);
                 FirebaseManager.Instance.OnQueryUpdate(request.downloadHandler.text);
             }
             else

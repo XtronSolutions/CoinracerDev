@@ -38,7 +38,7 @@ public class LeaderboardManager : MonoBehaviour
         LeaderBoardUIData.MainScreen.SetActive(false);
     }
 
-    public void PopulateLeaderboardData(UserData[] _data)
+    public void ClearLeaderboard()
     {
         for (int i = 0; i < BoardObjects.Count; i++)
         {
@@ -46,6 +46,11 @@ public class LeaderboardManager : MonoBehaviour
         }
 
         BoardObjects.Clear();
+    }
+
+    public void PopulateLeaderboardData(UserData[] _data)
+    {
+        ClearLeaderboard();
 
         for (int i = 0; i < _data.Length; i++)
         {

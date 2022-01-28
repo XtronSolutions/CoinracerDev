@@ -146,6 +146,20 @@ public class AnimationsHandler : MonoBehaviour
             "time", 0.25f
         ));
     }
+
+    //this function will be used to animate gameobject in y axis (hovering in Y Axis)
+    //@param {} no param
+    //@return {} no return
+    public void HoverYAxis(GameObject g,float yAxis,float speed, iTween.EaseType Type, iTween.LoopType loopType)
+    {
+        iTween.MoveBy(g, iTween.Hash(
+            "y", yAxis,
+            "time", speed,
+            "easetype", Type,
+            "looptype", loopType
+            ));
+    }
+
     //this function will be used to animate the buttons on main menu screen
     //@param {} no param
     //@return {} no return
@@ -164,14 +178,18 @@ public class AnimationsHandler : MonoBehaviour
     {
         if (_index >= buttons.Count)
             return;
-        iTween.MoveTo(buttons[_index].gameObject, iTween.Hash(
-            "x", positions[_index].x,
-            "time", mainMenuAnimationTime,
-            "easetype", iTween.EaseType.easeInOutQuad,
-            "oncomplete", "mainMenuAnimationHandler",
-            "oncompleteparams", iTween.Hash("value", _index + 1),
-            "oncompletetarget", gameObject
-            ));
+
+        if (buttons[_index] != null)
+        {
+            iTween.MoveTo(buttons[_index].gameObject, iTween.Hash(
+                "x", positions[_index].x,
+                "time", mainMenuAnimationTime,
+                "easetype", iTween.EaseType.easeInOutQuad,
+                "oncomplete", "mainMenuAnimationHandler",
+                "oncompleteparams", iTween.Hash("value", _index + 1),
+                "oncompletetarget", gameObject
+                ));
+        }
     }
 
     //this function will be used to handle the main menu animations
@@ -226,6 +244,7 @@ public class AnimationsHandler : MonoBehaviour
         //if size of mainMenuButtons is greater than 0 then return the list as it is
         if (mainMenuButtons.Count > 0)
             return mainMenuButtons;
+
         mainMenuButtons.Add(UIMainMenu.tournament);
         mainMenuButtons.Add(UIMainMenu.practice);
         mainMenuButtons.Add(UIMainMenu.multiplayer);
@@ -243,10 +262,14 @@ public class AnimationsHandler : MonoBehaviour
         //if buttons list is empty return null
         if (buttonsList.Count <= 0)
             return null;
+
         List<Vector3> positionsList = new List<Vector3>();
         //iterate each button in the main menu buttons list
         foreach (var button in buttonsList)
-            positionsList.Add(button.GetComponent<Transform>().position);
+        {
+            if(button!=null)
+                positionsList.Add(button.GetComponent<Transform>().position);
+        }
         //return list of positions of all the main menu buttons
         return positionsList;
     }
@@ -258,8 +281,12 @@ public class AnimationsHandler : MonoBehaviour
     {
         if (buttons.Count <= 0)
             return;
+
         for (int i = 0; i < buttons.Count; i++)
-            buttons[i].transform.position = new Vector3(_xPosition, defaultPositions[i].y, defaultPositions[i].z);
+        {
+            if(buttons[i]!=null)
+                buttons[i].transform.position = new Vector3(_xPosition, defaultPositions[i].y, defaultPositions[i].z);
+        }
 
     }
     #endregion
@@ -270,8 +297,11 @@ public class AnimationsHandler : MonoBehaviour
     //@return {} no return
     private void addLoginFieldsEvents()
     {
+        if(UILoginScreen.email != null)
         UILoginScreen.email.onValueChanged.AddListener(delegate { onValueChangeLogin(); });
-        UILoginScreen.password.onValueChanged.AddListener(delegate { onValueChangeLogin(); });
+
+        if (UILoginScreen.password != null)
+            UILoginScreen.password.onValueChanged.AddListener(delegate { onValueChangeLogin(); });
     }
 
     //this function will be called each time the value changes in either email field or password field on login screen
