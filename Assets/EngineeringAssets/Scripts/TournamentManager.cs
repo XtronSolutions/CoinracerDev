@@ -67,8 +67,8 @@ public class TournamentManager : MonoBehaviour
     string textfieldSeconds;//string store converstion of seconds into string for display
     
     private const string firebaseLoginUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
-    private const string firebaseApiKey = "AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
-    private const string torunamentDataURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Tournament";
+    private const string firebaseApiKey = "AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
+    private const string torunamentDataURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Tournament";
     private void OnEnable()
     {
         Instance = this;

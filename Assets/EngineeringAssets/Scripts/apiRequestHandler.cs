@@ -38,21 +38,21 @@ public class apiRequestHandler : MonoBehaviour
 {
     //Staging : https://us-central1-coinracer-stagging.cloudfunctions.net/
     //Production : https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/
-    private const  string BaseURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/";
-    private const string loginURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Login";
+    private const  string BaseURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/";
+    private const string loginURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Login";
     private const string firebaseLoginUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
     private const string firebaseSignupUrl = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=";
 
-    private const string forgetPassword = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
-    private const string emailVerification ="https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
+    private const string forgetPassword = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
+    private const string emailVerification ="https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
 
     //Staging : AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE
     //Production : AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8
-    private const string firebaseApiKey = "AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
+    private const string firebaseApiKey = "AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
 
-    private const string signupBOUserURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/SignUp";
-    private const string updateUserBoURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/UpdateUserBO";
-    private const string leaderboardBOURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Leaderboard";
+    private const string signupBOUserURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/SignUp";
+    private const string updateUserBoURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/UpdateUserBO";
+    private const string leaderboardBOURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Leaderboard";
       
     public static apiRequestHandler Instance;
 
@@ -160,7 +160,7 @@ public class apiRequestHandler : MonoBehaviour
         //Debug.Log(WalletManager.Instance.GetAccount());
         if (Constants.IsTest)
         {
-            _walletAddress = "4157867";
+            _walletAddress = "0xD4d844C5A1cFAB13A8Ab252E466188d129a755Bc";
         }
         else
             _walletAddress = Constants.WalletAddress;
@@ -308,7 +308,7 @@ public class apiRequestHandler : MonoBehaviour
             {
                 StartCoroutine(processRequest(tID)); //Login Request
             }
-            //Debug.Log(tID);
+            Debug.Log(tID);
         }
         else
         {
