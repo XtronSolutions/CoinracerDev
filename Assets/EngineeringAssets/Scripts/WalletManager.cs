@@ -610,12 +610,7 @@ public class WalletManager : MonoBehaviour
                 {
                     MainMenuViewController.Instance.ShowToast(3f, "NFT data was changed, game will automatically restart.");
                     Invoke("RestartGame", 3.1f);
-                }
-
-                if (GamePlayUIHandler.Instance)
-                {
-                    GamePlayUIHandler.Instance.ShowToast(3f, "NFT data was changed, game will automatically restart.");
-                    Invoke("RestartGame", 3.1f);
+                    Constants.NFTChanged = false;
                 }
             }
 
@@ -633,7 +628,12 @@ public class WalletManager : MonoBehaviour
 
     public void RestartGame()
     {
-        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+        Constants.NFTChanged = false;
+        Constants.NFTStored = -1;
+        NFTTokens.Clear();
+        metaDataURL.Clear();
+        Constants.StoredCarNames.Clear();
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);  
     }
 
     async public void CheckTokenOwnerByIndex()

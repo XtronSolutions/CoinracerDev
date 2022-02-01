@@ -67,7 +67,13 @@ public class TournamentManager : MonoBehaviour
     string textfieldSeconds;//string store converstion of seconds into string for display
     
     private const string firebaseLoginUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
+
+    //Staging : AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE
+    //Production : AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8
     private const string firebaseApiKey = "AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
+
+    //Staging : https://us-central1-coinracer-stagging.cloudfunctions.net/
+    //Production : https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/
     private const string torunamentDataURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Tournament";
     private void OnEnable()
     {
@@ -203,7 +209,7 @@ public class TournamentManager : MonoBehaviour
 
     public void OnGetTournamentData(string info)
     {
-        Debug.Log("Data successfully fetched for tournament");
+        //Debug.Log("Data successfully fetched for tournament");
 
         if (Constants.isUsingFirebaseSDK)
         {
@@ -244,7 +250,7 @@ public class TournamentManager : MonoBehaviour
     }
     public void OnGetTournamentDataError(string error)
     {
-        Debug.LogError(error);
+        //Debug.LogError(error);
         StartTournamentCounter(true,null);
     }
     public void ManipulateTournamnetUIActivness(bool LowerHeaderActive, bool TimerActive, bool FotterActive, bool LoaderObjActive, bool DisclaimerActive, bool DisclaimerActive2,bool _isActive)
@@ -291,17 +297,17 @@ public class TournamentManager : MonoBehaviour
          yield return request.SendWebRequest();
          if (request.result == UnityWebRequest.Result.ConnectionError)
          {
-             Debug.Log(request.error);
+             //Debug.Log(request.error);
          }
          else if (request.result == UnityWebRequest.Result.Success)
          {
-             Debug.Log("Result is: ");
-             Debug.Log(request.result);
-             Debug.Log(request.downloadHandler.text);
+             //Debug.Log("Result is: ");
+             //Debug.Log(request.result);
+             //Debug.Log(request.downloadHandler.text);
              JToken token = JObject.Parse(request.downloadHandler.text);
              string tID = (string) token.SelectToken("idToken");
              StartCoroutine(processTournamentRequest());
-             Debug.Log(tID);
+             //Debug.Log(tID);
          }
          else
          {
@@ -316,7 +322,7 @@ public class TournamentManager : MonoBehaviour
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             //MainMenuViewController.Instance.SomethingWentWrongMessage();
-            Debug.Log(request.error);
+           // Debug.Log(request.error);
         }
         else
         {
@@ -324,9 +330,9 @@ public class TournamentManager : MonoBehaviour
             // JToken response = JObject.Parse(request.downloadHandler.text);
             // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
             
-            Debug.Log("Result is: ");
-            Debug.Log(request.result);
-            Debug.Log(request.downloadHandler.text);
+            //Debug.Log("Result is: ");
+            //Debug.Log(request.result);
+            //Debug.Log(request.downloadHandler.text);
             JToken token = JObject.Parse(request.downloadHandler.text);
             
            // JsonConvert.DeserializeObject<TournamentClassData>(token.SelectToken("data"));
