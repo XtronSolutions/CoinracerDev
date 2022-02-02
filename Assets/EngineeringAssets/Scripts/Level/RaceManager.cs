@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 using Photon.Pun;
+using Unity.VisualScripting;
 
 [Serializable]
 public class MultiplayerUI
@@ -38,10 +39,13 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI GameStartTimer = null;
     [SerializeField] private Button ClaimRewardButton = null;
     [SerializeField] private GameObject LoadingScreen = null;
+    [SerializeField] public Slider miniMap = null;
 
 
     private int _currentWayPointIndex = 1;
     private int _lapsCounter;
+    private float _miniMapCounter = 0;
+    private float progressCount = 0f;
 
     public static RaceManager Instance;
     int RaceCounter = 5;//3
@@ -80,9 +84,11 @@ public class RaceManager : MonoBehaviour
 
     private void Start()
     {
+        _miniMapCounter = 0;
         LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
         foreach (var wayPoint in _wayPoints)
         {
+           
             wayPoint.WayPointDataObservable.Subscribe(OnWayPointData).AddTo(this);
         }
 
@@ -161,14 +167,39 @@ public class RaceManager : MonoBehaviour
         }
     }
 
+    IEnumerator changeProgressValue(float _val)//0.04
+    {
+        _val = _val - 0.01f;//0.03
+        if (_val < 0)
+        {
+            yield break;
+        }
+        yield return new WaitForSeconds(0.1f);
+        miniMap.value = miniMap.value+0.01f;
+        StartCoroutine(changeProgressValue(_val));
+
+    }
+
+ 
     private void OnWayPointData(WayPointData data)
     {
         int indexOfPayPoint = _wayPoints.IndexOf(data.Waypoint);
+        Debug.Log("indexofwaypoint");
+        _miniMapCounter++;
+        float val = _miniMapCounter / 20;
+        progressCount = 0.05f;
+        //lerpProgressbar(val);
+        StartCoroutine(changeProgressValue(progressCount));
+       // miniMap.value = val;
+        Debug.Log(_miniMapCounter);
+        Debug.Log(val);
 
         if (indexOfPayPoint % _wayPoints.Count == _currentWayPointIndex)
         {
             _currentWayPointIndex++;
             _currentWayPointIndex %= _wayPoints.Count;
+          //  Debug.Log("currentWayPoint");
+            //Debug.Log(_currentWayPointIndex);
 
             if (_currentWayPointIndex == 1)
             {
