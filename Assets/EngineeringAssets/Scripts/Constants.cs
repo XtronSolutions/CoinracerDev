@@ -102,7 +102,7 @@ public static class Constants
     public static bool RegionPinged = false;
     
     public static bool isUsingFirebaseSDK = false;
-    public static int LeaderboardCount = 100;
+    public static int LeaderboardCount = 200;
 
     async public static void GetCracePrice()
     {

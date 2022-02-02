@@ -1088,12 +1088,12 @@ public class MainMenuViewController : MonoBehaviour
             _levelsSettings.Add(_allLevelsSettings[0]);
             _levelsSettings.Add(_allLevelsSettings[1]);
             _levelsSettings.Add(_allLevelsSettings[2]);
-            _levelsSettings.Add(_allLevelsSettings[3]);
+            //_levelsSettings.Add(_allLevelsSettings[3]);
         }
         else if (IsTournament)
         {
-            //_levelsSettings.Add(_allLevelsSettings[1]);
-            _levelsSettings.Add(_allLevelsSettings[2]);
+            _levelsSettings.Add(_allLevelsSettings[1]);
+            //_levelsSettings.Add(_allLevelsSettings[2]);
         }
 
         OnLevelSelected(0);
@@ -1113,9 +1113,7 @@ public class MainMenuViewController : MonoBehaviour
     private void BackToGoToCarSelection()
     {
         if (Constants.IsTest)
-        {
             WalletConnected = true;
-        }
 
         if (WalletConnected)//WalletConnected
         {
@@ -1135,9 +1133,7 @@ public class MainMenuViewController : MonoBehaviour
     private void OnGoToCarSelection()
     {
         if (Constants.IsTest)
-        {
             WalletConnected = true;
-        }
 
         if (WalletConnected)//WalletConnected
         {
@@ -1517,7 +1513,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SendEmailConfirmationClicked_PasswordReset()
     {
-        Debug.LogError(("Sending email verification"));
+       // Debug.LogError(("Sending email verification"));
         LoadingScreen.SetActive(true);
         if (UIForgetPassword.EmailInput.text == "")
         {

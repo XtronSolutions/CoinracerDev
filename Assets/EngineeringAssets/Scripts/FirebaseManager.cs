@@ -93,7 +93,7 @@ public class FirebaseManager : MonoBehaviour
     public void SetPlayerData(string _response)
     {
         JToken response = JObject.Parse(_response);
-        Debug.Log(response);
+        //Debug.Log(response);
         PlayerData = new UserData();
         PlayerData.Email = (string)response.SelectToken("data").SelectToken("Email");
         PlayerData.UserName = (string)response.SelectToken("data").SelectToken("UserName");
@@ -143,7 +143,7 @@ public class FirebaseManager : MonoBehaviour
   
     public void OnAuthSuccess(string info)
     {
-        Debug.Log(info);        
+        //Debug.Log(info);        
     }
 
 
@@ -162,7 +162,7 @@ public class FirebaseManager : MonoBehaviour
 
     public void OnEmailCheck(string info)
     {
-        Debug.Log("Checked email : email existed");
+       // Debug.Log("Checked email : email existed");
 
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.EmailAlreadyExisted();
@@ -172,7 +172,7 @@ public class FirebaseManager : MonoBehaviour
     {
         if (error.Contains("Email Not Registered"))
         {
-            Debug.Log("Checked email : email does not exist, creating one.");
+           // Debug.Log("Checked email : email does not exist, creating one.");
             CreateNewUser(Constants.SavedEmail, Constants.SavedPass);
         }else
         {
@@ -239,7 +239,7 @@ public class FirebaseManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Email verification pending");
+            //Debug.Log("Email verification pending");
             MainMenuViewController.Instance.ShowResendScreen(5f);
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             MainMenuViewController.Instance.ResetRegisterFields();
@@ -315,7 +315,7 @@ public class FirebaseManager : MonoBehaviour
     }
     public void OnAddData(string info)
     {
-        Debug.Log("Data successfully added on firestore");
+       // Debug.Log("Data successfully added on firestore");
     }
 
     public void OnAddDataError(string error)
@@ -611,7 +611,7 @@ public class FirebaseManager : MonoBehaviour
     }
     public void showVerificationScreen()
     {
-        Debug.Log("Email verification pending");
+        //Debug.Log("Email verification pending");
         MainMenuViewController.Instance.ShowResendScreen(5f);
         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
         MainMenuViewController.Instance.ResetRegisterFields();

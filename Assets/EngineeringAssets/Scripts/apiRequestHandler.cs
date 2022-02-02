@@ -31,15 +31,13 @@ public class LeaderboardPayload
     public LeaderboardCounter data { get; set; }
 }
 
-
-
-
 public class apiRequestHandler : MonoBehaviour
 {
     //Staging : https://us-central1-coinracer-stagging.cloudfunctions.net/
     //Production : https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/
-    private const  string BaseURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/";
-    private const string loginURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Login";
+
+    private const string BaseURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/";
+    private const string loginURL = BaseURL+"Login";
     private const string firebaseLoginUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
     private const string firebaseSignupUrl = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=";
 
@@ -50,9 +48,9 @@ public class apiRequestHandler : MonoBehaviour
     //Production : AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8
     private const string firebaseApiKey = "AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
 
-    private const string signupBOUserURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/SignUp";
-    private const string updateUserBoURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/UpdateUserBO";
-    private const string leaderboardBOURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Leaderboard";
+    private const string signupBOUserURL = BaseURL+"SignUp";
+    private const string updateUserBoURL = BaseURL+"UpdateUserBO";
+    private const string leaderboardBOURL = BaseURL+"Leaderboard";
       
     public static apiRequestHandler Instance;
 
@@ -265,7 +263,6 @@ public class apiRequestHandler : MonoBehaviour
                 MainMenuViewController.Instance.ErrorMessage("Verification link sent to Email");
 
             }
-
         }
         else
         {
@@ -308,7 +305,7 @@ public class apiRequestHandler : MonoBehaviour
             {
                 StartCoroutine(processRequest(tID)); //Login Request
             }
-            Debug.Log(tID);
+           // Debug.Log(tID);
         }
         else
         {

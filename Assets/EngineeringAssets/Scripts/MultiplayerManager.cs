@@ -335,6 +335,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (Constants.RegionChanged == true)
         {
             Constants.RegionChanged = false;
+            UpdateTransactionData(false, false, "", false, false, true);
+
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.ToggleSecondDetail(false, "", "", 0);
+
             ConnectToPhotonServer();
         }
 
