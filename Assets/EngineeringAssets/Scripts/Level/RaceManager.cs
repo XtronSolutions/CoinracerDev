@@ -40,11 +40,14 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private Button ClaimRewardButton = null;
     [SerializeField] private GameObject LoadingScreen = null;
     [SerializeField] public Slider miniMap = null;
+    [SerializeField] public GameObject slider= null;
+    [SerializeField] public GameObject sliderPos= null;
+    [SerializeField] private GameObject fieldCanvas = null;
 
 
     private int _currentWayPointIndex = 1;
     private int _lapsCounter;
-    private float _miniMapCounter = 0;
+    public float _miniMapCounter = 0;
     private float progressCount = 0f;
 
     public static RaceManager Instance;
@@ -84,7 +87,7 @@ public class RaceManager : MonoBehaviour
 
     private void Start()
     {
-        _miniMapCounter = 0;
+       // _miniMapCounter = 0;
         LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
         foreach (var wayPoint in _wayPoints)
         {
@@ -108,6 +111,10 @@ public class RaceManager : MonoBehaviour
             StartTheRaceTimer();
 
 
+        _miniMapCounter = _requiredNumberOfLaps * 10;
+        _miniMapCounter = 1 / _miniMapCounter;
+        Instantiate(slider, sliderPos.transform.position, Quaternion.identity,fieldCanvas.transform);
+        //slider.SetActive(true);
     }
 
     IEnumerator StartGameWithDelay()
@@ -167,9 +174,9 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-    IEnumerator changeProgressValue(float _val)//0.04
+    IEnumerator changeProgressValue(float _val)
     {
-        _val = _val - 0.01f;//0.03
+        _val = _val - 0.01f;
         if (_val < 0)
         {
             yield break;
@@ -180,19 +187,27 @@ public class RaceManager : MonoBehaviour
 
     }
 
+    public void startSinglePlayerprogressBar()
+    {
+        //_miniMapCounter++;
+        Debug.Log(_miniMapCounter);
+        //float val = 1/ (_requiredNumberOfLaps*10);
+      //  Debug.Log(val);
+        progressCount = _miniMapCounter;
+        //lerpProgressbar(val);
+        StartCoroutine(changeProgressValue(progressCount));
+        // miniMap.value = val;
+       // Debug.Log(_miniMapCounter);
+       // Debug.Log(val);
+    }
+
  
     private void OnWayPointData(WayPointData data)
     {
         int indexOfPayPoint = _wayPoints.IndexOf(data.Waypoint);
         Debug.Log("indexofwaypoint");
-        _miniMapCounter++;
-        float val = _miniMapCounter / 20;
-        progressCount = 0.05f;
-        //lerpProgressbar(val);
-        StartCoroutine(changeProgressValue(progressCount));
-       // miniMap.value = val;
-        Debug.Log(_miniMapCounter);
-        Debug.Log(val);
+        slider.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
+        //startSinglePlayerprogressBar();
 
         if (indexOfPayPoint % _wayPoints.Count == _currentWayPointIndex)
         {
