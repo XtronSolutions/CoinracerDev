@@ -695,12 +695,9 @@ public class WalletManager : MonoBehaviour
         } else
         {
             Constants.StoredCarNames.Clear();
-            for (int i = 0; i < metaDataURL.Count; i++)
-            {
-                StartCoroutine(GetJSONDataToStore(metaDataURL[i]));
-            }
-
+            Constants.NFTTotalData.Clear();
             NFTCounter = 0;
+            StartCoroutine(GetJSONDataToStore(metaDataURL[NFTCounter], NFTTokens[NFTCounter]));
             WaitForAllData();
         }
     }
@@ -716,7 +713,7 @@ public class WalletManager : MonoBehaviour
             Invoke("WaitForAllData", 1f);
         }
     }
-    public IEnumerator GetJSONDataToStore(string _URL)
+    public IEnumerator GetJSONDataToStore(string _URL,int _token=-1)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(_URL))
         {
@@ -738,7 +735,29 @@ public class WalletManager : MonoBehaviour
                     if (!Constants.StoredCarNames.Contains(dataIPFS.name))
                         Constants.StoredCarNames.Add(dataIPFS.name);
 
+                    if (ChipraceHandler.Instance)
+                    {
+                        for (int i = 0; i < ChipraceHandler.Instance.PoolNFT.Length; i++)
+                        {
+                            for (int j = 0; j < ChipraceHandler.Instance.PoolNFT[i].Name.Length; j++)
+                            {
+                                if (dataIPFS.name == ChipraceHandler.Instance.PoolNFT[i].Name[j])
+                                {
+                                    TotalNFTData _data = new TotalNFTData();
+                                    _data.Name = dataIPFS.name;
+                                    _data.ID = _token;
+                                    ChipraceHandler.Instance.PoolNFT[i].NFTTotalData.Add(_data);
+                                }
+                            }
+                        }
+                    }
+
                     NFTCounter++;
+
+                    if (NFTCounter < metaDataURL.Count)
+                    {
+                        StartCoroutine(GetJSONDataToStore(metaDataURL[NFTCounter], NFTTokens[NFTCounter]));
+                    }
 
                     break;
             }

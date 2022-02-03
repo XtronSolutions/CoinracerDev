@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using UnityEngine.Networking;
 using System;
 
+
 public static class Constants
 {
     public static string APP_VERSION = "Alpha 2.0";
@@ -103,6 +104,8 @@ public static class Constants
     
     public static bool isUsingFirebaseSDK = false;
     public static int LeaderboardCount = 200;
+    public static int PoolCounter = 5;
+    public static List<TotalNFTData> NFTTotalData=new List<TotalNFTData>();
 
     async public static void GetCracePrice()
     {
