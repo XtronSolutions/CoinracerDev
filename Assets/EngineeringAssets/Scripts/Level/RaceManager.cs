@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DavidJalbert;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -43,6 +44,7 @@ public class RaceManager : MonoBehaviour
     [SerializeField] public GameObject slider= null;
     [SerializeField] public GameObject sliderPos= null;
     [SerializeField] private GameObject fieldCanvas = null;
+    [SerializeField] private TextMeshProUGUI speedText;
     public GameObject[] sapwnableSlider = null;
 
 
@@ -107,6 +109,13 @@ public class RaceManager : MonoBehaviour
                 //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
                   //  StartTheRaceTimer();
             }
+            int _count = MultiplayerManager.Instance.Settings.MaxPlayers;
+            for (int i = 0; i < _count; i++)
+            {
+                sapwnableSlider[i] =
+                    Instantiate(slider, sliderPos.transform.position, Quaternion.identity, fieldCanvas.transform) as
+                        GameObject;
+            }
         }
         else
             StartTheRaceTimer();
@@ -116,13 +125,7 @@ public class RaceManager : MonoBehaviour
         _miniMapCounter = 1 / _miniMapCounter;
        // miniMap = Instantiate(slider, sliderPos.transform.position, Quaternion.identity,fieldCanvas.transform) as GameObject;
 
-        int _count = MultiplayerManager.Instance.Settings.MaxPlayers;
-        for (int i = 0; i < _count; i++)
-        {
-            sapwnableSlider[i] =
-                Instantiate(slider, sliderPos.transform.position, Quaternion.identity, fieldCanvas.transform) as
-                    GameObject;
-        }
+      
         //slider.SetActive(true);
     }
 
@@ -181,6 +184,16 @@ public class RaceManager : MonoBehaviour
         {
             TogglePauseMenu();
         }
+        Debug.Log(TinyCarController.carSpeed);
+        if (TinyCarController.carSpeed > 0)
+        {
+            speedText.text = TinyCarController.carSpeed.ToString();
+            //Debug.Log(Mathf.Floor(body.velocity.magnitude));
+        }
+        else
+        {
+            speedText.text = "0";
+        }
     }
 
     IEnumerator changeProgressValue(float _val)
@@ -199,6 +212,7 @@ public class RaceManager : MonoBehaviour
 
     public void startSinglePlayerprogressBar()
     {
+        
         //_miniMapCounter++;
         Debug.Log(_miniMapCounter);
         //float val = 1/ (_requiredNumberOfLaps*10);

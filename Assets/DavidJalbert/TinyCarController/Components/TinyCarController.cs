@@ -107,6 +107,7 @@ namespace DavidJalbert
         private float scaleAdjustment = 1;
         private float cubicScale = 1;
         private float inverseScaleAdjustment = 1;
+        public static float carSpeed = 0f;
 
 
         private void OnEnable()
@@ -149,7 +150,8 @@ namespace DavidJalbert
             body.isKinematic = false;
             body.interpolation = RigidbodyInterpolation.Extrapolate;
             body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-
+            carSpeed = Mathf.Floor(body.velocity.magnitude);
+            
             sphereCollider.radius = colliderRadius;
             sphereCollider.isTrigger = false;
             sphereCollider.material = customPhysicMaterial;
