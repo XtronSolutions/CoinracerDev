@@ -39,10 +39,11 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI GameStartTimer = null;
     [SerializeField] private Button ClaimRewardButton = null;
     [SerializeField] private GameObject LoadingScreen = null;
-    [SerializeField] public Slider miniMap = null;
+    [SerializeField] public GameObject miniMap = null;
     [SerializeField] public GameObject slider= null;
     [SerializeField] public GameObject sliderPos= null;
     [SerializeField] private GameObject fieldCanvas = null;
+    public GameObject[] sapwnableSlider = null;
 
 
     private int _currentWayPointIndex = 1;
@@ -113,7 +114,15 @@ public class RaceManager : MonoBehaviour
 
         _miniMapCounter = _requiredNumberOfLaps * 10;
         _miniMapCounter = 1 / _miniMapCounter;
-        Instantiate(slider, sliderPos.transform.position, Quaternion.identity,fieldCanvas.transform);
+       // miniMap = Instantiate(slider, sliderPos.transform.position, Quaternion.identity,fieldCanvas.transform) as GameObject;
+
+        int _count = MultiplayerManager.Instance.Settings.MaxPlayers;
+        for (int i = 0; i < _count; i++)
+        {
+            sapwnableSlider[i] =
+                Instantiate(slider, sliderPos.transform.position, Quaternion.identity, fieldCanvas.transform) as
+                    GameObject;
+        }
         //slider.SetActive(true);
     }
 
@@ -176,14 +185,15 @@ public class RaceManager : MonoBehaviour
 
     IEnumerator changeProgressValue(float _val)
     {
-        _val = _val - 0.01f;
-        if (_val < 0)
-        {
-            yield break;
-        }
-        yield return new WaitForSeconds(0.1f);
-        miniMap.value = miniMap.value+0.01f;
-        StartCoroutine(changeProgressValue(_val));
+        // _val = _val - 0.01f;
+        // if (_val < 0)
+        // {
+        //     yield break;
+        // }
+        // yield return new WaitForSeconds(0.1f);
+        // miniMap.value = miniMap.value+0.01f;
+        // StartCoroutine(changeProgressValue(_val));
+        yield return null;
 
     }
 
@@ -206,7 +216,7 @@ public class RaceManager : MonoBehaviour
     {
         int indexOfPayPoint = _wayPoints.IndexOf(data.Waypoint);
         Debug.Log("indexofwaypoint");
-        slider.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
+       // miniMap.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
         //startSinglePlayerprogressBar();
 
         if (indexOfPayPoint % _wayPoints.Count == _currentWayPointIndex)

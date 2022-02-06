@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MinimapHandler : MonoBehaviour
 {
     [SerializeField] public Slider miniMap;
+    private string actorNumber = "";
 
     public float progressCount = 0f;
 
@@ -31,8 +32,8 @@ public class MinimapHandler : MonoBehaviour
     {
         Debug.Log("increasing..");
         progressCount = RaceManager.Instance._miniMapCounter;
-        miniMap.value = miniMap.value+progressCount;
-        //StartCoroutine(changeProgressValue(progressCount));
+        //miniMap.value = miniMap.value+progressCount;
+        StartCoroutine(changeProgressValue(progressCount));
          Debug.Log(progressCount);
     }
 
