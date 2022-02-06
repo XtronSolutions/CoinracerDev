@@ -735,6 +735,8 @@ public class WalletManager : MonoBehaviour
                     if (!Constants.StoredCarNames.Contains(dataIPFS.name))
                         Constants.StoredCarNames.Add(dataIPFS.name);
 
+                    Debug.Log(dataIPFS.name);
+
                     if (ChipraceHandler.Instance)
                     {
                         for (int i = 0; i < ChipraceHandler.Instance.PoolNFT.Length; i++)
@@ -750,6 +752,11 @@ public class WalletManager : MonoBehaviour
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        Debug.LogError("CH handler is null");
+
                     }
 
                     NFTCounter++;

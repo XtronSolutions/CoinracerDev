@@ -113,7 +113,7 @@ public class RaceManager : MonoBehaviour
 
         _miniMapCounter = _requiredNumberOfLaps * 10;
         _miniMapCounter = 1 / _miniMapCounter;
-        Instantiate(slider, sliderPos.transform.position, Quaternion.identity,fieldCanvas.transform);
+        //Instantiate(slider, sliderPos.transform.position, Quaternion.identity,fieldCanvas.transform);
         //slider.SetActive(true);
     }
 
@@ -206,7 +206,7 @@ public class RaceManager : MonoBehaviour
     {
         int indexOfPayPoint = _wayPoints.IndexOf(data.Waypoint);
         Debug.Log("indexofwaypoint");
-        slider.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
+        //slider.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
         //startSinglePlayerprogressBar();
 
         if (indexOfPayPoint % _wayPoints.Count == _currentWayPointIndex)
