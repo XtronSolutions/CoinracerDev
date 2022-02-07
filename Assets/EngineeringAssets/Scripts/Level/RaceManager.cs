@@ -45,6 +45,7 @@ public class RaceManager : MonoBehaviour
     [SerializeField] public GameObject sliderPos= null;
     [SerializeField] private GameObject fieldCanvas = null;
     [SerializeField] private TextMeshProUGUI speedText;
+    [SerializeField] private TextMeshProUGUI positionNumber;
     public GameObject[] sapwnableSlider = null;
 
 
@@ -295,6 +296,20 @@ public class RaceManager : MonoBehaviour
         string textfieldMiliSeconds = timeSpanConversionMiliSeconds.ToString();
 
         ChangeRunTime_MultiplayerUI(textfieldHours+":"+ textfieldMinutes+":"+ textfieldSeconds+":"+ textfieldMiliSeconds);
+    }
+
+    public void showPositions(int _position)
+    {
+        if (_position == 1)
+        {
+            positionText.text = _position.ToString() + "st";
+        }
+        else if(_position == 2)
+        {
+            positionText.text = _position.ToString() + "nd";
+        }
+        //Add more if player increased
+        
     }
 
     public void OnRaceDone()
