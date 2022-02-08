@@ -22,6 +22,13 @@ public class MultiplayerUI
     public TextMeshProUGUI RunTimeText;
     public TextMeshProUGUI RaceOutcome;
     public Image FlagReference;
+
+    public TextMeshProUGUI LoserWinText;
+    public TextMeshProUGUI LoserNameText;
+    public TextMeshProUGUI LoserAmountWinText;
+    public TextMeshProUGUI LoserRunTimeText;
+    public TextMeshProUGUI LoserRaceOutcome;
+    public Image LoserFlagReference;
     
 }
 public class RaceManager : MonoBehaviour
@@ -32,6 +39,7 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private GameObject _pauseRestartButton = null;
     [SerializeField] private GameObject _raceOverMenuObject = null;
     [SerializeField] private TextMeshProUGUI positionText;
+    [SerializeField] private TextMeshProUGUI secondpositionText;
     [SerializeField] private GameObject _gameEndMenuMultiplayer = null;
     [SerializeField] private GameObject _disconnectPopup = null;
     [SerializeField] private TextMeshProUGUI LapText;
@@ -270,18 +278,33 @@ public class RaceManager : MonoBehaviour
                 isWinner = true;
 
             WinData _data = MultiplayerManager.Instance.winnerList[0];
-            positionText.text = (_position + 1).ToString();
+            //positionText.text = (_position + 1).ToString();
+            //secondpositionText.text
+            showPositions(true);
             ToggleScreen_MultiplayerUI(true);
             ChangeName_MultiplayerUI(_data.Name);
             ChangeWinAmount_MultiplayerUI(_data.TotalWins);
             ChangeAmount_MultiplayerUI(true, _data.TotalBetValue);
-            ConvertTimeAndDisplay(double.Parse(_data.RunTime));
+            ConvertTimeAndDisplay(true,double.Parse(_data.RunTime));
             UpdateFlag_MultiplayerUI(_data.FlagIndex);
-            //UpdateRaceOutcome_MultiplayerUI(isWinner);
+            //Updatef
+
+            WinData _loserData = MultiplayerManager.Instance.winnerList[1];
+            ChangeName_LoserMultiplayerUI(_loserData.Name);
+            ChangeWinAmount_LoserMultiplayerUI(_loserData.TotalWins);
+            ChangeAmount_LoserMultiplayerUI(false, _loserData.TotalBetValue);
+            ConvertTimeAndDisplay(false,double.Parse(_loserData.RunTime));
+            UpdateFlag_LoserMultiplayerUI(_loserData.FlagIndex);
+            
+        }
+
+        if(_position>1)//only looser can access
+        {
+            //TODO: disable winner logo
         }
     }
 
-    public void ConvertTimeAndDisplay(double _sec)
+    public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
     {
         //Store TimeSpan into variable.
         float timeSpanConversionHours = TimeSpan.FromSeconds(_sec).Hours;
@@ -295,18 +318,25 @@ public class RaceManager : MonoBehaviour
         string textfieldSeconds = timeSpanConversionSeconds.ToString();
         string textfieldMiliSeconds = timeSpanConversionMiliSeconds.ToString();
 
-        ChangeRunTime_MultiplayerUI(textfieldHours+":"+ textfieldMinutes+":"+ textfieldSeconds+":"+ textfieldMiliSeconds);
+        if(_winner)
+            ChangeRunTime_MultiplayerUI(textfieldHours+":"+ textfieldMinutes+":"+ textfieldSeconds+":"+ textfieldMiliSeconds);
+        else
+        {
+            ChangeRunTime_LoserMultiplayerUI(textfieldHours+":"+ textfieldMinutes+":"+ textfieldSeconds+":"+ textfieldMiliSeconds);
+        }
     }
 
-    public void showPositions(int _position)
+    public void showPositions(bool winner)
     {
-        if (_position == 1)
+        if (winner)
         {
-            positionText.text = _position.ToString() + "st";
+            positionText.text = "1st";
+            secondpositionText.text = "2nd";
         }
-        else if(_position == 2)
+        else if(!winner)
         {
-            positionText.text = _position.ToString() + "nd";
+            positionText.text = "1st";
+            secondpositionText.text = "2nd";
         }
         //Add more if player increased
         
@@ -428,29 +458,48 @@ public class RaceManager : MonoBehaviour
     {
         UIMultiplayer.WinnerNameText.text = _name;
     }
-
+    public void ChangeName_LoserMultiplayerUI(string _name)
+    {
+        UIMultiplayer.LoserNameText.text = _name;
+    }
     public void ChangeWinAmount_MultiplayerUI(int _wins)
     {
         UIMultiplayer.WinText.text = "WINS : "+ _wins.ToString();
+    }
+    public void ChangeWinAmount_LoserMultiplayerUI(int _wins)
+    {
+        UIMultiplayer.LoserWinText.text = "WINS : "+ _wins.ToString();
     }
     public void ChangeAmount_MultiplayerUI(bool isWinner,int _amount)
     {
         if(isWinner)
             UIMultiplayer.AmountWinText.text =  _amount.ToString();
-        else
-            UIMultiplayer.AmountWinText.text = "0";
+        // else
+        //     UIMultiplayer.AmountWinText.text = "0";
     }
-
+    public void ChangeAmount_LoserMultiplayerUI(bool isWinner,int _amount)
+    {
+        // if(isWinner)
+        //     UIMultiplayer.LoserAmountWinText.text =  _amount.ToString();
+        // else
+            UIMultiplayer.LoserAmountWinText.text = "0";
+    }
     public void ChangeRunTime_MultiplayerUI(string _time)
     {
         UIMultiplayer.RunTimeText.text = "RUN TIME : " + _time;
     }
-
+    public void ChangeRunTime_LoserMultiplayerUI(string _time)
+    {
+        UIMultiplayer.LoserRunTimeText.text = "RUN TIME : " + _time;
+    }
     public void UpdateFlag_MultiplayerUI(int index)
     {
         UIMultiplayer.FlagReference.sprite= FlagSkins.Instance.FlagSpriteWithIndex(index);
     }
-
+    public void UpdateFlag_LoserMultiplayerUI(int index)
+    {
+        UIMultiplayer.LoserFlagReference.sprite= FlagSkins.Instance.FlagSpriteWithIndex(index);
+    }
     public void UpdateRaceOutcome_MultiplayerUI(bool isWinner)
     {
         if (isWinner)

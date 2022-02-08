@@ -68,7 +68,7 @@ public class RPCCalls : MonoBehaviour
                 if (item.ID == _mainData.ID)
                     break;
             }
-            RaceManager.Instance.showPositions(positionNumber);
+            // RaceManager.Instance.showPositions(positionNumber);
 
             //Debug.Log("My position is: " + positionNumber);
 
