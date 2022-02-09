@@ -270,6 +270,8 @@ public class RaceManager : MonoBehaviour
     }
     public void showGameOverMenuMultiplayer(int _position)
     {
+    Debug.Log("position is:");
+        Debug.Log(_position);
         Constants.isMultiplayerGameEnded = true;
         if (_position >= 0)
         {
