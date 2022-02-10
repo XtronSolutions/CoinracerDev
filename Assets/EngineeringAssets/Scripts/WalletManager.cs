@@ -1119,22 +1119,24 @@ public class WalletManager : MonoBehaviour
             string _hash = await Web3GL.GetEncodedHash(Constants.HashKey, Constants.WalletAddress);
             string methodCSP = "endRace";
 
-            string[] MainToken;
-            if (Constants.OpponentTokenID != "0")
-            {
-                string[] Tokens = { Constants.OpponentTokenID, Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString() };
-                MainToken = Tokens;
-            }
-            else
-            {
-                string[] Tokens = { Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString() };
-                 MainToken = Tokens;
-            }
+            //string[] MainToken;
+            string[] Tokens = { "134","4852" };
 
-            string tokensending = JsonConvert.SerializeObject(MainToken);
+            //if (Constants.OpponentTokenID != "0")
+            //{
+            //    string[] Tokens = { Constants.OpponentTokenID, Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString() };
+            //    MainToken = Tokens;
+           // }
+            //else
+           // {
+             //   string[] Tokens = { Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString() };
+             //    MainToken = Tokens;
+            //}
+
+            string tokensending = JsonConvert.SerializeObject(Tokens);
             Debug.Log(tokensending);
 
-            string[] obj = { _pid, Constants.WalletAddress,Constants.ChipraceScore, JsonConvert.SerializeObject(MainToken), _hash };
+            string[] obj = { _pid, Constants.WalletAddress,Constants.ChipraceScore, JsonConvert.SerializeObject(Tokens), _hash };
             string argsCSP = JsonConvert.SerializeObject(obj);
 
             Debug.Log("sedning payload");

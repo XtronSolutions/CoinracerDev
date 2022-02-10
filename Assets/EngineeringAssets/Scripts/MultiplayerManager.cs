@@ -135,7 +135,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsConnected)
         {
-       
+            Debug.Log("already connected to master");
+           // MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
             ConnectionMaster();
 
             if (MainMenuViewController.Instance)
@@ -458,8 +459,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                     }
 
                 }
+                string _tokenID = "0";
 
-                string _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
+                //string _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString(), _tokenID);
             }
         }
