@@ -19,6 +19,7 @@ public class MainMenuUI
     public Button leaderboard;
     public Button settings;
     public Button garage;
+    public Button Chiprace;
 }
 
 [Serializable]
@@ -211,6 +212,7 @@ public class AnimationsHandler : MonoBehaviour
             mainMenuGameModeButtons.Add(UIMainMenu.tournament);
             mainMenuGameModeButtons.Add(UIMainMenu.practice);
             mainMenuGameModeButtons.Add(UIMainMenu.multiplayer);
+            mainMenuGameModeButtons.Add(UIMainMenu.Chiprace);
         }
         //starting the animation on these buttons
         foreach (var gameModeButton in mainMenuGameModeButtons)
@@ -241,9 +243,10 @@ public class AnimationsHandler : MonoBehaviour
         mainMenuButtons.Add(UIMainMenu.tournament);
         mainMenuButtons.Add(UIMainMenu.practice);
         mainMenuButtons.Add(UIMainMenu.multiplayer);
+        mainMenuButtons.Add(UIMainMenu.Chiprace);
         mainMenuButtons.Add(UIMainMenu.leaderboard);
-        mainMenuButtons.Add(UIMainMenu.settings);
         mainMenuButtons.Add(UIMainMenu.garage);
+        mainMenuButtons.Add(UIMainMenu.settings);
         return mainMenuButtons;
     }
 

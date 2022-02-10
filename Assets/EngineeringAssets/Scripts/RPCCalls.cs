@@ -103,19 +103,22 @@ public class RPCCalls : MonoBehaviour
     }
 
     [PunRPC]
-    public void SyncConnectionData(string _actor, string _name, string _wins, string _index,string _crace)
+    public void SyncConnectionData(string _actor, string _name, string _wins, string _index,string _crace,string _ID)
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            Constants.OpponentTokenID = _ID;
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
             if (Constants.FreeMultiplayer)
                 MultiplayerManager.Instance.LoadSceneDelay();
         }
         else
         {
+            Constants.OpponentTokenID = _ID;
+            string _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
             Constants.SelectedCrace = int.Parse(_crace);
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
-            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString());
+            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString(), _tokenID);
         }
     }
 

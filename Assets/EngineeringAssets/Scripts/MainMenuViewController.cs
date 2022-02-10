@@ -15,6 +15,15 @@ using Photon.Pun;
 #region SuperClasses
 
 [Serializable]
+public class TokenCarSelectionUI
+{
+    public GameObject MainScreen;
+    public TextMeshProUGUI TokenText;
+    public Button NextButton;
+    public Button PreviousButton;
+}
+
+[Serializable]
 public class CraceApprovalUI
 {
     public GameObject MainScreen;
@@ -270,11 +279,13 @@ public class MainMenuViewController : MonoBehaviour
     public ConnectionUI UIConnection;
     public MultiplayerSelectionUI UIMultiplayerSelection;
     public CraceApprovalUI UICraceApproval;
+    public TokenCarSelectionUI UITokenCarSelection;
     public GameObject MultiplayerPrefab;
 
     double RemainingTimeSecondPass;
     private int _currentSelectedCarIndex = 0;
     private int _currentlySelectedLevelIndex = 0;
+
     string email = "";
     string pass = "";
     string resetEmail = "";
@@ -327,6 +338,8 @@ public class MainMenuViewController : MonoBehaviour
         _logoutButton.onClick.AddListener(SignOutUser);
 
         _currentSelectedCarIndex = 0;
+        _SelectedTokenNameIndex = 0;
+        _SelectedTokenIDIndex = 0;
         //UpdateSelectedCarVisual(_currentSelectedCarIndex);
         _versionText.text = APP_VERSION;
 
@@ -334,6 +347,9 @@ public class MainMenuViewController : MonoBehaviour
         _prevCarButton.onClick.AddListener(OnPrevCar);
         _nextMapButton.onClick.AddListener(OnNextMap);
         _prevMapButton.onClick.AddListener(OnPrevMap);
+
+        UITokenCarSelection.NextButton.onClick.AddListener(OnNextToken);
+        UITokenCarSelection.PreviousButton.onClick.AddListener(OnPrevToken);
 
         //UIGarage.BackButton.onClick.AddListener(BackButton_Garage);
         // UIGarage.GarageButton.onClick.AddListener(GarageButton_Garage);
@@ -693,7 +709,7 @@ public class MainMenuViewController : MonoBehaviour
 
                 if (!Constants.WalletChanged)
                 {
-                    if(Constants.isUsingFirebaseSDK)
+                    if (Constants.isUsingFirebaseSDK)
                         FirebaseManager.Instance.LoginUser(FirebaseManager.Instance.Credentails.Email, FirebaseManager.Instance.Credentails.Password, FirebaseManager.Instance.Credentails.UserName);
                     else
                     {
@@ -845,7 +861,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void EnabledRegisterScreen()
     {
-        if(Constants.IsTest)
+        if (Constants.IsTest)
         {
             WalletConnected = true;
         }
@@ -962,7 +978,7 @@ public class MainMenuViewController : MonoBehaviour
 
         LoadingScreen.SetActive(true);
         Constants.RegisterSubmit = true;
-        if(Constants.isUsingFirebaseSDK)
+        if (Constants.isUsingFirebaseSDK)
             FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.CheckWalletDB(PlayerPrefs.GetString("Account")));
         else
         {
@@ -1194,33 +1210,85 @@ public class MainMenuViewController : MonoBehaviour
 
     private void OnNextCar()
     {
+        ToggleTokenScreen(true);
         int newIndex = _currentSelectedCarIndex + 1;
         newIndex %= _selecteableCars.Count;
+
+        if (newIndex == 0)
+            ToggleTokenScreen(false);
+
+        for (int i = 0; i < Constants.TokenNFT.Count; i++)
+        {
+            if (Constants.TokenNFT[i].Name.Contains(_selecteableCars[newIndex].carSettings.Name))
+            {
+                _SelectedTokenNameIndex = i;
+                _SelectedTokenIDIndex = 0;
+                break;
+            }
+        }
+
         UpdateSelectedCarVisual(newIndex);
+        UpdateToken();
     }
 
     private void OnPrevCar()
     {
+        ToggleTokenScreen(true);
         int newIndex = _currentSelectedCarIndex;
         newIndex--;
         if (newIndex < 0)
-        {
             newIndex = _selecteableCars.Count + newIndex;
+
+        if (newIndex == 0)
+            ToggleTokenScreen(false);
+
+        for (int i = 0; i < Constants.TokenNFT.Count; i++)
+        {
+            if (Constants.TokenNFT[i].Name.Contains(_selecteableCars[newIndex].carSettings.Name))
+            {
+                _SelectedTokenNameIndex = i;
+                _SelectedTokenIDIndex = 0;
+                break;
+            }
         }
 
         UpdateSelectedCarVisual(newIndex);
+        UpdateToken();
     }
 
+    public void OnNextToken()
+    {
+        if (_SelectedTokenIDIndex < Constants.TokenNFT[_SelectedTokenNameIndex].ID.Count-1)
+            _SelectedTokenIDIndex++;
+
+        UpdateToken();
+    }
+
+    public void OnPrevToken()
+    {
+        if (_SelectedTokenIDIndex > 0)
+            _SelectedTokenIDIndex--;
+
+        UpdateToken();
+    }
+
+    public void UpdateToken()
+    {
+        UITokenCarSelection.TokenText.text = "#" + Constants.TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];
+    }
     public void UpdateSelectedCarVisual(int newIndex)
     {
         for (int i = 0; i < _selecteableCars.Count; i++)
         {
             _selecteableCars[i].Deactivate();
         }
+
         //_selecteableCars[_currentSelectedCarIndex].Deactivate();
         _currentSelectedCarIndex = newIndex;
         _selecteableCars[_currentSelectedCarIndex].Activate();
         _selectedCarName.text = _selecteableCars[_currentSelectedCarIndex].carSettings.Name;
+
+        
     }
 
     #endregion
@@ -1373,21 +1441,37 @@ public class MainMenuViewController : MonoBehaviour
         }
     }
 
+    public void ToggleTokenScreen(bool _state)
+    {
+        UITokenCarSelection.MainScreen.SetActive(_state);
+    }
     public void CheckBoughtCars()
     {
+        ToggleTokenScreen(false);
         if (Constants.IsTestNet)
         {
             _selecteableCars.Clear();
             _selecteableCars.Add(_allCars[0].CarDetail);
             LoadingScreen.SetActive(false);
             _currentSelectedCarIndex = 0;
+          
             UpdateSelectedCarVisual(_currentSelectedCarIndex);
-
             return;
         }
 
         if (Constants.CheckAllNFT || Constants.NFTStored == 0)
         {
+            Debug.Log("total count : " + Constants.TokenNFT.Count);
+            for (int i = 0; i < Constants.TokenNFT.Count; i++)
+            {
+                Debug.Log(Constants.TokenNFT[i].Name);
+                for (int j = 0; j < Constants.TokenNFT[i].ID.Count; j++)
+                {
+                    Debug.Log(Constants.TokenNFT[i].ID[j]);
+                }
+            }
+
+
             if (Constants.NFTStored == 0)
             {
                 _selecteableCars.Clear();
@@ -1847,6 +1931,10 @@ public class MainMenuViewController : MonoBehaviour
     public void SelectWage__MultiplayerSelection(int _amount)
     {
         Constants.SelectedWage = _amount;
+        Constants.ChipraceScore = "600";
+
+        //if (_amount == 5)
+        //    Constants.ChipraceScore = "10";
 
         Constants.ConvertDollarToCrace(Constants.SelectedWage);
         Constants.SelectedCrace = Constants.CalculatedCrace;

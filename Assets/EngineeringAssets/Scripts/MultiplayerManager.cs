@@ -119,6 +119,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void ConnectToPhotonServer()
     {
+        Constants.OpponentTokenID = "0";
         UpdatePlayerCountText("0");
         Constants.DepositDone = false;
         Constants.TimerRunning = false;
@@ -458,7 +459,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
                 }
 
-                RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString());
+                string _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
+                RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString(), _tokenID);
             }
         }
     }
