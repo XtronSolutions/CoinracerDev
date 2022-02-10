@@ -1172,6 +1172,7 @@ public class MainMenuViewController : MonoBehaviour
     public void OnGoToCarSelectionPractice()
     {
         Constants.IsMultiplayer = false;
+        Constants.EarnMultiplayer = false;
         OnGoToCarSelection();
     }
     public void OnGoToCarSelectionTournament()
@@ -1214,7 +1215,7 @@ public class MainMenuViewController : MonoBehaviour
         int newIndex = _currentSelectedCarIndex + 1;
         newIndex %= _selecteableCars.Count;
 
-        if (newIndex == 0)
+        if (!Constants.EarnMultiplayer)
             ToggleTokenScreen(false);
 
         for (int i = 0; i < Constants.TokenNFT.Count; i++)
@@ -1239,7 +1240,7 @@ public class MainMenuViewController : MonoBehaviour
         if (newIndex < 0)
             newIndex = _selecteableCars.Count + newIndex;
 
-        if (newIndex == 0)
+        if (!Constants.EarnMultiplayer)
             ToggleTokenScreen(false);
 
         for (int i = 0; i < Constants.TokenNFT.Count; i++)
@@ -1303,6 +1304,7 @@ public class MainMenuViewController : MonoBehaviour
             IsTournament = true;
             IsPractice = false;
             IsMultiplayer = false;
+            Constants.EarnMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
             CarSelection3dObject.SetActive(true);
@@ -1317,6 +1319,7 @@ public class MainMenuViewController : MonoBehaviour
             IsTournament = true;
             IsPractice = false;
             IsMultiplayer = false;
+            Constants.EarnMultiplayer = false;
 
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
@@ -1394,19 +1397,10 @@ public class MainMenuViewController : MonoBehaviour
     public void GarageButton_Garage()
     {
         if (Constants.IsTest)
-        {
             WalletConnected = true;
-        }
 
         if (WalletConnected)//WalletConnected
         {
-            if (Constants.IsTestNet)
-            {
-                ToggleScreen_Garage(true);
-                LoadingScreen.SetActive(false);
-                ShowToast(3f, "No NFT was purchased, please purchase one.");
-                return;
-            }
 
             if (Constants.CheckAllNFT || Constants.NFTStored == 0)
             {
@@ -1447,46 +1441,50 @@ public class MainMenuViewController : MonoBehaviour
     }
     public void CheckBoughtCars()
     {
-        ToggleTokenScreen(false);
-        if (Constants.IsTestNet)
+        if (Constants.EarnMultiplayer)
         {
-            _selecteableCars.Clear();
-            _selecteableCars.Add(_allCars[0].CarDetail);
-            LoadingScreen.SetActive(false);
-            _currentSelectedCarIndex = 0;
-          
-            UpdateSelectedCarVisual(_currentSelectedCarIndex);
-            return;
+            for (int i = 0; i < _selecteableCars.Count; i++)
+            {
+                _selecteableCars[i].Deactivate();
+            }
+
+            ToggleTokenScreen(true);
+            UpdateToken();
+        }else
+        {
+            ToggleTokenScreen(false);
         }
 
         if (Constants.CheckAllNFT || Constants.NFTStored == 0)
         {
-            Debug.Log("total count : " + Constants.TokenNFT.Count);
-            for (int i = 0; i < Constants.TokenNFT.Count; i++)
-            {
-                Debug.Log(Constants.TokenNFT[i].Name);
-                for (int j = 0; j < Constants.TokenNFT[i].ID.Count; j++)
-                {
-                    Debug.Log(Constants.TokenNFT[i].ID[j]);
-                }
-            }
-
+            //for (int i = 0; i < Constants.TokenNFT.Count; i++)
+            //{
+            //    Debug.Log(Constants.TokenNFT[i].Name);
+            //    for (int j = 0; j < Constants.TokenNFT[i].ID.Count; j++)
+            //    {
+            //        Debug.Log(Constants.TokenNFT[i].ID[j]);
+            //    }
+            //}
 
             if (Constants.NFTStored == 0)
             {
                 _selecteableCars.Clear();
-                _selecteableCars.Add(_allCars[0].CarDetail);
+                if (!Constants.EarnMultiplayer)
+                {
+                    _selecteableCars.Add(_allCars[0].CarDetail);
 
-                LoadingScreen.SetActive(false);
-                _currentSelectedCarIndex = 0;
-                UpdateSelectedCarVisual(_currentSelectedCarIndex);
+                    LoadingScreen.SetActive(false);
+                    _currentSelectedCarIndex = 0;
+                    UpdateSelectedCarVisual(_currentSelectedCarIndex);
+                }
             }
 
             else if (Constants.StoredCarNames.Count != 0)
             {
-                //clearing list and adding BOLT car
                 _selecteableCars.Clear();
-                _selecteableCars.Add(_allCars[0].CarDetail);
+
+                if (!Constants.EarnMultiplayer)
+                    _selecteableCars.Add(_allCars[0].CarDetail);
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
                 {
@@ -1931,10 +1929,15 @@ public class MainMenuViewController : MonoBehaviour
     public void SelectWage__MultiplayerSelection(int _amount)
     {
         Constants.SelectedWage = _amount;
-        Constants.ChipraceScore = "600";
 
-        //if (_amount == 5)
-        //    Constants.ChipraceScore = "10";
+        if (_amount == 5)
+            Constants.ChipraceScore = "10";
+        if (_amount == 10)
+            Constants.ChipraceScore = "25";
+        if (_amount == 50)
+            Constants.ChipraceScore = "100";
+        if (_amount == 100)
+            Constants.ChipraceScore = "250";
 
         Constants.ConvertDollarToCrace(Constants.SelectedWage);
         Constants.SelectedCrace = Constants.CalculatedCrace;
@@ -1980,16 +1983,36 @@ public class MainMenuViewController : MonoBehaviour
     public void EnableWage_MultiplayerSelection()
     {
         Constants.FreeMultiplayer = false;
-        ToggleSelection_MultiplayerSelection(false); 
-        Constants.GetCracePrice();
-        ChangeCracePrice_MultiplayerSelection(Constants.CracePrice.ToString());
-        ChangeDisclaimer_MultiplayerSelection();
-        ToggleScreen_MultiplayerSelection(true);
+        Constants.EarnMultiplayer = true;
+        LoadingScreen.SetActive(true);
+
+        if (Constants.CheckAllNFT || Constants.NFTStored == 0)
+        {
+            if (Constants.NFTStored == 0)
+            {
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "No NFT was purchased, please purchase one to play.");
+            }
+            else
+            {
+                ToggleSelection_MultiplayerSelection(false);
+                Constants.GetCracePrice();
+                ChangeCracePrice_MultiplayerSelection(Constants.CracePrice.ToString());
+                ChangeDisclaimer_MultiplayerSelection();
+                ToggleScreen_MultiplayerSelection(true);
+                LoadingScreen.SetActive(false);
+            }
+        }
+        else
+        {
+            Invoke("EnableWage_MultiplayerSelection", 1f);
+        }
     }
 
     public void FreeMultiplayer_MultiplayerSelection()
     {
         Constants.FreeMultiplayer = true;
+        Constants.EarnMultiplayer = false;
         ToggleSelection_MultiplayerSelection(false);
         onMultiplayerBtnClick();
     }

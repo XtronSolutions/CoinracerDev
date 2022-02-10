@@ -10,7 +10,6 @@ public class NFTTokens
     public List<int> ID=new List<int>();
 }
 
-
 [System.Serializable]
 public class NFTPool
 {
@@ -157,7 +156,7 @@ public class ChipraceHandler : MonoBehaviour
 
                 if (PoolCounter != 0)
                 {
-                    Debug.Log(PoolCounter);
+                    //Debug.Log(PoolCounter);
                     rowPrefab.GetComponent<RectTransform>().sizeDelta = new Vector2(PoolCounter * UIChiprace.PoolPrefabWidth, 142);
                     rowPrefab.GetComponent<ChipracePoolDetail>()._overlay.GetComponent<RectTransform>().sizeDelta = new Vector2(PoolCounter * UIChiprace.PoolPrefabWidth, 208);
                     rowPrefab.GetComponent<ChipracePoolDetail>()._poolText.GetComponent<RectTransform>().sizeDelta = new Vector2(PoolCounter * UIChiprace.PoolPrefabWidth, 50);

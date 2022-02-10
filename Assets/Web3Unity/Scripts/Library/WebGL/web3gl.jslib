@@ -54,7 +54,21 @@ mergeInto(LibraryManager.library, {
   SendContractJs: function (method, abi, contract, args, value, gasLimit, gasPrice) {
 	var parsedArgs=Pointer_stringify(args);
 		var parsedJSOn=JSON.parse(parsedArgs);
-		if(Pointer_stringify(method)=="mint")
+		
+		if(Pointer_stringify(method)=="endRace")
+		{
+			var newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._hash];
+			 window.web3gl.sendContract(
+				  Pointer_stringify(method),
+				  Pointer_stringify(abi),
+				  Pointer_stringify(contract),
+				  JSON.stringify(newargs),
+				  Pointer_stringify(value),
+				  Pointer_stringify(gasLimit),
+				  Pointer_stringify(gasPrice)
+				);
+		}
+		else if(Pointer_stringify(method)=="mint")
 		{
 			var newargs=[parsedJSOn.amount, parsedJSOn.craceValue,parsedJSOn._data];
 			 window.web3gl.sendContract(

@@ -55,7 +55,7 @@ public static class Constants
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = false;
+    public static bool IsTestNet = true;
     public static bool IsTest = false;
 
     public static bool IsSendConfirmation = false;
@@ -94,6 +94,7 @@ public static class Constants
     public static bool ClaimedReward = false;
     public static readonly string HashKey = "testkey";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"
     public static bool FreeMultiplayer = false;
+    public static bool EarnMultiplayer = false;
     public static bool OtherPlayerDeposit = false;
     public static string PIDString = "";
     public static bool EventRaised = false;
@@ -110,7 +111,7 @@ public static class Constants
     public static int _SelectedTokenNameIndex = 0;
     public static int _SelectedTokenIDIndex = 0;
     public static string OpponentTokenID = "0";
-    public static string ChipraceScore = "0";
+    public static string ChipraceScore = "10";
 
     async public static void GetCracePrice()
     {
@@ -162,7 +163,7 @@ public static class Constants
 
     public static void PrintExp(Exception Txt,UnityEngine.Object ins)
     {
-        //Debug.LogException(Txt,ins);
+        Debug.LogException(Txt,ins);
     }
 
     public static void ResetData()

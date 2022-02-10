@@ -67,7 +67,6 @@ public class ERC20
         string[] obj = {};
         string args = JsonConvert.SerializeObject(obj);
         string response = await EVM.Call(_chain, _network, _contract, abi, method, args, _rpc);
-        Debug.Log(response.ToString());
         try 
         {
             return BigInteger.Parse(response);

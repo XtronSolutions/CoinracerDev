@@ -193,7 +193,7 @@ public class RaceManager : MonoBehaviour
         {
             TogglePauseMenu();
         }
-        Debug.Log(TinyCarController.carSpeed);
+        //Debug.Log(TinyCarController.carSpeed);
         if (TinyCarController.carSpeed > 0)
         {
             speedText.text = TinyCarController.carSpeed.ToString();
@@ -223,7 +223,7 @@ public class RaceManager : MonoBehaviour
     {
         
         //_miniMapCounter++;
-        Debug.Log(_miniMapCounter);
+        //Debug.Log(_miniMapCounter);
         //float val = 1/ (_requiredNumberOfLaps*10);
       //  Debug.Log(val);
         progressCount = _miniMapCounter;
@@ -238,7 +238,7 @@ public class RaceManager : MonoBehaviour
     private void OnWayPointData(WayPointData data)
     {
         int indexOfPayPoint = _wayPoints.IndexOf(data.Waypoint);
-        Debug.Log("indexofwaypoint");
+        //Debug.Log("indexofwaypoint");
        // miniMap.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
         //startSinglePlayerprogressBar();
 
@@ -270,9 +270,10 @@ public class RaceManager : MonoBehaviour
     }
     public void showGameOverMenuMultiplayer(int _position)
     {
-    Debug.Log("position is:");
-        Debug.Log(_position);
+        //Debug.Log("position is:");
+        //Debug.Log(_position);
         Constants.isMultiplayerGameEnded = true;
+        
         if (_position >= 0)
         {
             bool isWinner = false;
