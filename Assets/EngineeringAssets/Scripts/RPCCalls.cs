@@ -47,7 +47,11 @@ public class RPCCalls : MonoBehaviour
             MultiplayerManager.Instance.winnerList.Clear();
         }
     }
-
+    [PunRPC]
+    public void ShowOtherPlayersPosition(string _data)
+    {
+       RaceManager.Instance.ShowSecondPositionPlayer(_data);
+    }
     [PunRPC]
     public void EndMultiplayerRace(string _data)
     {

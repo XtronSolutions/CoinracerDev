@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DavidJalbert;
+using Newtonsoft.Json;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -31,6 +32,7 @@ public class MultiplayerUI
     public Image LoserFlagReference;
     
 }
+
 public class RaceManager : MonoBehaviour
 {
     [SerializeField] private List<WayPoint> _wayPoints = new List<WayPoint>();
@@ -49,11 +51,12 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private Button ClaimRewardButton = null;
     [SerializeField] private GameObject LoadingScreen = null;
     [SerializeField] public GameObject miniMap = null;
-    [SerializeField] public GameObject slider= null;
-    [SerializeField] public GameObject sliderPos= null;
+    [SerializeField] public GameObject slider = null;
+    [SerializeField] public GameObject sliderPos = null;
     [SerializeField] private GameObject fieldCanvas = null;
     [SerializeField] private TextMeshProUGUI speedText;
     [SerializeField] private TextMeshProUGUI positionNumber;
+    [SerializeField] private GameObject positionLoader = null;
     public GameObject[] sapwnableSlider = null;
 
 
@@ -63,7 +66,7 @@ public class RaceManager : MonoBehaviour
     private float progressCount = 0f;
 
     public static RaceManager Instance;
-    int RaceCounter = 5;//3
+    int RaceCounter = 5; //3
     public MultiplayerUI UIMultiplayer;
 
     private void OnEnable()
@@ -99,25 +102,26 @@ public class RaceManager : MonoBehaviour
 
     private void Start()
     {
-       // _miniMapCounter = 0;
+        // _miniMapCounter = 0;
         LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
         foreach (var wayPoint in _wayPoints)
         {
-           
+
             wayPoint.WayPointDataObservable.Subscribe(OnWayPointData).AddTo(this);
         }
 
         if (Constants.IsMultiplayer)
         {
-            if(PhotonNetwork.IsConnected)
+            if (PhotonNetwork.IsConnected)
             {
                 if (MultiplayerManager.Instance)
                     MultiplayerManager.Instance.winnerList.Clear();
 
                 StartCoroutine(StartGameWithDelay());
                 //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-                  //  StartTheRaceTimer();
+                //  StartTheRaceTimer();
             }
+
             int _count = MultiplayerManager.Instance.Settings.MaxPlayers;
             for (int i = 0; i < _count; i++)
             {
@@ -132,9 +136,9 @@ public class RaceManager : MonoBehaviour
 
         _miniMapCounter = _requiredNumberOfLaps * 10;
         _miniMapCounter = 1 / _miniMapCounter;
-       // miniMap = Instantiate(slider, sliderPos.transform.position, Quaternion.identity,fieldCanvas.transform) as GameObject;
+        // miniMap = Instantiate(slider, sliderPos.transform.position, Quaternion.identity,fieldCanvas.transform) as GameObject;
 
-      
+
         //slider.SetActive(true);
     }
 
@@ -146,10 +150,10 @@ public class RaceManager : MonoBehaviour
 
     public void StartTheRaceTimer()
     {
-        if(MultiplayerManager.Instance)
+        if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.winnerList.Clear();
 
-        RaceCounter = 5;//3
+        RaceCounter = 5; //3
         Constants.MoveCar = false;
         GameStartTimer.text = RaceCounter.ToString();
         StartCoroutine(StartTimerCountDown());
@@ -193,6 +197,7 @@ public class RaceManager : MonoBehaviour
         {
             TogglePauseMenu();
         }
+
         //Debug.Log(TinyCarController.carSpeed);
         if (TinyCarController.carSpeed > 0)
         {
@@ -221,32 +226,32 @@ public class RaceManager : MonoBehaviour
 
     public void startSinglePlayerprogressBar()
     {
-        
+
         //_miniMapCounter++;
         //Debug.Log(_miniMapCounter);
         //float val = 1/ (_requiredNumberOfLaps*10);
-      //  Debug.Log(val);
+        //  Debug.Log(val);
         progressCount = _miniMapCounter;
         //lerpProgressbar(val);
         StartCoroutine(changeProgressValue(progressCount));
         // miniMap.value = val;
-       // Debug.Log(_miniMapCounter);
-       // Debug.Log(val);
+        // Debug.Log(_miniMapCounter);
+        // Debug.Log(val);
     }
 
- 
+
     private void OnWayPointData(WayPointData data)
     {
         int indexOfPayPoint = _wayPoints.IndexOf(data.Waypoint);
         //Debug.Log("indexofwaypoint");
-       // miniMap.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
+        // miniMap.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
         //startSinglePlayerprogressBar();
 
         if (indexOfPayPoint % _wayPoints.Count == _currentWayPointIndex)
         {
             _currentWayPointIndex++;
             _currentWayPointIndex %= _wayPoints.Count;
-          //  Debug.Log("currentWayPoint");
+            //  Debug.Log("currentWayPoint");
             //Debug.Log(_currentWayPointIndex);
 
             if (_currentWayPointIndex == 1)
@@ -255,7 +260,7 @@ public class RaceManager : MonoBehaviour
                 LapText.text = "Lap " + _lapsCounter.ToString() + "/" + _requiredNumberOfLaps.ToString();
                 if (_lapsCounter == _requiredNumberOfLaps)
                 {
-                        OnRaceDone();
+                    OnRaceDone();
                 }
             }
             else
@@ -264,21 +269,26 @@ public class RaceManager : MonoBehaviour
             }
         }
     }
+
     public void showDisconnectScreen()
     {
         _disconnectPopup.SetActive(true);
     }
+
     public void showGameOverMenuMultiplayer(int _position)
     {
         //Debug.Log("position is:");
         //Debug.Log(_position);
         Constants.isMultiplayerGameEnded = true;
-        
+
         if (_position >= 0)
         {
             bool isWinner = false;
             if (_position == 0)
+            {
                 isWinner = true;
+                positionLoader.SetActive(true);
+            }
 
             WinData _data = MultiplayerManager.Instance.winnerList[0];
             //positionText.text = (_position + 1).ToString();
@@ -288,26 +298,48 @@ public class RaceManager : MonoBehaviour
             ChangeName_MultiplayerUI(_data.Name);
             ChangeWinAmount_MultiplayerUI(_data.TotalWins);
             ChangeAmount_MultiplayerUI(true, _data.TotalBetValue);
-            ConvertTimeAndDisplay(true,double.Parse(_data.RunTime));
+            ConvertTimeAndDisplay(true, double.Parse(_data.RunTime));
             UpdateFlag_MultiplayerUI(_data.FlagIndex);
             //Updatef
+            foreach (var item in MultiplayerManager.Instance.winnerList)
+            {
+                Debug.Log(item.Name);
+            }
 
-            WinData _loserData = MultiplayerManager.Instance.winnerList[1];
-            ChangeName_LoserMultiplayerUI(_loserData.Name);
-            ChangeWinAmount_LoserMultiplayerUI(_loserData.TotalWins);
-            ChangeAmount_LoserMultiplayerUI(false, _loserData.TotalBetValue);
-            ConvertTimeAndDisplay(false,double.Parse(_loserData.RunTime));
-            UpdateFlag_LoserMultiplayerUI(_loserData.FlagIndex);
-            
+            // WinData _loserData = MultiplayerManager.Instance.winnerList[1];
+            // ChangeName_LoserMultiplayerUI(_loserData.Name);
+            // ChangeWinAmount_LoserMultiplayerUI(_loserData.TotalWins);
+            // ChangeAmount_LoserMultiplayerUI(false, _loserData.TotalBetValue);
+            // ConvertTimeAndDisplay(false,double.Parse(_loserData.RunTime));
+            // UpdateFlag_LoserMultiplayerUI(_loserData.FlagIndex);
+
         }
 
-        if(_position>1)//only looser can access
+        if (_position > 0) //only looser can access
         {
             //TODO: disable winner logo
+            //raise an event to disable position loader
+            string _Json = JsonConvert.SerializeObject(MultiplayerManager.Instance.winnerList[1]);
+            RPCCalls.Instance.PHView.RPC("ShowOtherPlayersPosition", RpcTarget.AllViaServer, _Json);
+
         }
     }
 
-    public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
+    public void ShowSecondPositionPlayer(string _data)
+    {
+        WinData _mainData = JsonConvert.DeserializeObject<WinData>(_data);
+        
+        // WinData _loserData = MultiplayerManager.Instance.winnerList[1];
+        ChangeName_LoserMultiplayerUI(_mainData.Name);
+        ChangeWinAmount_LoserMultiplayerUI(_mainData.TotalWins);
+        ChangeAmount_LoserMultiplayerUI(false, _mainData.TotalBetValue);
+        ConvertTimeAndDisplay(false,double.Parse(_mainData.RunTime));
+        UpdateFlag_LoserMultiplayerUI(_mainData.FlagIndex);
+        
+        positionLoader.SetActive(false);
+    }
+
+public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
     {
         //Store TimeSpan into variable.
         float timeSpanConversionHours = TimeSpan.FromSeconds(_sec).Hours;
