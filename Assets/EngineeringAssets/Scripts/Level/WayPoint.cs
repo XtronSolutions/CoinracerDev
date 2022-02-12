@@ -34,7 +34,15 @@ public class WayPoint : MonoBehaviour
                 if (carController.PHView)
                 {
                     if (!carController.PHView.IsMine)
+                    {
+                        RaceManager.Instance.player2Position++;
+
                         return;
+                    }
+                    else
+                    {
+                        RaceManager.Instance.player1Position++;
+                    }
                 }
             }
         }
