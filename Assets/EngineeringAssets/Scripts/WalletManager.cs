@@ -10,6 +10,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json.Linq;
 using Photon.Pun;
+using System.Threading.Tasks;
 
 #region SuperClasses
 
@@ -99,7 +100,7 @@ public class WalletManager : MonoBehaviour
 
     private string toAccount = "0xe1E4160F4AcDf756AA0d2B02D786a42527560E82"; //wallet address to send BEP20 (crace) amount for transactions
 
-    private string ChipraceContract = "0x3Fb54a2e64242cF9cba881d6BC24761Dc65b7baA ";
+    private string ChipraceContract = "0x3Fb54a2e64242cF9cba881d6BC24761Dc65b7baA";
     private readonly string abiChipraceContract = "[{\"inputs\":[{\"internalType\":\"contract ERC721Enumerable\",\"name\":\"_nftAddress\",\"type\":\"address\"},{\"internalType\":\"contract IERC20\",\"name\":\"_tokenAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"ClaimRewardsFromChipRace\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_feeAmount\",\"type\":\"uint256\"}],\"name\":\"EmergencyExitChipRace\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_poolId\",\"type\":\"uint256\"}],\"name\":\"EnterChipRace\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_feeAmount\",\"type\":\"uint256\"}],\"name\":\"UpgradeNFT\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"g_amountForUpgrade\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"g_carType\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"g_minableAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"g_poolRewardsAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"g_targetScores\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"g_tokenInfo\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"level\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"rewards\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"score\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timeStamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"runningCounter\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isRunning\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"getLevelOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"isRunningChipRace\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"isUpgradable\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_tokenURI\",\"type\":\"string\"}],\"name\":\"getCarTypeOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"getRemainingTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"getOwnerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_poolId\",\"type\":\"uint256\"}],\"name\":\"enterChipRace\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"emergencyExitChipRace\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"claimRewards\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"upgradeNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_score\",\"type\":\"uint256\"},{\"internalType\":\"uint256[]\",\"name\":\"tokenIds\",\"type\":\"uint256[]\"},{\"internalType\":\"address\",\"name\":\"caller\",\"type\":\"address\"}],\"name\":\"updateScore\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_level\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_targetScore\",\"type\":\"uint256\"}],\"name\":\"setTargetScoreOf\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_uri\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_type\",\"type\":\"uint256\"}],\"name\":\"setCarType\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_type\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_level\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"setMinableAmount\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_type\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_level\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"setUpgradeAmount\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_price\",\"type\":\"uint256\"}],\"name\":\"setFeePrice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawFeeAmount\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawAllFunds\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"depositeFunds\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_poolId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"depositePoolFunds\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_poolId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"withdrawPoolFunds\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]";
     
     private string amount = "";
@@ -122,7 +123,6 @@ public class WalletManager : MonoBehaviour
     public bool IsGamePlay = false;
     bool isConnected = false;
     #endregion
-
     #region Start Functionality
     /// <summary>
     /// called by unity engine whenever class object is enabled (called before start)
@@ -149,6 +149,8 @@ public class WalletManager : MonoBehaviour
             SetAcount("0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
             InvokeRepeating("CheckNFTBalance", 0.1f, 10f);
         }
+
+        g_tokenInfo("12");
     }
 
     /// <summary>
@@ -440,6 +442,18 @@ public class WalletManager : MonoBehaviour
                 case "approve":
                     OnApproveCalled(true);
                     break;
+                case "enterChipRace":
+                    OnChipraceEnterCalled(true);
+                    break;
+                case "claimRewards":
+                    OnClaimRewardCalled(true);
+                    break;
+                case "emergencyExitChipRace":
+                    OnEmergencyExitChipRaceCalled(true);
+                    break;
+                case "upgradeNFT":
+                    OnUpgradeNFTCalled(true);
+                    break;
             }
         }
         else if (txStatus == "fail")
@@ -472,6 +486,18 @@ public class WalletManager : MonoBehaviour
                     break;
                 case "approve":
                     OnApproveCalled(false);
+                    break;
+                case "enterChipRace":
+                    OnChipraceEnterCalled(false);
+                    break;
+                case "claimRewards":
+                    OnClaimRewardCalled(false);
+                    break;
+                case "emergencyExitChipRace":
+                    OnEmergencyExitChipRaceCalled(false);
+                    break;
+                case "upgradeNFT":
+                    OnUpgradeNFTCalled(false);
                     break;
             }
         }
@@ -688,6 +714,8 @@ public class WalletManager : MonoBehaviour
         if (NFTCounter == metaDataURL.Count)
         {
             Constants.CheckAllNFT = true;
+            Constants.ChipraceDataChecked = false ;
+            ChipraceHandler.Instance.UpdateChipraceData();
         } else
         {
             Invoke("WaitForAllData", 1f);
@@ -1342,8 +1370,561 @@ public class WalletManager : MonoBehaviour
     #endregion
 
     #region Chiprace Contract
+    public void OnChipraceEnterCalled(bool _state)
+    {
+        if (_state)
+        {
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(2f, "NFT stalked successfully.");
+            }
 
-   
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.ShowToast(2f, "NFT stalked successfully.");
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
+        }
+        else
+        {
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
+            }
+
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.ShowToast(3f, "Transaction was not successful, please try again or contact support.");
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
+        }
+    }
+    async public void enterChipRace(string _nFTToken,string _poolId)
+    {
+        if (Constants.IsTest)
+        {
+            OnChipraceEnterCalled(true);
+        }
+        else
+        {
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(true);
+
+            string methodChiprace = "enterChipRace";
+            string[] _data = { _nFTToken , _poolId };
+            string argsChiprace = JsonConvert.SerializeObject(_data);
+            string value = "0";
+            string gasLimit = "";//310000//2100000
+            string gasPrice = "";//10000000000
+            bool _raiseEvent = false;
+
+            try
+            {
+                Constants.EventRaised = _raiseEvent;
+                string response = await Web3GL.SendContract(methodChiprace, abiChipraceContract, ChipraceContract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
+
+                if (response.Contains("Returned error: internal error"))
+                {
+                    Constants.PrintLog("Returned error: internal error");
+                    if (MainMenuViewController.Instance)
+                    {
+                        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                        MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        return;
+                    }
+
+                    if (RaceManager.Instance)
+                    {
+                        RaceManager.Instance.ToggleLoadingScreen(false);
+                        return;
+                    }
+                }
+
+                if (response != "")
+                {
+                    StoredHash = response;
+                    StoredMethodName = "enterChipRace";
+                    CheckTransaction();
+                }
+            }
+            catch (Exception e)
+            {
+                Constants.PrintExp(e, this);
+                OnChipraceEnterCalled(false);
+            }
+        }
+    }
+
+    public void OnClaimRewardCalled(bool _state)
+    {
+        if (_state)
+        {
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(2f, "Reward successfully claimed.");
+            }
+
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.ShowToast(2f, "Reward successfully claimed.");
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
+        }
+        else
+        {
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
+            }
+
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.ShowToast(3f, "Transaction was not successful, please try again or contact support.");
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
+        }
+    }
+    async public void claimRewards(string _tokenID)
+    {
+        if (Constants.IsTest)
+        {
+            OnClaimRewardCalled(true);
+        }
+        else
+        {
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(true);
+
+            string methodChiprace = "claimRewards";
+            string[] _data = { _tokenID };
+            string argsChiprace = JsonConvert.SerializeObject(_data);
+            string value = "0";
+            string gasLimit = "";//310000//2100000
+            string gasPrice = "";//10000000000
+            bool _raiseEvent = false;
+
+            try
+            {
+                Constants.EventRaised = _raiseEvent;
+                string response = await Web3GL.SendContract(methodChiprace, abiChipraceContract, ChipraceContract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
+
+                if (response.Contains("Returned error: internal error"))
+                {
+                    Constants.PrintLog("Returned error: internal error");
+                    if (MainMenuViewController.Instance)
+                    {
+                        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                        MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        return;
+                    }
+
+                    if (RaceManager.Instance)
+                    {
+                        RaceManager.Instance.ToggleLoadingScreen(false);
+                        return;
+                    }
+                }
+
+                if (response != "")
+                {
+                    StoredHash = response;
+                    StoredMethodName = "claimRewards";
+                    CheckTransaction();
+                }
+            }
+            catch (Exception e)
+            {
+                Constants.PrintExp(e, this);
+                OnClaimRewardCalled(false);
+            }
+        }
+    }
+
+    public void OnEmergencyExitChipRaceCalled(bool _state)
+    {
+        if (_state)
+        {
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(2f, "Emergency exit chiprace called.");
+            }
+
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.ShowToast(2f, "Emergency exit chiprace called.");
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
+        }
+        else
+        {
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
+            }
+
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.ShowToast(3f, "Transaction was not successful, please try again or contact support.");
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
+        }
+    }
+    async public void emergencyExitChipRace(string _tokenID,string _amount)
+    {
+        if (Constants.IsTest)
+        {
+            OnEmergencyExitChipRaceCalled(true);
+        }
+        else
+        {
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(true);
+
+            string methodChiprace = "emergencyExitChipRace";
+            string[] _data = { _tokenID, _amount };
+            string argsChiprace = JsonConvert.SerializeObject(_data);
+            string value = "0";
+            string gasLimit = "";//310000//2100000
+            string gasPrice = "";//10000000000
+            bool _raiseEvent = false;
+
+            try
+            {
+                Constants.EventRaised = _raiseEvent;
+                string response = await Web3GL.SendContract(methodChiprace, abiChipraceContract, ChipraceContract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
+
+                if (response.Contains("Returned error: internal error"))
+                {
+                    Constants.PrintLog("Returned error: internal error");
+                    if (MainMenuViewController.Instance)
+                    {
+                        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                        MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        return;
+                    }
+
+                    if (RaceManager.Instance)
+                    {
+                        RaceManager.Instance.ToggleLoadingScreen(false);
+                        return;
+                    }
+                }
+
+                if (response != "")
+                {
+                    StoredHash = response;
+                    StoredMethodName = "emergencyExitChipRace";
+                    CheckTransaction();
+                }
+            }
+            catch (Exception e)
+            {
+                Constants.PrintExp(e, this);
+                OnEmergencyExitChipRaceCalled(false);
+            }
+        }
+    }
+
+    public void OnUpgradeNFTCalled(bool _state)
+    {
+        if (_state)
+        {
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(2f, "NFT upgraded to new level.");
+            }
+
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.ShowToast(2f, "NFT upgraded to new level.");
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
+        }
+        else
+        {
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
+            }
+
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.ShowToast(3f, "Transaction was not successful, please try again or contact support.");
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(false);
+        }
+    }
+    async public void upgradeNFT(string _tokenID, string _amount)
+    {
+        if (Constants.IsTest)
+        {
+            OnUpgradeNFTCalled(true);
+        }
+        else
+        {
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+
+            if (RaceManager.Instance)
+                RaceManager.Instance.ToggleLoadingScreen(true);
+
+            string methodChiprace = "upgradeNFT";
+            string[] _data = { _tokenID, _amount };
+            string argsChiprace = JsonConvert.SerializeObject(_data);
+            string value = "0";
+            string gasLimit = "";//310000//2100000
+            string gasPrice = "";//10000000000
+            bool _raiseEvent = false;
+
+            try
+            {
+                Constants.EventRaised = _raiseEvent;
+                string response = await Web3GL.SendContract(methodChiprace, abiChipraceContract, ChipraceContract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
+
+                if (response.Contains("Returned error: internal error"))
+                {
+                    Constants.PrintLog("Returned error: internal error");
+                    if (MainMenuViewController.Instance)
+                    {
+                        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                        MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        return;
+                    }
+
+                    if (RaceManager.Instance)
+                    {
+                        RaceManager.Instance.ToggleLoadingScreen(false);
+                        return;
+                    }
+                }
+
+                if (response != "")
+                {
+                    StoredHash = response;
+                    StoredMethodName = "upgradeNFT";
+                    CheckTransaction();
+                }
+            }
+            catch (Exception e)
+            {
+                Constants.PrintExp(e, this);
+                OnUpgradeNFTCalled(false);
+            }
+        }
+    }
+
+    async public void getCarType(string _tokenURI)
+    {
+        string methodChiprace = "getCarTypeOf";
+        string[] obj = { _tokenURI };
+        string argsChiprace = JsonConvert.SerializeObject(obj);
+
+        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodChiprace, argsChiprace);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return;
+            }
+        }
+
+        if (response != "")
+            Debug.Log("Pool id for car type is : " + response);
+    }
+    public async Task<string> getRemainingTime(string _tokenId)
+    {
+        string methodChiprace = "getRemainingTime";
+        string[] obj = { _tokenId };
+        string argsChiprace = JsonConvert.SerializeObject(obj);
+
+        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodChiprace, argsChiprace);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return "";
+            }
+        }
+
+        if (response != "")
+        {
+            Debug.Log("Remaining time for token id #" + _tokenId + " is " + response);
+            return response;
+        }
+        else
+        {
+            return "";
+        }
+    }
+    public async Task<bool> isUpgradable(string _tokenId)
+    {
+        string methodChiprace = "isUpgradable";
+        string[] obj = { _tokenId };
+        string argsChiprace = JsonConvert.SerializeObject(obj);
+
+        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodChiprace, argsChiprace);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return false;
+            }
+        }
+
+        if (response != "")
+        {
+            Debug.Log("IsUpgradable token id #" + _tokenId + " is " + response);
+            if (response.ToLower() == "true")
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public async Task<bool> isRunningChipRace(string _tokenId)
+    {
+        string methodChiprace = "isRunningChipRace";
+        string[] obj = { _tokenId };
+        string argsChiprace = JsonConvert.SerializeObject(obj);
+
+        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodChiprace, argsChiprace);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return false;
+            }
+        }
+
+        if (response != "")
+        {
+            Debug.Log("Running chiprace for token id #" + _tokenId + " is " + response);
+            if (response.ToLower() == "true")
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public async Task<int> getLevelOf(string _tokenId)
+    {
+        string methodChiprace = "getLevelOf";
+        string[] obj = { _tokenId };
+        string argsChiprace = JsonConvert.SerializeObject(obj);
+
+        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodChiprace, argsChiprace);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return -1;
+            }
+        }
+
+        if (response != "")
+        {
+            Debug.Log("Level for token id #" + _tokenId + " is " + response);
+            return int.Parse(response);
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    public async Task<int> getScore(string _tokenId)
+    {
+        string methodChiprace = "g_tokenInfo";
+        string[] obj = { _tokenId };
+        string argsChiprace = JsonConvert.SerializeObject(obj);
+
+        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodChiprace, argsChiprace);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return -1;
+            }
+        }
+
+        if (response != "")
+        {
+            Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
+            var _data = JObject.Parse(response);
+            int _score = int.Parse(_data["score"].ToString());
+            return _score;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    async public void g_tokenInfo(string _tokenId)
+    {
+        string methodChiprace = "g_tokenInfo";
+        string[] obj = { _tokenId };
+        string argsChiprace = JsonConvert.SerializeObject(obj);
+
+        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodChiprace, argsChiprace);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return;
+            }
+        }
+
+        if (response != "")
+        {
+            Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
+            var _data = JObject.Parse(response);
+            double _score = double.Parse(_data["score"].ToString());
+            Debug.Log(_score);
+        }
+    }
 
     #endregion
     public void PrintOnConsoleEditor(string _con)

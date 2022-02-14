@@ -112,6 +112,7 @@ public static class Constants
     public static int _SelectedTokenIDIndex = 0;
     public static string OpponentTokenID = "0";
     public static string ChipraceScore = "10";
+    public static bool ChipraceDataChecked = false;
 
     async public static void GetCracePrice()
     {

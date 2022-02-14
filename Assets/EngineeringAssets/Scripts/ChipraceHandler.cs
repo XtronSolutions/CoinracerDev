@@ -23,6 +23,11 @@ public class TotalNFTData
 {
     public string Name;
     public int ID;
+    public int Level;
+    public bool IsUpgradable;
+    public int TargetScore;
+    public bool IsRunningChipRace;
+    public string RemainingTime;
 }
 
 [System.Serializable]
@@ -197,7 +202,7 @@ public class ChipraceHandler : MonoBehaviour
                 }
                 else
                 {
-                    Invoke("PopulateDelay", 0.25f);
+                    StartCoroutine(UpdateChiprace());
                 }
             }
             else
@@ -211,6 +216,29 @@ public class ChipraceHandler : MonoBehaviour
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             MainMenuViewController.Instance.ShowToast(3f, "Please connect your wallet first.");
         }
+    }
+
+    async public void UpdateChipraceData()
+    {
+        for (int i = 0; i < PoolNFT.Length; i++)
+        {
+            for (int j = 0; j < PoolNFT[i].NFTTotalData.Count; j++)
+            {
+                PoolNFT[i].NFTTotalData[j].Level = await WalletManager.Instance.getLevelOf(PoolNFT[i].NFTTotalData[j].ID.ToString())+1;
+                PoolNFT[i].NFTTotalData[j].IsRunningChipRace = await WalletManager.Instance.isRunningChipRace(PoolNFT[i].NFTTotalData[j].ID.ToString());
+                PoolNFT[i].NFTTotalData[j].IsUpgradable = await WalletManager.Instance.isUpgradable(PoolNFT[i].NFTTotalData[j].ID.ToString());
+                PoolNFT[i].NFTTotalData[j].RemainingTime = await WalletManager.Instance.getRemainingTime(PoolNFT[i].NFTTotalData[j].ID.ToString());
+                PoolNFT[i].NFTTotalData[j].TargetScore = await WalletManager.Instance.getScore(PoolNFT[i].NFTTotalData[j].ID.ToString());
+            }
+        }
+
+        Constants.ChipraceDataChecked = true;
+    }
+
+    IEnumerator UpdateChiprace()
+    {
+        yield return new WaitUntil(() => Constants.ChipraceDataChecked);
+        Invoke("PopulateDelay", 0.25f);
     }
 
     public void PopulateDelay()
