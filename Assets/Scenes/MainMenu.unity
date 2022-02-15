@@ -22479,7 +22479,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -15, y: -15}
+  m_AnchoredPosition: {x: -15, y: -14.999878}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &503779935
@@ -33628,7 +33628,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -11.02002}
+  m_AnchoredPosition: {x: 0, y: -11.019897}
   m_SizeDelta: {x: 800, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &742807457
@@ -39126,22 +39126,34 @@ MonoBehaviour:
     - Malibu Express
     - CoinracerGT
     - Nightcrawler
+    NFTSkins:
+    - {fileID: 21300000, guid: c0d6decd11a0b1e4d8e1d6b77b6c4534, type: 3}
+    - {fileID: 21300000, guid: 7f82dba15954b174b856e08b08f9c1c8, type: 3}
+    - {fileID: 21300000, guid: 3c9b361800d39054c8334b0cd2a29717, type: 3}
     NFTTotalData: []
   - PoolID: 2
     Name:
     - Coinrarri
+    NFTSkins:
+    - {fileID: 21300000, guid: abf5c7b73d12bd54b9887bce1b6d025e, type: 3}
     NFTTotalData: []
   - PoolID: 3
     Name:
     - CyberCar
+    NFTSkins:
+    - {fileID: 21300000, guid: 4e6f270725e9a3d46bd42f4d4d73de4e, type: 3}
     NFTTotalData: []
   - PoolID: 4
     Name:
     - Merky
+    NFTSkins:
+    - {fileID: 21300000, guid: 28a837b26feec20448abadc66a9b678e, type: 3}
     NFTTotalData: []
   - PoolID: 5
     Name:
     - Bonecrusher
+    NFTSkins:
+    - {fileID: 21300000, guid: 40271c0e53f5dd6478cf977008d2ff71, type: 3}
     NFTTotalData: []
 --- !u!4 &874443951
 Transform:
@@ -53341,8 +53353,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 519728376}
   m_HandleRect: {fileID: 519728375}
   m_Direction: 2
-  m_Value: -1.8524544
-  m_Size: 0.8980755
+  m_Value: -1.9135797
+  m_Size: 0.9
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -61124,7 +61136,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -12.800537}
+  m_AnchoredPosition: {x: 0, y: -12.800415}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1334762486
@@ -71605,7 +71617,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -5.9001465}
+  m_AnchoredPosition: {x: 0, y: -5.9000854}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1569769477
