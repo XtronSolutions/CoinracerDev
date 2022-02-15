@@ -115,6 +115,8 @@ public class RaceManager : MonoBehaviour
 
         if (Constants.IsMultiplayer)
         {
+            racePosition.enabled = false;
+           // racePosition.SetActive(true);
             if (PhotonNetwork.IsConnected)
             {
                 if (MultiplayerManager.Instance)
@@ -126,12 +128,12 @@ public class RaceManager : MonoBehaviour
             }
 
             int _count = MultiplayerManager.Instance.Settings.MaxPlayers;
-            for (int i = 0; i < _count; i++)
-            {
-                sapwnableSlider[i] =
-                    Instantiate(slider, sliderPos.transform.position, Quaternion.identity, fieldCanvas.transform) as
-                        GameObject;
-            }
+            // for (int i = 0; i < _count; i++)
+            // {
+            //     sapwnableSlider[i] =
+            //         Instantiate(slider, sliderPos.transform.position, Quaternion.identity, fieldCanvas.transform) as
+            //             GameObject;
+            // }
         }
         else
             StartTheRaceTimer();
