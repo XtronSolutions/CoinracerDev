@@ -26,6 +26,8 @@ public class NFTPool
     public string[] Name;
     public List<Sprite> NFTSkins = new List<Sprite>();
     public List<TotalNFTData> NFTTotalData = new List<TotalNFTData>();
+    public int TotalCars;
+    public int TotalEarned;
 }
 
 [System.Serializable]
@@ -234,7 +236,6 @@ public class ChipraceHandler : MonoBehaviour
                     rowPrefab.GetComponent<RectTransform>().sizeDelta = new Vector2(PoolCounter * UIChiprace.PoolPrefabWidth, 142);
                     rowPrefab.GetComponent<ChipracePoolDetail>()._overlay.GetComponent<RectTransform>().sizeDelta = new Vector2(PoolCounter * UIChiprace.PoolPrefabWidth, 208);
                     rowPrefab.GetComponent<ChipracePoolDetail>()._poolText.GetComponent<RectTransform>().sizeDelta = new Vector2(PoolCounter * UIChiprace.PoolPrefabWidth, 50);
-
                     rowPrefab.GetComponent<ChipracePoolDetail>()._poolText.text = "Pool " + (i + 1).ToString();
                 }
             }
@@ -245,7 +246,6 @@ public class ChipraceHandler : MonoBehaviour
         }
         else
         {
-
             MainMenuViewController.Instance.LoadingScreen.SetActive(true);
             Invoke("InstantiatePoolDetail", 1f);
         }
@@ -312,6 +312,27 @@ public class ChipraceHandler : MonoBehaviour
         Constants.ChipraceDataChecked = true;
     }
 
+    public void UpdateTotal()
+    {
+        int _totalCars;
+        int _totalEarned;
+        for (int i = 0; i < PoolNFT.Length; i++)
+        {
+            _totalCars = 0;
+            _totalEarned = 0;
+            for (int j = 0; j < PoolNFT[i].NFTTotalData.Count; j++)
+            {
+                if (PoolNFT[i].NFTTotalData[j].IsRunningChipRace)
+                    _totalCars++;
+
+                _totalEarned += PoolNFT[i].NFTTotalData[j].Rewards;
+            }
+
+            PoolNFT[i].TotalCars = _totalCars;
+            PoolNFT[i].TotalEarned = _totalEarned;
+        }
+    }
+
     IEnumerator UpdateChiprace()
     {
         yield return new WaitUntil(() => Constants.ChipraceDataChecked);
@@ -320,6 +341,7 @@ public class ChipraceHandler : MonoBehaviour
 
     public void PopulateDelay()
     {
+        UpdateTotal();
         PopulateChipracePool();
         InstantiatePoolDetail();
     }
