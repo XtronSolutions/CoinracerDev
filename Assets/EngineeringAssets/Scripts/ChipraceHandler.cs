@@ -1,7 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
+
+[System.Serializable]
+public class StalkedNFT
+{
+    public List<string> NFTNameList = new List<string>();
+    public List<int> NFTList = new List<int>();
+}
 
 [System.Serializable]
 public class NFTTokens
@@ -15,6 +24,7 @@ public class NFTPool
 {
     public int PoolID;
     public string[] Name;
+    public List<Sprite> NFTSkins = new List<Sprite>();
     public List<TotalNFTData> NFTTotalData = new List<TotalNFTData>();
 }
 
@@ -22,12 +32,15 @@ public class NFTPool
 public class TotalNFTData
 {
     public string Name;
+    public Sprite Skin;
     public int ID;
     public int Level;
     public bool IsUpgradable;
     public int TargetScore;
     public bool IsRunningChipRace;
     public string RemainingTime;
+    public int Rewards;
+    public int runningCounter;
 }
 
 [System.Serializable]
@@ -54,6 +67,12 @@ public class ChipraceUI
 }
 public class ChipraceHandler : MonoBehaviour
 {
+    [DllImport("__Internal")]
+    private static extern void SetStorage(string key, string val);
+
+    [DllImport("__Internal")]
+    private static extern string GetStorageClass(string key, string ObjectName, string callback);
+
     public ChipraceUI UIChiprace;
     public NFTPool[] PoolNFT;
     private List<GameObject> PoolRowList = new List<GameObject>();
@@ -63,6 +82,9 @@ public class ChipraceHandler : MonoBehaviour
     int rowCounter = 0;
     GameObject rowPrefab;
     GameObject poolPrefab;
+    [HideInInspector]
+    public StalkedNFT nftStalked;
+    public GameObject NFTApprovalScreen;
 
     public static ChipraceHandler Instance;
 
@@ -70,6 +92,51 @@ public class ChipraceHandler : MonoBehaviour
     {
         Instance = this;
         SubscribeButtonEvent();
+        nftStalked = new StalkedNFT();
+        nftStalked.NFTList.Clear();
+        nftStalked.NFTNameList.Clear();
+        GetNFTData();
+    }
+
+    public void GetNFTData()
+    {
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        GetStorageClass(Constants.NFTKey,this.gameObject.name,"OnGetNFTData");
+#endif
+    }
+
+    public void OnGetNFTData(string info)
+    {
+        if (info != null && info != "null")
+        {
+            nftStalked=JsonConvert.DeserializeObject<StalkedNFT>(info);
+        }
+    }
+
+    public void SetChipraceData(int _data,string _name)
+    {
+        nftStalked.NFTList.Add(_data);
+        nftStalked.NFTNameList.Add(_name);
+
+        string _json = JsonConvert.SerializeObject(nftStalked);
+        SetLocalStorage(Constants.NFTKey, _json);
+    }
+
+    public void RemoveAndSetChipraceData(int _data, string _name)
+    {
+        nftStalked.NFTList.Remove(_data);
+        nftStalked.NFTNameList.Remove(_name);
+
+        string _json = JsonConvert.SerializeObject(nftStalked);
+        SetLocalStorage(Constants.NFTKey, _json);
+    }
+
+    public void SetLocalStorage(string key, string data)
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        SetStorage(key, data);
+#endif
     }
 
     public void SubscribeButtonEvent()
@@ -154,7 +221,9 @@ public class ChipraceHandler : MonoBehaviour
                     PoolObj = Instantiate(UIChiprace.DetailPrefab, Vector3.zero, Quaternion.identity) as GameObject;
                     PoolObj.transform.SetParent(rowPrefab.GetComponent<ChipracePoolDetail>()._poolContainer.transform);
                     PoolObj.transform.localScale = new Vector3(1, 1, 1);
-                    PoolObj.GetComponent<PoolDetail>().AssignPoolDetail(false, PoolNFT[i].NFTTotalData[j].Name, PoolNFT[i].NFTTotalData[j].ID.ToString(), null);
+                    PoolObj.GetComponent<PoolDetail>().AssignTokenData(PoolNFT[i].NFTTotalData[j].Name, PoolNFT[i].NFTTotalData[j].ID, PoolNFT[i].NFTTotalData[j].Level, PoolNFT[i].NFTTotalData[j].IsUpgradable, PoolNFT[i].NFTTotalData[j].TargetScore, PoolNFT[i].NFTTotalData[j].IsRunningChipRace, PoolNFT[i].NFTTotalData[j].RemainingTime);
+                    PoolObj.GetComponent<PoolDetail>().AssignPoolDetail(false, PoolNFT[i].NFTTotalData[j].Name, PoolNFT[i].NFTTotalData[j].ID.ToString(), PoolNFT[i].NFTTotalData[j].Skin, PoolNFT[i].PoolID.ToString(), PoolNFT[i].NFTTotalData[j].Level.ToString());
+
                     PoolCounter++;
                     PrefabCounter++;
                 }
@@ -202,6 +271,9 @@ public class ChipraceHandler : MonoBehaviour
                 }
                 else
                 {
+                    ClearData();
+                    Constants.ChipraceDataChecked = false;
+                    UpdateChipraceData();
                     StartCoroutine(UpdateChiprace());
                 }
             }
@@ -224,11 +296,16 @@ public class ChipraceHandler : MonoBehaviour
         {
             for (int j = 0; j < PoolNFT[i].NFTTotalData.Count; j++)
             {
-                PoolNFT[i].NFTTotalData[j].Level = await WalletManager.Instance.getLevelOf(PoolNFT[i].NFTTotalData[j].ID.ToString())+1;
-                PoolNFT[i].NFTTotalData[j].IsRunningChipRace = await WalletManager.Instance.isRunningChipRace(PoolNFT[i].NFTTotalData[j].ID.ToString());
-                PoolNFT[i].NFTTotalData[j].IsUpgradable = await WalletManager.Instance.isUpgradable(PoolNFT[i].NFTTotalData[j].ID.ToString());
-                PoolNFT[i].NFTTotalData[j].RemainingTime = await WalletManager.Instance.getRemainingTime(PoolNFT[i].NFTTotalData[j].ID.ToString());
-                PoolNFT[i].NFTTotalData[j].TargetScore = await WalletManager.Instance.getScore(PoolNFT[i].NFTTotalData[j].ID.ToString());
+                TotalNFTData _tokenData = new TotalNFTData();
+                _tokenData=await WalletManager.Instance.getAllDataFromFunc(PoolNFT[i].NFTTotalData[j].ID.ToString());
+
+                PoolNFT[i].NFTTotalData[j].Level = _tokenData.Level+ 1;
+                PoolNFT[i].NFTTotalData[j].IsRunningChipRace = _tokenData.IsRunningChipRace ;
+                PoolNFT[i].NFTTotalData[j].IsUpgradable = _tokenData.IsUpgradable;
+                PoolNFT[i].NFTTotalData[j].RemainingTime = _tokenData.RemainingTime;
+                PoolNFT[i].NFTTotalData[j].TargetScore = _tokenData.TargetScore;
+                PoolNFT[i].NFTTotalData[j].Rewards = _tokenData.Rewards;
+                PoolNFT[i].NFTTotalData[j].runningCounter = _tokenData.runningCounter;
             }
         }
 
@@ -245,5 +322,16 @@ public class ChipraceHandler : MonoBehaviour
     {
         PopulateChipracePool();
         InstantiatePoolDetail();
+    }
+
+    public void ForceUpdate()
+    {
+        if(MainMenuViewController.Instance)
+            MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+
+        ClearData();
+        Constants.ChipraceDataChecked = false;
+        UpdateChipraceData();
+        StartCoroutine(UpdateChiprace());
     }
 }

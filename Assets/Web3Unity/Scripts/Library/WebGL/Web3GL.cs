@@ -11,7 +11,7 @@ public class Web3GL
     private static extern void SendContractJs(string method, string abi, string contract, string args, string value, string gasLimit, string gasPrice);
 
     [DllImport("__Internal")]
-    private static extern void ContractHashJs(string key, string address);
+    private static extern void ContractHashJs(string pid, string address, string key);
 
     [DllImport("__Internal")]
     private static extern string SendContractResponse();
@@ -95,11 +95,11 @@ public class Web3GL
         }
     }
 
-    async public static Task<string> GetEncodedHash(string _key, string _address)
+    async public static Task<string> GetEncodedHash(string _pid, string _address, string _key)
     {
         // Set response to empty
         SetEncodedResponse("");
-        ContractHashJs(_key, _address);
+        ContractHashJs(_pid, _address, _key);
         string response = SendEncodedResponse();
         while (response == "")
         {

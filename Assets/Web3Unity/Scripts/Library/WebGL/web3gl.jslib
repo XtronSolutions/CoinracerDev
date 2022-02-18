@@ -97,11 +97,13 @@ mergeInto(LibraryManager.library, {
   },
 
 
-   ContractHashJs: function (key, address) {
+   ContractHashJs: function (pid, address, key) {
 		var parsedKey=Pointer_stringify(key);
 		var parsedAddress=Pointer_stringify(address);
+		var parsedpid=Pointer_stringify(pid);
 
-		window.web3gl.ContractHash(parsedKey, parsedAddress);
+
+		window.web3gl.ContractHash(parsedpid , parsedAddress, parsedKey);
 
 	},
 

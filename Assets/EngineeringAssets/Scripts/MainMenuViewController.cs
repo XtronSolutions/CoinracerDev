@@ -1356,7 +1356,7 @@ public class MainMenuViewController : MonoBehaviour
             if (MultiplayerManager.Instance)
             {
                 Constants.SelectedLevel = MainMenuViewController.Instance.getSelectedLevel() + 1;
-                MultiplayerManager.Instance.ConnectToPhotonServer();
+                //MultiplayerManager.Instance.ConnectToPhotonServer();
                 MainMenuViewController.Instance.SelectMultiplayer_ConnectionUI();
             } else
             {
@@ -1884,22 +1884,29 @@ public class MainMenuViewController : MonoBehaviour
             SetManualRegion _RegionRef = UIConnection.RegionPingsDropdown.GetComponent<SetManualRegion>();
             dropdown.options.Clear();
             List<string> _regions = new List<string>();
-            int minimumPing = int.Parse(pings[0]);
-            int currentPing;
-            dropdown.value = 1;
-            for (int i = 0; i < regions.Length; i++)
+            if (pings.Length > 0)
             {
-                dropdown.options.Add(new Dropdown.OptionData() { text = regions[i] + " " + pings[i] + "ms" });
-                _regions.Add(regions[i]);
-                currentPing = int.Parse(pings[i]);
-                if (currentPing < minimumPing)
+                int minimumPing = int.Parse(pings[0]);
+                int currentPing;
+                dropdown.value = 1;
+                for (int i = 0; i < regions.Length; i++)
                 {
-                    minimumPing = currentPing;
-                    dropdown.value = i + 1;
+                    dropdown.options.Add(new Dropdown.OptionData() { text = regions[i] + " " + pings[i] + "ms" });
+                    _regions.Add(regions[i]);
+                    currentPing = int.Parse(pings[i]);
+                    if (currentPing < minimumPing)
+                    {
+                        minimumPing = currentPing;
+                        dropdown.value = i + 1;
+                    }
                 }
-            }
 
-            _RegionRef.SetRegionString(_regions);
+                _RegionRef.SetRegionString(_regions);
+            }
+            else
+            {
+                Debug.LogError("region list is empty");
+            }
         }
     }
 
@@ -1929,15 +1936,16 @@ public class MainMenuViewController : MonoBehaviour
     public void SelectWage__MultiplayerSelection(int _amount)
     {
         Constants.SelectedWage = _amount;
+        Constants.ChipraceScore = "300";
 
-        if (_amount == 5)
-            Constants.ChipraceScore = "10";
-        if (_amount == 10)
-            Constants.ChipraceScore = "25";
-        if (_amount == 50)
-            Constants.ChipraceScore = "100";
-        if (_amount == 100)
-            Constants.ChipraceScore = "250";
+        //if (_amount == 5)
+           // Constants.ChipraceScore = "10";
+        //if (_amount == 10)
+            //Constants.ChipraceScore = "25";
+        //if (_amount == 50)
+            //Constants.ChipraceScore = "100";
+        //if (_amount == 100)
+            //Constants.ChipraceScore = "250";
 
         Constants.ConvertDollarToCrace(Constants.SelectedWage);
         Constants.SelectedCrace = Constants.CalculatedCrace;

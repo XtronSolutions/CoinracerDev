@@ -119,6 +119,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void ConnectToPhotonServer()
     {
+        Debug.Log("connect to photn called");
         Constants.OpponentTokenID = "0";
         UpdatePlayerCountText("0");
         Constants.DepositDone = false;
@@ -142,7 +143,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             Constants.RegionChanged = false;
             DisconnectPhoton();
 
-            Invoke("ConnectToPhotonServer", 2f);
+            Invoke("ConnectToPhotonServer", 3f);
 
             if (MainMenuViewController.Instance)
                 MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("", false);
@@ -185,6 +186,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void LobbyConnection()
     {
+        MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
         UpdateConnectionText("Joined Lobby");
         Constants.PrintLog("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
 
@@ -313,7 +315,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     #region PunCallbacks
     public override void OnConnectedToMaster()
     {
-        MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
         ConnectionMaster();
     }
     public override void OnJoinedLobby()

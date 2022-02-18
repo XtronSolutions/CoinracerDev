@@ -14,6 +14,7 @@ public static class Constants
     public static string SoundKey = "Sound";
     public static string MusicKey = "Music";
     public static string CredKey = "Credentails";
+    public static string NFTKey = "StalkedNFT";
     public static string MAIN_MENU_SCENE_NAME = "MainMenu";
     public static bool IsPractice = false;
     public static bool IsTournament = false;
@@ -56,7 +57,7 @@ public static class Constants
     public static bool WalletChanged = false;
 
     public static bool IsTestNet = true;
-    public static bool IsTest = false;
+    public static bool IsTest = true;
 
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
@@ -92,7 +93,7 @@ public static class Constants
     public static int WithdrawTime = 300; //time in seconds//300
     public static bool TimerRunning = false;
     public static bool ClaimedReward = false;
-    public static readonly string HashKey = "testkey";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"
+    public static readonly string HashKey = "testingkey";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"
     public static bool FreeMultiplayer = false;
     public static bool EarnMultiplayer = false;
     public static bool OtherPlayerDeposit = false;
@@ -113,6 +114,7 @@ public static class Constants
     public static string OpponentTokenID = "0";
     public static string ChipraceScore = "10";
     public static bool ChipraceDataChecked = false;
+    public static int NFTTokenApproval = -1;
 
     async public static void GetCracePrice()
     {
