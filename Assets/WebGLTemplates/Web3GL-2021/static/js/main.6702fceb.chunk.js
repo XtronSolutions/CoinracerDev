@@ -45,7 +45,8 @@
 
                 EncodedResponse: "",
                 ContractHash: function (p,a,k) {
-                    var hash = o.utils.keccak256(o.eth.abi.encodeParameters(['string','address', 'string'], [p,a,k]));
+					var pidInt = parseInt(p);
+                    var hash = o.utils.keccak256(o.eth.abi.encodeParameters(['uint256','address', 'string'], [pidInt,a,k]));
                     window.web3gl.EncodedResponse = hash;
                 },
                

@@ -120,6 +120,8 @@ public class RPCCalls : MonoBehaviour
         {
             Constants.OpponentTokenID = _ID;
             string _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
+
+            Debug.Log("SyncConnectionData to be callled on not master : " + _tokenID);
             //string _tokenID = "0";
             Constants.SelectedCrace = int.Parse(_crace);
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));

@@ -467,7 +467,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 }
                 //string _tokenID = "0";
 
+                Debug.Log("on player enter room");
                 string _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
+                Debug.Log("token id : "+ _tokenID);
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString(), _tokenID);
             }
         }
