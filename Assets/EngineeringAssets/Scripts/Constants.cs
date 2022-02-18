@@ -115,6 +115,8 @@ public static class Constants
     public static string ChipraceScore = "10";
     public static bool ChipraceDataChecked = false;
     public static int NFTTokenApproval = -1;
+    public static int ChipraceWithdrawFees = 10;
+    public static bool ChipraceInteraction = false;
 
     async public static void GetCracePrice()
     {

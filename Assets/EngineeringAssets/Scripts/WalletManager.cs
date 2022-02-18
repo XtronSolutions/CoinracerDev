@@ -75,6 +75,7 @@ public class WalletManager : MonoBehaviour
 
     private BigInteger decimalValue; //stores Decimal calculation with power of 10
     private BigInteger actualBalance;//stores actual balance after dividing with 'DecimalValue'
+
     private BigInteger mainBalance = 1000000000000000000; //10^18
 
     private string chain = "binance";//name of the chain
@@ -157,7 +158,6 @@ public class WalletManager : MonoBehaviour
             SetAcount("0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
             InvokeRepeating("CheckNFTBalance", 0.1f, 10f);
         }
-
         //CheckHash("12345");
         //g_tokenInfo("12");
         //getAllDataFromFunc("12");
@@ -467,6 +467,9 @@ public class WalletManager : MonoBehaviour
                 case "approveNFT":
                     OnApproveNFTCalled(true);
                     break;
+                case "approveChiprace":
+                    OnApproveCraceChipraceCalled(true);
+                    break;
             }
         }
         else if (txStatus == "fail")
@@ -514,6 +517,9 @@ public class WalletManager : MonoBehaviour
                     break;
                 case "approveNFT":
                     OnApproveNFTCalled(false);
+                    break;
+                case "approveChiprace":
+                    OnApproveCraceChipraceCalled(false);
                     break;
             }
         }
@@ -619,6 +625,9 @@ public class WalletManager : MonoBehaviour
             return;
         }
 
+        if (Constants.ChipraceInteraction)
+            return;
+
         if (Constants.NFTStored != Constants.NFTBought)
         {
             if (Constants.NFTChanged)
@@ -646,6 +655,50 @@ public class WalletManager : MonoBehaviour
         {
             //Constants.PrintLog("nothing new purchased or sold");
         }
+    }
+
+    async public void ForceUpdateNFT()
+    {
+        string methodNFT = "balanceOf";// smart contract method to call
+        string[] obj = { account };
+        string argsNFT = JsonConvert.SerializeObject(obj);
+        string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
+
+        PrintOnConsoleEditor(response);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return;
+            }
+        }
+
+        Constants.NFTBought = int.Parse(response);
+
+        if (Constants.NFTBought == 0)
+        {
+            Constants.NFTStored = 0;
+            Constants.ChipraceInteraction = false;
+
+            if (ChipraceHandler.Instance)
+                ChipraceHandler.Instance.ForceUpdate();
+
+            return;
+        }
+
+        Constants.NFTChanged = true;
+        Constants.NFTStored = Constants.NFTBought;
+        Constants.ChipraceInteraction = false;
+        NFTTokens.Clear();
+        metaDataURL.Clear();
+        Constants.StoredCarNames.Clear();
+        CheckTokenOwnerByIndex();
+
+        if (ChipraceHandler.Instance)
+            ChipraceHandler.Instance.ForceUpdate();
     }
 
     public void RestartGame()
@@ -1357,6 +1410,101 @@ public class WalletManager : MonoBehaviour
         }
     }
 
+    public void OnApproveCraceChipraceCalled(bool _state)
+    {
+        if (_state)
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+            MainMenuViewController.Instance.ShowToast(3f, "Crace is approved for chiprace.");
+            ChipraceHandler.Instance.CraceChipraceApprovalScreen.SetActive(false);
+        }
+        else
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+            MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
+        }
+    }
+
+
+    async public void ApproveCraceChiprace()
+    {
+        if (Constants.IsTest)
+        {
+            OnApproveCraceChipraceCalled(true);
+        }
+        else
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+            string methodCrace = "approve";
+            string[] obj = { ChipraceContract, "2000000000000000000000" };//20000000000000000000000
+            string argsCSP = JsonConvert.SerializeObject(obj);
+            string value = "0";
+            string gasLimit = "";//67224//46327
+            string gasPrice = "";//5000000000
+            bool _raiseEvent = false;
+
+            try
+            {
+                Constants.EventRaised = _raiseEvent;
+                string response = await Web3GL.SendContract(methodCrace, abi, contract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
+
+                if (response.Contains("Returned error: internal error"))
+                {
+                    Constants.PrintLog("Returned error: internal error");
+                    if (MainMenuViewController.Instance)
+                    {
+                        MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                        MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        return;
+                    }
+                }
+
+                if (response != "")
+                {
+                    StoredHash = response;
+                    StoredMethodName = "approveChiprace";
+                    CheckTransaction();
+                }
+            }
+            catch (Exception e)
+            {
+                Constants.PrintExp(e, this);
+                OnApproveCraceChipraceCalled(false);
+            }
+        }
+    }
+
+    public async Task<bool> CheckCraceApprovalChiprace(double _amount)
+    {
+        string methodCrace = "allowance";// smart contract method to call
+        string[] obj = { Constants.WalletAddress, CSPContract };
+        string argsCSP = JsonConvert.SerializeObject(obj);
+
+        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodCrace, argsCSP);
+
+        if (response.Contains("Returned error: internal error"))
+        {
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return false;
+            }
+        }
+
+        if (response != "")
+        {
+            BigInteger _val = BigInteger.Parse(response);
+            if (_val > (int)_amount)
+                return true;
+            else
+                return false;
+        }else
+        {
+            return false;
+        }
+    }
+
 
     public void OnApproveNFTCalled(bool _state)
     {
@@ -1372,6 +1520,7 @@ public class WalletManager : MonoBehaviour
             MainMenuViewController.Instance.ShowToast(3f, "Transaction was not successful, please try again.");
         }
     }
+
 
     async public void ApproveNFT()
     {
@@ -1508,6 +1657,16 @@ public class WalletManager : MonoBehaviour
     #endregion
 
     #region Chiprace Contract
+
+    public void DelayLoading()
+    {
+        if (RaceManager.Instance)
+            RaceManager.Instance.ToggleLoadingScreen(true);
+
+        if (MainMenuViewController.Instance)
+            MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+    }
+
     public void OnChipraceEnterCalled(bool _state)
     {
         if (_state)
@@ -1528,8 +1687,9 @@ public class WalletManager : MonoBehaviour
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
 
-            if (ChipraceHandler.Instance)
-                ChipraceHandler.Instance.ForceUpdate();
+            Invoke("DelayLoading", 1f);
+            ForceUpdateNFT();
+           
         }
         else
         {
@@ -1544,6 +1704,8 @@ public class WalletManager : MonoBehaviour
 
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
+
+            Constants.ChipraceInteraction = false;
         }
     }
 
@@ -1551,6 +1713,7 @@ public class WalletManager : MonoBehaviour
     string storedToken;
     async public void enterChipRace(string _name, string _nFTToken,string _poolId)
     {
+        Constants.ChipraceInteraction = true;
         storedName = _name;
         storedToken = _nFTToken;
         if (Constants.IsTest)
@@ -1585,12 +1748,14 @@ public class WalletManager : MonoBehaviour
                     {
                         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                         MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        Constants.ChipraceInteraction = false;
                         return;
                     }
 
                     if (RaceManager.Instance)
                     {
                         RaceManager.Instance.ToggleLoadingScreen(false);
+                        Constants.ChipraceInteraction = false;
                         return;
                     }
                 }
@@ -1630,8 +1795,7 @@ public class WalletManager : MonoBehaviour
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
 
-            if (ChipraceHandler.Instance)
-                ChipraceHandler.Instance.ForceUpdate();
+            ForceUpdateNFT();
         }
         else
         {
@@ -1646,10 +1810,13 @@ public class WalletManager : MonoBehaviour
 
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
+
+            Constants.ChipraceInteraction = false;
         }
     }
     async public void claimRewards(string _name, string _tokenID)
     {
+        Constants.ChipraceInteraction = true;
         storedName = _name;
         storedToken = _tokenID;
         if (Constants.IsTest)
@@ -1684,12 +1851,14 @@ public class WalletManager : MonoBehaviour
                     {
                         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                         MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        Constants.ChipraceInteraction = false;
                         return;
                     }
 
                     if (RaceManager.Instance)
                     {
                         RaceManager.Instance.ToggleLoadingScreen(false);
+                        Constants.ChipraceInteraction = false;
                         return;
                     }
                 }
@@ -1713,6 +1882,10 @@ public class WalletManager : MonoBehaviour
     {
         if (_state)
         {
+            int _tok = int.Parse(storedToken);
+            if (ChipraceHandler.Instance)
+                ChipraceHandler.Instance.RemoveAndSetChipraceData(_tok, storedName);
+
             if (MainMenuViewController.Instance)
             {
                 MainMenuViewController.Instance.LoadingScreen.SetActive(false);
@@ -1724,6 +1897,8 @@ public class WalletManager : MonoBehaviour
 
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
+
+            ForceUpdateNFT();
         }
         else
         {
@@ -1738,10 +1913,15 @@ public class WalletManager : MonoBehaviour
 
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
+
+            Constants.ChipraceInteraction = false;
         }
     }
-    async public void emergencyExitChipRace(string _tokenID,string _amount)
+    async public void emergencyExitChipRace(string _name,string _tokenID,double _amount)
     {
+        Constants.ChipraceInteraction = true;
+        storedName = _name;
+        storedToken = _tokenID;
         if (Constants.IsTest)
         {
             OnEmergencyExitChipRaceCalled(true);
@@ -1754,8 +1934,9 @@ public class WalletManager : MonoBehaviour
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(true);
 
+            BigInteger _totalFee = (BigInteger)(_amount * 1000000000000000000);
             string methodChiprace = "emergencyExitChipRace";
-            string[] _data = { _tokenID, _amount };
+            string[] _data = { _tokenID, _totalFee.ToString() };
             string argsChiprace = JsonConvert.SerializeObject(_data);
             string value = "0";
             string gasLimit = "";//310000//2100000
@@ -1774,12 +1955,14 @@ public class WalletManager : MonoBehaviour
                     {
                         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                         MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                        Constants.ChipraceInteraction = false;
                         return;
                     }
 
                     if (RaceManager.Instance)
                     {
                         RaceManager.Instance.ToggleLoadingScreen(false);
+                        Constants.ChipraceInteraction = false;
                         return;
                     }
                 }
@@ -1814,6 +1997,9 @@ public class WalletManager : MonoBehaviour
 
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
+
+            if (ChipraceHandler.Instance)
+                ChipraceHandler.Instance.ForceUpdate();
         }
         else
         {
@@ -1830,7 +2016,7 @@ public class WalletManager : MonoBehaviour
                 RaceManager.Instance.ToggleLoadingScreen(false);
         }
     }
-    async public void upgradeNFT(string _tokenID, string _amount)
+    async public void upgradeNFT(string _tokenID, double _amount)
     {
         if (Constants.IsTest)
         {
@@ -1844,8 +2030,9 @@ public class WalletManager : MonoBehaviour
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(true);
 
+            BigInteger _totalPriceUpgrade = (BigInteger)(_amount * 1000000000000000000);
             string methodChiprace = "upgradeNFT";
-            string[] _data = { _tokenID, _amount };
+            string[] _data = { _tokenID, _totalPriceUpgrade.ToString() };
             string argsChiprace = JsonConvert.SerializeObject(_data);
             string value = "0";
             string gasLimit = "";//310000//2100000
@@ -2162,6 +2349,26 @@ public class WalletManager : MonoBehaviour
             //double _score = double.Parse(_data["score"].ToString());
             //Debug.Log(_score);
         }
+    }
+
+    public bool CheckChipracebalance(double _amount)
+    {
+        bool _havebalance = false;
+        int _tempAmount = (int)_amount;
+        _tempAmount += 1;
+        if (actualBalance >= _tempAmount)
+            _havebalance = true;
+
+        return _havebalance;
+    }
+
+    public bool CheckChipracebalanceWhole(int _amount)
+    {
+        bool _havebalance = false;
+        if (actualBalance >= _amount)
+            _havebalance = true;
+
+        return _havebalance;
     }
 
     #endregion
