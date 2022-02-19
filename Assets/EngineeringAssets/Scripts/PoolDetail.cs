@@ -24,7 +24,7 @@ public class PoolDetail : MonoBehaviour
     private string _poolId;
     private TotalNFTData TokenData = new TotalNFTData();
 
-    private double UpgradableAmount;
+    public double UpgradableAmount;
     private double WithdrawFees;
 
     double RemainingTimeSeconds=0;

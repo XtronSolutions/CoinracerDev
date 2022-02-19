@@ -625,8 +625,8 @@ public class WalletManager : MonoBehaviour
             return;
         }
 
-        if (Constants.ChipraceInteraction)
-            return;
+        //if (Constants.ChipraceInteraction)
+            //return;
 
         if (Constants.NFTStored != Constants.NFTBought)
         {
@@ -659,43 +659,44 @@ public class WalletManager : MonoBehaviour
 
     async public void ForceUpdateNFT()
     {
-        string methodNFT = "balanceOf";// smart contract method to call
-        string[] obj = { account };
-        string argsNFT = JsonConvert.SerializeObject(obj);
-        string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
+        //string methodNFT = "balanceOf";// smart contract method to call
+        //string[] obj = { account };
+        //string argsNFT = JsonConvert.SerializeObject(obj);
+        //string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
 
-        PrintOnConsoleEditor(response);
+        //PrintOnConsoleEditor(response);
 
-        if (response.Contains("Returned error: internal error"))
-        {
-            Constants.PrintLog("Returned error: internal error");
-            if (MainMenuViewController.Instance)
-            {
-                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
-                return;
-            }
-        }
+        //if (response.Contains("Returned error: internal error"))
+       // {
+        //    Constants.PrintLog("Returned error: internal error");
+          //  if (MainMenuViewController.Instance)
+            //{
+              //  MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                //return;
+            //}
+        //}
 
-        Constants.NFTBought = int.Parse(response);
+//        Constants.NFTBought = int.Parse(response);
 
-        if (Constants.NFTBought == 0)
-        {
-            Constants.NFTStored = 0;
-            Constants.ChipraceInteraction = false;
+  //      if (Constants.NFTBought == 0)
+    //    {
+      //      Constants.NFTStored = 0;
+        //    Constants.ChipraceInteraction = false;
+        //
+          //  if (ChipraceHandler.Instance)
+            //    ChipraceHandler.Instance.ForceUpdate();
 
-            if (ChipraceHandler.Instance)
-                ChipraceHandler.Instance.ForceUpdate();
+//            return;
+  //      }
 
-            return;
-        }
-
-        Constants.NFTChanged = true;
-        Constants.NFTStored = Constants.NFTBought;
-        Constants.ChipraceInteraction = false;
-        NFTTokens.Clear();
-        metaDataURL.Clear();
-        Constants.StoredCarNames.Clear();
-        CheckTokenOwnerByIndex();
+        //Constants.NFTChanged = true;
+        //Constants.NFTStored = Constants.NFTBought;
+        //Constants.ChipraceInteraction = false;
+        //NFTTokens.Clear();
+        //metaDataURL.Clear();
+        //Constants.StoredCarNames.Clear();
+        //tempNFTCounter = 0;
+        //CheckTokenOwnerByIndex();
 
         if (ChipraceHandler.Instance)
             ChipraceHandler.Instance.ForceUpdate();
@@ -1477,10 +1478,10 @@ public class WalletManager : MonoBehaviour
     public async Task<bool> CheckCraceApprovalChiprace(double _amount)
     {
         string methodCrace = "allowance";// smart contract method to call
-        string[] obj = { Constants.WalletAddress, CSPContract };
+        string[] obj = { Constants.WalletAddress, ChipraceContract };
         string argsCSP = JsonConvert.SerializeObject(obj);
 
-        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodCrace, argsCSP);
+        string response = await EVM.Call(chain, network, contract, abi, methodCrace, argsCSP);
 
         if (response.Contains("Returned error: internal error"))
         {

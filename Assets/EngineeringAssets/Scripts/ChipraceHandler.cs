@@ -229,7 +229,7 @@ public class ChipraceHandler : MonoBehaviour
                     PoolObj.transform.SetParent(rowPrefab.GetComponent<ChipracePoolDetail>()._poolContainer.transform);
                     PoolObj.transform.localScale = new Vector3(1, 1, 1);
 
-                    _level = PoolNFT[i].NFTTotalData[j].Level + 1;
+                    _level = PoolNFT[i].NFTTotalData[j].Level;
                     _upgradeFee = 0;
 
                     if (_level!=5)
@@ -364,7 +364,7 @@ public class ChipraceHandler : MonoBehaviour
         Constants.ChipraceDataChecked = false;
         UpdateChipraceData();
         StartCoroutine(UpdateChiprace());
-        //Invoke("ForceUpdateDelay", 1f);
+        Invoke("ForceUpdateDelay", 1f);
     }
 
     public void ForceUpdateDelay()
