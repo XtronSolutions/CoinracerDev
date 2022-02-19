@@ -2274,7 +2274,13 @@ public class WalletManager : MonoBehaviour
             _tokenData.TargetScore = int.Parse(_data["score"].ToString());
             _tokenData.Level = int.Parse(_data["level"].ToString());
             _tokenData.IsRunningChipRace = bool.Parse(_data["isEnter"].ToString());
-            _tokenData.Rewards = int.Parse(_data["rewards"].ToString());
+
+            BigInteger _rewards = BigInteger.Parse(_data["rewards"].ToString());
+
+            BigInteger _decimalValue = (BigInteger)Math.Pow(10, 18);
+            BigInteger _actualBalance = _rewards / _decimalValue;
+
+            _tokenData.Rewards =(int) _actualBalance;
             _tokenData.RemainingTime = _data["remainningTime"].ToString();
             _tokenData.IsUpgradable = bool.Parse(_data["canUpgrade"].ToString());
             return _tokenData;

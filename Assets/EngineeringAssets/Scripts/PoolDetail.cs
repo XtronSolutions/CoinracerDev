@@ -78,6 +78,7 @@ public class PoolDetail : MonoBehaviour
         TotalTimer -= RemainingTimeSeconds;
         UpdateTimer();
         _timerText.text = "0:00:00:00";
+        _earnedCraceText.text = "$"+TokenData.Rewards.ToString();
         timerStarted = true;
 
     }
@@ -123,7 +124,7 @@ public class PoolDetail : MonoBehaviour
         _levelText.text = "Level " + _level;
     }
 
-    public void AssignTokenData(string _name,int _id,int _level,bool _isUpgradable,int _targetScore,bool _isRunningChipRace,string _remainingTime,double _upgradeAmount)
+    public void AssignTokenData(string _name,int _id,int _level,bool _isUpgradable,int _targetScore,bool _isRunningChipRace,string _remainingTime,double _upgradeAmount,int _reward)
     {
         TotalTimer = 600;//86400
         TokenData.Name = _name;
@@ -133,7 +134,7 @@ public class PoolDetail : MonoBehaviour
         TokenData.TargetScore = _targetScore;
         TokenData.IsRunningChipRace = _isRunningChipRace;
         TokenData.RemainingTime = _remainingTime;
-
+        TokenData.Rewards = _reward;
         RemainingTimeSeconds = double.Parse(TokenData.RemainingTime);
         UpgradableAmount = _upgradeAmount;
 
