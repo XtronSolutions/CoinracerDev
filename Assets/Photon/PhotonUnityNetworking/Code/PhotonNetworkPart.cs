@@ -8,7 +8,6 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
-
 namespace Photon.Pun
 {
     using System;
@@ -2518,13 +2517,17 @@ namespace Photon.Pun
 
         private static void OnRegionsPinged(RegionHandler regionHandler)
         {
+            Debug.Log(regionHandler.GetResults());
+
             if (PhotonNetwork.LogLevel >= PunLogLevel.Informational)
             {
-                Debug.Log(regionHandler.GetResults());
+                //Debug.Log(regionHandler.GetResults());
                 pingedRegions = regionHandler.getRegionsList();
                 pingedRegionPings = regionHandler.getPingsList();
             }
 
+
+            PhotonNetwork.GotPingResult = true;
             _cachedRegionHandler = regionHandler;
             //PhotonNetwork.BestRegionSummaryInPreferences = regionHandler.SummaryToCache; // can not be called here, as it's not in the main thread
 

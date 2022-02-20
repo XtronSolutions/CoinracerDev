@@ -20,6 +20,8 @@ public class UserData
     public double NumberOfTriesPractice { get; set; }
     public bool PassBought { get; set; }
     public string Email { get; set; }
+    
+    public string StalkedNFT { get; set; }
 
     public int AvatarID { get; set; }
     public EndDate TournamentEndDate { get; set; }
@@ -105,6 +107,7 @@ public class FirebaseManager : MonoBehaviour
         PlayerData.PassBought = (bool)response.SelectToken("data").SelectToken("PassBought");
         PlayerData.AvatarID = (int)response.SelectToken("data").SelectToken("AvatarID");
         PlayerData.TotalWins = (int)response.SelectToken("data").SelectToken("TotalWins");
+        PlayerData.StalkedNFT = (string)response.SelectToken("data").SelectToken("StalkedNFT");
         Constants.TotalWins = PlayerData.TotalWins;
         PlayerData.TournamentEndDate = new EndDate();
         PlayerData.TournamentEndDate.nanoseconds = (double)response.SelectToken("data").SelectToken("TournamentEndDate").SelectToken("nanoseconds");
@@ -127,6 +130,16 @@ public class FirebaseManager : MonoBehaviour
             if (MainMenuViewController.Instance)
                 MainMenuViewController.Instance.OnLoginSuccess(false);
         }
+    }
+
+    public void SetStalkedNFT(string _key)
+    {
+        PlayerData.StalkedNFT = _key;
+    }
+
+    public string GetStalkedNFT()
+    {
+        return PlayerData.StalkedNFT;
     }
     
     public void SetLocalStorage(string key,string data)

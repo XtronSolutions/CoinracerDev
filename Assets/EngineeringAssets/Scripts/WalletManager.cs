@@ -252,6 +252,7 @@ public class WalletManager : MonoBehaviour
         Constants.WalletConnected = true;
         FirebaseManager.Instance.DocFetched = false;
         FirebaseManager.Instance.ResultFetched = true;
+        Constants.ForceUpdateChiprace = false;
 
         if (!IsGamePlay)
         {
@@ -625,8 +626,8 @@ public class WalletManager : MonoBehaviour
             return;
         }
 
-        //if (Constants.ChipraceInteraction)
-            //return;
+        if (Constants.ChipraceInteraction)
+            return;
 
         if (Constants.NFTStored != Constants.NFTBought)
         {
@@ -659,56 +660,65 @@ public class WalletManager : MonoBehaviour
 
     async public void ForceUpdateNFT()
     {
-        //string methodNFT = "balanceOf";// smart contract method to call
-        //string[] obj = { account };
-        //string argsNFT = JsonConvert.SerializeObject(obj);
-        //string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
+        string methodNFT = "balanceOf";// smart contract method to call
+        string[] obj = { account };
+        string argsNFT = JsonConvert.SerializeObject(obj);
+        string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
 
-        //PrintOnConsoleEditor(response);
+        PrintOnConsoleEditor(response);
 
-        //if (response.Contains("Returned error: internal error"))
-       // {
-        //    Constants.PrintLog("Returned error: internal error");
-          //  if (MainMenuViewController.Instance)
-            //{
-              //  MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
-                //return;
-            //}
-        //}
+        if (response.Contains("Returned error: internal error"))
+        {
+           Constants.PrintLog("Returned error: internal error");
+           if (MainMenuViewController.Instance)
+            {
+              MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+              return;
+            }
+        }
 
-//        Constants.NFTBought = int.Parse(response);
+        Constants.NFTBought = int.Parse(response);
 
-  //      if (Constants.NFTBought == 0)
-    //    {
-      //      Constants.NFTStored = 0;
-        //    Constants.ChipraceInteraction = false;
-        //
-          //  if (ChipraceHandler.Instance)
-            //    ChipraceHandler.Instance.ForceUpdate();
+        if (Constants.NFTBought == 0)
+        {
+            Constants.NFTStored = 0;
+            Constants.ChipraceInteraction = false;
+        
+            if (ChipraceHandler.Instance)
+                ChipraceHandler.Instance.ForceUpdate();
 
-//            return;
-  //      }
+            return;
+        }
 
-        //Constants.NFTChanged = true;
-        //Constants.NFTStored = Constants.NFTBought;
-        //Constants.ChipraceInteraction = false;
-        //NFTTokens.Clear();
-        //metaDataURL.Clear();
-        //Constants.StoredCarNames.Clear();
-        //tempNFTCounter = 0;
-        //CheckTokenOwnerByIndex();
+        Constants.NFTChanged = true;
+        Constants.NFTStored = Constants.NFTBought;
+        Constants.ChipraceInteraction = false;
+        NFTTokens.Clear();
+        metaDataURL.Clear();
+        Constants.StoredCarNames.Clear();
+        tempNFTCounter = 0;
+        ClearChipraceData();
+        Constants.TokenNFT.Clear();
+        ChipraceHandler.Instance.nftStalked = new StalkedNFT();
+        Constants.ForceUpdateChiprace = true;
 
-        if (ChipraceHandler.Instance)
-            ChipraceHandler.Instance.ForceUpdate();
+        if (Constants.ForceUpdateChiprace)
+            ChipraceHandler.Instance.GetNFTData();
+
+        CheckTokenOwnerByIndex();
     }
 
     public void RestartGame()
     {
+        Constants.ForceUpdateChiprace = false;
         Constants.NFTChanged = false;
         Constants.NFTStored = -1;
         NFTTokens.Clear();
         metaDataURL.Clear();
         Constants.StoredCarNames.Clear();
+        ClearChipraceData();
+        Constants.TokenNFT.Clear();
+        ChipraceHandler.Instance.nftStalked = new StalkedNFT();
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 
@@ -793,7 +803,14 @@ public class WalletManager : MonoBehaviour
 
             Constants.CheckAllNFT = true;
             Constants.ChipraceDataChecked = false;
-            ChipraceHandler.Instance.UpdateChipraceData();
+
+            if(Constants.ForceUpdateChiprace)
+            {
+                Constants.ForceUpdateChiprace = false;
+                if (ChipraceHandler.Instance)
+                    ChipraceHandler.Instance.ForceUpdate();
+            }
+            //ChipraceHandler.Instance.UpdateChipraceData();
         } else
         {
             Invoke("WaitForAllData", 1f);
@@ -881,6 +898,17 @@ public class WalletManager : MonoBehaviour
                         ChipraceHandler.Instance.PoolNFT[i].NFTTotalData.Add(_data);
                     }
                 }
+            }
+        }
+    }
+
+    public void ClearChipraceData()
+    {
+        if (ChipraceHandler.Instance)
+        {
+            for (int i = 0; i < ChipraceHandler.Instance.PoolNFT.Length; i++)
+            {
+                ChipraceHandler.Instance.PoolNFT[i].NFTTotalData.Clear();
             }
         }
     }
@@ -1796,6 +1824,7 @@ public class WalletManager : MonoBehaviour
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
 
+            Invoke("DelayLoading", 1f);
             ForceUpdateNFT();
         }
         else
@@ -1899,6 +1928,7 @@ public class WalletManager : MonoBehaviour
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
 
+            Invoke("DelayLoading", 1f);
             ForceUpdateNFT();
         }
         else

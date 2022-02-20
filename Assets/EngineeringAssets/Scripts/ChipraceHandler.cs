@@ -66,8 +66,10 @@ public class ChipraceUI
 
     public Button ChipraceButton;
 
-    
+    public GameObject AnimationMainScreen;
+    public GameObject[] AnimatingObjects;
 }
+
 public class ChipraceHandler : MonoBehaviour
 {
     [DllImport("__Internal")]
@@ -159,6 +161,7 @@ public class ChipraceHandler : MonoBehaviour
 
     public void BackButtonClicked()
     {
+        DisablePoolAnimation();
         ClearData();
         ToggleMainScreen(false) ;
     }
@@ -353,6 +356,7 @@ public class ChipraceHandler : MonoBehaviour
 
     public void PopulateDelay()
     {
+        DisablePoolAnimation();
         UpdateTotal();
         PopulateChipracePool();
         InstantiatePoolDetail();
@@ -371,5 +375,32 @@ public class ChipraceHandler : MonoBehaviour
     {
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+    }
+
+    public void ToggleAnimationScreen(bool _state)
+    {
+        UIChiprace.AnimationMainScreen.SetActive(_state);
+    }
+
+    public void ToggleAnimationObjects(int _index)
+    {
+        for (int i = 0; i < UIChiprace.AnimatingObjects.Length; i++)
+        {
+            if (_index == i)
+                UIChiprace.AnimatingObjects[i].SetActive(true);
+            else
+                UIChiprace.AnimatingObjects[i].SetActive(false);
+        }
+    }
+
+    public void EnablePoolAnimation(int index)
+    {
+        ToggleAnimationScreen(true);
+        ToggleAnimationObjects(index);
+    }
+
+    public void DisablePoolAnimation()
+    {
+        ToggleAnimationScreen(false);
     }
 }
