@@ -113,9 +113,10 @@ public class RaceManager : MonoBehaviour
             wayPoint.WayPointDataObservable.Subscribe(OnWayPointData).AddTo(this);
         }
 
+        racePosition.enabled = false;
         if (Constants.IsMultiplayer)
         {
-            racePosition.enabled = false;
+            racePosition.enabled = true;
            // racePosition.SetActive(true);
             if (PhotonNetwork.IsConnected)
             {
