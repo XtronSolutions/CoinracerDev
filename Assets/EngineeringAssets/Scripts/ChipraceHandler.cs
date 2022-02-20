@@ -66,8 +66,10 @@ public class ChipraceUI
 
     public Button ChipraceButton;
 
-    
+    public GameObject AnimationMainScreen;
+    public GameObject[] AnimatingObjects;
 }
+
 public class ChipraceHandler : MonoBehaviour
 {
     [DllImport("__Internal")]
@@ -159,6 +161,7 @@ public class ChipraceHandler : MonoBehaviour
 
     public void BackButtonClicked()
     {
+        DisablePoolAnimation();
         ClearData();
         ToggleMainScreen(false) ;
     }
@@ -229,7 +232,7 @@ public class ChipraceHandler : MonoBehaviour
                     PoolObj.transform.SetParent(rowPrefab.GetComponent<ChipracePoolDetail>()._poolContainer.transform);
                     PoolObj.transform.localScale = new Vector3(1, 1, 1);
 
-                    _level = PoolNFT[i].NFTTotalData[j].Level + 1;
+                    _level = PoolNFT[i].NFTTotalData[j].Level;
                     _upgradeFee = 0;
 
                     if (_level!=5)
@@ -353,6 +356,7 @@ public class ChipraceHandler : MonoBehaviour
 
     public void PopulateDelay()
     {
+        DisablePoolAnimation();
         UpdateTotal();
         PopulateChipracePool();
         InstantiatePoolDetail();
@@ -364,12 +368,39 @@ public class ChipraceHandler : MonoBehaviour
         Constants.ChipraceDataChecked = false;
         UpdateChipraceData();
         StartCoroutine(UpdateChiprace());
-        //Invoke("ForceUpdateDelay", 1f);
+        Invoke("ForceUpdateDelay", 1f);
     }
 
     public void ForceUpdateDelay()
     {
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.LoadingScreen.SetActive(true);
+    }
+
+    public void ToggleAnimationScreen(bool _state)
+    {
+        UIChiprace.AnimationMainScreen.SetActive(_state);
+    }
+
+    public void ToggleAnimationObjects(int _index)
+    {
+        for (int i = 0; i < UIChiprace.AnimatingObjects.Length; i++)
+        {
+            if (_index == i)
+                UIChiprace.AnimatingObjects[i].SetActive(true);
+            else
+                UIChiprace.AnimatingObjects[i].SetActive(false);
+        }
+    }
+
+    public void EnablePoolAnimation(int index)
+    {
+        ToggleAnimationScreen(true);
+        ToggleAnimationObjects(index);
+    }
+
+    public void DisablePoolAnimation()
+    {
+        ToggleAnimationScreen(false);
     }
 }

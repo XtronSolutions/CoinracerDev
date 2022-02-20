@@ -24,7 +24,7 @@ public class PoolDetail : MonoBehaviour
     private string _poolId;
     private TotalNFTData TokenData = new TotalNFTData();
 
-    private double UpgradableAmount;
+    public double UpgradableAmount;
     private double WithdrawFees;
 
     double RemainingTimeSeconds=0;
@@ -42,6 +42,7 @@ public class PoolDetail : MonoBehaviour
     string textfieldSeconds;//string store converstion of seconds into string for display
     string MainTime;
 
+    private double tempTimer=0;
     private void OnEnable()
     {
         EnableContButton.onClick.AddListener(EnableNFTDataScreen);
@@ -74,13 +75,8 @@ public class PoolDetail : MonoBehaviour
         else
             ToggleUpgradeButton(false);
 
-        TotalTimer = 600;//86400
-        TotalTimer -= RemainingTimeSeconds;
-        UpdateTimer();
-        _timerText.text = "0:00:00:00";
+        _timerText.text = "0:0:0:0";
         _earnedCraceText.text = "$"+TokenData.Rewards.ToString();
-        timerStarted = true;
-
     }
 
     public void DisableNFTDataScreen()
@@ -124,9 +120,8 @@ public class PoolDetail : MonoBehaviour
         _levelText.text = "Level " + _level;
     }
 
-    public void AssignTokenData(string _name,int _id,int _level,bool _isUpgradable,int _targetScore,bool _isRunningChipRace,string _remainingTime,double _upgradeAmount,int _reward)
+    public void AssignTokenData(string _name, int _id, int _level, bool _isUpgradable, int _targetScore, bool _isRunningChipRace, string _remainingTime, double _upgradeAmount, int _reward)
     {
-        TotalTimer = 600;//86400
         TokenData.Name = _name;
         TokenData.ID = _id;
         TokenData.Level = _level;
@@ -138,7 +133,13 @@ public class PoolDetail : MonoBehaviour
         RemainingTimeSeconds = double.Parse(TokenData.RemainingTime);
         UpgradableAmount = _upgradeAmount;
 
+        tempTimer = TotalTimer - RemainingTimeSeconds;
+        UpdateTimer();
 
+        if (tempTimer <= 0)
+            timerStarted = false;
+        else
+            timerStarted = true;
     }
 
     public void UpdateTimer()
@@ -153,22 +154,31 @@ public class PoolDetail : MonoBehaviour
     {
         if(TokenData.IsRunningChipRace)
         {
-            Debug.Log("running chiprace");
             if(MainMenuViewController.Instance)
                 MainMenuViewController.Instance.ShowToast(3f, "Chiprace already running for selected NFT Token.");
         }
         else
         {
-            Constants.NFTTokenApproval = TokenData.ID;
-            CheckNFTApproval(TokenData.ID.ToString());
+            if (Constants.IsTest)
+            {
+                if (WalletManager.Instance)
+                    WalletManager.Instance.enterChipRace(TokenData.Name, TokenData.ID.ToString(), _poolId);
+            }
+            else
+            {
+                Constants.NFTTokenApproval = TokenData.ID;
+                CheckNFTApproval(TokenData.ID.ToString());
+            }
         }
     }
 
     async public void CheckNFTApproval(string token)
     {
+        MainMenuViewController.Instance.LoadingScreen.SetActive(true);
         bool isApproved = await WalletManager.Instance.CheckNFTApproval(token);
         if(isApproved)
         {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             ChipraceHandler.Instance.NFTApprovalScreen.SetActive(false);
 
             if (WalletManager.Instance)
@@ -176,6 +186,7 @@ public class PoolDetail : MonoBehaviour
         }
         else
         {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             ChipraceHandler.Instance.NFTApprovalScreen.SetActive(true);
         }
     }
@@ -184,7 +195,7 @@ public class PoolDetail : MonoBehaviour
     {
         if (TokenData.IsRunningChipRace)
         {
-            if (TotalTimer <= 0)
+            if (tempTimer <= 0)
             {
                 if (WalletManager.Instance)
                     WalletManager.Instance.claimRewards(TokenData.Name,TokenData.ID.ToString());
@@ -220,11 +231,18 @@ public class PoolDetail : MonoBehaviour
                     {
                         if (WalletManager.Instance.CheckChipracebalance(UpgradableAmount))
                         {
+                            MainMenuViewController.Instance.LoadingScreen.SetActive(true);
                             bool _isApproved = await WalletManager.Instance.CheckCraceApprovalChiprace(UpgradableAmount);
-                            if(_isApproved)
+                            if (_isApproved)
+                            {
+                                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                                 WalletManager.Instance.upgradeNFT(TokenData.ID.ToString(), UpgradableAmount);
+                            }
                             else
+                            {
+                                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                                 ChipraceHandler.Instance.CraceChipraceApprovalScreen.SetActive(true);
+                            }
                         }
                         else
                         {
@@ -274,14 +292,15 @@ public class PoolDetail : MonoBehaviour
 
     public void SetTimer()
     {
-        TotalTimer -= Time.deltaTime;
-        if (TotalTimer <= 0)
+        tempTimer -= Time.deltaTime;
+        if (tempTimer <= 0)
         {
-            _timerText.text = "0:00:00:00";
+            timerStarted = false;
+            _timerText.text = "0:0:0:0";
         }
         else
         {
-            ConvertTime(TotalTimer);
+            ConvertTime(tempTimer);
             DisplayTimer();
         }
     }

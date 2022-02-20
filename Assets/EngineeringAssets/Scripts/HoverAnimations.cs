@@ -28,11 +28,6 @@ public class HoverAnimations : MonoBehaviour, IPointerEnterHandler, IPointerExit
             AnimationsHandler.Instance.HoverYAxis(this.gameObject, TweenSetting.AxisOffset, TweenSetting.TweenSpeed, TweenSetting.EaseType, TweenSetting.LoopType);
     }
 
-        // Update is called once per frame
-   void Update()
-    {
-        
-    }
 
     //this function will be called whenver user points on this game object
     public void OnPointerEnter(PointerEventData eventData)

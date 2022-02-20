@@ -119,6 +119,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void ConnectToPhotonServer()
     {
+        PhotonNetwork.GotPingResult = false;
         Debug.Log("connect to photn called");
         Constants.OpponentTokenID = "0";
         UpdatePlayerCountText("0");
@@ -139,11 +140,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             Debug.Log("already connected to master");
             // MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
             //ConnectionMaster();
+            PhotonNetwork.GotPingResult = false;
 
             Constants.RegionChanged = false;
             DisconnectPhoton();
 
-            Invoke("ConnectToPhotonServer", 3f);
+            Invoke("ConnectToPhotonServer", 2f);
 
             if (MainMenuViewController.Instance)
                 MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("", false);
@@ -154,6 +156,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
             if (MainMenuViewController.Instance)
                 MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("", false);
+
+            PhotonNetwork.GotPingResult = false;
+
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.StartCoroutine(MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI());
 
             Constants.PrintLog("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
             PhotonNetwork.ConnectUsingSettings();
@@ -185,8 +192,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
 
     public void LobbyConnection()
-    {
-        MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
+    { 
         UpdateConnectionText("Joined Lobby");
         Constants.PrintLog("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
 

@@ -91,6 +91,7 @@ namespace Photon.Pun
         private static string gameVersion;
 
         public static string SelectedRegion = "";
+        public static bool GotPingResult = false;
 
         /// <summary>Sent to Photon Server to specify the "Virtual AppId".</summary>
         /// <remarks>Sent with the operation Authenticate. When using PUN, you should set the GameVersion or use ConnectUsingSettings().</remarks>

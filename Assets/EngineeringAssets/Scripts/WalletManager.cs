@@ -252,6 +252,7 @@ public class WalletManager : MonoBehaviour
         Constants.WalletConnected = true;
         FirebaseManager.Instance.DocFetched = false;
         FirebaseManager.Instance.ResultFetched = true;
+        Constants.ForceUpdateChiprace = false;
 
         if (!IsGamePlay)
         {
@@ -668,11 +669,11 @@ public class WalletManager : MonoBehaviour
 
         if (response.Contains("Returned error: internal error"))
         {
-            Constants.PrintLog("Returned error: internal error");
-            if (MainMenuViewController.Instance)
+           Constants.PrintLog("Returned error: internal error");
+           if (MainMenuViewController.Instance)
             {
-                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
-                return;
+              MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+              return;
             }
         }
 
@@ -682,7 +683,7 @@ public class WalletManager : MonoBehaviour
         {
             Constants.NFTStored = 0;
             Constants.ChipraceInteraction = false;
-
+        
             if (ChipraceHandler.Instance)
                 ChipraceHandler.Instance.ForceUpdate();
 
@@ -695,19 +696,29 @@ public class WalletManager : MonoBehaviour
         NFTTokens.Clear();
         metaDataURL.Clear();
         Constants.StoredCarNames.Clear();
-        CheckTokenOwnerByIndex();
+        tempNFTCounter = 0;
+        ClearChipraceData();
+        Constants.TokenNFT.Clear();
+        ChipraceHandler.Instance.nftStalked = new StalkedNFT();
+        Constants.ForceUpdateChiprace = true;
 
-        if (ChipraceHandler.Instance)
-            ChipraceHandler.Instance.ForceUpdate();
+        if (Constants.ForceUpdateChiprace)
+            ChipraceHandler.Instance.GetNFTData();
+
+        CheckTokenOwnerByIndex();
     }
 
     public void RestartGame()
     {
+        Constants.ForceUpdateChiprace = false;
         Constants.NFTChanged = false;
         Constants.NFTStored = -1;
         NFTTokens.Clear();
         metaDataURL.Clear();
         Constants.StoredCarNames.Clear();
+        ClearChipraceData();
+        Constants.TokenNFT.Clear();
+        ChipraceHandler.Instance.nftStalked = new StalkedNFT();
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 
@@ -792,7 +803,14 @@ public class WalletManager : MonoBehaviour
 
             Constants.CheckAllNFT = true;
             Constants.ChipraceDataChecked = false;
-            ChipraceHandler.Instance.UpdateChipraceData();
+
+            if(Constants.ForceUpdateChiprace)
+            {
+                Constants.ForceUpdateChiprace = false;
+                if (ChipraceHandler.Instance)
+                    ChipraceHandler.Instance.ForceUpdate();
+            }
+            //ChipraceHandler.Instance.UpdateChipraceData();
         } else
         {
             Invoke("WaitForAllData", 1f);
@@ -880,6 +898,17 @@ public class WalletManager : MonoBehaviour
                         ChipraceHandler.Instance.PoolNFT[i].NFTTotalData.Add(_data);
                     }
                 }
+            }
+        }
+    }
+
+    public void ClearChipraceData()
+    {
+        if (ChipraceHandler.Instance)
+        {
+            for (int i = 0; i < ChipraceHandler.Instance.PoolNFT.Length; i++)
+            {
+                ChipraceHandler.Instance.PoolNFT[i].NFTTotalData.Clear();
             }
         }
     }
@@ -1477,10 +1506,10 @@ public class WalletManager : MonoBehaviour
     public async Task<bool> CheckCraceApprovalChiprace(double _amount)
     {
         string methodCrace = "allowance";// smart contract method to call
-        string[] obj = { Constants.WalletAddress, CSPContract };
+        string[] obj = { Constants.WalletAddress, ChipraceContract };
         string argsCSP = JsonConvert.SerializeObject(obj);
 
-        string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodCrace, argsCSP);
+        string response = await EVM.Call(chain, network, contract, abi, methodCrace, argsCSP);
 
         if (response.Contains("Returned error: internal error"))
         {
@@ -1795,6 +1824,7 @@ public class WalletManager : MonoBehaviour
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
 
+            Invoke("DelayLoading", 1f);
             ForceUpdateNFT();
         }
         else
@@ -1898,6 +1928,7 @@ public class WalletManager : MonoBehaviour
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(false);
 
+            Invoke("DelayLoading", 1f);
             ForceUpdateNFT();
         }
         else

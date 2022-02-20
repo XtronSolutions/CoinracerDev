@@ -1874,7 +1874,14 @@ public class MainMenuViewController : MonoBehaviour
 
     }
 
-    public void ShowPingedRegionList_ConnectionUI(string[] regions,string[] pings)
+    public IEnumerator ShowPingedRegionList_ConnectionUI()
+    {
+        yield return new WaitUntil(() => PhotonNetwork.GotPingResult);
+        UpdatePingList(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
+        PhotonNetwork.GotPingResult = false;
+    }
+
+    public void UpdatePingList(string[] regions, string[] pings)
     {
         if (!RegionPinged)
         {
