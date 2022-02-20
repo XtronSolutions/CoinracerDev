@@ -74,13 +74,21 @@ public class TournamentManager : MonoBehaviour
 
     //Staging : https://us-central1-coinracer-stagging.cloudfunctions.net/
     //Production : https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/
-    private const string torunamentDataURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Tournament";
+    private  string torunamentDataURL ;
     private void OnEnable()
     {
         Instance = this;
         StartTimer = false;
         TournamentStartTimer = false;
         GetTournamentDataDB();
+        if (Constants.IsStagging)
+        {
+            torunamentDataURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/";
+        }
+        else
+        {
+            torunamentDataURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/";
+        }
     }
     void Update()
     {

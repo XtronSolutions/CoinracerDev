@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -20,6 +21,15 @@ public class userDataPayload
     public UserDataBO data { get; set; }
 }
 
+public class LoginDataBO
+{
+    public string walletAddress { get; set; }
+}
+
+public class LoginDataBOPayload
+{
+    public LoginDataBO data { get; set; }
+}
 
 public class LeaderboardCounter
 {
@@ -36,21 +46,21 @@ public class apiRequestHandler : MonoBehaviour
     //Staging : https://us-central1-coinracer-stagging.cloudfunctions.net/
     //Production : https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/
 
-    private const string BaseURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/";
-    private const string loginURL = BaseURL+"Login";
+    private string BaseURL;
+    private string loginURL;
     private const string firebaseLoginUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
     private const string firebaseSignupUrl = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=";
 
-    private const string forgetPassword = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
-    private const string emailVerification ="https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
+    private  string forgetPassword = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=";
+    private  string emailVerification ="https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=";
 
     //Staging : AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE
     //Production : AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8
-    private const string firebaseApiKey = "AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
+    private string firebaseApiKey ;
 
-    private const string signupBOUserURL = BaseURL+"SignUp";
-    private const string updateUserBoURL = BaseURL+"UpdateUserBO";
-    private const string leaderboardBOURL = BaseURL+"Leaderboard";
+    private  string signupBOUserURL ;
+    private  string updateUserBoURL;
+    private  string leaderboardBOURL ;
       
     public static apiRequestHandler Instance;
 
@@ -70,6 +80,26 @@ public class apiRequestHandler : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+
+        if (Constants.IsStagging)
+        {
+            BaseURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/";
+            firebaseApiKey = "AIzaSyBpdWOUj1_7iN3F3YBYetCONjMwVCVAIGE";
+        }
+        else //Production
+        {
+            BaseURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/";
+            firebaseApiKey = "AIzaSyDcLz0eTFpmf7pksItUB_AQ6YA2SNErx_8";
+        }
+
+        loginURL = BaseURL + "Login";
+        signupBOUserURL = BaseURL+"SignUp"; 
+        updateUserBoURL = BaseURL+"UpdateUserBO";
+        leaderboardBOURL = BaseURL+"Leaderboard";
+
+        forgetPassword = forgetPassword + firebaseApiKey;
+        emailVerification = emailVerification + firebaseApiKey;
+
     }
 
     public void updatePlayerData()
@@ -158,7 +188,7 @@ public class apiRequestHandler : MonoBehaviour
         //Debug.Log(WalletManager.Instance.GetAccount());
         if (Constants.IsTest)
         {
-            _walletAddress = "0xD4d844C5A1cFAB13A8Ab252E466188d129a755Bc";
+            _walletAddress = "0xD4d844C5A1cFAB13A8Ab252E466188d";
         }
         else
             _walletAddress = Constants.WalletAddress;
@@ -187,9 +217,9 @@ public class apiRequestHandler : MonoBehaviour
         }
         else
         {
-            //Debug.Log("Result is: ");
-            //Debug.Log(request.result);
-            //Debug.Log(request.downloadHandler.text);
+            Debug.Log("Result is: ");
+            Debug.Log(request.result);
+            Debug.Log(request.downloadHandler.text);
             JToken res = JObject.Parse(request.downloadHandler.text);
            
             if (request.result == UnityWebRequest.Result.Success)
@@ -390,16 +420,29 @@ public class apiRequestHandler : MonoBehaviour
 
     private IEnumerator processRequest(string _token)//Login API
     {
-        using UnityWebRequest request = UnityWebRequest.Get(BaseURL+"Login");
-        request.SetRequestHeader("Authorization","Bearer "+ _token);
-
-
+        LoginDataBO loginData = new LoginDataBO();
+        if (Constants.IsTest)
+        {
+            loginData.walletAddress = "0xD4d844C5A1cFAB13A8Ab252E466188d";
+        }
+        else
+        {
+            loginData.walletAddress = Constants.WalletAddress;
+        }
+        LoginDataBOPayload loginDataPayload = new LoginDataBOPayload();
+        loginDataPayload.data = loginData;
+        string req = JsonConvert.SerializeObject(loginDataPayload);
+        using UnityWebRequest request = UnityWebRequest.Put(BaseURL+"Login", req);
+        request.SetRequestHeader("Content-Type", "application/json");
+        string _reqToken = "Bearer " + _token;
+        Debug.Log(_token);
+        request.SetRequestHeader("Authorization", _reqToken);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();
-            //Debug.Log(request.error);
+            Debug.Log(request.error);
         }
         else
         {
@@ -407,9 +450,9 @@ public class apiRequestHandler : MonoBehaviour
             // JToken response = JObject.Parse(request.downloadHandler.text);
             // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
 
-            //Debug.Log("Result is: ");
-            //Debug.Log(request.result);
-            //Debug.Log(request.downloadHandler.text);
+            Debug.Log("Result is: ");
+            Debug.Log(request.result);
+            Debug.Log(request.downloadHandler.text);
             JToken res = JObject.Parse(request.downloadHandler.text);
             // //Debug.Log((string)res.SelectToken("error").SelectToken("message"));
             if (request.result == UnityWebRequest.Result.Success)
