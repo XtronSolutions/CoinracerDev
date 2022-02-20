@@ -1778,6 +1778,7 @@ MonoBehaviour:
   Container: {fileID: 4863004260270374854}
   ContainerBackButton: {fileID: 1662669967944359397}
   EnableContButton: {fileID: 1622690384193148254}
+  UpgradableAmount: 0
 --- !u!1 &5061878127990908018
 GameObject:
   m_ObjectHideFlags: 0
@@ -2336,7 +2337,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Emergency Cash
+  m_text: Withdraw NFT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5187f1c0deabe6448a2ece3fd1eef251, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 99a63762f156e479393cb6ef82f79b60, type: 2}

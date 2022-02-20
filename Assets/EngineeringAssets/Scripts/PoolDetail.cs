@@ -28,7 +28,7 @@ public class PoolDetail : MonoBehaviour
     private double WithdrawFees;
 
     double RemainingTimeSeconds=0;
-    double TotalTimer = 600;//86400
+    double TotalTimer = 86400;//86400//600
     bool timerStarted = false;
 
     float timeSpanConversionDays;//var to hold days after converstion from seconds
@@ -82,7 +82,6 @@ public class PoolDetail : MonoBehaviour
     public void DisableNFTDataScreen()
     {
         Container.SetActive(false);
-        timerStarted = false;
     }
 
     public void ToggleChipraceButton(bool state1)

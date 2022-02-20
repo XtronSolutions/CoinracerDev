@@ -282,6 +282,9 @@ public class MainMenuViewController : MonoBehaviour
     public TokenCarSelectionUI UITokenCarSelection;
     public GameObject MultiplayerPrefab;
 
+    public GameObject SuccessIcon;
+    public GameObject WarningIcon;
+
     double RemainingTimeSecondPass;
     private int _currentSelectedCarIndex = 0;
     private int _currentlySelectedLevelIndex = 0;
@@ -781,13 +784,27 @@ public class MainMenuViewController : MonoBehaviour
         ResetRegisterFields();
         ShowToast(3f, "Something went wrong, Please try again");
     }
-    public void ShowToast(float _time, string _msg)
+    public void ShowToast(float _time, string _msg,bool showSuccessIcon=false)
     {
         MessageUI.SetActive(true);
         ToastMsgText.text = _msg;
         AnimationsHandler.Instance.runPopupAnimation(MessageUIContainer);
         StartCoroutine(DisableToast(_time));
+
+        if (showSuccessIcon)
+        {
+            SuccessIcon.SetActive(true);
+            WarningIcon.SetActive(false);
+        }
+        else
+        {
+            SuccessIcon.SetActive(false);
+            WarningIcon.SetActive(true);
+        }
+
     }
+
+    
 
     public void ShowResendScreen(float _Sec)
     {
@@ -1943,7 +1960,7 @@ public class MainMenuViewController : MonoBehaviour
     public void SelectWage__MultiplayerSelection(int _amount)
     {
         Constants.SelectedWage = _amount;
-        Constants.ChipraceScore = "300";
+        Constants.ChipraceScore = "50";
 
         //if (_amount == 5)
            // Constants.ChipraceScore = "10";

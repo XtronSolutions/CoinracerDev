@@ -110,9 +110,17 @@ public class ChipraceHandler : MonoBehaviour
     public void GetNFTData()
     {
 
+        if (Constants.UseChipraceLocalDB)
+        {
 #if UNITY_WEBGL && !UNITY_EDITOR
         GetStorageClass(Constants.NFTKey,this.gameObject.name,"OnGetNFTData");
 #endif
+        }
+        else
+        {
+            //string info = FirebaseManager.Instance.GetStalkedNFT();
+            //nftStalked = JsonConvert.DeserializeObject<StalkedNFT>(info);
+        }
     }
 
     public void OnGetNFTData(string info)
@@ -129,7 +137,11 @@ public class ChipraceHandler : MonoBehaviour
         nftStalked.NFTNameList.Add(_name);
 
         string _json = JsonConvert.SerializeObject(nftStalked);
-        SetLocalStorage(Constants.NFTKey, _json);
+
+        if (Constants.UseChipraceLocalDB)
+            SetLocalStorage(Constants.NFTKey, _json);
+        else
+            FirebaseManager.Instance.SetStalkedNFT(_json);
     }
 
     public void RemoveAndSetChipraceData(int _data, string _name)
@@ -137,8 +149,17 @@ public class ChipraceHandler : MonoBehaviour
         nftStalked.NFTList.Remove(_data);
         nftStalked.NFTNameList.Remove(_name);
 
-        string _json = JsonConvert.SerializeObject(nftStalked);
-        SetLocalStorage(Constants.NFTKey, _json);
+        string _json;
+
+        if (nftStalked.NFTList.Count == 0)
+            _json = "";
+        else
+            _json = JsonConvert.SerializeObject(nftStalked);
+
+        if (Constants.UseChipraceLocalDB)
+            SetLocalStorage(Constants.NFTKey, _json);
+        else
+            FirebaseManager.Instance.SetStalkedNFT(_json);
     }
 
     public void SetLocalStorage(string key, string data)
@@ -279,7 +300,7 @@ public class ChipraceHandler : MonoBehaviour
             MainMenuViewController.Instance.LoadingScreen.SetActive(true);
             if (Constants.CheckAllNFT || Constants.NFTStored == 0)
             {
-                if (Constants.NFTStored == 0)
+                if (Constants.NFTStored == 0 && (nftStalked == null || nftStalked.NFTList.Count==0))
                 {
                     MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                     MainMenuViewController.Instance.ShowToast(3f, "No NFT was purchased, please purchase one.");

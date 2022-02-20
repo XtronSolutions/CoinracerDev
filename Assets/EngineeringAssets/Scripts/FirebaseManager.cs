@@ -135,6 +135,7 @@ public class FirebaseManager : MonoBehaviour
     public void SetStalkedNFT(string _key)
     {
         PlayerData.StalkedNFT = _key;
+        UpdatedFireStoreData(PlayerData);
     }
 
     public string GetStalkedNFT()

@@ -56,7 +56,7 @@ public static class Constants
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = true;
+    public static bool IsTestNet = false;
     public static bool IsTest = false;
 
     public static bool IsSendConfirmation = false;
@@ -93,7 +93,7 @@ public static class Constants
     public static int WithdrawTime = 300; //time in seconds//300
     public static bool TimerRunning = false;
     public static bool ClaimedReward = false;
-    public static readonly string HashKey = "testingkey";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"
+    public static readonly string HashKey = "us-H*?fBg9]6Kse";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"
     public static bool FreeMultiplayer = false;
     public static bool EarnMultiplayer = false;
     public static bool OtherPlayerDeposit = false;
@@ -112,13 +112,16 @@ public static class Constants
     public static int _SelectedTokenNameIndex = 0;
     public static int _SelectedTokenIDIndex = 0;
     public static string OpponentTokenID = "0";
-    public static string ChipraceScore = "10";
+    public static string ChipraceScore = "50";
     public static bool ChipraceDataChecked = false;
     public static int NFTTokenApproval = -1;
     public static int ChipraceWithdrawFees = 10;
     public static bool ChipraceInteraction = false;
     public static bool ForceUpdateChiprace = false;
     public static bool IsStagging=false;
+    public static bool UseChipraceLocalDB = false;
+    public static string storedName;
+    public static string storedToken;
 
     async public static void GetCracePrice()
     {

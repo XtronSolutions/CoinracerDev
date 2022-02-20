@@ -186,12 +186,12 @@ public class apiRequestHandler : MonoBehaviour
     {
         string _walletAddress = "";
         //Debug.Log(WalletManager.Instance.GetAccount());
-        if (Constants.IsTest)
-        {
-            _walletAddress = "0xD4d844C5A1cFAB13A8Ab252E466188d";
-        }
-        else
-            _walletAddress = Constants.WalletAddress;
+        //if (Constants.IsTest)
+        //{
+        //    _walletAddress = "0xD4d844C5A1cFAB13A8Ab252E466188d";
+        //}
+        //else
+        _walletAddress = Constants.WalletAddress;
 
         UserDataBO userDataObj = new UserDataBO();
         userDataObj.userName = _username;
@@ -217,9 +217,9 @@ public class apiRequestHandler : MonoBehaviour
         }
         else
         {
-            Debug.Log("Result is: ");
-            Debug.Log(request.result);
-            Debug.Log(request.downloadHandler.text);
+            //Debug.Log("Result is: ");
+            //Debug.Log(request.result);
+            //Debug.Log(request.downloadHandler.text);
             JToken res = JObject.Parse(request.downloadHandler.text);
            
             if (request.result == UnityWebRequest.Result.Success)
@@ -421,21 +421,21 @@ public class apiRequestHandler : MonoBehaviour
     private IEnumerator processRequest(string _token)//Login API
     {
         LoginDataBO loginData = new LoginDataBO();
-        if (Constants.IsTest)
-        {
-            loginData.walletAddress = "0xD4d844C5A1cFAB13A8Ab252E466188d";
-        }
-        else
-        {
-            loginData.walletAddress = Constants.WalletAddress;
-        }
+        //if (Constants.IsTest)
+        //{
+        //    loginData.walletAddress = "0xAE79Dc61917d0de544db72C75de727421AcD7566";
+        //}
+        //else
+        //{
+        loginData.walletAddress = Constants.WalletAddress;
+       
         LoginDataBOPayload loginDataPayload = new LoginDataBOPayload();
         loginDataPayload.data = loginData;
         string req = JsonConvert.SerializeObject(loginDataPayload);
         using UnityWebRequest request = UnityWebRequest.Put(BaseURL+"Login", req);
         request.SetRequestHeader("Content-Type", "application/json");
         string _reqToken = "Bearer " + _token;
-        Debug.Log(_token);
+        //Debug.Log(_token);
         request.SetRequestHeader("Authorization", _reqToken);
         yield return request.SendWebRequest();
 
@@ -450,9 +450,9 @@ public class apiRequestHandler : MonoBehaviour
             // JToken response = JObject.Parse(request.downloadHandler.text);
             // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
 
-            Debug.Log("Result is: ");
-            Debug.Log(request.result);
-            Debug.Log(request.downloadHandler.text);
+            //Debug.Log("Result is: ");
+            //Debug.Log(request.result);
+            //Debug.Log(request.downloadHandler.text);
             JToken res = JObject.Parse(request.downloadHandler.text);
             // //Debug.Log((string)res.SelectToken("error").SelectToken("message"));
             if (request.result == UnityWebRequest.Result.Success)
@@ -568,7 +568,7 @@ public class apiRequestHandler : MonoBehaviour
            
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log(request.downloadHandler.text);
+                //Debug.Log(request.downloadHandler.text);
                 FirebaseManager.Instance.OnQueryUpdate(request.downloadHandler.text);
             }
             else

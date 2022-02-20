@@ -9828,7 +9828,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &376081289
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10330,7 +10330,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 610202714}
         m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: PlayButtonDownAudioClip
         m_Mode: 1
@@ -10342,7 +10342,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 610202714}
         m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: ClaimReward
         m_Mode: 1
@@ -15676,7 +15676,7 @@ MonoBehaviour:
   _buttonPressClip: {fileID: 8300000, guid: 61f154a3383e8314f9f4bfa49a0df37e, type: 3}
   _audioSource: {fileID: 610202716}
   GameStartTimer: {fileID: 605305202}
-  ClaimRewardButton: {fileID: 796878388}
+  ClaimRewardButton: {fileID: 385444508}
   LoadingScreen: {fileID: 1246783587}
   miniMap: {fileID: 0}
   slider: {fileID: 0}
@@ -23660,7 +23660,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1st
+  m_text: --
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5187f1c0deabe6448a2ece3fd1eef251, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: cfc5db40ffc1d40e1bba6a95eda8b858, type: 2}
@@ -57329,7 +57329,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 610202714}
         m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: PlayButtonDownAudioClip
         m_Mode: 1
@@ -57341,7 +57341,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 610202714}
         m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: MainMenu
         m_Mode: 1
