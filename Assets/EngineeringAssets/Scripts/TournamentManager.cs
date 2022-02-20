@@ -80,15 +80,18 @@ public class TournamentManager : MonoBehaviour
         Instance = this;
         StartTimer = false;
         TournamentStartTimer = false;
-        GetTournamentDataDB();
+
         if (Constants.IsStagging)
         {
-            torunamentDataURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/";
+            torunamentDataURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Tournament";
         }
         else
         {
-            torunamentDataURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/";
+            torunamentDataURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Tournament";
         }
+
+        GetTournamentDataDB();
+      
     }
     void Update()
     {
@@ -241,6 +244,7 @@ public class TournamentManager : MonoBehaviour
         {
             if (DataTournament != null )
             {
+                Debug.Log(DataTournament.PassPrice);
                // DataTournament = JsonConvert.DeserializeObject<TournamentData>(info);
 
                 Constants.TournamentPassPrice = DataTournament.PassPrice;
@@ -258,7 +262,7 @@ public class TournamentManager : MonoBehaviour
     }
     public void OnGetTournamentDataError(string error)
     {
-        //Debug.LogError(error);
+        Debug.LogError(error);
         StartTournamentCounter(true,null);
     }
     public void ManipulateTournamnetUIActivness(bool LowerHeaderActive, bool TimerActive, bool FotterActive, bool LoaderObjActive, bool DisclaimerActive, bool DisclaimerActive2,bool _isActive)
