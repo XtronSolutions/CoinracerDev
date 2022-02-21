@@ -120,7 +120,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void ConnectToPhotonServer()
     {
         PhotonNetwork.GotPingResult = false;
-        Debug.Log("connect to photn called");
+       // Debug.Log("connect to photn called");
         Constants.OpponentTokenID = "0";
         UpdatePlayerCountText("0");
         Constants.DepositDone = false;
@@ -137,7 +137,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsConnected)
         {
-            Debug.Log("already connected to master");
+            //Debug.Log("already connected to master");
             // MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
             //ConnectionMaster();
             PhotonNetwork.GotPingResult = false;
@@ -471,11 +471,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                     }
 
                 }
-                //string _tokenID = "0";
+                string _tokenID = "0";
 
-                Debug.Log("on player enter room");
-                string _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
-                Debug.Log("token id : "+ _tokenID);
+                if(!Constants.FreeMultiplayer)
+                    _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
+
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString(), _tokenID);
             }
         }

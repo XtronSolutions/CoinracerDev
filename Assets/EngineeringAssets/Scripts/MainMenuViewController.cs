@@ -1829,6 +1829,7 @@ public class MainMenuViewController : MonoBehaviour
         UIConnection.Detail02.DetailScreen.SetActive(false);
         UIConnection.VSText.gameObject.SetActive(false);
 
+        RegionPinged = false;
         ToggleScreen_ConnectionUI(true);
         AnimateConnectingDetail_ConnectionUI(UIConnection.Detail01.DetailScreen,true);
 

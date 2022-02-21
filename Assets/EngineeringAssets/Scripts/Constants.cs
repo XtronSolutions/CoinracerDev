@@ -58,6 +58,7 @@ public static class Constants
 
     public static bool IsTestNet = false;
     public static bool IsTest = false;
+    public static bool IsStagging = false;
 
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
@@ -118,7 +119,6 @@ public static class Constants
     public static int ChipraceWithdrawFees = 10;
     public static bool ChipraceInteraction = false;
     public static bool ForceUpdateChiprace = false;
-    public static bool IsStagging=false;
     public static bool UseChipraceLocalDB = false;
     public static string storedName;
     public static string storedToken;

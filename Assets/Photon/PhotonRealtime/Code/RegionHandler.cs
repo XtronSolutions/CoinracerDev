@@ -210,14 +210,14 @@ namespace Photon.Realtime
             if (this.EnabledRegions == null || this.EnabledRegions.Count == 0)
             {
                 //TODO: log error
-                //Debug.LogError("No regions available. Maybe all got filtered out or the AppId is not correctly configured.");
+                Debug.LogError("No regions available. Maybe all got filtered out or the AppId is not correctly configured.");
                 return false;
             }
 
             if (this.IsPinging)
             {
                 //TODO: log warning
-                //Debug.LogWarning("PingMinimumOfRegions() skipped, because this RegionHandler is already pinging some regions.");
+                Debug.LogWarning("PingMinimumOfRegions() skipped, because this RegionHandler is already pinging some regions.");
                 return false;
             }
 
@@ -302,7 +302,7 @@ namespace Photon.Realtime
             if (this.EnabledRegions == null || this.EnabledRegions.Count == 0)
             {
                 //TODO: log
-                //Debug.LogError("No regions available. Maybe all got filtered out or the AppId is not correctly configured.");
+                Debug.LogError("No regions available. Maybe all got filtered out or the AppId is not correctly configured.");
                 return false;
             }
 

@@ -22,25 +22,32 @@ public class SetManualRegion : MonoBehaviour
     public void DropDownValueChanged()
     {
         int index = RegionDropDown.value;
-        if (Constants.SelectedRegion != RegionString[index])
+        Debug.Log(index);
+        if (RegionString.Count > 0 && index < RegionString.Count)
         {
-            if (MainMenuViewController.Instance)
+            if (Constants.SelectedRegion != RegionString[index])
             {
-                MainMenuViewController.Instance.ChangeConnectionText_ConnectionUI("connecting...");
-                MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : n/a");
+                if (MainMenuViewController.Instance)
+                {
+                    MainMenuViewController.Instance.ChangeConnectionText_ConnectionUI("connecting...");
+                    MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : n/a");
+                }
+
+                Constants.SelectedRegion = RegionString[index];
+                PhotonNetwork.SelectedRegion = Constants.SelectedRegion;
+                // Debug.Log("connected to region : " + RegionString[index]);
+                Debug.Log("Region changed called");
+                Constants.RegionChanged = true;
+                MultiplayerManager.Instance.DisconnectPhoton();
+
+
+                //RegionDropDown.interactable = false;
+
+                //Invoke("ConnectPhotonAgain", 0.1f);
             }
-
-            Constants.SelectedRegion = RegionString[index];
-            PhotonNetwork.SelectedRegion = Constants.SelectedRegion;
-            // Debug.Log("connected to region : " + RegionString[index]);
-            Debug.Log("Region changed called");
-            Constants.RegionChanged = true;
-            MultiplayerManager.Instance.DisconnectPhoton();
-
-            
-            //RegionDropDown.interactable = false;
-
-            //Invoke("ConnectPhotonAgain", 0.1f);
+        }else
+        {
+            Debug.Log("region string is empty");
         }
     }
 

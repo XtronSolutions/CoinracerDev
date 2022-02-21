@@ -2466,6 +2466,8 @@ namespace Photon.Pun
                 case OperationCode.GetRegions:
                     if (opResponse.ReturnCode != 0)
                     {
+                        Debug.Log("OpGetRegions failed. Will not ping any. ReturnCode: " + opResponse.ReturnCode);
+
                         if (PhotonNetwork.LogLevel >= PunLogLevel.Full)
                         {
                             Debug.Log("OpGetRegions failed. Will not ping any. ReturnCode: " + opResponse.ReturnCode);

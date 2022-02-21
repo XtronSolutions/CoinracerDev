@@ -119,10 +119,13 @@ public class RPCCalls : MonoBehaviour
         else
         {
             Constants.OpponentTokenID = _ID;
-            string _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
+
+            string _tokenID = "0";
+
+            if (!Constants.FreeMultiplayer)
+                _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
 
             Debug.Log("SyncConnectionData to be callled on not master : " + _tokenID);
-            //string _tokenID = "0";
             Constants.SelectedCrace = int.Parse(_crace);
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
             PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString(), _tokenID);
