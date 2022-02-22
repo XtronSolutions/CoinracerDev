@@ -493,7 +493,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
-            PhotonNetwork.LoadLevel(MainMenuViewController.Instance.getSelectedLevel() + 1);
+            if (TournamentManager.Instance.DataTournament.IsSingleMap)
+                PhotonNetwork.LoadLevel(Constants.SelectedSingleLevel);
+            else
+                PhotonNetwork.LoadLevel(MainMenuViewController.Instance.getSelectedLevel() + 1);
 
             while (PhotonNetwork.LevelLoadingProgress < 1)
             {

@@ -22,7 +22,7 @@ public class SetManualRegion : MonoBehaviour
     public void DropDownValueChanged()
     {
         int index = RegionDropDown.value;
-        Debug.Log(index);
+        //Debug.Log(index);
         if (RegionString.Count > 0 && index < RegionString.Count)
         {
             if (Constants.SelectedRegion != RegionString[index])
@@ -36,7 +36,7 @@ public class SetManualRegion : MonoBehaviour
                 Constants.SelectedRegion = RegionString[index];
                 PhotonNetwork.SelectedRegion = Constants.SelectedRegion;
                 // Debug.Log("connected to region : " + RegionString[index]);
-                Debug.Log("Region changed called");
+               // Debug.Log("Region changed called");
                 Constants.RegionChanged = true;
                 MultiplayerManager.Instance.DisconnectPhoton();
 
@@ -47,7 +47,7 @@ public class SetManualRegion : MonoBehaviour
             }
         }else
         {
-            Debug.Log("region string is empty");
+            //Debug.Log("region string is empty");
         }
     }
 

@@ -14,6 +14,7 @@ public class PoolDetail : MonoBehaviour
     public TextMeshProUGUI _levelText;
     public TextMeshProUGUI _timerText;
     public TextMeshProUGUI _earnedCraceText;
+    public TextMeshProUGUI _expText;
     public Button EnterChipraceButton;
     public Button ClaimRewardButton;
     public Button UpdradeNFTButton;
@@ -28,7 +29,7 @@ public class PoolDetail : MonoBehaviour
     private double WithdrawFees;
 
     double RemainingTimeSeconds=0;
-    double TotalTimer = 86400;//86400//600
+    double TotalTimer = 600;//86400//600
     bool timerStarted = false;
 
     float timeSpanConversionDays;//var to hold days after converstion from seconds
@@ -105,7 +106,7 @@ public class PoolDetail : MonoBehaviour
     {
         _highlighter.SetActive(_isHighlight);
     }
-    public void AssignPoolDetail(bool _isHighlight, string _name,string _token,Sprite _img,string _poolID,string _level)
+    public void AssignPoolDetail(bool _isHighlight, string _name,string _token,Sprite _img,string _poolID,string _level,string _exp)
     {
         if (TokenData.IsRunningChipRace)
             ToggleHighlight(true);
@@ -117,6 +118,7 @@ public class PoolDetail : MonoBehaviour
         _poolId = _poolID;
         _animationImg.sprite = _img;
         _levelText.text = "Level " + _level;
+        _expText.text = "Exp " + _exp;
     }
 
     public void AssignTokenData(string _name, int _id, int _level, bool _isUpgradable, int _targetScore, bool _isRunningChipRace, string _remainingTime, double _upgradeAmount, int _reward)
@@ -194,16 +196,16 @@ public class PoolDetail : MonoBehaviour
     {
         if (TokenData.IsRunningChipRace)
         {
-            if (tempTimer <= 0)
-            {
-                if (WalletManager.Instance)
-                    WalletManager.Instance.claimRewards(TokenData.Name,TokenData.ID.ToString());
-            }
-            else
-            {
-                if (MainMenuViewController.Instance)
-                    MainMenuViewController.Instance.ShowToast(3f, "Chiprace has not ended yet!");
-            }
+            //if (tempTimer <= 0)
+            //{
+            if (WalletManager.Instance)
+                WalletManager.Instance.claimRewards(TokenData.Name,TokenData.ID.ToString());
+            //}
+            //else
+            //{
+                //if (MainMenuViewController.Instance)
+                    //MainMenuViewController.Instance.ShowToast(3f, "Chiprace has not ended yet!");
+            //}
         }
         else
         {

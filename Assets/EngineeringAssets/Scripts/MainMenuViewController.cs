@@ -1112,22 +1112,42 @@ public class MainMenuViewController : MonoBehaviour
         _selectedMapImage.sprite = _levelsSettings[i].Icon;
         _levelNameText.text = _levelsSettings[i].LevelName;
     }
+
     private void OnGoToMapSelection()
     {
         _levelsSettings.Clear();
+        if (IsMultiplayer)
+        {
+            if(TournamentManager.Instance)
+            {
+                if(TournamentManager.Instance.DataTournament.IsSingleMap)
+                {
+                    Constants.SelectedSingleLevel = TournamentManager.Instance.DataTournament.LevelIndex;
+                    _levelsSettings.Add(_allLevelsSettings[Constants.SelectedSingleLevel - 1]);
+                }else
+                {
+                    _levelsSettings.Add(_allLevelsSettings[0]);
+                    _levelsSettings.Add(_allLevelsSettings[1]);
+                    _levelsSettings.Add(_allLevelsSettings[2]);
+                }
+            }    
+        }
+        else
+        {
+            if (IsPractice)
+            {
+                _levelsSettings.Add(_allLevelsSettings[0]);
+                _levelsSettings.Add(_allLevelsSettings[1]);
+                _levelsSettings.Add(_allLevelsSettings[2]);
+                //_levelsSettings.Add(_allLevelsSettings[3]);
+            }
+            else if (IsTournament)
+            {
+                _levelsSettings.Add(_allLevelsSettings[1]);
+                //_levelsSettings.Add(_allLevelsSettings[2]);
+            }
+        }
 
-        if (IsPractice)
-        {
-            _levelsSettings.Add(_allLevelsSettings[0]);
-            _levelsSettings.Add(_allLevelsSettings[1]);
-            _levelsSettings.Add(_allLevelsSettings[2]);
-            //_levelsSettings.Add(_allLevelsSettings[3]);
-        }
-        else if (IsTournament)
-        {
-            _levelsSettings.Add(_allLevelsSettings[1]);
-            //_levelsSettings.Add(_allLevelsSettings[2]);
-        }
 
         OnLevelSelected(0);
         GameModeSelectionObject.SetActive(false);
@@ -1292,8 +1312,10 @@ public class MainMenuViewController : MonoBehaviour
 
     public void UpdateToken()
     {
-        UITokenCarSelection.TokenText.text = "#" + Constants.TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];
+        if(!Constants.FreeMultiplayer && !IsPractice && !IsTournament)
+            UITokenCarSelection.TokenText.text = "#" + Constants.TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];
     }
+
     public void UpdateSelectedCarVisual(int newIndex)
     {
         for (int i = 0; i < _selecteableCars.Count; i++)
@@ -1833,6 +1855,8 @@ public class MainMenuViewController : MonoBehaviour
         ToggleScreen_ConnectionUI(true);
         AnimateConnectingDetail_ConnectionUI(UIConnection.Detail01.DetailScreen,true);
 
+        //Debug.Log(_levelsSettings[_currentlySelectedLevelIndex].SceneName);
+
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.ConnectToPhotonServer();
     }
@@ -1930,7 +1954,7 @@ public class MainMenuViewController : MonoBehaviour
             }
             else
             {
-                Debug.LogError("region list is empty");
+                //Debug.LogError("region list is empty");
             }
         }
     }

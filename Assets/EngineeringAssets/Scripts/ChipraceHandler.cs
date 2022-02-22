@@ -260,7 +260,7 @@ public class ChipraceHandler : MonoBehaviour
                      _upgradeFee = PoolNFT[i].LevelUpgradeFees[_level];      
 
                     PoolObj.GetComponent<PoolDetail>().AssignTokenData(PoolNFT[i].NFTTotalData[j].Name, PoolNFT[i].NFTTotalData[j].ID, PoolNFT[i].NFTTotalData[j].Level, PoolNFT[i].NFTTotalData[j].IsUpgradable, PoolNFT[i].NFTTotalData[j].TargetScore, PoolNFT[i].NFTTotalData[j].IsRunningChipRace, PoolNFT[i].NFTTotalData[j].RemainingTime, _upgradeFee, PoolNFT[i].NFTTotalData[j].Rewards);
-                    PoolObj.GetComponent<PoolDetail>().AssignPoolDetail(false, PoolNFT[i].NFTTotalData[j].Name, PoolNFT[i].NFTTotalData[j].ID.ToString(), PoolNFT[i].NFTTotalData[j].Skin, PoolNFT[i].PoolID.ToString(), PoolNFT[i].NFTTotalData[j].Level.ToString());
+                    PoolObj.GetComponent<PoolDetail>().AssignPoolDetail(false, PoolNFT[i].NFTTotalData[j].Name, PoolNFT[i].NFTTotalData[j].ID.ToString(), PoolNFT[i].NFTTotalData[j].Skin, PoolNFT[i].PoolID.ToString(), PoolNFT[i].NFTTotalData[j].Level.ToString(), PoolNFT[i].NFTTotalData[j].TargetScore.ToString());
 
                     PoolCounter++;
                     PrefabCounter++;

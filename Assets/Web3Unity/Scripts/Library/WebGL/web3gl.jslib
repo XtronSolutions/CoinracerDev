@@ -1,6 +1,6 @@
 mergeInto(LibraryManager.library, {
   SetStorage:function(_newkey,_newval){
-	console.log("key: "+Pointer_stringify(_newkey)+" value: "+Pointer_stringify(_newval));
+	//console.log("key: "+Pointer_stringify(_newkey)+" value: "+Pointer_stringify(_newval));
 	localStorage.setItem(Pointer_stringify(_newkey), Pointer_stringify(_newval));
   },
   
@@ -11,7 +11,7 @@ mergeInto(LibraryManager.library, {
 	
 	var _storage=localStorage.getItem(parsedkey);
 	
-	console.log("Getkey: "+parsedkey+" value: "+_storage);
+	//console.log("Getkey: "+parsedkey+" value: "+_storage);
 	unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(_storage));
 
   },
@@ -23,7 +23,7 @@ mergeInto(LibraryManager.library, {
 	
 	var _storage=localStorage.getItem(parsedkey);
 	
-	console.log("Getkey: "+parsedkey+" value: "+_storage);
+	//console.log("Getkey: "+parsedkey+" value: "+_storage);
 	
 	if(_storage==null)
 	{

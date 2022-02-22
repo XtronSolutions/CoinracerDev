@@ -33,6 +33,8 @@ public class TournamentData
     public int PassPrice { get; set; }
     public int DiscountPercentage { get; set; }
     public int DiscountOnCrace { get; set; }
+    public bool IsSingleMap { get; set; }
+    public int LevelIndex { get; set; }
 }
 public class TournamentClassData
 {
@@ -244,7 +246,7 @@ public class TournamentManager : MonoBehaviour
         {
             if (DataTournament != null )
             {
-                Debug.Log(DataTournament.PassPrice);
+               // Debug.Log(DataTournament.PassPrice);
                // DataTournament = JsonConvert.DeserializeObject<TournamentData>(info);
 
                 Constants.TournamentPassPrice = DataTournament.PassPrice;
@@ -382,7 +384,9 @@ public class TournamentManager : MonoBehaviour
                 DataTournament.StartDate = new StartDate();
                 DataTournament.StartDate.nanoseconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_nanoseconds");
                 DataTournament.StartDate.seconds = (double)token.SelectToken("data").SelectToken("StartDate").SelectToken("_seconds");
-            
+                DataTournament.IsSingleMap= (bool)token.SelectToken("data").SelectToken("IsSingleMap");
+                DataTournament.LevelIndex = (int)token.SelectToken("data").SelectToken("LevelIndex");
+
                 DataTournament.EndDate = new EndDate();
                 DataTournament.EndDate.nanoseconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_nanoseconds");
                 DataTournament.EndDate.seconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_seconds");
