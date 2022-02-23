@@ -1312,8 +1312,14 @@ public class MainMenuViewController : MonoBehaviour
 
     public void UpdateToken()
     {
-        if(!Constants.FreeMultiplayer && !IsPractice && !IsTournament)
+        try
+        {
             UITokenCarSelection.TokenText.text = "#" + Constants.TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex);
+        }
     }
 
     public void UpdateSelectedCarVisual(int newIndex)

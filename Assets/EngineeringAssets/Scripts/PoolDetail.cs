@@ -29,7 +29,7 @@ public class PoolDetail : MonoBehaviour
     private double WithdrawFees;
 
     double RemainingTimeSeconds=0;
-    double TotalTimer = 600;//86400//600
+    double TotalTimer = 604800;//86400//600 //1 week => 7*24*60*60 => 604800
     bool timerStarted = false;
 
     float timeSpanConversionDays;//var to hold days after converstion from seconds
