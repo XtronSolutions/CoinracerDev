@@ -1170,6 +1170,7 @@ public class MainMenuViewController : MonoBehaviour
 
         if (WalletConnected)//WalletConnected
         {
+            
             LoadingScreen.SetActive(true);
             CheckBoughtCars();
             GameModeSelectionObject.SetActive(false);
@@ -1499,7 +1500,7 @@ public class MainMenuViewController : MonoBehaviour
         {
             ToggleTokenScreen(false);
         }
-
+        //Constants.CheckAllNFT = true;
         if (Constants.CheckAllNFT || Constants.NFTStored == 0)
         {
             //for (int i = 0; i < Constants.TokenNFT.Count; i++)
@@ -1510,7 +1511,6 @@ public class MainMenuViewController : MonoBehaviour
             //        Debug.Log(Constants.TokenNFT[i].ID[j]);
             //    }
             //}
-
             if (Constants.NFTStored == 0)
             {
                 _selecteableCars.Clear();
