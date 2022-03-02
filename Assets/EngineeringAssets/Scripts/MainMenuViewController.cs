@@ -1447,13 +1447,15 @@ public class MainMenuViewController : MonoBehaviour
 
         if (WalletConnected)//WalletConnected
         {
-
-            if (Constants.CheckAllNFT || Constants.NFTStored == 0)
+            int storedNFTS = 0;
+            for (int i = 0; i < Constants.NFTStored.Length; i++)
+                storedNFTS += Constants.NFTStored[i];
+            if (Constants.CheckAllNFT || storedNFTS == 0)
             {
 
                 ToggleScreen_Garage(true);
 
-                if (Constants.NFTStored == 0)
+                if (storedNFTS == 0)
                 {
                     LoadingScreen.SetActive(false);
                     ShowToast(3f, "No NFT was purchased, please purchase one.");
@@ -1501,7 +1503,10 @@ public class MainMenuViewController : MonoBehaviour
             ToggleTokenScreen(false);
         }
         //Constants.CheckAllNFT = true;
-        if (Constants.CheckAllNFT || Constants.NFTStored == 0)
+        int storedNFTS = 0;
+        for (int i = 0; i < Constants.NFTStored.Length; i++)
+            storedNFTS += Constants.NFTStored[i];
+        if (Constants.CheckAllNFT || storedNFTS == 0)
         {
             //for (int i = 0; i < Constants.TokenNFT.Count; i++)
             //{
@@ -1511,7 +1516,7 @@ public class MainMenuViewController : MonoBehaviour
             //        Debug.Log(Constants.TokenNFT[i].ID[j]);
             //    }
             //}
-            if (Constants.NFTStored == 0)
+            if (storedNFTS == 0)
             {
                 _selecteableCars.Clear();
                 if (!Constants.EarnMultiplayer)
@@ -2048,10 +2053,12 @@ public class MainMenuViewController : MonoBehaviour
         Constants.FreeMultiplayer = false;
         Constants.EarnMultiplayer = true;
         LoadingScreen.SetActive(true);
-
-        if (Constants.CheckAllNFT || Constants.NFTStored == 0)
+        int storedNFTS = 0;
+        for (int i = 0; i < Constants.NFTStored.Length; i++)
+            storedNFTS += Constants.NFTStored[i];
+        if (Constants.CheckAllNFT || storedNFTS == 0)
         {
-            if (Constants.NFTStored == 0)
+            if (storedNFTS == 0)
             {
                 LoadingScreen.SetActive(false);
                 ShowToast(3f, "No NFT was purchased, please purchase one to play.");

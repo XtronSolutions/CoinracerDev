@@ -194,8 +194,9 @@ public class WalletManager : MonoBehaviour
         {
             Constants.WalletAddress = "0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c";
             SetAcount("0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
-            InvokeRepeating("CheckNFTBalance", 0.1f, 10f);
+            //InvokeRepeating("CheckNFTBalance", 0.1f, 10f);
             //getNftsData();
+            InvokeRepeating("getNftsData", 0.1f, 10f);
         }
         //CheckHash("12345");
         //g_tokenInfo("12");
@@ -648,7 +649,7 @@ public class WalletManager : MonoBehaviour
         ownerNFT = await ERC721.OwnerOf(chain, network, contractNFT, tokenId);
     }
 
-    public void getNftsData()
+    async public void getNftsData()
     {
         for (int i = 0; i < NFTContracts.Length; i++)
             checkNFTsBalance(i);
@@ -673,28 +674,51 @@ public class WalletManager : MonoBehaviour
                 MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
                 return;
             }
-
-            
         }
         int totalNfts = int.Parse(res);
-        tempBought[_index] = totalNfts;
+        Constants.NFTBought[_index] = totalNfts;
 
-        if(tempBought[_index] != tempStored[_index])
+        if (Constants.ChipraceInteraction)
+            return;
+
+        //if user does not own any NFT
+        if (Constants.NFTBought[_index] == 0)
         {
-            //will be false for the first time
-            if (tempChanged[_index])
+            if(Constants.NFTStored[_index] != Constants.NFTBought[_index])
             {
-                MainMenuViewController.Instance.ShowToast(3f, "NFT data was changed, game will automatically restart.");
-                Invoke("RestartGame", 3.1f);
-                Constants.NFTChanged = false;
+                WaitForAllDataNoNFT();
+                Constants.NFTBought[_index] = 0;
             }
 
-            tempChanged[_index] = true;
-            tempStored[_index] = tempBought[_index];
+            return;
         }
-        
-        Debug.Log("totalNFTS: " + totalNfts + " index: " + _index);
-        getTokenIds(totalNfts, _index);
+
+        if(Constants.NFTBought[_index] != Constants.NFTStored[_index])
+        {
+            //will be false for the first time
+            if (Constants.NFTChanged[_index])
+            {
+                Constants.StoredCarNames.Clear();
+                Constants.ResetData();
+
+                if (MainMenuViewController.Instance)
+                {
+                    MainMenuViewController.Instance.ShowToast(3f, "NFT data was changed, game will automatically restart.");
+                    Invoke("RestartGame", 3.1f);
+                    Constants.NFTChanged[_index] = false;
+                }
+            }
+
+            Constants.NFTChanged[_index] = true;
+            Constants.NFTStored[_index] = Constants.NFTBought[_index];
+            Constants.StoredCarNames.Clear();
+            Debug.Log("totalNFTS: " + totalNfts + " index: " + _index);
+            getTokenIds(totalNfts, _index);
+        }
+        else
+        {
+            Debug.Log("No new NFT bought or changed");
+        }
     }
 
     //this function will get the ids of all nfts owned by this user and is also responsible for calling the function
@@ -724,7 +748,7 @@ public class WalletManager : MonoBehaviour
             Debug.Log("token: " + int.Parse(response) + " _index: " + _index);
             tokens.Add(int.Parse(response));
         }
-        
+
         getNFTsIPFS(tokens, _index);
     }
 
@@ -751,10 +775,13 @@ public class WalletManager : MonoBehaviour
             Debug.Log("IPFS link: " + response + " _index: " + _index);
             links.Add(response);
         }
-        StartCoroutine(getNftsMetaData(links, _index, 0));
+        Constants.StoredCarNames.Clear();
+        Constants.NFTTotalData.Clear();
+        StartCoroutine(getNftsMetaData(links, tokens, _index, 0));
+        WaitForAllData();
     }
 
-    public IEnumerator getNftsMetaData(List<string> Ipfs, int _contractIndex, int _entryIndex)
+    public IEnumerator getNftsMetaData(List<string> Ipfs,List<int> _tokens, int _contractIndex, int _entryIndex)
     {
         using(UnityWebRequest webRequest = UnityWebRequest.Get(Ipfs[_entryIndex]))
         {
@@ -773,10 +800,16 @@ public class WalletManager : MonoBehaviour
                     IPFSdata dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
                     Debug.Log("Token Name: " + dataIPFS.name + " _index: " + _contractIndex);
 
+                    StoreNameWithToken(dataIPFS.name, _tokens[_entryIndex]);
+                    StoreChipraceData(dataIPFS.name, _tokens[_entryIndex]);
+
+                    if (!Constants.StoredCarNames.Contains(dataIPFS.name))
+                        Constants.StoredCarNames.Add(dataIPFS.name);
+
                     if (_entryIndex < Ipfs.Count - 1)
-                        StartCoroutine(getNftsMetaData(Ipfs, _contractIndex, _entryIndex + 1));
+                        StartCoroutine(getNftsMetaData(Ipfs , _tokens, _contractIndex, _entryIndex + 1));
                     else
-                        checkAllNftData(_contractIndex);
+                        nftDataFetched[_contractIndex] = true;
                     break;
             }
         }
@@ -785,20 +818,19 @@ public class WalletManager : MonoBehaviour
     //this function will be used to check if the nft data of all NFT contracts has been fetched
     //@param {integer}, index of the contract that just fetched all of its data
     //@return {} no return
-    public void checkAllNftData(int _index)
+    public bool checkAllNftData()
     {
-        nftDataFetched[_index] = true;
         for(int i=0;i< nftDataFetched.Length; i++)
         {
             if (!nftDataFetched[i])
-                return;
+                return false;
         }
-        Debug.Log("NFT data fetching is completed");
+        return true;
     }
 
     async public void CheckNFTBalance()
     {
-        string methodNFT = "balanceOf";// smart contract method to call
+        /*string methodNFT = "balanceOf";// smart contract method to call
         string[] obj = { account };
         string argsNFT = JsonConvert.SerializeObject(obj);
         //getting the total number of NFTS bought by this user
@@ -864,34 +896,42 @@ public class WalletManager : MonoBehaviour
         } else
         {
             //Constants.PrintLog("nothing new purchased or sold");
-        }
+        }*/
     }
 
     async public void ForceUpdateNFT()
     {
+        for (int i = 0; i < NFTContracts.Length; i++)
+            forceUpdateNFTByContract(i);
+
+        
+    }
+
+    async public void forceUpdateNFTByContract(int _index)
+    {
         string methodNFT = "balanceOf";// smart contract method to call
         string[] obj = { account };
         string argsNFT = JsonConvert.SerializeObject(obj);
-        string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
+        string response = await EVM.Call(chain, network, NFTContracts[_index], NFTContractsAbi[_index], methodNFT, argsNFT);
 
         PrintOnConsoleEditor(response);
 
         if (response.Contains("Returned error: internal error"))
         {
-           Constants.PrintLog("Returned error: internal error");
-           if (MainMenuViewController.Instance)
+            Constants.PrintLog("Returned error: internal error");
+            if (MainMenuViewController.Instance)
             {
-              MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
-              return;
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
+                return;
             }
         }
 
-        Constants.NFTBought = int.Parse(response);
+        Constants.NFTBought[_index] = int.Parse(response);
 
-        if (Constants.NFTBought == 0)
+        if (Constants.NFTBought[_index] == 0)
         {
-            Constants.NFTChanged = true;
-            Constants.NFTStored = Constants.NFTBought;
+            Constants.NFTChanged[_index] = true;
+            Constants.NFTStored[_index] = Constants.NFTBought[_index];
             Constants.ChipraceInteraction = false;
             NFTTokens.Clear();
             metaDataURL.Clear();
@@ -908,8 +948,8 @@ public class WalletManager : MonoBehaviour
             return;
         }
 
-        Constants.NFTChanged = true;
-        Constants.NFTStored = Constants.NFTBought;
+        Constants.NFTChanged[_index] = true;
+        Constants.NFTStored[_index] = Constants.NFTBought[_index];
         Constants.ChipraceInteraction = false;
         NFTTokens.Clear();
         metaDataURL.Clear();
@@ -923,14 +963,25 @@ public class WalletManager : MonoBehaviour
         if (Constants.ForceUpdateChiprace)
             ChipraceHandler.Instance.GetNFTData();
 
-        CheckTokenOwnerByIndex();
+        getTokenIds(Constants.NFTBought[_index], _index);
     }
 
     public void RestartGame()
     {
         Constants.ForceUpdateChiprace = false;
-        Constants.NFTChanged = false;
-        Constants.NFTStored = -1;
+        /*Constants.NFTChanged = {
+            false,
+            false
+        };
+        Constants.NFTStored = {
+            -1,
+            -1
+        };*/
+        for (int i = 0; i < Constants.NFTBought.Length; i++)
+        {
+            Constants.NFTBought[i] = -2;
+            Constants.NFTStored[i] = -1;
+        }
         NFTTokens.Clear();
         metaDataURL.Clear();
         Constants.StoredCarNames.Clear();
@@ -942,7 +993,7 @@ public class WalletManager : MonoBehaviour
 
     async public void CheckTokenOwnerByIndex()
     {
-        Constants.CheckAllNFT = false;
+        /*Constants.CheckAllNFT = false;
         string methodNFT = "tokenOfOwnerByIndex";// smart contract method to call
         string[] obj = { account, tempNFTCounter.ToString() };
         string argsNFT = JsonConvert.SerializeObject(obj);
@@ -969,12 +1020,12 @@ public class WalletManager : MonoBehaviour
         {
             tempNFTCounter = 0;
             GetNFTIPFS();
-        }
+        }*/
     }
 
     async public void GetNFTIPFS()
     {
-        string methodNFT = "tokenURI";// smart contract method to call
+        /*string methodNFT = "tokenURI";// smart contract method to call
         string[] obj = { NFTTokens[tempNFTCounter].ToString() };
         string argsNFT = JsonConvert.SerializeObject(obj);
         string response = await EVM.Call(chain, network, contractNFT, abiNFTContract, methodNFT, argsNFT);
@@ -1003,7 +1054,7 @@ public class WalletManager : MonoBehaviour
             NFTCounter = 0;
             StartCoroutine(GetJSONDataToStore(metaDataURL[NFTCounter], NFTTokens[NFTCounter]));
             WaitForAllData();
-        }
+        }*/
     }
 
     public void UpdateOnlyStoredData()
@@ -1033,7 +1084,8 @@ public class WalletManager : MonoBehaviour
     }
     public void WaitForAllData()
     {
-        if (NFTCounter == metaDataURL.Count && Constants.LoggedIn)
+        //if (NFTCounter == metaDataURL.Count && Constants.LoggedIn)
+        if(checkAllNftData())
         {
             try
             {
@@ -1107,7 +1159,8 @@ public class WalletManager : MonoBehaviour
     }
     public IEnumerator GetJSONDataToStore(string _URL, int _token = -1)
     {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(_URL))
+        yield return true;
+        /*using (UnityWebRequest webRequest = UnityWebRequest.Get(_URL))
         {
             yield return webRequest.SendWebRequest();
 
@@ -1136,7 +1189,7 @@ public class WalletManager : MonoBehaviour
 
                     break;
             }
-        }
+        }*/
     }
 
     public void StoreNameWithToken(string _name, int _token)

@@ -33,7 +33,11 @@ public class NFTGameplayManager : MonoBehaviour
             rowCounter = 0;
             MainMenuViewController.Instance.UIGarage.ScrollContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
 
-            for (int i = 0; i < Constants.NFTBought; i++)
+            int totalNFTS = 0;
+            for (int i = 0; i < Constants.NFTBought.Length; i++)
+                totalNFTS += Constants.NFTBought[i];
+
+            for (int i = 0; i < totalNFTS; i++)
             {
                 if (prefabCounter % 3 == 0)
                 {

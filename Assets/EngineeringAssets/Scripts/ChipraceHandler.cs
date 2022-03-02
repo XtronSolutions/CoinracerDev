@@ -298,9 +298,14 @@ public class ChipraceHandler : MonoBehaviour
         if (Constants.WalletConnected)
         {
             MainMenuViewController.Instance.LoadingScreen.SetActive(true);
-            if (Constants.CheckAllNFT || Constants.NFTStored == 0)
+            int totalNFTS = 0;
+            for(int i = 0; i < Constants.NFTStored.Length; i++)
             {
-                if (Constants.NFTStored == 0 && (nftStalked == null || nftStalked.NFTList.Count==0))
+                totalNFTS += Constants.NFTStored[i];
+            }
+            if (Constants.CheckAllNFT || totalNFTS == 0)
+            {
+                if (totalNFTS == 0 && (nftStalked == null || nftStalked.NFTList.Count==0))
                 {
                     MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                     MainMenuViewController.Instance.ShowToast(3f, "No NFT was purchased, please purchase one.");
