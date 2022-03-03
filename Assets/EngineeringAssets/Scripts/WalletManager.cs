@@ -135,8 +135,16 @@ public class WalletManager : MonoBehaviour
     private string ownerNFT = "";
 
     private int tempNFTCounter = 0;
-    [HideInInspector] public List<int> NFTTokens = new List<int>();
-    [HideInInspector] public List<string> metaDataURL = new List<string>();
+    [HideInInspector] public List<List<int>> NFTTokens = new List<List<int>>()
+    {
+        new List<int>(),
+        new List<int>()
+    };
+    [HideInInspector] public List<List<string>> metaDataURL = new List<List<string>>() 
+    { 
+        new List<string>(),
+        new List<string>()
+    };
     string StoredWallet = "null";
     int NFTCounter = 0;
     string StoredHash = "";
@@ -728,6 +736,7 @@ public class WalletManager : MonoBehaviour
     async public void getTokenIds(int totalNfts, int _index)
     {
         List<int> tokens = new List<int>();
+        int token;
         for(int i = 0; i < totalNfts; i++)
         {
             string methodNFT = "tokenOfOwnerByIndex";// smart contract method to call
@@ -746,7 +755,9 @@ public class WalletManager : MonoBehaviour
                 }
             }
             Debug.Log("token: " + int.Parse(response) + " _index: " + _index);
-            tokens.Add(int.Parse(response));
+            token = int.Parse(response);
+            tokens.Add(token);
+            NFTTokens[_index].Add(token);
         }
 
         getNFTsIPFS(tokens, _index);
@@ -773,6 +784,7 @@ public class WalletManager : MonoBehaviour
                 }
             }
             Debug.Log("IPFS link: " + response + " _index: " + _index);
+            metaDataURL[_index].Add(response);
             links.Add(response);
         }
         Constants.StoredCarNames.Clear();

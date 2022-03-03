@@ -36,26 +36,29 @@ public class NFTGameplayManager : MonoBehaviour
             int totalNFTS = 0;
             for (int i = 0; i < Constants.NFTBought.Length; i++)
                 totalNFTS += Constants.NFTBought[i];
-
-            for (int i = 0; i < totalNFTS; i++)
+            for(int i = 0; i < Constants.NFTBought.Length; i++)
             {
-                if (prefabCounter % 3 == 0)
+                for (int j = 0; j < Constants.NFTBought[i]; j++)
                 {
-                    rowCounter++;
-                    rowPrefab = Instantiate(MainMenuViewController.Instance.UIGarage.RowPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-                    rowPrefab.transform.SetParent(MainMenuViewController.Instance.UIGarage.ScrollContent.transform);
-                    rowPrefab.transform.localScale = new Vector3(1, 1, 1);
-                    GeneratedPrefab.Add(rowPrefab);
-                    MainMenuViewController.Instance.UIGarage.ScrollContent.GetComponent<RectTransform>().sizeDelta =new Vector2(0, MainMenuViewController.Instance.UIGarage.ContentHeight* rowCounter);
+                    if (prefabCounter % 3 == 0)
+                    {
 
+                        rowCounter++;
+                        rowPrefab = Instantiate(MainMenuViewController.Instance.UIGarage.RowPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+                        rowPrefab.transform.SetParent(MainMenuViewController.Instance.UIGarage.ScrollContent.transform);
+                        rowPrefab.transform.localScale = new Vector3(1, 1, 1);
+                        GeneratedPrefab.Add(rowPrefab);
+                        MainMenuViewController.Instance.UIGarage.ScrollContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, MainMenuViewController.Instance.UIGarage.ContentHeight * rowCounter);
+
+                    }
+
+                    GameObject _prefabNFT = Instantiate(MainMenuViewController.Instance.UIGarage.NFTPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+                    _prefabNFT.transform.SetParent(rowPrefab.transform);
+                    _prefabNFT.transform.localScale = new Vector3(1, 1, 1);
+                    prefabCounter++;
+
+                    _prefabNFT.GetComponent<NFTDataHandler>().StartCoroutine(_prefabNFT.GetComponent<NFTDataHandler>().GetJSONData(WalletManager.Instance.NFTTokens[i][j], WalletManager.Instance.metaDataURL[i][j]));
                 }
-
-                GameObject _prefabNFT = Instantiate(MainMenuViewController.Instance.UIGarage.NFTPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-                _prefabNFT.transform.SetParent(rowPrefab.transform);
-                _prefabNFT.transform.localScale = new Vector3(1, 1, 1);
-                prefabCounter++;
-
-                _prefabNFT.GetComponent<NFTDataHandler>().StartCoroutine(_prefabNFT.GetComponent<NFTDataHandler>().GetJSONData(WalletManager.Instance.NFTTokens[i], WalletManager.Instance.metaDataURL[i]));
             }
         }
         else
