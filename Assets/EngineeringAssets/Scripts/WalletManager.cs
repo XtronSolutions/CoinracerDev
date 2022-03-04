@@ -200,8 +200,8 @@ public class WalletManager : MonoBehaviour
 
         if (Constants.IsTest)//&& !Constants.IsTestNet
         {
-            Constants.WalletAddress = "0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c";
-            SetAcount("0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
+            Constants.WalletAddress = "0xD4d844C5A1cFAB13A8Ab252E466188d129a755Bc";
+            SetAcount("0xD4d844C5A1cFAB13A8Ab252E466188d129a755Bc");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
             //InvokeRepeating("CheckNFTBalance", 0.1f, 10f);
             //getNftsData();
             InvokeRepeating("getNftsData", 0.1f, 10f);
