@@ -47,8 +47,6 @@ public static class Constants
     public static int SelectedIndex = 0;
     public static bool ApproveCrace = false;
     public static bool HaveNFTData = false;
-    //public static int NFTBought = -2;
-    //public static int NFTStored = -1;
     public static int[] NFTBought = new int[2]
     {
         -2,
@@ -70,14 +68,13 @@ public static class Constants
         false
     };
     public static bool CheckAllNFT = false;
-    //public static bool NFTChanged = false;
     public static List<string> StoredCarNames = new List<string>();
     public static bool PushingTries = false;
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = true;
-    public static bool IsTest = true;
+    public static bool IsTestNet = false;
+    public static bool IsTest = false;
     public static bool IsStagging = true;
 
     public static bool IsSendConfirmation = false;
@@ -230,25 +227,14 @@ public static class Constants
         SelectedIndex = 0;
         ApproveCrace = false;
         HaveNFTData = false;
-        /*NFTBought = new int[2]{
-            -2,
-            -2
-        };
-        NFTStored = new int[2]{
-            -1,
-            -1
-        };*/
         for(int i = 0; i < NFTBought.Length; i++)
         {
             NFTBought[i] = -2;
             NFTStored[i] = -1;
             NFTChanged[i] = false;
+            nftDataFetched[i] = false;
         }
         CheckAllNFT = false;
-        /*NFTChanged = {
-            false,
-            false
-        };*/
         StoredCarNames.Clear();
         //TournamentPassPrice = 500;//500
         //DiscountPercentage = 50;

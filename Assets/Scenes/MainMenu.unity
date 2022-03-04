@@ -9016,7 +9016,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &203521199
 RectTransform:
   m_ObjectHideFlags: 0
@@ -45625,10 +45625,12 @@ MonoBehaviour:
     - Malibu Express
     - CoinracerGT
     - Nightcrawler
+    - Telecoin
     NFTSkins:
     - {fileID: 21300000, guid: c0d6decd11a0b1e4d8e1d6b77b6c4534, type: 3}
     - {fileID: 21300000, guid: 7f82dba15954b174b856e08b08f9c1c8, type: 3}
     - {fileID: 21300000, guid: 3c9b361800d39054c8334b0cd2a29717, type: 3}
+    - {fileID: 21300000, guid: bda00386434710844bf135d4dc1fad24, type: 3}
     LevelUpgradeFees:
     - 0
     - 175.6
@@ -45641,8 +45643,10 @@ MonoBehaviour:
   - PoolID: 2
     Name:
     - Coinrarri
+    - Lambo
     NFTSkins:
     - {fileID: 21300000, guid: abf5c7b73d12bd54b9887bce1b6d025e, type: 3}
+    - {fileID: 21300000, guid: c103067e1db183a47bf5a1c39dd3e83f, type: 3}
     LevelUpgradeFees:
     - 0
     - 122.8
@@ -45655,8 +45659,10 @@ MonoBehaviour:
   - PoolID: 3
     Name:
     - CyberCar
+    - Hovercar
     NFTSkins:
     - {fileID: 21300000, guid: 4e6f270725e9a3d46bd42f4d4d73de4e, type: 3}
+    - {fileID: 21300000, guid: 0487c471fe7d0db459431e19b8ec766f, type: 3}
     LevelUpgradeFees:
     - 0
     - 61.4
@@ -45669,8 +45675,10 @@ MonoBehaviour:
   - PoolID: 4
     Name:
     - Merky
+    - Black Ace
     NFTSkins:
     - {fileID: 21300000, guid: 28a837b26feec20448abadc66a9b678e, type: 3}
+    - {fileID: 21300000, guid: deadcf3895714cc428c1139ee861da37, type: 3}
     LevelUpgradeFees:
     - 0
     - 51.2
@@ -45683,8 +45691,10 @@ MonoBehaviour:
   - PoolID: 5
     Name:
     - Bonecrusher
+    - Lucky Bus
     NFTSkins:
     - {fileID: 21300000, guid: 40271c0e53f5dd6478cf977008d2ff71, type: 3}
+    - {fileID: 21300000, guid: 1e16f1e855985344da69772923cdd887, type: 3}
     LevelUpgradeFees:
     - 0
     - 31.6
@@ -52563,7 +52573,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1030410531
 RectTransform:
   m_ObjectHideFlags: 0
@@ -56941,9 +56951,9 @@ RectTransform:
   m_Father: {fileID: 1914470374}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 62, y: -25}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1077396772
@@ -88374,7 +88384,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1675994754
 RectTransform:
   m_ObjectHideFlags: 0
@@ -110460,9 +110470,9 @@ RectTransform:
   m_Father: {fileID: 1914470374}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 142, y: -25}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2116964927
