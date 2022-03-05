@@ -31,7 +31,7 @@ public static class Constants
     public static int DiscountForCrace = 25000;//25000
     public static int TicketPrice = 0;
     public static int FlagSelectedIndex = 0;
-    public static bool LoggedIn = true;
+    public static bool LoggedIn = false;
     public static bool RegisterSubmit = false;
     public static string SavedEmail = "";
     public static string SavedPass = "";
@@ -67,14 +67,30 @@ public static class Constants
         false,
         false
     };
+    public static List<string> gifLinks = new List<string>()
+    {
+        "https://ipfs.io/ipfs/QmZ1X3REmPM7tyZHts1PBso3QLrHamfe5VvF5TqFhdehvK",
+        "https://ipfs.io/ipfs/QmTV1naEXYnwpxwqtzrmKrr5RrDpKVBmHVmpEQgBQBE7e6",
+        "https://ipfs.io/ipfs/QmSwXe4Znek9mhJ8YeyaVmVzpuQ8FdZR9818jAvc86kfFV",
+        "https://ipfs.io/ipfs/QmWbpDUcKCbfnZAnqknATWKG3JaXWdAKUnGa1dVKnfvNK5",
+        "https://ipfs.io/ipfs/QmcAoECUaMsk5GQMdUauFgW13yECnLh1EywkgvYV4XVniA",
+    };
+    public static List<string> gifLinksAlternative = new List<string>()
+    {
+        "https://ipfs.io/ipfs/QmP9XJX5Ler2pa7sWyRdoLRXtNgk8ffC4Hjt9aYnSDk2U2",
+        "https://ipfs.io/ipfs/QmQBZksfbruM4QXoiVbsao9tSqk7TLZoPFvzqTw3t94ZaE",
+        "https://ipfs.io/ipfs/QmUZnADARvRJU2hVoXYFBuezSoxhrmJGPsntRmyafhRi8V",
+        "https://ipfs.io/ipfs/Qma7oWboiRMQvrF5CebWL9dGKeqcF1m1A5KGLLAfnZQfZE",
+        "https://ipfs.io/ipfs/Qmb9dF1AjPd2fHjWatGWvGugZTowA7J6c79S3ZKqViaEgF"
+    };
     public static bool CheckAllNFT = false;
     public static List<string> StoredCarNames = new List<string>();
     public static bool PushingTries = false;
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = true;
-    public static bool IsTest = true;
+    public static bool IsTestNet = false;
+    public static bool IsTest = false;
     public static bool IsStagging = true;
 
     public static bool IsSendConfirmation = false;

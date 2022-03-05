@@ -1502,7 +1502,7 @@ public class MainMenuViewController : MonoBehaviour
         {
             ToggleTokenScreen(false);
         }
-        Constants.CheckAllNFT = true;
+        //Constants.CheckAllNFT = true;
         int storedNFTS = 0;
         for (int i = 0; i < Constants.NFTStored.Length; i++)
             storedNFTS += Constants.NFTStored[i];
