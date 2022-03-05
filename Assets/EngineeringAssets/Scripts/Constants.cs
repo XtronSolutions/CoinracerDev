@@ -31,7 +31,7 @@ public static class Constants
     public static int DiscountForCrace = 25000;//25000
     public static int TicketPrice = 0;
     public static int FlagSelectedIndex = 0;
-    public static bool LoggedIn = false;
+    public static bool LoggedIn = true;
     public static bool RegisterSubmit = false;
     public static string SavedEmail = "";
     public static string SavedPass = "";
@@ -73,8 +73,8 @@ public static class Constants
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = false;
-    public static bool IsTest = false;
+    public static bool IsTestNet = true;
+    public static bool IsTest = true;
     public static bool IsStagging = true;
 
     public static bool IsSendConfirmation = false;
