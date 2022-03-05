@@ -820,11 +820,18 @@ public class WalletManager : MonoBehaviour
                     if (_entryIndex < Ipfs.Count - 1)
                         StartCoroutine(getNftsMetaData(Ipfs, _tokens, _contractIndex, _entryIndex + 1));
                     else
-                        Constants.nftDataFetched[_contractIndex] = true;
+                        markFetchCompleted(_contractIndex);
                     break;
             }
         }
 
+    }
+
+    private void markFetchCompleted(int _index)
+    {
+        Constants.nftDataFetched[_index] = true;
+        if (checkAllNftData())
+            Constants.CheckAllNFT = true;
     }
 
     //this function will be used to check if the nft data of all NFT contracts has been fetched
@@ -956,7 +963,7 @@ public class WalletManager : MonoBehaviour
     public void WaitForAllData()
     {
         //if (NFTCounter == metaDataURL.Count && Constants.LoggedIn)
-        if(checkAllNftData() && Constants.LoggedIn)
+        if(Constants.CheckAllNFT && Constants.LoggedIn)
         {
             try
             {
