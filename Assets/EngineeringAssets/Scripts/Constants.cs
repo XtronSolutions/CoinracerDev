@@ -90,7 +90,7 @@ public static class Constants
     public static bool WalletChanged = false;
 
     public static bool IsTestNet = true;
-    public static bool IsTest = true;
+    public static bool IsTest = false;
     public static bool IsStagging = true;
 
     public static bool IsSendConfirmation = false;

@@ -190,8 +190,13 @@ public class WalletManager : MonoBehaviour
 
         if (Constants.IsTest)//&& !Constants.IsTestNet
         {
-            Constants.WalletAddress = "0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10";
-            SetAcount("0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
+            //Humza Khalid
+            //Constants.WalletAddress = "0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10";
+            //SetAcount("0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
+            
+            //Muhammad Ijlal
+            Constants.WalletAddress = "0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c";
+            SetAcount("0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c");
             //InvokeRepeating("CheckNFTBalance", 0.1f, 10f);
             //getNftsData();
             InvokeRepeating("getNftsData", 0.1f, 10f);
@@ -848,10 +853,18 @@ public class WalletManager : MonoBehaviour
         return true;
     }
 
-    
+    private void resetFetchedData()
+    {
+        Constants.CheckAllNFT = false;
+        for (int i = 0; i < Constants.nftDataFetched.Length; i++)
+        {
+            Constants.nftDataFetched[i] = false;
+        }
+    }
 
     async public void ForceUpdateNFT()
     {
+        resetFetchedData();
         for (int i = 0; i < NFTContracts.Length; i++)
             forceUpdateNFTByContract(i);
 
@@ -859,6 +872,7 @@ public class WalletManager : MonoBehaviour
 
     async public void forceUpdateNFTByContract(int _index)
     {
+        Debug.Log("In forceUpdateNFTByContract index " + _index);
         string methodNFT = "balanceOf";// smart contract method to call
         string[] obj = { account };
         string argsNFT = JsonConvert.SerializeObject(obj);
