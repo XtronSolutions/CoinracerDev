@@ -190,8 +190,8 @@ public class WalletManager : MonoBehaviour
 
         if (Constants.IsTest)//&& !Constants.IsTestNet
         {
-            Constants.WalletAddress = "0xD4d844C5A1cFAB13A8Ab252E466188d129a755Bc";
-            SetAcount("0xD4d844C5A1cFAB13A8Ab252E466188d129a755Bc");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
+            Constants.WalletAddress = "0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10";
+            SetAcount("0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
             //InvokeRepeating("CheckNFTBalance", 0.1f, 10f);
             //getNftsData();
             InvokeRepeating("getNftsData", 0.1f, 10f);
@@ -883,8 +883,8 @@ public class WalletManager : MonoBehaviour
             Constants.NFTChanged[_index] = true;
             Constants.NFTStored[_index] = Constants.NFTBought[_index];
             Constants.ChipraceInteraction = false;
-            NFTTokens.Clear();
-            metaDataURL.Clear();
+            NFTTokens[_index].Clear();
+            metaDataURL[_index].Clear();
             Constants.StoredCarNames.Clear();
             tempNFTCounter = 0;
             ClearChipraceData();
@@ -901,8 +901,8 @@ public class WalletManager : MonoBehaviour
         Constants.NFTChanged[_index] = true;
         Constants.NFTStored[_index] = Constants.NFTBought[_index];
         Constants.ChipraceInteraction = false;
-        NFTTokens.Clear();
-        metaDataURL.Clear();
+        NFTTokens[_index].Clear();
+        metaDataURL[_index].Clear();
         Constants.StoredCarNames.Clear();
         tempNFTCounter = 0;
         ClearChipraceData();
@@ -966,10 +966,11 @@ public class WalletManager : MonoBehaviour
         //if (NFTCounter == metaDataURL.Count && Constants.LoggedIn)
         if(Constants.CheckAllNFT && Constants.LoggedIn)
         {
+            CancelInvoke("WaitForAllData");
             try
             {
                 string info = FirebaseManager.Instance.GetStalkedNFT();
-//                Debug.Log(info);
+                Debug.Log(info);
                 if (info != "" && !string.IsNullOrEmpty(info))
                 {
                     ChipraceHandler.Instance.nftStalked = JsonConvert.DeserializeObject<StalkedNFT>(info);
@@ -1078,11 +1079,21 @@ public class WalletManager : MonoBehaviour
                 {
                     if (_name == ChipraceHandler.Instance.PoolNFT[i].Name[j])
                     {
-                        TotalNFTData _data = new TotalNFTData();
-                        _data.Name = _name;
-                        _data.ID = _token;
-                        _data.Skin = ChipraceHandler.Instance.PoolNFT[i].NFTSkins[j];
-                        ChipraceHandler.Instance.PoolNFT[i].NFTTotalData.Add(_data);
+                        bool _found = false;
+                        foreach (var item in ChipraceHandler.Instance.PoolNFT[i].NFTTotalData)
+                        {
+                            if (_token == item.ID)
+                                _found = true;
+                        }
+
+                        if (!_found)
+                        {
+                            TotalNFTData _data = new TotalNFTData();
+                            _data.Name = _name;
+                            _data.ID = _token;
+                            _data.Skin = ChipraceHandler.Instance.PoolNFT[i].NFTSkins[j];
+                            ChipraceHandler.Instance.PoolNFT[i].NFTTotalData.Add(_data);
+                        }
                     }
                 }
             }
