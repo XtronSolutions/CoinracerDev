@@ -307,7 +307,8 @@ public class WalletManager : MonoBehaviour
             MainUI.ConnectBtn.SetActive(false); //disable connect button
             MainUI.ConnectedBtn.SetActive(true);// enable connected button
             PrintWalletAddress(); // print wallet address on connected button
-            InvokeRepeating("CheckNFTBalance", 0.1f, 10f);//check number of NFT purchased after every 10 seconds of interval
+            InvokeRepeating("getNftsData", 0.1f, 10f);
+            //InvokeRepeating("CheckNFTBalance", 0.1f, 10f);//check number of NFT purchased after every 10 seconds of interval
         }
         else
         {
