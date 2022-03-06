@@ -716,7 +716,7 @@ public class WalletManager : MonoBehaviour
             Constants.NFTChanged[_index] = true;
             Constants.NFTStored[_index] = Constants.NFTBought[_index];
             Constants.StoredCarNames.Clear();
-            Debug.Log("totalNFTS: " + totalNfts + " index: " + _index);
+            //Debug.Log("totalNFTS: " + totalNfts + " index: " + _index);
             getTokenIds(totalNfts, _index);
         }
         else
@@ -815,7 +815,7 @@ public class WalletManager : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     IPFSdata dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
-                    Debug.Log("Token Name: " + dataIPFS.name + " _index: " + _contractIndex);
+                    //Debug.Log("Token Name: " + dataIPFS.name + " _index: " + _contractIndex);
 
                     StoreNameWithToken(dataIPFS.name, _tokens[_entryIndex]);
                     StoreChipraceData(dataIPFS.name, _tokens[_entryIndex]);
@@ -872,7 +872,7 @@ public class WalletManager : MonoBehaviour
 
     async public void forceUpdateNFTByContract(int _index)
     {
-        Debug.Log("In forceUpdateNFTByContract index " + _index);
+        //Debug.Log("In forceUpdateNFTByContract index " + _index);
         string methodNFT = "balanceOf";// smart contract method to call
         string[] obj = { account };
         string argsNFT = JsonConvert.SerializeObject(obj);

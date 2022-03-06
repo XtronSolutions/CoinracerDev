@@ -1550,7 +1550,10 @@ public class MainMenuViewController : MonoBehaviour
 
                 LoadingScreen.SetActive(false);
                 _currentSelectedCarIndex = 0;
+                _SelectedTokenNameIndex = 0;
+                _SelectedTokenIDIndex = 0;
                 UpdateSelectedCarVisual(_currentSelectedCarIndex);
+                UpdateToken();
             } else
             {
                 Invoke("CheckBoughtCars", 1f);
