@@ -1447,13 +1447,15 @@ public class MainMenuViewController : MonoBehaviour
 
         if (WalletConnected)//WalletConnected
         {
-            int storedNFTS = 0;
+            /*int storedNFTS = 0;
             for (int i = 0; i < Constants.NFTStored.Length; i++)
-                storedNFTS += Constants.NFTStored[i];
-            if (Constants.CheckAllNFT || storedNFTS == 0)
+                storedNFTS += Constants.NFTStored[i];*/
+            if (Constants.CheckAllNFT)
             {
-
                 ToggleScreen_Garage(true);
+                int storedNFTS = 0;
+                for (int i = 0; i < Constants.NFTStored.Length; i++)
+                    storedNFTS += Constants.NFTStored[i];
 
                 if (storedNFTS == 0)
                 {
@@ -1538,6 +1540,7 @@ public class MainMenuViewController : MonoBehaviour
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
                 {
+                    Debug.Log("Car name: " + Constants.StoredCarNames[i].ToLower());
                     for (int j = 0; j < _allCars.Count; j++)
                     {
                         if (Constants.StoredCarNames[i].ToLower() == _allCars[j].CarName.ToLower())
@@ -2056,11 +2059,11 @@ public class MainMenuViewController : MonoBehaviour
         Constants.FreeMultiplayer = false;
         Constants.EarnMultiplayer = true;
         LoadingScreen.SetActive(true);
-        int storedNFTS = 0;
-        for (int i = 0; i < Constants.NFTStored.Length; i++)
-            storedNFTS += Constants.NFTStored[i];
-        if (Constants.CheckAllNFT || storedNFTS == 0)
+        if (Constants.CheckAllNFT)
         {
+            int storedNFTS = 0;
+            for (int i = 0; i < Constants.NFTStored.Length; i++)
+                storedNFTS += Constants.NFTStored[i];
             if (storedNFTS == 0)
             {
                 LoadingScreen.SetActive(false);

@@ -152,6 +152,8 @@ public class WalletManager : MonoBehaviour
 
     public bool IsGamePlay = false;
     bool isConnected = false;
+    private bool storedCarsCleared = false;
+
     #endregion
     #region Start Functionality
     /// <summary>
@@ -686,19 +688,24 @@ public class WalletManager : MonoBehaviour
             return;
 
         //if user does not own any NFT
-        if (Constants.NFTBought[_index] == 0)
+        if (Constants.NFTBought[_index] == 0 && !Constants.NFTChanged[_index])
         {
             if(Constants.NFTStored[_index] != Constants.NFTBought[_index])
             {
                 WaitForAllDataNoNFT();
                 Constants.NFTBought[_index] = 0;
+                
             }
-
+            Constants.NFTStored[_index] = Constants.NFTBought[_index];
+            Constants.NFTChanged[_index] = true;
+            markFetchCompleted(_index);
             return;
         }
 
         if(Constants.NFTBought[_index] != Constants.NFTStored[_index])
         {
+            Debug.Log("Constants.NFTBought[" + _index + "]" + ": " + Constants.NFTBought[_index]);
+            Debug.Log("Constants.NFTStored[" + _index + "]" + ": " + Constants.NFTStored[_index]);
             //will be false for the first time
             if (Constants.NFTChanged[_index])
             {
@@ -709,13 +716,19 @@ public class WalletManager : MonoBehaviour
                 {
                     MainMenuViewController.Instance.ShowToast(3f, "NFT data was changed, game will automatically restart.");
                     Invoke("RestartGame", 3.1f);
-                    Constants.NFTChanged[_index] = false;
                 }
+                Constants.NFTChanged[_index] = false;
+                storedCarsCleared = false;
             }
-
+            if(!storedCarsCleared)
+            {
+                Constants.StoredCarNames.Clear();
+                storedCarsCleared = true;
+            }
+                
             Constants.NFTChanged[_index] = true;
             Constants.NFTStored[_index] = Constants.NFTBought[_index];
-            Constants.StoredCarNames.Clear();
+            
             //Debug.Log("totalNFTS: " + totalNfts + " index: " + _index);
             getTokenIds(totalNfts, _index);
         }
@@ -792,7 +805,8 @@ public class WalletManager : MonoBehaviour
                 links.Add(link);
             }
         }
-        Constants.StoredCarNames.Clear();
+        //Debug.Log("Clearing stored car names");
+        //Constants.StoredCarNames.Clear();
         Constants.NFTTotalData.Clear();
         StartCoroutine(getNftsMetaData(links, tokens, _index, 0));
         WaitForAllData();
@@ -821,7 +835,11 @@ public class WalletManager : MonoBehaviour
                     StoreChipraceData(dataIPFS.name, _tokens[_entryIndex]);
 
                     if (!Constants.StoredCarNames.Contains(dataIPFS.name))
+                    {
                         Constants.StoredCarNames.Add(dataIPFS.name);
+                        Debug.Log(dataIPFS.name + " added in storedcarnames");
+                    }
+                        
 
                     if (_entryIndex < Ipfs.Count - 1)
                         StartCoroutine(getNftsMetaData(Ipfs, _tokens, _contractIndex, _entryIndex + 1));
@@ -835,6 +853,7 @@ public class WalletManager : MonoBehaviour
 
     private void markFetchCompleted(int _index)
     {
+        //Debug.Log("Fetch completed of: " + _index);
         Constants.nftDataFetched[_index] = true;
         if (checkAllNftData())
             Constants.CheckAllNFT = true;
@@ -937,12 +956,14 @@ public class WalletManager : MonoBehaviour
         {
             Constants.NFTBought[i] = -2;
             Constants.NFTStored[i] = -1;
+            Constants.NFTChanged[i] = false;
         }
         for(int i = 0; i < NFTTokens.Count; i++)
         {
             NFTTokens[i].Clear();
             metaDataURL[i].Clear();
         }
+        resetFetchedData();
         Constants.StoredCarNames.Clear();
         ClearChipraceData();
         Constants.TokenNFT.Clear();
