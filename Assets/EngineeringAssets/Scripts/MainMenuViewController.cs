@@ -1505,10 +1505,8 @@ public class MainMenuViewController : MonoBehaviour
             ToggleTokenScreen(false);
         }
         //Constants.CheckAllNFT = true;
-        int storedNFTS = 0;
-        for (int i = 0; i < Constants.NFTStored.Length; i++)
-            storedNFTS += Constants.NFTStored[i];
-        if (Constants.CheckAllNFT || storedNFTS == 0)
+        
+        if (Constants.CheckAllNFT)
         {
             //for (int i = 0; i < Constants.TokenNFT.Count; i++)
             //{
@@ -1518,6 +1516,9 @@ public class MainMenuViewController : MonoBehaviour
             //        Debug.Log(Constants.TokenNFT[i].ID[j]);
             //    }
             //}
+            int storedNFTS = 0;
+            for (int i = 0; i < Constants.NFTStored.Length; i++)
+                storedNFTS += Constants.NFTStored[i];
             if (storedNFTS == 0)
             {
                 _selecteableCars.Clear();
