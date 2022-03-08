@@ -89,9 +89,9 @@ public static class Constants
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = true;
+    public static bool IsTestNet = false;
     public static bool IsTest = false;
-    public static bool IsStagging = true;
+    public static bool IsStagging = false;
 
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
