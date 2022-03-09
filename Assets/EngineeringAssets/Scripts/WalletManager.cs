@@ -927,7 +927,7 @@ public class WalletManager : MonoBehaviour
             Constants.ForceUpdateChiprace = true;
 
             WaitForAllDataNoNFT();
-
+            markFetchCompleted(_index);
             Constants.ChipraceInteraction = false;
             return;
         }
