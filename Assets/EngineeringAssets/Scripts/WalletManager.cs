@@ -837,7 +837,7 @@ public class WalletManager : MonoBehaviour
                     if (!Constants.StoredCarNames.Contains(dataIPFS.name))
                     {
                         Constants.StoredCarNames.Add(dataIPFS.name);
-                        Debug.Log(dataIPFS.name + " added in storedcarnames");
+                        //Debug.Log(dataIPFS.name + " added in storedcarnames");
                     }
                         
 
@@ -853,7 +853,7 @@ public class WalletManager : MonoBehaviour
 
     private void markFetchCompleted(int _index)
     {
-        Debug.Log("Fetch completed of: " + _index);
+        //Debug.Log("Fetch completed of: " + _index);
         Constants.nftDataFetched[_index] = true;
         if (checkAllNftData())
             Constants.CheckAllNFT = true;
@@ -1007,7 +1007,7 @@ public class WalletManager : MonoBehaviour
             try
             {
                 string info = FirebaseManager.Instance.GetStalkedNFT();
-                Debug.Log(info);
+                //Debug.Log(info);
                 if (info != "" && !string.IsNullOrEmpty(info))
                 {
                     ChipraceHandler.Instance.nftStalked = JsonConvert.DeserializeObject<StalkedNFT>(info);
@@ -2556,7 +2556,7 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-            Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
+            //Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
             //{ "0":"0","1":"1645135926","2":"0","3":"0","4":false,"5":false,"level":"0","remainningTime":"1645135926","score":"0","rewards":"0","canUpgrade":false,"isEnter":false}
             TotalNFTData _tokenData = new TotalNFTData();
             var _data = JObject.Parse(response);
