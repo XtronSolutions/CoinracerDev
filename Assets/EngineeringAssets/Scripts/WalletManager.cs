@@ -853,10 +853,11 @@ public class WalletManager : MonoBehaviour
 
     private void markFetchCompleted(int _index)
     {
-        //Debug.Log("Fetch completed of: " + _index);
+        Debug.Log("Fetch completed of: " + _index);
         Constants.nftDataFetched[_index] = true;
         if (checkAllNftData())
             Constants.CheckAllNFT = true;
+            
     }
 
     //this function will be used to check if the nft data of all NFT contracts has been fetched
@@ -1056,7 +1057,7 @@ public class WalletManager : MonoBehaviour
                 }
             }
 
-            Constants.CheckAllNFT = true;
+            //Constants.CheckAllNFT = true;
             Constants.ChipraceDataChecked = false;
 
             if (Constants.ForceUpdateChiprace)
