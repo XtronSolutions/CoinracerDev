@@ -884,6 +884,7 @@ public class WalletManager : MonoBehaviour
 
     async public void ForceUpdateNFT()
     {
+        Constants.ForceUpdateChiprace = true;
         resetFetchedData();
         for (int i = 0; i < NFTContracts.Length; i++)
             forceUpdateNFTByContract(i);
@@ -911,7 +912,7 @@ public class WalletManager : MonoBehaviour
         }
 
         Constants.NFTBought[_index] = int.Parse(response);
-
+        
         if (Constants.NFTBought[_index] == 0)
         {
             Constants.NFTChanged[_index] = true;
@@ -924,8 +925,8 @@ public class WalletManager : MonoBehaviour
             ClearChipraceData();
             Constants.TokenNFT.Clear();
             ChipraceHandler.Instance.nftStalked = new StalkedNFT();
-            Constants.ForceUpdateChiprace = true;
-
+         
+            markFetchCompleted(_index);
             WaitForAllDataNoNFT();
 
             Constants.ChipraceInteraction = false;
@@ -942,7 +943,7 @@ public class WalletManager : MonoBehaviour
         ClearChipraceData();
         Constants.TokenNFT.Clear();
         ChipraceHandler.Instance.nftStalked = new StalkedNFT();
-        Constants.ForceUpdateChiprace = true;
+        //Constants.ForceUpdateChiprace = true;
 
         if (Constants.ForceUpdateChiprace)
             ChipraceHandler.Instance.GetNFTData();
@@ -1042,7 +1043,7 @@ public class WalletManager : MonoBehaviour
 
     public void WaitForAllDataNoNFT()
     {
-        if (Constants.LoggedIn)
+        if (Constants.CheckAllNFT && Constants.LoggedIn)
         {
             string info = FirebaseManager.Instance.GetStalkedNFT();
             if (info != "" && !string.IsNullOrEmpty(info))
@@ -2555,7 +2556,7 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-            //Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
+            Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
             //{ "0":"0","1":"1645135926","2":"0","3":"0","4":false,"5":false,"level":"0","remainningTime":"1645135926","score":"0","rewards":"0","canUpgrade":false,"isEnter":false}
             TotalNFTData _tokenData = new TotalNFTData();
             var _data = JObject.Parse(response);
