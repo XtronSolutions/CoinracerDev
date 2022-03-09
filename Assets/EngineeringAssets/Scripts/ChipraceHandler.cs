@@ -301,6 +301,7 @@ public class ChipraceHandler : MonoBehaviour
             
             if (Constants.CheckAllNFT)
             {
+                Debug.Log("Constants.CheckAllNFT: " + Constants.CheckAllNFT);
                 int totalNFTS = 0;
                 for (int i = 0; i < Constants.NFTStored.Length; i++)
                 {
