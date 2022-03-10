@@ -89,9 +89,9 @@ public static class Constants
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = true;
-    public static bool IsTest = true;
-    public static bool IsStagging = true;
+    public static bool IsTestNet = false;
+    public static bool IsTest = false;
+    public static bool IsStagging = false;
 
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
@@ -127,7 +127,7 @@ public static class Constants
     public static int WithdrawTime = 300; //time in seconds//300
     public static bool TimerRunning = false;
     public static bool ClaimedReward = false;
-    public static readonly string HashKey = "testingkey";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"//us-H*?fBg9]6Kse
+    public static readonly string HashKey = "us-H*?fBg9]6Kse";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"//us-H*?fBg9]6Kse
     public static bool FreeMultiplayer = false;
     public static bool EarnMultiplayer = false;
     public static bool OtherPlayerDeposit = false;
