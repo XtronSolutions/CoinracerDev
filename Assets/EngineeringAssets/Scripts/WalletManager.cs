@@ -837,7 +837,7 @@ public class WalletManager : MonoBehaviour
                     if (!Constants.StoredCarNames.Contains(dataIPFS.name))
                     {
                         Constants.StoredCarNames.Add(dataIPFS.name);
-                        Debug.Log(dataIPFS.name + " added in storedcarnames");
+                        //Debug.Log(dataIPFS.name + " added in storedcarnames");
                     }
                         
 
@@ -857,6 +857,7 @@ public class WalletManager : MonoBehaviour
         Constants.nftDataFetched[_index] = true;
         if (checkAllNftData())
             Constants.CheckAllNFT = true;
+            
     }
 
     //this function will be used to check if the nft data of all NFT contracts has been fetched
@@ -883,6 +884,7 @@ public class WalletManager : MonoBehaviour
 
     async public void ForceUpdateNFT()
     {
+        Constants.ForceUpdateChiprace = true;
         resetFetchedData();
         for (int i = 0; i < NFTContracts.Length; i++)
             forceUpdateNFTByContract(i);
@@ -910,7 +912,7 @@ public class WalletManager : MonoBehaviour
         }
 
         Constants.NFTBought[_index] = int.Parse(response);
-
+        
         if (Constants.NFTBought[_index] == 0)
         {
             Constants.NFTChanged[_index] = true;
@@ -923,8 +925,8 @@ public class WalletManager : MonoBehaviour
             ClearChipraceData();
             Constants.TokenNFT.Clear();
             ChipraceHandler.Instance.nftStalked = new StalkedNFT();
-            Constants.ForceUpdateChiprace = true;
-
+         
+            markFetchCompleted(_index);
             WaitForAllDataNoNFT();
 
             Constants.ChipraceInteraction = false;
@@ -941,7 +943,7 @@ public class WalletManager : MonoBehaviour
         ClearChipraceData();
         Constants.TokenNFT.Clear();
         ChipraceHandler.Instance.nftStalked = new StalkedNFT();
-        Constants.ForceUpdateChiprace = true;
+        //Constants.ForceUpdateChiprace = true;
 
         if (Constants.ForceUpdateChiprace)
             ChipraceHandler.Instance.GetNFTData();
@@ -1005,7 +1007,7 @@ public class WalletManager : MonoBehaviour
             try
             {
                 string info = FirebaseManager.Instance.GetStalkedNFT();
-                Debug.Log(info);
+                //Debug.Log(info);
                 if (info != "" && !string.IsNullOrEmpty(info))
                 {
                     ChipraceHandler.Instance.nftStalked = JsonConvert.DeserializeObject<StalkedNFT>(info);
@@ -1041,7 +1043,7 @@ public class WalletManager : MonoBehaviour
 
     public void WaitForAllDataNoNFT()
     {
-        if (Constants.LoggedIn)
+        if (Constants.CheckAllNFT && Constants.LoggedIn)
         {
             string info = FirebaseManager.Instance.GetStalkedNFT();
             if (info != "" && !string.IsNullOrEmpty(info))
@@ -1056,7 +1058,7 @@ public class WalletManager : MonoBehaviour
                 }
             }
 
-            Constants.CheckAllNFT = true;
+            //Constants.CheckAllNFT = true;
             Constants.ChipraceDataChecked = false;
 
             if (Constants.ForceUpdateChiprace)
