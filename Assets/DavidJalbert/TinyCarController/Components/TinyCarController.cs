@@ -117,7 +117,7 @@ namespace DavidJalbert
         }
         virtual protected void Start()
         {
-            
+
             body = GetComponent<Rigidbody>();
             sphereCollider = GetComponent<SphereCollider>();
 
@@ -146,12 +146,12 @@ namespace DavidJalbert
             body.drag = 0;
             body.angularDrag = 0;
             body.constraints = RigidbodyConstraints.FreezeRotation;
-            body.useGravity = false;
-            body.isKinematic = false;
+            // body.useGravity = false;
+            // body.isKinematic = false;
             body.interpolation = RigidbodyInterpolation.Extrapolate;
             body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             carSpeed = Mathf.Floor(body.velocity.magnitude);
-            
+
             sphereCollider.radius = colliderRadius;
             sphereCollider.isTrigger = false;
             sphereCollider.material = customPhysicMaterial;
@@ -290,7 +290,17 @@ namespace DavidJalbert
 
             if (hitSideStayStatic || hitSideStayDynamic) velocity *= 1f - Mathf.Clamp01(deltaTime * sideFriction * scaleAdjustment * hitSideForce);
 
-            body.velocity = velocity;
+            // body.velocity = velocity;
+            if (onGround)
+            {
+                body.drag = bodyMass / 10;
+                body.AddForce(transform.forward * Force * Input.GetAxis("Vertical"), ForceMode.Acceleration);
+                body.velocity = Vector3.ClampMagnitude(body.velocity, MaxVelocity);
+            }
+            else
+            {
+                body.drag = 0;
+            }
             // ---
 
             // reset current frame vars
@@ -305,6 +315,8 @@ namespace DavidJalbert
             // ---
         }
 
+        [SerializeField] private float Force = 100f;
+        [SerializeField] private float MaxVelocity = 25f;
         virtual protected void OnDestroy()
         {
             if (GetComponent<Rigidbody>() != null) GetComponent<Rigidbody>().hideFlags = HideFlags.None;
