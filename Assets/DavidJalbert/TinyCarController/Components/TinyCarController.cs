@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
-
+using System;
 namespace DavidJalbert
 {
     [RequireComponent(typeof(Rigidbody))]
@@ -109,15 +109,38 @@ namespace DavidJalbert
         private float inverseScaleAdjustment = 1;
         public static float carSpeed = 0f;
 
-
         private void OnEnable()
         {
+            if (!Constants.IsMultiplayer)
+            {
+                MapDebugValues();
+                Events.OnGetValue += OnGetValue;
+                Events.OnUpdateValue += OnUpdateValue;
+            }
+
             if (Constants.IsMultiplayer)
                 PHView = GetComponent<PhotonView>();
         }
+
+        private float OnGetValue(Data data) => (float)this.GetType().GetField(data.Key)?.GetValue(this);
+
+        private void OnUpdateValue(Data data)
+        {
+            this.GetType().GetField(data.Key)?.SetValue(this, data.Value);
+        }
+
+        private void MapDebugValues()
+        {
+            var constants = Events.DoGetDebugConstants();
+            foreach (var field in constants.GetType().GetFields())
+            {
+                this.GetType().GetField(field.Name).SetValue(this, field.GetValue(constants));
+            }
+        }
+
         virtual protected void Start()
         {
-            
+
             body = GetComponent<Rigidbody>();
             sphereCollider = GetComponent<SphereCollider>();
 
@@ -146,12 +169,12 @@ namespace DavidJalbert
             body.drag = 0;
             body.angularDrag = 0;
             body.constraints = RigidbodyConstraints.FreezeRotation;
-            body.useGravity = false;
-            body.isKinematic = false;
+            // body.useGravity = false;
+            // body.isKinematic = false;
             body.interpolation = RigidbodyInterpolation.Extrapolate;
             body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             carSpeed = Mathf.Floor(body.velocity.magnitude);
-            
+
             sphereCollider.radius = colliderRadius;
             sphereCollider.isTrigger = false;
             sphereCollider.material = customPhysicMaterial;
@@ -291,6 +314,16 @@ namespace DavidJalbert
             if (hitSideStayStatic || hitSideStayDynamic) velocity *= 1f - Mathf.Clamp01(deltaTime * sideFriction * scaleAdjustment * hitSideForce);
 
             body.velocity = velocity;
+            // if (onGround)
+            // {
+            //     body.drag = bodyMass / 10;
+            //     body.AddForce(transform.forward * Force * Input.GetAxis("Vertical"), ForceMode.Acceleration);
+            //     body.velocity = Vector3.ClampMagnitude(body.velocity, MaxVelocity);
+            // }
+            // else
+            // {
+            //     body.drag = 0;
+            // }
             // ---
 
             // reset current frame vars
@@ -305,8 +338,15 @@ namespace DavidJalbert
             // ---
         }
 
+        [SerializeField] private float Force = 100f;
+        [SerializeField] private float MaxVelocity = 25f;
         virtual protected void OnDestroy()
         {
+            if (!Constants.IsMultiplayer)
+            {
+                Events.OnUpdateValue -= OnUpdateValue;
+            }
+
             if (GetComponent<Rigidbody>() != null) GetComponent<Rigidbody>().hideFlags = HideFlags.None;
             if (GetComponent<SphereCollider>() != null) GetComponent<SphereCollider>().hideFlags = HideFlags.None;
         }
