@@ -42,10 +42,4 @@ public class DebugConstants
     public float forwardFriction = 15;
     [Tooltip("How much grip the car should have on the road when turning.")]
     public float lateralFriction = 55;
-
-    public object this[string propertyName]
-    {
-        get { return this.GetType().GetProperty(propertyName).GetValue(this, null); }
-        // set { this.GetType().GetProperty(propertyName).SetValue(this, value, null); }
-    }
 }

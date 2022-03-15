@@ -113,6 +113,7 @@ namespace DavidJalbert
         {
             if (!Constants.IsMultiplayer)
             {
+                MapDebugValues();
                 Events.OnGetValue += OnGetValue;
                 Events.OnUpdateValue += OnUpdateValue;
             }
@@ -126,6 +127,15 @@ namespace DavidJalbert
         private void OnUpdateValue(Data data)
         {
             this.GetType().GetField(data.Key)?.SetValue(this, data.Value);
+        }
+
+        private void MapDebugValues()
+        {
+            var constants = Events.DoGetDebugConstants();
+            foreach (var field in constants.GetType().GetFields())
+            {
+                this.GetType().GetField(field.Name).SetValue(this, field.GetValue(constants));
+            }
         }
 
         virtual protected void Start()

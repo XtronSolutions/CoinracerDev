@@ -10,4 +10,7 @@ public static partial class Events
 
     public static event Func<Data, float> OnGetValue = null;
     public static float DoGetValue(Data data) => OnGetValue.Invoke(data);
+
+    public static event Func<DebugConstants> OnGetDebugConstants = null;
+    public static DebugConstants DoGetDebugConstants() => OnGetDebugConstants.Invoke();
 }

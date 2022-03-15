@@ -13,29 +13,26 @@ public class DebugView : MonoBehaviour
 
     private void Awake()
     {
+        Init();
         DontDestroyOnLoad(transform.parent.gameObject);
     }
 
     private void OnEnable()
     {
         Events.OnUpdateValue += OnUpdateValue;
+        Events.OnGetDebugConstants += OnGetDebugConstants;
     }
 
     private void OnDisable()
     {
         Events.OnUpdateValue -= OnUpdateValue;
+        Events.OnGetDebugConstants -= OnGetDebugConstants;
     }
 
-    private void OnUpdateValue(Data data)
-    {
-        PlayerPrefs.SetFloat(data.Key, data.Value);
-        DebugConstants.GetType().GetField(data.Key)?.SetValue(DebugConstants, data.Value);
-    }
+    private DebugConstants OnGetDebugConstants() => DebugConstants;
 
-    public void Show()
+    private void Init()
     {
-        ViewObject.SetActive(!ViewObject.activeSelf);
-
         if (this.DebugConstants == null)
         {
             this.DebugConstants = new DebugConstants();
@@ -56,5 +53,16 @@ public class DebugView : MonoBehaviour
                 element.gameObject.SetActive(true);
             }
         }
+    }
+
+    private void OnUpdateValue(Data data)
+    {
+        PlayerPrefs.SetFloat(data.Key, data.Value);
+        DebugConstants.GetType().GetField(data.Key)?.SetValue(DebugConstants, data.Value);
+    }
+
+    public void Show()
+    {
+        ViewObject.SetActive(!ViewObject.activeSelf);
     }
 }
