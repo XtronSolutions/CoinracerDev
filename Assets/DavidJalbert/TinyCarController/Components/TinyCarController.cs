@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
-
+using System;
 namespace DavidJalbert
 {
     [RequireComponent(typeof(Rigidbody))]
@@ -109,12 +109,25 @@ namespace DavidJalbert
         private float inverseScaleAdjustment = 1;
         public static float carSpeed = 0f;
 
-
         private void OnEnable()
         {
+            if (!Constants.IsMultiplayer)
+            {
+                Events.OnGetValue += OnGetValue;
+                Events.OnUpdateValue += OnUpdateValue;
+            }
+
             if (Constants.IsMultiplayer)
                 PHView = GetComponent<PhotonView>();
         }
+
+        private float OnGetValue(Data data) => (float)this.GetType().GetField(data.Key)?.GetValue(this);
+
+        private void OnUpdateValue(Data data)
+        {
+            this.GetType().GetField(data.Key)?.SetValue(this, data.Value);
+        }
+
         virtual protected void Start()
         {
 
@@ -290,17 +303,17 @@ namespace DavidJalbert
 
             if (hitSideStayStatic || hitSideStayDynamic) velocity *= 1f - Mathf.Clamp01(deltaTime * sideFriction * scaleAdjustment * hitSideForce);
 
-            // body.velocity = velocity;
-            if (onGround)
-            {
-                body.drag = bodyMass / 10;
-                body.AddForce(transform.forward * Force * Input.GetAxis("Vertical"), ForceMode.Acceleration);
-                body.velocity = Vector3.ClampMagnitude(body.velocity, MaxVelocity);
-            }
-            else
-            {
-                body.drag = 0;
-            }
+            body.velocity = velocity;
+            // if (onGround)
+            // {
+            //     body.drag = bodyMass / 10;
+            //     body.AddForce(transform.forward * Force * Input.GetAxis("Vertical"), ForceMode.Acceleration);
+            //     body.velocity = Vector3.ClampMagnitude(body.velocity, MaxVelocity);
+            // }
+            // else
+            // {
+            //     body.drag = 0;
+            // }
             // ---
 
             // reset current frame vars
@@ -319,6 +332,11 @@ namespace DavidJalbert
         [SerializeField] private float MaxVelocity = 25f;
         virtual protected void OnDestroy()
         {
+            if (!Constants.IsMultiplayer)
+            {
+                Events.OnUpdateValue -= OnUpdateValue;
+            }
+
             if (GetComponent<Rigidbody>() != null) GetComponent<Rigidbody>().hideFlags = HideFlags.None;
             if (GetComponent<SphereCollider>() != null) GetComponent<SphereCollider>().hideFlags = HideFlags.None;
         }
