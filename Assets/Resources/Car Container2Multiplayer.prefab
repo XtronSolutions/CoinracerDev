@@ -14836,6 +14836,7 @@ GameObject:
   - component: {fileID: 8236885478981872289}
   - component: {fileID: 3181105717145164925}
   - component: {fileID: 7558725665323409372}
+  - component: {fileID: 3490617130204770441}
   m_Layer: 0
   m_Name: Car Controller
   m_TagString: Untagged
@@ -14981,6 +14982,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 1
   PHView: {fileID: 8236885478981872289}
+  Force: 100
+  MaxVelocity: 25
 --- !u!114 &8236885478981872289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15002,6 +15005,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 3181105717145164925}
   - {fileID: 7558725665323409372}
+  - {fileID: 3490617130204770441}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -15078,6 +15082,22 @@ MonoBehaviour:
   useLocalTransformOnly: 0
   maxPositionDifferenceForVelocitySyncing: 10
   receivedStatesCounter: 0
+--- !u!114 &3490617130204770441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7644685520503631957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &7644685520511988607
 GameObject:
   m_ObjectHideFlags: 0

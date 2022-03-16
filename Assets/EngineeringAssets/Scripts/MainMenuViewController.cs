@@ -1541,7 +1541,7 @@ public class MainMenuViewController : MonoBehaviour
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
                 {
-                    Debug.Log("Car name: " + Constants.StoredCarNames[i].ToLower());
+                    //Debug.Log("Car name: " + Constants.StoredCarNames[i].ToLower());
                     for (int j = 0; j < _allCars.Count; j++)
                     {
                         if (Constants.StoredCarNames[i].ToLower() == _allCars[j].CarName.ToLower())
