@@ -44,11 +44,10 @@ public class DebugView : MonoBehaviour
             foreach (var field in fields)
             {
                 var element = Instantiate(prefab, Container);
-                var value = (float)field.GetValue(debugConsts);
-                var prefsValue = PlayerPrefs.GetFloat(field.Name, value);
+                var defaultValue = (float)field.GetValue(debugConsts);
+                var prefsValue = PlayerPrefs.GetFloat(field.Name, defaultValue);
+                var data = new Data(field.Name, prefsValue, defaultValue);
                 field.SetValue(debugConsts, prefsValue);
-
-                var data = new Data(field.Name, prefsValue);
                 element.Init(data);
                 element.gameObject.SetActive(true);
             }
