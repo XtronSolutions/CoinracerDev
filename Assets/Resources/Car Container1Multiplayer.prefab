@@ -9829,6 +9829,19 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!65 &4466429836183836992
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509558318395017933}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.8648791, y: 4.4528913, z: 0.9741074}
+  m_Center: {x: 0, y: -0.030897506, z: 0.67075455}
 --- !u!1 &822323155496224036
 GameObject:
   m_ObjectHideFlags: 0
@@ -14672,7 +14685,7 @@ GameObject:
   - component: {fileID: 5901205166032394162}
   - component: {fileID: 7646173347315704627}
   - component: {fileID: 8505042912581213430}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25307,6 +25320,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 4031107808516280825}
     m_Modifications:
     - target: {fileID: -8693358102377322504, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -8693358102377322504, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -25359,6 +25376,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: e194e6cdbc4267b4a910681c8ed91eac, type: 2}
     - target: {fileID: -5361883838108133557, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -5361883838108133557, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -25366,9 +25387,25 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: e194e6cdbc4267b4a910681c8ed91eac, type: 2}
+    - target: {fileID: 229087721194949748, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1900054049897604833, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 1900054049897604833, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5502478022070500631, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5502478022070500631, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
       propertyPath: m_IsActive
@@ -25376,6 +25413,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
+--- !u!1 &509558318395017933 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}
+  m_PrefabInstance: {fileID: 852087730070026140}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &889883395947466871 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4099c2379edc1c94eb0855ba688f3853, type: 3}

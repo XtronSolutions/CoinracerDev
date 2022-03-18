@@ -5030,6 +5030,19 @@ Transform:
   m_Father: {fileID: 7644685520659444901}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4634931900061390598
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3938126427689917582}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.2483215, y: 5.533677, z: 1.190964}
+  m_Center: {x: 0, y: 0.01562023, z: 0.60554135}
 --- !u!1 &4916860506069172140
 GameObject:
   m_ObjectHideFlags: 0
@@ -15093,7 +15106,7 @@ GameObject:
   - component: {fileID: 9154157195766667887}
   - component: {fileID: 4032026209026664592}
   - component: {fileID: 4421554309819655970}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15238,6 +15251,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 9154157195766667887}
+  Force: 100
+  MaxVelocity: 25
 --- !u!114 &9154157195766667887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30816,8 +30831,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8274597032198867004, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -8274597032198867004, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7562846898429900858, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: -7562846898429900858, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
       propertyPath: m_IsActive
@@ -30827,9 +30850,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lombo
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4841320917888766234, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 4841320917888766234, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8821294456061963822, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8821294456061963822, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
       propertyPath: m_IsActive
@@ -30837,6 +30872,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
+--- !u!1 &3938126427689917582 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}
+  m_PrefabInstance: {fileID: 4208157344384950751}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4462180691118474804 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4e9fa1a2332970a438a864f8c857b1f9, type: 3}

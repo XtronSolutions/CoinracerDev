@@ -10172,6 +10172,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1705363564082401804
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7227477429888830063}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.1819103, y: 4.5108914, z: 1.1962556}
+  m_Center: {x: 0, y: 0.20033035, z: 0.28802595}
 --- !u!1 &7274405701773322792
 GameObject:
   m_ObjectHideFlags: 0
@@ -15288,7 +15301,7 @@ GameObject:
   - component: {fileID: 9154157195766667887}
   - component: {fileID: 4032026209026664592}
   - component: {fileID: 4421554309819655970}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15433,6 +15446,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 9154157195766667887}
+  Force: 100
+  MaxVelocity: 25
 --- !u!114 &9154157195766667887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30820,12 +30835,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 192b61b5a81a8634d9c9a5f67b92df19, type: 2}
     - target: {fileID: -6782182964448451057, guid: 76324beab7be0c149a046a2d45643952, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -6782182964448451057, guid: 76324beab7be0c149a046a2d45643952, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -64119860613734280, guid: 76324beab7be0c149a046a2d45643952, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -64119860613734280, guid: 76324beab7be0c149a046a2d45643952, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 624556695084111350, guid: 76324beab7be0c149a046a2d45643952, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 624556695084111350, guid: 76324beab7be0c149a046a2d45643952, type: 3}
       propertyPath: m_IsActive
@@ -30835,12 +30862,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: NightcrawlerwithTyres
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 76324beab7be0c149a046a2d45643952, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7917485585319486477, guid: 76324beab7be0c149a046a2d45643952, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 7917485585319486477, guid: 76324beab7be0c149a046a2d45643952, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 76324beab7be0c149a046a2d45643952, type: 3}
+--- !u!1 &7227477429888830063 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 76324beab7be0c149a046a2d45643952, type: 3}
+  m_PrefabInstance: {fileID: 7533468552840378174}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8000355297562267861 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 76324beab7be0c149a046a2d45643952, type: 3}
@@ -31287,6 +31327,11 @@ PrefabInstance:
       objectReference: {fileID: 7644685520503631955}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
+--- !u!4 &1336414265190490380 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7578377450088713816, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
+  m_PrefabInstance: {fileID: 8908167969057533780}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1336414265190490419 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7578377450088713831, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
@@ -31298,8 +31343,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0788664444e2b1f4c978e694830e3efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1336414265190490380 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7578377450088713816, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
-  m_PrefabInstance: {fileID: 8908167969057533780}
-  m_PrefabAsset: {fileID: 0}
