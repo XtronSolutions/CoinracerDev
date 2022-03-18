@@ -14887,6 +14887,19 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!65 &9144835004249015496
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7514723162443331875}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.024408674, y: 0.053602587, z: 0.012638762}
+  m_Center: {x: 0, y: 0.00093018526, z: 0.007202285}
 --- !u!1 &7558024415174785856
 GameObject:
   m_ObjectHideFlags: 0
@@ -15175,7 +15188,7 @@ GameObject:
   - component: {fileID: 9154157195766667887}
   - component: {fileID: 4032026209026664592}
   - component: {fileID: 4421554309819655970}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15320,6 +15333,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 9154157195766667887}
+  Force: 100
+  MaxVelocity: 25
 --- !u!114 &9154157195766667887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30819,17 +30834,37 @@ PrefabInstance:
       propertyPath: m_Name
       value: SchoolBus
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2464928453528720476, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 2464928453528720476, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3327040345693428218, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 3327040345693428218, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6498735973432394635, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6498735973432394635, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8792056266588644715, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8792056266588644715, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
       propertyPath: m_IsActive
@@ -30837,6 +30872,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
+--- !u!1 &7514723162443331875 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}
+  m_PrefabInstance: {fileID: 7244252443378746482}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7134397020280054681 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 45426558d41daf44da442b01d8ab7f59, type: 3}

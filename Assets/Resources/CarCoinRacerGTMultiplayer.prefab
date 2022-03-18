@@ -15164,7 +15164,7 @@ GameObject:
   - component: {fileID: 8485333407257861962}
   - component: {fileID: 6068933016015055136}
   - component: {fileID: 5242793268268646870}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15309,6 +15309,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 8485333407257861962}
+  Force: 100
+  MaxVelocity: 25
 --- !u!114 &8485333407257861962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25925,6 +25927,19 @@ Transform:
   m_Father: {fileID: 7644685520659444901}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!65 &3030976862417654324
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9002898662677991641}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.2211378, y: 4.6251764, z: 1.293006}
+  m_Center: {x: 0, y: 0.17154495, z: 0.9189304}
 --- !u!1 &9098186850025519616
 GameObject:
   m_ObjectHideFlags: 0
@@ -31200,12 +31215,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 0081697e2c0373748a308936d6ef4907, type: 2}
     - target: {fileID: -3710432483749980156, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -3710432483749980156, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -1486550816744302869, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -1486550816744302869, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -1434874162091977914, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: -1434874162091977914, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
       propertyPath: m_IsActive
@@ -31215,12 +31242,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: CoinracerGTWithTyres
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235523998996829254, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 4235523998996829254, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
+--- !u!1 &9002898662677991641 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
+  m_PrefabInstance: {fileID: 8084473100203191688}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8627603924715735651 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 809e4faefc8aeaa42ad1017ca24c8352, type: 3}
