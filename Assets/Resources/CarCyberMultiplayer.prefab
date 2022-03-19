@@ -31,6 +31,19 @@ Transform:
   m_Father: {fileID: 7644685520659444901}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!65 &8017969200393267968
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3104142947385421387}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.0155241, y: 4.47501, z: 1.0374242}
+  m_Center: {x: 0, y: -0.013874415, z: 0.58384156}
 --- !u!1 &3235288087090573524
 GameObject:
   m_ObjectHideFlags: 0
@@ -15175,7 +15188,7 @@ GameObject:
   - component: {fileID: 8369052073100913123}
   - component: {fileID: 4592691859236570391}
   - component: {fileID: 3747936155922762107}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15320,6 +15333,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 8369052073100913123}
+  Force: 100
+  MaxVelocity: 25
 --- !u!114 &8369052073100913123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30820,6 +30835,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: c6cc718ff055e6e45a6d9c904b3c4813, type: 2}
     - target: {fileID: -7322010632291534177, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -7322010632291534177, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -30827,13 +30846,29 @@ PrefabInstance:
       propertyPath: m_Name
       value: CyberCar_WithTyres
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2956424595732774865, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 2956424595732774865, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7641170708539079778, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7641170708539079778, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7757563775514314543, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7757563775514314543, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
       propertyPath: m_IsActive
@@ -30841,6 +30876,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
+--- !u!1 &3104142947385421387 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ff1248d57da03c2449082c3d65f73280, type: 3}
+  m_PrefabInstance: {fileID: 2870279783860409114}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2332848376099468529 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ff1248d57da03c2449082c3d65f73280, type: 3}

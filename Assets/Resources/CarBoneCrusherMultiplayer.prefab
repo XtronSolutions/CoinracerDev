@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!65 &6445038290207779784
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683682570425293002}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.3842373, y: 5.11616, z: 2.0421755}
+  m_Center: {x: 0, y: 0.13407198, z: 1.1942223}
 --- !u!1 &2362239516986167141
 GameObject:
   m_ObjectHideFlags: 0
@@ -15093,7 +15106,7 @@ GameObject:
   - component: {fileID: 3568755674301591321}
   - component: {fileID: 4653919267592187756}
   - component: {fileID: 7221216511018425527}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15238,6 +15251,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 3568755674301591321}
+  Force: 100
+  MaxVelocity: 25
 --- !u!114 &3568755674301591321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30888,6 +30903,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 7644685520488435014}
     m_Modifications:
     - target: {fileID: -9042786455495250526, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -9042786455495250526, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -30927,13 +30946,29 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 832a985a9ecf96843a8488dd1dbae9ca, type: 2}
+    - target: {fileID: 919132149155446097, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240537090458580735, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 3240537090458580735, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5012969610577936786, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5012969610577936786, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7457594768466803136, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7457594768466803136, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
       propertyPath: m_IsActive
@@ -30944,6 +30979,11 @@ PrefabInstance:
 --- !u!4 &2023933502307107440 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
+  m_PrefabInstance: {fileID: 1989691297375085979}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1683682570425293002 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: da8a5c7fa0539db41ba33f1fe2f386c5, type: 3}
   m_PrefabInstance: {fileID: 1989691297375085979}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7644685519520436889

@@ -14837,7 +14837,7 @@ GameObject:
   - component: {fileID: 3181105717145164925}
   - component: {fileID: 7558725665323409372}
   - component: {fileID: 3490617130204770441}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25821,6 +25821,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7096940122666632432
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9085998598991462446}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.2501898, y: 4.448924, z: 1.2578274}
+  m_Center: {x: 0, y: -0.14214161, z: 0.90496075}
 --- !u!1 &9098186850025519616
 GameObject:
   m_ObjectHideFlags: 0
@@ -31072,16 +31085,36 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 940147446e1b4d14e8b6d9d662439a2c, type: 2}
     - target: {fileID: -1063524860686434782, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: -1063524860686434782, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -903992295930384685, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: -903992295930384685, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5938877354393330172, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 5938877354393330172, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6433925878232584600, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 6433925878232584600, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
       propertyPath: m_IsActive
@@ -31089,6 +31122,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
+--- !u!1 &9085998598991462446 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
+  m_PrefabInstance: {fileID: 8274970999076191615}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8456672934728374932 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7f070d30142504541b293e1b2ed06856, type: 3}
@@ -31155,11 +31193,6 @@ PrefabInstance:
       objectReference: {fileID: 7644685520503631955}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
---- !u!4 &1336414265190490380 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7578377450088713816, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
-  m_PrefabInstance: {fileID: 8908167969057533780}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1336414265190490419 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7578377450088713831, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
@@ -31171,3 +31204,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0788664444e2b1f4c978e694830e3efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1336414265190490380 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7578377450088713816, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
+  m_PrefabInstance: {fileID: 8908167969057533780}
+  m_PrefabAsset: {fileID: 0}
