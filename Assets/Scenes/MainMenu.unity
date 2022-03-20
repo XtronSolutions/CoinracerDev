@@ -17041,7 +17041,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83fdd8c441964b8984f62e5a9d9c64b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carSettings: {fileID: 11400000, guid: b72d4906f498d9741b32194315c55068, type: 2}
+  carSettings: {fileID: 0}
   _visual: {fileID: 1567866900}
 --- !u!1 &364096354
 GameObject:
@@ -46318,11 +46318,19 @@ MonoBehaviour:
     - CoinracerGT
     - Nightcrawler
     - Telecoin
+    - Malibu Mutant
+    - CoinracerGT Mutant
+    - Nightcrawler Mutant
+    - Telecoin Mutant
     NFTSkins:
     - {fileID: 21300000, guid: c0d6decd11a0b1e4d8e1d6b77b6c4534, type: 3}
     - {fileID: 21300000, guid: 7f82dba15954b174b856e08b08f9c1c8, type: 3}
     - {fileID: 21300000, guid: 3c9b361800d39054c8334b0cd2a29717, type: 3}
     - {fileID: 21300000, guid: bda00386434710844bf135d4dc1fad24, type: 3}
+    - {fileID: 21300000, guid: 525a8b223f6c85c44bc3e7082cc1e7de, type: 3}
+    - {fileID: 21300000, guid: 0bc4af630da496c48ad3f3e22edbdea2, type: 3}
+    - {fileID: 21300000, guid: c79da5725b5ea2c44b08a4a42f894589, type: 3}
+    - {fileID: 21300000, guid: bc562ee1e99c6024585f7342a9a23613, type: 3}
     LevelUpgradeFees:
     - 0
     - 175.6
@@ -46336,9 +46344,13 @@ MonoBehaviour:
     Name:
     - Coinrarri
     - Lambo
+    - Coinrrari Mutant
+    - Lambo Mutant
     NFTSkins:
     - {fileID: 21300000, guid: abf5c7b73d12bd54b9887bce1b6d025e, type: 3}
     - {fileID: 21300000, guid: c103067e1db183a47bf5a1c39dd3e83f, type: 3}
+    - {fileID: 21300000, guid: af795a7d227860e48abfc34cf3d920c6, type: 3}
+    - {fileID: 21300000, guid: a3c80c00b1d5b724d99b3fe2db74bd7a, type: 3}
     LevelUpgradeFees:
     - 0
     - 122.8
@@ -46352,9 +46364,13 @@ MonoBehaviour:
     Name:
     - CyberCar
     - Hovercar
+    - Cybercar Mutant
+    - Hovercar Mutant
     NFTSkins:
     - {fileID: 21300000, guid: 4e6f270725e9a3d46bd42f4d4d73de4e, type: 3}
     - {fileID: 21300000, guid: 0487c471fe7d0db459431e19b8ec766f, type: 3}
+    - {fileID: 21300000, guid: 47c6bc9c658020a4faad87adb261b409, type: 3}
+    - {fileID: 21300000, guid: 4fc514e9114662543af858254a430663, type: 3}
     LevelUpgradeFees:
     - 0
     - 61.4
@@ -46368,9 +46384,13 @@ MonoBehaviour:
     Name:
     - Merky
     - Black Ace
+    - Merky Mutant
+    - Black Ace Mutant
     NFTSkins:
     - {fileID: 21300000, guid: 28a837b26feec20448abadc66a9b678e, type: 3}
     - {fileID: 21300000, guid: deadcf3895714cc428c1139ee861da37, type: 3}
+    - {fileID: 21300000, guid: 8c9b160f0014cc248828d72269938af7, type: 3}
+    - {fileID: 21300000, guid: 85409ff14916caa4fb0ef9a6c837c4c3, type: 3}
     LevelUpgradeFees:
     - 0
     - 51.2
@@ -46384,9 +46404,13 @@ MonoBehaviour:
     Name:
     - Bonecrusher
     - Lucky Bus
+    - Bonecrusher Mutant
+    - Lucky Bus Mutant
     NFTSkins:
     - {fileID: 21300000, guid: 40271c0e53f5dd6478cf977008d2ff71, type: 3}
     - {fileID: 21300000, guid: 1e16f1e855985344da69772923cdd887, type: 3}
+    - {fileID: 21300000, guid: a760edfc152d1d946b2f75d5463dc16c, type: 3}
+    - {fileID: 21300000, guid: be68c80056ba926488c07f703f954645, type: 3}
     LevelUpgradeFees:
     - 0
     - 31.6
@@ -109089,7 +109113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83fdd8c441964b8984f62e5a9d9c64b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carSettings: {fileID: 11400000, guid: c05d17e8489a40c47879da65b5b79347, type: 2}
+  carSettings: {fileID: 11400000, guid: b636fa5227cbb4f4daf385c0fd84e74e, type: 2}
   _visual: {fileID: 1140318812}
 --- !u!1 &2018260103
 GameObject:
