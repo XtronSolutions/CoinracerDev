@@ -47,23 +47,27 @@ public static class Constants
     public static int SelectedIndex = 0;
     public static bool ApproveCrace = false;
     public static bool HaveNFTData = false;
-    public static int[] NFTBought = new int[2]
+    public static int[] NFTBought = new int[3]
     {
+        -2,
         -2,
         -2
     };
-    public static int[] NFTStored = new int[2]
+    public static int[] NFTStored = new int[3]
     {
+        -1,
         -1,
         -1
     };
-    public static bool[] NFTChanged = new bool[2]
+    public static bool[] NFTChanged = new bool[3]
     {
+        false,
         false,
         false
     };
-    public static bool[] nftDataFetched = new bool[2]
+    public static bool[] nftDataFetched = new bool[3]
     {
+        false,
         false,
         false
     };
