@@ -5177,6 +5177,19 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!65 &709757678182045565
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3715156044967210064}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.015388197, y: 0.032748654, z: 0.007819179}
+  m_Center: {x: 0.0000107379155, y: 0.0007554319, z: 0.0018721174}
 --- !u!1 &4916860506069172140
 GameObject:
   m_ObjectHideFlags: 0
@@ -15337,7 +15350,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7644685520503631957}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 1.692, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7644685520511988606}
@@ -15467,6 +15480,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 6454988158327795277}
+  Force: 100
+  MaxVelocity: 25
 --- !u!114 &6454988158327795277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31092,6 +31107,11 @@ PrefabInstance:
 --- !u!4 &4090730887880783594 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8b3e22c4bd5c3b74f8c32733f102afa4, type: 3}
+  m_PrefabInstance: {fileID: 4562018247236866305}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3715156044967210064 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b3e22c4bd5c3b74f8c32733f102afa4, type: 3}
   m_PrefabInstance: {fileID: 4562018247236866305}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7644685519520436889
