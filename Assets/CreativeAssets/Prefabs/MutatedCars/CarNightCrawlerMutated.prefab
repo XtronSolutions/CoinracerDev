@@ -15393,7 +15393,7 @@ MonoBehaviour:
   sideFriction: 0.3
   collidableLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294955007
   adjustToScale: 1
   accelerationCurve:
     serializedVersion: 2
@@ -15464,6 +15464,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 0}
+  Force: 100
+  MaxVelocity: 25
 --- !u!1 &7644685520511988607
 GameObject:
   m_ObjectHideFlags: 0
