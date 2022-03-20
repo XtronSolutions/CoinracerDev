@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!65 &504522988800485818
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192856826577604081}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.024893116, y: 0.053165495, z: 0.015031564}
+  m_Center: {x: 0.000018002, y: 0.0033033763, z: 0.008401815}
 --- !u!1 &3549794383547704098
 GameObject:
   m_ObjectHideFlags: 0
@@ -15015,7 +15028,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7644685520503631957}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 1.656, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7644685520511988606}
@@ -15145,6 +15158,8 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 1113576683789773446}
+  Force: 100
+  MaxVelocity: 25
 --- !u!114 &1113576683789773446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30829,6 +30844,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb90d58ebf7ed7d4f92b8b4f3c6cb101, type: 3}
+--- !u!1 &2192856826577604081 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: cb90d58ebf7ed7d4f92b8b4f3c6cb101, type: 3}
+  m_PrefabInstance: {fileID: 1346574620987224224}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1523702143348021067 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cb90d58ebf7ed7d4f92b8b4f3c6cb101, type: 3}

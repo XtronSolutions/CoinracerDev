@@ -1255,7 +1255,6 @@ public class MainMenuViewController : MonoBehaviour
 
         if (!Constants.EarnMultiplayer)
             ToggleTokenScreen(false);
-
         for (int i = 0; i < Constants.TokenNFT.Count; i++)
         {
             if (Constants.TokenNFT[i].Name.Contains(_selecteableCars[newIndex].carSettings.Name))

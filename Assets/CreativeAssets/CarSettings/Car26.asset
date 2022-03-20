@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a8c435c818a3314ea44d4fc872b3500, type: 3}
+  m_Name: Car26
+  m_EditorClassIdentifier: 
+  carType: 25
+  Name: Bonecrusher Mutant
+  CarPrefab: {fileID: 7644685520093282575, guid: 7fe0c009f98af3c498bd0ec23b8f23d8, type: 3}
+  CarMultiplayerPrefab: {fileID: 7644685520093282575, guid: 4906e9ed95f887f4f8a763bcae595ae3, type: 3}
+  Icon: {fileID: 21300000, guid: 39a7ec826926ea644b2c0252d85a5037, type: 3}
