@@ -15332,6 +15332,7 @@ GameObject:
   - component: {fileID: 3797235507697558750}
   - component: {fileID: 2218345249251991499}
   - component: {fileID: 1947742319852416880}
+  - component: {fileID: 4442686317998152820}
   m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
@@ -15501,6 +15502,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 2218345249251991499}
   - {fileID: 1947742319852416880}
+  - {fileID: 4442686317998152820}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -15577,6 +15579,22 @@ MonoBehaviour:
   useLocalTransformOnly: 0
   maxPositionDifferenceForVelocitySyncing: 10
   receivedStatesCounter: 0
+--- !u!114 &4442686317998152820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7644685520503631957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &7644685520511988607
 GameObject:
   m_ObjectHideFlags: 0
@@ -31354,11 +31372,6 @@ PrefabInstance:
       objectReference: {fileID: 7644685520503631955}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
---- !u!4 &1336414265190490380 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7578377450088713816, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
-  m_PrefabInstance: {fileID: 8908167969057533780}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1336414265190490419 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7578377450088713831, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
@@ -31370,3 +31383,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0788664444e2b1f4c978e694830e3efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1336414265190490380 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7578377450088713816, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
+  m_PrefabInstance: {fileID: 8908167969057533780}
+  m_PrefabAsset: {fileID: 0}

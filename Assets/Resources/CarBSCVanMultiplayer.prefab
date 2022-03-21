@@ -15301,6 +15301,7 @@ GameObject:
   - component: {fileID: 9154157195766667887}
   - component: {fileID: 4032026209026664592}
   - component: {fileID: 4421554309819655970}
+  - component: {fileID: 6878338965191770517}
   m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
@@ -15470,6 +15471,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 4032026209026664592}
   - {fileID: 4421554309819655970}
+  - {fileID: 6878338965191770517}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -15546,6 +15548,22 @@ MonoBehaviour:
   useLocalTransformOnly: 0
   maxPositionDifferenceForVelocitySyncing: 10
   receivedStatesCounter: 0
+--- !u!114 &6878338965191770517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7644685520503631957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &7644685520511988607
 GameObject:
   m_ObjectHideFlags: 0
@@ -30868,7 +30886,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 4382d586c92529640b2f76fd5bf885ae, type: 2}
     - target: {fileID: -4908591137217155943, guid: c8848a0cc15dda84fbb8534391a18cfb, type: 3}
       propertyPath: m_Layer
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4908591137217155943, guid: c8848a0cc15dda84fbb8534391a18cfb, type: 3}
       propertyPath: m_IsActive
@@ -30876,7 +30894,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3081732291519123519, guid: c8848a0cc15dda84fbb8534391a18cfb, type: 3}
       propertyPath: m_Layer
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3081732291519123519, guid: c8848a0cc15dda84fbb8534391a18cfb, type: 3}
       propertyPath: m_IsActive
@@ -30888,11 +30906,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c8848a0cc15dda84fbb8534391a18cfb, type: 3}
       propertyPath: m_Layer
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2408323181670119939, guid: c8848a0cc15dda84fbb8534391a18cfb, type: 3}
       propertyPath: m_Layer
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2408323181670119939, guid: c8848a0cc15dda84fbb8534391a18cfb, type: 3}
       propertyPath: m_IsActive
@@ -30900,7 +30918,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4357384041401652244, guid: c8848a0cc15dda84fbb8534391a18cfb, type: 3}
       propertyPath: m_Layer
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4357384041401652244, guid: c8848a0cc15dda84fbb8534391a18cfb, type: 3}
       propertyPath: m_IsActive
@@ -31354,11 +31372,6 @@ PrefabInstance:
       objectReference: {fileID: 7644685520503631955}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
---- !u!4 &1336414265190490380 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7578377450088713816, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
-  m_PrefabInstance: {fileID: 8908167969057533780}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1336414265190490419 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7578377450088713831, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
@@ -31370,3 +31383,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0788664444e2b1f4c978e694830e3efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1336414265190490380 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7578377450088713816, guid: b8db36d53b570bc428e4950114ea4552, type: 3}
+  m_PrefabInstance: {fileID: 8908167969057533780}
+  m_PrefabAsset: {fileID: 0}

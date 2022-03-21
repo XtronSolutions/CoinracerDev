@@ -10017,19 +10017,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!65 &3068959460210278501
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5584666866335808424}
-  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.019779041, y: 0.044390075, z: 0.014278536}
-  m_Center: {x: -0.0001937463, y: -0.00023956779, z: 0.008051043}
 --- !u!1 &5942334348417496376
 GameObject:
   m_ObjectHideFlags: 0
@@ -10112,6 +10099,50 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6184672821560115635
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5455964859869923588}
+  - component: {fileID: 7229879716340278123}
+  m_Layer: 12
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5455964859869923588
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6184672821560115635}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.39, z: -0.05}
+  m_LocalScale: {x: 1.5833125, y: 1, z: 3.9545872}
+  m_Children: []
+  m_Father: {fileID: 7644685520503631952}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7229879716340278123
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6184672821560115635}
+  m_Material: {fileID: 13400000, guid: 7a8ffb971a9434865acfb33bf185f1a9, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7274405701773322792
 GameObject:
   m_ObjectHideFlags: 0
@@ -15177,7 +15208,8 @@ GameObject:
   - component: {fileID: 6747874322995466182}
   - component: {fileID: 5944816814723280343}
   - component: {fileID: 8406137549184944231}
-  m_Layer: 0
+  - component: {fileID: 6658672521480164187}
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15198,6 +15230,7 @@ Transform:
   - {fileID: 7644685520511988606}
   - {fileID: 7644685521445685339}
   - {fileID: 1336414265190490380}
+  - {fileID: 5455964859869923588}
   m_Father: {fileID: 7644685520093282574}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -15345,6 +15378,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 5944816814723280343}
   - {fileID: 8406137549184944231}
+  - {fileID: 6658672521480164187}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -15421,6 +15455,22 @@ MonoBehaviour:
   useLocalTransformOnly: 0
   maxPositionDifferenceForVelocitySyncing: 10
   receivedStatesCounter: 0
+--- !u!114 &6658672521480164187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7644685520503631957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &7644685520511988607
 GameObject:
   m_ObjectHideFlags: 0
@@ -30840,11 +30890,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4d24f9c89a3f824f961c6cb7e4eed10, type: 3}
---- !u!1 &5584666866335808424 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a4d24f9c89a3f824f961c6cb7e4eed10, type: 3}
-  m_PrefabInstance: {fileID: 4702269545620686585}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5101285633698472210 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a4d24f9c89a3f824f961c6cb7e4eed10, type: 3}
