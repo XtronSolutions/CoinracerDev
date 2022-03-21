@@ -132,9 +132,12 @@ namespace DavidJalbert
         private void MapDebugValues()
         {
             var constants = Events.DoGetDebugConstants();
-            foreach (var field in constants.GetType().GetFields())
+            if(constants != null)
             {
-                this.GetType().GetField(field.Name).SetValue(this, field.GetValue(constants));
+                foreach (var field in constants.GetType().GetFields())
+                {
+                    this.GetType().GetField(field.Name).SetValue(this, field.GetValue(constants));
+                }
             }
         }
 

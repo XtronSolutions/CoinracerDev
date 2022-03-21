@@ -40,7 +40,7 @@ public class SyncData : MonoBehaviourPun, IPunObservable
     {
         r = GetComponent<Rigidbody>();
         PHView = GetComponent<PhotonView>();
-        r.isKinematic = !PHView.IsMine;
+        // r.isKinematic = !PHView.IsMine;
 
         //PhotonNetwork.SerializationRate = 10;
         //PhotonNetwork.SendRate = 10;
