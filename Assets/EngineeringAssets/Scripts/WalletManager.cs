@@ -207,12 +207,12 @@ public class WalletManager : MonoBehaviour
         if (Constants.IsTest)//&& !Constants.IsTestNet
         {
             //Humza Khalid
-            Constants.WalletAddress = "0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10";
-            SetAcount("0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
+            //Constants.WalletAddress = "0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10";
+            //SetAcount("0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10");//0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db//0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10
             
             //Muhammad Ijlal
-            //  Constants.WalletAddress = "0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c";
-            //  SetAcount("0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c");
+            Constants.WalletAddress = "0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c";
+            SetAcount("0x88F1696C24115b23D80088eA6cbEf2Ee4ef4495c");
             //InvokeRepeating("CheckNFTBalance", 0.1f, 10f);
             //getNftsData();
             InvokeRepeating("getNftsData", 0.1f, 10f);
@@ -1842,9 +1842,13 @@ public class WalletManager : MonoBehaviour
             {
                 Constants.EventRaised = _raiseEvent;
                 string response;
-
-                if(Constants.NFTTokenApproval>5000)
+                //if token to be approved has ID greater than 20,000 i.e. it is a mutant NFT
+                if(Constants.NFTTokenApproval > 20000)
+                    response = await Web3GL.SendContract(methodCrace, NFTContractsAbi[2], NFTContracts[2], argsCSP, value, gasLimit, gasPrice, _raiseEvent);
+                //if token to be approved has ID greater than 5,000 and less than 20,000 i.e. it is a token of NFT2.0
+                else if (Constants.NFTTokenApproval > 5000)
                     response = await Web3GL.SendContract(methodCrace, NFTContractsAbi[1], NFTContracts[1], argsCSP, value, gasLimit, gasPrice, _raiseEvent);
+                //if token has id less than 5,000 i.e. it is a token of NFT1.0
                 else
                     response = await Web3GL.SendContract(methodCrace, NFTContractsAbi[0], NFTContracts[0], argsCSP, value, gasLimit, gasPrice, _raiseEvent);
 
@@ -1879,9 +1883,13 @@ public class WalletManager : MonoBehaviour
         string[] obj = { _token };
         string argsCSP = JsonConvert.SerializeObject(obj);
         string response;
-
-        if (int.Parse(_token) > 5000)
+        //if token has ID greater than 20,000 i.e. it is a mutant car
+        if(int.Parse(_token) > 20000)
+            response = await EVM.Call(chain, network, NFTContracts[2], NFTContractsAbi[2], methodNFT, argsCSP);
+        //if token has ID greater than 5,000 and less than 20,000 i.e. it is a token of NFT2.0
+        else if (int.Parse(_token) > 5000)
             response = await EVM.Call(chain, network, NFTContracts[1], NFTContractsAbi[1], methodNFT, argsCSP);
+        //if token has ID less than 5000 i.e. it is a token of NFT1.0
         else
             response = await EVM.Call(chain, network, NFTContracts[0], NFTContractsAbi[0], methodNFT, argsCSP);
 

@@ -227,13 +227,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1920547}
-  m_LocalRotation: {x: 0, y: -0.8191521, z: 0, w: 0.57357645}
-  m_LocalPosition: {x: 0.32623407, y: 2.585, z: 13.936333}
+  m_LocalRotation: {x: -0.39663553, y: -0.591726, z: -0.5664543, w: 0.414331}
+  m_LocalPosition: {x: 0.32623407, y: 2.14, z: 13.936333}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 439881455}
   m_RootOrder: 67
-  m_LocalEulerAnglesHint: {x: 0, y: -110, z: 0}
+  m_LocalEulerAnglesHint: {x: -87.5, y: -110, z: 0}
 --- !u!23 &1920549
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -21052,13 +21052,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1192666300}
-  m_LocalRotation: {x: 0, y: 0.257099, z: 0, w: 0.96638507}
-  m_LocalPosition: {x: 1.4343262, y: 8.42, z: -14.877143}
+  m_LocalRotation: {x: -0.68214375, y: 0.18211347, z: 0.18147887, w: 0.68452907}
+  m_LocalPosition: {x: 1.4343262, y: 8.03, z: -14.877143}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 439881455}
   m_RootOrder: 68
-  m_LocalEulerAnglesHint: {x: 0, y: 29.796, z: 0}
+  m_LocalEulerAnglesHint: {x: -89.8, y: 29.796, z: 0}
 --- !u!23 &1192666302
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -32213,8 +32213,6 @@ MonoBehaviour:
     ConnectBtn: {fileID: 0}
     ConnectedBtn: {fileID: 0}
     CoinText: {fileID: 0}
-  NFTTokens: 
-  metaDataURL: []
   IsGamePlay: 1
 --- !u!4 &1780137342
 Transform:
