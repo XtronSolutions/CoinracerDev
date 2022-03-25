@@ -5,24 +5,24 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-public class DebugUIElement : BaseDebugUIElement
+public class DebugUIElementBool : BaseDebugUIElement
 {
     [SerializeField] private TMP_Text KeyText;
     [SerializeField] private TMP_Text ValueText;
     [SerializeField] private string Key;
-    [SerializeField] private Slider Slider;
+    [SerializeField] private Toggle Toggle;
     [SerializeField] private Button ResetButton;
 
     private object DefaultValue;
 
     public override void Init(Data data)
     {
-        Slider.value = (float)data.Value;
-        ValueText.text = ((float)data.Value).ToString("0.00");
+        Toggle.isOn = (bool)data.Value;
+        ValueText.text = data.Value.ToString();
         KeyText.text = Key = data.Key;
         DefaultValue = data.DefaultValue;
 
-        Slider.onValueChanged.AddListener((float value) =>
+        Toggle.onValueChanged.AddListener((bool value) =>
         {
             OnValueChanged(value);
         });
@@ -32,14 +32,14 @@ public class DebugUIElement : BaseDebugUIElement
 
     protected override void OnValueChanged(object value)
     {
-        ValueText.text = ((float)value).ToString("0.00");
+        ValueText.text = value.ToString();
         Events.DoFireUpdateValue(new Data(Key, value));
     }
 
     protected override void OnDefaultButtonPressed()
     {
-        Slider.value = (float)DefaultValue;
-        ValueText.text = ((float)DefaultValue).ToString("0.00");
+        Toggle.isOn = (bool)DefaultValue;
+        ValueText.text = (DefaultValue).ToString();
         Events.DoFireUpdateValue(new Data(Key, DefaultValue));
     }
 }

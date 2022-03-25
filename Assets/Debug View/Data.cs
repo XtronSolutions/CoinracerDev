@@ -5,10 +5,10 @@ using UnityEngine;
 public struct Data
 {
     public string Key;
-    public float Value;
-    public float DefaultValue;
+    public object Value;
+    public object DefaultValue;
 
-    public Data(string key, float value, float defaultValue = 0)
+    public Data(string key, object value, object defaultValue = null)
     {
         Key = key;
         Value = value;

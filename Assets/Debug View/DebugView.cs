@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Reflection;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class DebugView : MonoBehaviour
 {
-    [SerializeField] private DebugUIElement ElementPrefab;
+    [SerializeField] private BaseDebugUIElement ElementPrefabFloats, ElementPrefabBools;
     [SerializeField] private GameObject ViewObject;
     [SerializeField] private Transform Container;
-    [SerializeField] private List<DebugUIElement> DebugElements;
+    [SerializeField] private List<BaseDebugUIElement> DebugElements;
     private DebugConstants DebugConstants;
 
     private void Awake()
@@ -39,29 +42,51 @@ public class DebugView : MonoBehaviour
 
             var debugConsts = this.DebugConstants;
             var fields = debugConsts.GetType().GetFields();
-            var prefab = ElementPrefab;
+            var prefab = ElementPrefabFloats;
 
             foreach (var field in fields)
             {
-                var element = Instantiate(prefab, Container);
-                var defaultValue = (float)field.GetValue(debugConsts);
-                var prefsValue = PlayerPrefs.GetFloat(field.Name, defaultValue);
-                var data = new Data(field.Name, prefsValue, defaultValue);
-                field.SetValue(debugConsts, prefsValue);
+                var element = Instantiate(GetValidPrefab(field.FieldType), Container);
+                var defaultValue = field.GetValue(debugConsts);
+
+                // var prefsValue = PlayerPrefs.GetFloat(field.Name, (float)defaultValue);
+                var data = new Data(field.Name, defaultValue, defaultValue);
+                field.SetValue(debugConsts, defaultValue);
                 element.Init(data);
                 element.gameObject.SetActive(true);
+                DebugElements.Add(element);
             }
         }
     }
 
+    private BaseDebugUIElement GetValidPrefab(Type t)
+    {
+        if (t == typeof(bool))
+        {
+            return ElementPrefabBools;
+        }
+
+        if (t == typeof(float))
+        {
+            return ElementPrefabFloats;
+        }
+
+        return null;
+    }
+
     private void OnUpdateValue(Data data)
     {
-        PlayerPrefs.SetFloat(data.Key, data.Value);
+        // PlayerPrefs.SetFloat(data.Key, (float)data.Value);
         DebugConstants.GetType().GetField(data.Key)?.SetValue(DebugConstants, data.Value);
     }
 
     public void Show()
     {
         ViewObject.SetActive(!ViewObject.activeSelf);
+    }
+
+    public void Reset()
+    {
+        foreach (var element in DebugElements) element.ResetToDefault();
     }
 }
