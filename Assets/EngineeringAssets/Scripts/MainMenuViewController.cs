@@ -1505,6 +1505,30 @@ public class MainMenuViewController : MonoBehaviour
         }
         //Constants.CheckAllNFT = true;
         
+        if (Constants.IsTest)
+        {
+            // for (int i = 0; i < Constants.StoredCarNames.Count; i++)
+            // {
+            //Debug.Log("Car name: " + Constants.StoredCarNames[i].ToLower());
+            for (int j = 0; j < _allCars.Count; j++)
+            {
+                //  if (Constants.StoredCarNames[i].ToLower() == _allCars[j].CarName.ToLower())
+                //   {
+                _selecteableCars.Add(_allCars[j].CarDetail);
+                //break;
+                // }
+            }
+            // }
+            LoadingScreen.SetActive(false);
+            _currentSelectedCarIndex = 0;
+            _SelectedTokenNameIndex = 0;
+            _SelectedTokenIDIndex = 0;
+            UpdateSelectedCarVisual(_currentSelectedCarIndex);
+            UpdateToken();
+            return;
+        }
+        
+        
         if (Constants.CheckAllNFT)
         {
             //for (int i = 0; i < Constants.TokenNFT.Count; i++)
