@@ -42,4 +42,5 @@ public class DebugConstants
     public float forwardFriction = 15;
     [Tooltip("How much grip the car should have on the road when turning.")]
     public float lateralFriction = 55;
+    public bool debugCollider;
 }

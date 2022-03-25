@@ -108,6 +108,8 @@ namespace DavidJalbert
         private float cubicScale = 1;
         private float inverseScaleAdjustment = 1;
         public static float carSpeed = 0f;
+        public bool debugCollider;
+        public GameObject DebugColliderObject;
 
         private void OnEnable()
         {
@@ -119,7 +121,15 @@ namespace DavidJalbert
             }
 
             if (Constants.IsMultiplayer)
+            {
                 PHView = GetComponent<PhotonView>();
+                if (PHView.IsMine)
+                {
+                    MapDebugValues();
+                    Events.OnGetValue += OnGetValue;
+                    Events.OnUpdateValue += OnUpdateValue;
+                }
+            }
         }
 
         private float OnGetValue(Data data) => (float)this.GetType().GetField(data.Key)?.GetValue(this);
@@ -127,12 +137,17 @@ namespace DavidJalbert
         private void OnUpdateValue(Data data)
         {
             this.GetType().GetField(data.Key)?.SetValue(this, data.Value);
+            if (DebugColliderObject)
+            {
+                DebugColliderObject.transform.localScale = Vector3.one * (colliderRadius * 2);
+                DebugColliderObject.SetActive(debugCollider);
+            }
         }
 
         private void MapDebugValues()
         {
             var constants = Events.DoGetDebugConstants();
-            if(constants != null)
+            if (constants != null)
             {
                 foreach (var field in constants.GetType().GetFields())
                 {
