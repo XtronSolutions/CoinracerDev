@@ -108,7 +108,7 @@ namespace DavidJalbert
         private float cubicScale = 1;
         private float inverseScaleAdjustment = 1;
         public static float carSpeed = 0f;
-        private bool debugCollider;
+        public bool debugCollider;
         public GameObject DebugColliderObject;
 
         private void OnEnable()
