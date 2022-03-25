@@ -107,7 +107,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1172327002188606304}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.76, z: -0.05}
+  m_LocalPosition: {x: 0, y: -1.7599999, z: 0.02}
   m_LocalScale: {x: 1.7125626, y: 1, z: 3.825569}
   m_Children: []
   m_Father: {fileID: 7644685520503631952}
@@ -15127,6 +15127,7 @@ GameObject:
   - component: {fileID: 4764269247841178712}
   - component: {fileID: 8624367305446896897}
   - component: {fileID: 3624705657386095451}
+  - component: {fileID: 6507105072681063651}
   m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
@@ -15274,7 +15275,6 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 1552558121440306613}
-  debugCollider: 0
   DebugColliderObject: {fileID: 8631934979263336784}
   Force: 100
   MaxVelocity: 25
@@ -15392,6 +15392,21 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &6507105072681063651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7644685520503631957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a3da8774c92f4a51bc9034b54ccc9e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FollowObject: {fileID: 7644685520488435014}
+  TargetObject: {fileID: 2327181251331261021}
+  Offset: {x: 0, y: 1.32, z: 0}
 --- !u!1 &7644685520511988607
 GameObject:
   m_ObjectHideFlags: 0
