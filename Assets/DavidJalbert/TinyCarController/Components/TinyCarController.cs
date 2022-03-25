@@ -108,28 +108,12 @@ namespace DavidJalbert
         private float cubicScale = 1;
         private float inverseScaleAdjustment = 1;
         public static float carSpeed = 0f;
-        public bool debugCollider;
+        private bool debugCollider;
         public GameObject DebugColliderObject;
 
         private void OnEnable()
         {
-            if (!Constants.IsMultiplayer)
-            {
-                MapDebugValues();
-                Events.OnGetValue += OnGetValue;
-                Events.OnUpdateValue += OnUpdateValue;
-            }
 
-            if (Constants.IsMultiplayer)
-            {
-                PHView = GetComponent<PhotonView>();
-                if (PHView.IsMine)
-                {
-                    MapDebugValues();
-                    Events.OnGetValue += OnGetValue;
-                    Events.OnUpdateValue += OnUpdateValue;
-                }
-            }
         }
 
         private float OnGetValue(Data data) => (float)this.GetType().GetField(data.Key)?.GetValue(this);
@@ -176,6 +160,30 @@ namespace DavidJalbert
             crossForward = transform.forward;
             crossRight = transform.right;
             crossUp = transform.up;
+
+            if (!Constants.IsMultiplayer)
+            {
+                MapDebugValues();
+                Events.OnGetValue += OnGetValue;
+                Events.OnUpdateValue += OnUpdateValue;
+            }
+
+            if (Constants.IsMultiplayer)
+            {
+                PHView = GetComponent<PhotonView>();
+                if (PHView.IsMine)
+                {
+                    MapDebugValues();
+                    Events.OnGetValue += OnGetValue;
+                    Events.OnUpdateValue += OnUpdateValue;
+                }
+            }
+
+            if (DebugColliderObject)
+            {
+                DebugColliderObject.transform.localPosition = sphereCollider.center;
+                DebugColliderObject.transform.localScale = Vector3.one * (colliderRadius * 2);
+            }
         }
 
         virtual protected void Update()
