@@ -33,6 +33,7 @@ public class MultiplayerUI
     
 }
 
+[RequireComponent(typeof(AudioSource))]
 public class RaceManager : MonoBehaviour
 {
     [SerializeField] private List<WayPoint> _wayPoints = new List<WayPoint>();
@@ -58,6 +59,7 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI positionNumber;
     [SerializeField] private GameObject positionLoader = null;
     [SerializeField] private TextMeshProUGUI racePosition = null;
+    [SerializeField] private AudioClip counterStartSound = null;
     public GameObject[] sapwnableSlider = null;
     public GameObject DebugEndRacebutton;
 
@@ -73,6 +75,9 @@ public class RaceManager : MonoBehaviour
     int RaceCounter = 5; //3
     public MultiplayerUI UIMultiplayer;
 
+    private AudioSource audioSource;
+
+    
     private void OnEnable()
     {
         Instance = this;
@@ -86,7 +91,23 @@ public class RaceManager : MonoBehaviour
             if (DebugEndRacebutton)
                 DebugEndRacebutton.SetActive(false);
         }
+
+        setAudioSource();
         //ClaimRewardButton.onClick.AddListener(ClaimReward);
+    }
+
+    //this function will be used to set audio source to play counter sound
+    //@param {} no param
+    //@return {} no return
+    private void setAudioSource()
+    {
+        if (counterStartSound == null)
+            return;
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.clip = counterStartSound;
+        audioSource.volume = 1.0f;
     }
 
     public void ToggleLoadingScreen(bool _state)
@@ -179,6 +200,9 @@ public class RaceManager : MonoBehaviour
     {
         if (RaceCounter < -1)
         {
+            //if counter sound is then stop that sound
+            if (audioSource.isPlaying)
+                audioSource.Stop();
             GameStartTimer.text = "";
 
             if (Constants.IsMultiplayer)
@@ -189,7 +213,9 @@ public class RaceManager : MonoBehaviour
         }
         else
         {
-
+            //if counter sound is not playing then play that sound
+            if (!audioSource.isPlaying)
+                audioSource.Play();
             yield return new WaitForSeconds(1);
             RaceCounter--;
 
