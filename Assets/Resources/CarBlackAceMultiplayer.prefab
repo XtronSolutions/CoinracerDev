@@ -5023,7 +5023,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3856199085986485580}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -1.098, y: -1.71, z: -1.83}
+  m_LocalPosition: {x: -1.098, y: -1.7, z: -1.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 137456619778059488}
@@ -10021,7 +10021,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5438657566501779301}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -1.098, y: -1.72, z: 1.28}
+  m_LocalPosition: {x: -1.098, y: -1.7, z: 1.28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3807719188294570910}
@@ -10178,7 +10178,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7146510963821196624}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 1.097, y: -1.72, z: 1.2889999}
+  m_LocalPosition: {x: 1.097, y: -1.7, z: 1.2889999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5298913525445044857}
@@ -15532,6 +15532,7 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 9154157195766667887}
+  debugCollider: 0
   DebugColliderObject: {fileID: 3503429834107559325}
   Force: 100
   MaxVelocity: 25
@@ -25974,7 +25975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carController: {fileID: 7644685520503631955}
-  engineSoundClip: {fileID: 8300000, guid: f42ee6c61e2b5a049b588a485b2f267f, type: 3}
+  engineSoundClip: {fileID: 8300000, guid: ce9c41a374fb8af4d808bc985dcabaf1, type: 3}
   enginePitchOverSpeed:
     serializedVersion: 2
     m_Curve:
@@ -26024,7 +26025,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  bumpSound: {fileID: 8300000, guid: 70e6f47b855a5824daceb98c0bfb27bb, type: 3}
+  bumpSound: {fileID: 8300000, guid: d02c0037b5384504084a4ffc796da977, type: 3}
   bumpOverMass:
     serializedVersion: 2
     m_Curve:
@@ -26056,7 +26057,7 @@ MonoBehaviour:
   grindMinForce: 1
   grindMaxForce: 2
   grindSmoothing: 5
-  landingSound: {fileID: 8300000, guid: 70e6f47b855a5824daceb98c0bfb27bb, type: 3}
+  landingSound: {fileID: 8300000, guid: d02c0037b5384504084a4ffc796da977, type: 3}
   landingMinForce: 30
   landingMaxForce: 40
 --- !u!1 &8106733561551694428
@@ -26083,7 +26084,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8106733561551694428}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 1.097, y: -1.714, z: -1.835}
+  m_LocalPosition: {x: 1.097, y: -1.7, z: -1.835}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 946432347706697922}
@@ -30942,11 +30943,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e0159a1b18d5c1f46b890a94555225bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e0159a1b18d5c1f46b890a94555225bd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e0159a1b18d5c1f46b890a94555225bd, type: 3}
       propertyPath: m_LocalRotation.w

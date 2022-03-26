@@ -1503,22 +1503,14 @@ public class MainMenuViewController : MonoBehaviour
         {
             ToggleTokenScreen(false);
         }
-        //Constants.CheckAllNFT = true;
         
-        if (Constants.IsTest)
+        if (Constants.DebugAllCars)
         {
-            // for (int i = 0; i < Constants.StoredCarNames.Count; i++)
-            // {
-            //Debug.Log("Car name: " + Constants.StoredCarNames[i].ToLower());
             for (int j = 0; j < _allCars.Count; j++)
             {
-                //  if (Constants.StoredCarNames[i].ToLower() == _allCars[j].CarName.ToLower())
-                //   {
                 _selecteableCars.Add(_allCars[j].CarDetail);
-                //break;
-                // }
             }
-            // }
+
             LoadingScreen.SetActive(false);
             _currentSelectedCarIndex = 0;
             _SelectedTokenNameIndex = 0;
@@ -1531,14 +1523,6 @@ public class MainMenuViewController : MonoBehaviour
         
         if (Constants.CheckAllNFT)
         {
-            //for (int i = 0; i < Constants.TokenNFT.Count; i++)
-            //{
-            //    Debug.Log(Constants.TokenNFT[i].Name);
-            //    for (int j = 0; j < Constants.TokenNFT[i].ID.Count; j++)
-            //    {
-            //        Debug.Log(Constants.TokenNFT[i].ID[j]);
-            //    }
-            //}
             int storedNFTS = 0;
             for (int i = 0; i < Constants.NFTStored.Length; i++)
                 storedNFTS += Constants.NFTStored[i];
@@ -2027,6 +2011,9 @@ public class MainMenuViewController : MonoBehaviour
     {
         Constants.SelectedWage = _amount;
         Constants.ChipraceScore = "50";
+
+        if (IsDebugBuild)
+            Constants.ChipraceScore = "550";
 
         //if (_amount == 5)
            // Constants.ChipraceScore = "10";

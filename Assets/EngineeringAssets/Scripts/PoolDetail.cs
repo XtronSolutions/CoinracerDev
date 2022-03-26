@@ -233,7 +233,7 @@ public class PoolDetail : MonoBehaviour
                         if (WalletManager.Instance.CheckChipracebalance(UpgradableAmount))
                         {
                             MainMenuViewController.Instance.LoadingScreen.SetActive(true);
-                            bool _isApproved = await WalletManager.Instance.CheckCraceApprovalChiprace(UpgradableAmount);
+                            bool _isApproved = await WalletManager.Instance.CheckCraceApprovalChiprace(UpgradableAmount, TokenData.ID);
                             if (_isApproved)
                             {
                                 MainMenuViewController.Instance.LoadingScreen.SetActive(false);
@@ -241,6 +241,7 @@ public class PoolDetail : MonoBehaviour
                             }
                             else
                             {
+                                Constants.NFTTokenApproval = TokenData.ID;
                                 MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                                 ChipraceHandler.Instance.CraceChipraceApprovalScreen.SetActive(true);
                             }
@@ -272,7 +273,7 @@ public class PoolDetail : MonoBehaviour
             {
                 if (WalletManager.Instance.CheckChipracebalanceWhole(Constants.ChipraceWithdrawFees))
                 {
-                    bool _isApproved = await WalletManager.Instance.CheckCraceApprovalChiprace(Constants.ChipraceWithdrawFees);
+                    bool _isApproved = await WalletManager.Instance.CheckCraceApprovalChiprace(Constants.ChipraceWithdrawFees, TokenData.ID);
                     if (_isApproved)
                         WalletManager.Instance.emergencyExitChipRace(TokenData.Name, TokenData.ID.ToString(), Constants.ChipraceWithdrawFees);
                     else

@@ -96,6 +96,8 @@ public static class Constants
     public static bool IsTestNet = true;
     public static bool IsTest = true;
     public static bool IsStagging = true;
+    public static bool DebugAllCars = true;// bool to enable all cars
+    public static bool IsDebugBuild = true;//apply pvp score 500+/enable force end race on levels
 
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
@@ -132,6 +134,8 @@ public static class Constants
     public static bool TimerRunning = false;
     public static bool ClaimedReward = false;
     public static readonly string HashKey = "us-H*?fBg9]6Kse";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"//us-H*?fBg9]6Kse
+    public static readonly string TestnetHashKey = "testingkey";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"//us-H*?fBg9]6Kse
+
     public static bool FreeMultiplayer = false;
     public static bool EarnMultiplayer = false;
     public static bool OtherPlayerDeposit = false;

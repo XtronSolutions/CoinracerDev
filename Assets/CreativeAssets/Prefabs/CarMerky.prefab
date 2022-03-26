@@ -15389,6 +15389,7 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 0}
+  debugCollider: 0
   DebugColliderObject: {fileID: 1529419553709954724}
   Force: 100
   MaxVelocity: 25
@@ -25627,7 +25628,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carController: {fileID: 7644685520503631955}
-  engineSoundClip: {fileID: 8300000, guid: f42ee6c61e2b5a049b588a485b2f267f, type: 3}
+  engineSoundClip: {fileID: 8300000, guid: 3e29a8c029ef9ee4880b22bba336d393, type: 3}
   enginePitchOverSpeed:
     serializedVersion: 2
     m_Curve:
@@ -25677,7 +25678,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  bumpSound: {fileID: 8300000, guid: 70e6f47b855a5824daceb98c0bfb27bb, type: 3}
+  bumpSound: {fileID: 8300000, guid: d02c0037b5384504084a4ffc796da977, type: 3}
   bumpOverMass:
     serializedVersion: 2
     m_Curve:
@@ -25709,7 +25710,7 @@ MonoBehaviour:
   grindMinForce: 1
   grindMaxForce: 2
   grindSmoothing: 5
-  landingSound: {fileID: 8300000, guid: 70e6f47b855a5824daceb98c0bfb27bb, type: 3}
+  landingSound: {fileID: 8300000, guid: d02c0037b5384504084a4ffc796da977, type: 3}
   landingMinForce: 30
   landingMaxForce: 40
 --- !u!1 &8753121508877087522
@@ -25736,7 +25737,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8753121508877087522}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.845, y: -2.18, z: -1.193}
+  m_LocalPosition: {x: -0.845, y: -1.75, z: -1.193}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6747682555644724454}
@@ -25767,7 +25768,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8753121508877087524}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.83, y: -2.1799996, z: 1.6390396}
+  m_LocalPosition: {x: -0.83, y: -1.75, z: 1.6390396}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6939193664244650287}
@@ -25798,7 +25799,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8753121508877087596}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0.833, y: -2.18, z: -1.204}
+  m_LocalPosition: {x: 0.833, y: -1.75, z: -1.204}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 597974324566910815}
@@ -25829,7 +25830,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8753121508877087598}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0.852, y: -2.1799996, z: 1.6390396}
+  m_LocalPosition: {x: 0.852, y: -1.75, z: 1.6390396}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 162809555530490337}
@@ -30692,11 +30693,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1468b65416b73e64dacaac0dd625b504, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.26
+      value: 0.653
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1468b65416b73e64dacaac0dd625b504, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1468b65416b73e64dacaac0dd625b504, type: 3}
       propertyPath: m_LocalRotation.w

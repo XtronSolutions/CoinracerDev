@@ -19,7 +19,7 @@ public class NFTDataHandler : MonoBehaviour
     public TextMeshProUGUI ModelName;
     public TextMeshProUGUI ModelID;
  
-    private float speed = 0.03f;
+    private float speed = 0.052f;
     private int tokenID = 0;
     public void AssignData(Sprite[] _sprites,string _name, string _id)
     {
