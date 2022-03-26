@@ -97,7 +97,7 @@ public static class Constants
     public static bool IsTest = false;
     public static bool IsStagging = true;
     public static bool DebugAllCars = false;// bool to enable all cars
-    public static bool IsDebugBuild = false;//apply pvp score 500+/enable force end race on levels
+    public static bool IsDebugBuild = true;//apply pvp score 500+/enable force end race on levels
 
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
