@@ -2827,4 +2827,7 @@ public class WalletManager : MonoBehaviour
 #endif
 
     }
+
+
+    //{"NFTNameList":["Hovercar"],"NFTList":[5232]}
 }
