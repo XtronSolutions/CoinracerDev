@@ -15292,7 +15292,7 @@ GameObject:
   - component: {fileID: 2479735286608876922}
   - component: {fileID: 2841615056441669460}
   - component: {fileID: 8826770495499651177}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Car Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15368,7 +15368,7 @@ MonoBehaviour:
   sideFriction: 0.3
   collidableLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294963199
   adjustToScale: 1
   accelerationCurve:
     serializedVersion: 2
@@ -15439,6 +15439,7 @@ MonoBehaviour:
   lateralFriction: 55
   IsMultiplayer: 0
   PHView: {fileID: 5630451334339959755}
+  debugCollider: 0
   DebugColliderObject: {fileID: 6675026166003819119}
   Force: 100
   MaxVelocity: 25

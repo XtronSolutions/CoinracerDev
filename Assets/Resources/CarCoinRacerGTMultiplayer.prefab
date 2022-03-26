@@ -4993,7 +4993,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3774512570102447078}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.8599999, z: -0.13}
+  m_LocalPosition: {x: 0, y: -1.3499999, z: -0.13}
   m_LocalScale: {x: 2.01875, y: 0.9375, z: 4.5022497}
   m_Children: []
   m_Father: {fileID: 7644685520503631952}
@@ -15368,7 +15368,7 @@ MonoBehaviour:
   sideFriction: 0.3
   collidableLayers:
     serializedVersion: 2
-    m_Bits: 4294955007
+    m_Bits: 4294963199
   adjustToScale: 1
   accelerationCurve:
     serializedVersion: 2
@@ -15571,7 +15571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FollowObject: {fileID: 7644685520488435014}
   TargetObject: {fileID: 8052246274674471820}
-  Offset: {x: 0, y: 0.7, z: -0.13}
+  Offset: {x: 0, y: 1.21, z: -0.13}
 --- !u!1 &7644685520511988607
 GameObject:
   m_ObjectHideFlags: 0
