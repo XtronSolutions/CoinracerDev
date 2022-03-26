@@ -10773,6 +10773,7 @@ MonoBehaviour:
   positionLoader: {fileID: 836948289}
   racePosition: {fileID: 1395153161}
   sapwnableSlider: []
+  DebugEndRacebutton: {fileID: 2005799533}
   player1Position: 0
   player2Position: 0
   _miniMapCounter: 0
@@ -35842,7 +35843,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 610202714}
         m_TargetAssemblyTypeName: RaceManager, Assembly-CSharp
         m_MethodName: OnRaceDone
         m_Mode: 1

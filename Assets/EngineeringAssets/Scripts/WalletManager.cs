@@ -1479,7 +1479,14 @@ public class WalletManager : MonoBehaviour
 
     async public void CheckHash(string _pid)
     {
-        string _hash = await Web3GL.GetEncodedHash(_pid, Constants.WalletAddress, Constants.HashKey);
+        string tempHash = "";
+        if (Constants.IsTestNet)
+            tempHash = Constants.TestnetHashKey;
+        else
+            tempHash = Constants.HashKey;
+
+
+        string _hash = await Web3GL.GetEncodedHash(_pid, Constants.WalletAddress, tempHash);
 
         string methodCrace = "checkHash";// smart contract method to call
         string[] obj = { _pid, Constants.WalletAddress, _hash };
@@ -1509,7 +1516,15 @@ public class WalletManager : MonoBehaviour
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(true);
 
-            string _hash = await Web3GL.GetEncodedHash(_pid, Constants.WalletAddress, Constants.HashKey);
+
+            string tempHash = "";
+            if (Constants.IsTestNet)
+                tempHash = Constants.TestnetHashKey;
+            else
+                tempHash = Constants.HashKey;
+
+
+            string _hash = await Web3GL.GetEncodedHash(_pid, Constants.WalletAddress, tempHash);
             string methodCSP = "endRace";
 
             EndRacePayload _data = new EndRacePayload();
@@ -1925,7 +1940,13 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
-            string privatekey = Constants.HashKey;
+            string tempHash = "";
+            if (Constants.IsTestNet)
+                tempHash = Constants.TestnetHashKey;
+            else
+                tempHash = Constants.HashKey;
+
+            string privatekey = tempHash;
             string address = Constants.WalletAddress;
 
             try

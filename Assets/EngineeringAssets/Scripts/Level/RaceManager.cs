@@ -59,6 +59,7 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private GameObject positionLoader = null;
     [SerializeField] private TextMeshProUGUI racePosition = null;
     public GameObject[] sapwnableSlider = null;
+    public GameObject DebugEndRacebutton;
 
 
     public int player1Position = 0;
@@ -75,8 +76,17 @@ public class RaceManager : MonoBehaviour
     private void OnEnable()
     {
         Instance = this;
-        //ClaimRewardButton.onClick.AddListener(ClaimReward);
 
+        if (Constants.IsDebugBuild)
+        {
+            if (DebugEndRacebutton)
+                DebugEndRacebutton.SetActive(true);
+        }else
+        {
+            if (DebugEndRacebutton)
+                DebugEndRacebutton.SetActive(false);
+        }
+        //ClaimRewardButton.onClick.AddListener(ClaimReward);
     }
 
     public void ToggleLoadingScreen(bool _state)
