@@ -294,6 +294,7 @@ public class RaceManager : MonoBehaviour
     {
         int indexOfPayPoint = _wayPoints.IndexOf(data.Waypoint);
         //Debug.Log("indexofwaypoint");
+        //Debug.Log(indexOfPayPoint);
         // miniMap.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
         //startSinglePlayerprogressBar();
 
