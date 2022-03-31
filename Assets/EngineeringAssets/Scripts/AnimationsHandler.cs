@@ -20,6 +20,7 @@ public class MainMenuUI
     public Button settings;
     public Button garage;
     public Button Chiprace;
+    public Button grimaceTournament;
 }
 
 [Serializable]
@@ -210,6 +211,7 @@ public class AnimationsHandler : MonoBehaviour
         {
             //adding the game mode buttons to the list
             mainMenuGameModeButtons.Add(UIMainMenu.tournament);
+            mainMenuGameModeButtons.Add(UIMainMenu.grimaceTournament);
             mainMenuGameModeButtons.Add(UIMainMenu.practice);
             mainMenuGameModeButtons.Add(UIMainMenu.multiplayer);
             mainMenuGameModeButtons.Add(UIMainMenu.Chiprace);
@@ -240,13 +242,14 @@ public class AnimationsHandler : MonoBehaviour
         if (mainMenuButtons.Count > 0)
             return mainMenuButtons;
 
+        mainMenuButtons.Add(UIMainMenu.settings);
         mainMenuButtons.Add(UIMainMenu.tournament);
+        mainMenuButtons.Add(UIMainMenu.grimaceTournament);
         mainMenuButtons.Add(UIMainMenu.practice);
         mainMenuButtons.Add(UIMainMenu.multiplayer);
         mainMenuButtons.Add(UIMainMenu.Chiprace);
         mainMenuButtons.Add(UIMainMenu.leaderboard);
         mainMenuButtons.Add(UIMainMenu.garage);
-        mainMenuButtons.Add(UIMainMenu.settings);
         return mainMenuButtons;
     }
 
