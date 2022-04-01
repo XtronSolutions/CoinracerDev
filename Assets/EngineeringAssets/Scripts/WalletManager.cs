@@ -465,7 +465,14 @@ public class WalletManager : MonoBehaviour
                     StoredHash = response;
                     StoredMethodName = "BuyingPass";
 
-                } else
+                }
+                else if (Constants.GrimaceBuyingPass) //if buying pass call was initiated for transaction
+                {
+                    StoredHash = response;
+                    StoredMethodName = "GBuyingPass";
+
+                }
+                else
                 {
                     StoredHash = response;
                     StoredMethodName = "transfer";
@@ -482,6 +489,11 @@ public class WalletManager : MonoBehaviour
                 Constants.BuyingPass = false;
                 MainMenuViewController.Instance.OnPassBuy(false);
             }
+            else if (Constants.GrimaceBuyingPass)
+            {
+                Constants.GrimaceBuyingPass = false;
+                MainMenuViewController.Instance.GrimaceOnPassBuy(false);
+            }
             else
             {
                 MainMenuViewController.Instance.StartTournament(false);
@@ -497,10 +509,16 @@ public class WalletManager : MonoBehaviour
         {
             switch (StoredMethodName)
             {
+                
                 case "BuyingPass":
                     Constants.BuyingPass = false;
                     Constants.PrintLog("pass bought was success");
                     MainMenuViewController.Instance.OnPassBuy(true);
+                    break;
+                case "GBuyingPass":
+                    Constants.GrimaceBuyingPass = false;
+                    Constants.PrintLog("pass bought for grimace was success");
+                    MainMenuViewController.Instance.GrimaceOnPassBuy(true);
                     break;
                 case "transfer":
                     Constants.PrintLog("transaction was success for tournament");
@@ -605,7 +623,7 @@ public class WalletManager : MonoBehaviour
     /// Called to check amount of  BEP20 (crace) before entering tournament
     /// </summary>
     /// <returns></returns>
-    public bool CheckBalanceTournament(bool _checkBalance, bool _checkDiscountBalance, bool _checkPassBalance, bool _checkMultiplayerAmount)
+    public bool CheckBalanceTournament(bool _checkBalance, bool _checkDiscountBalance, bool _checkPassBalance, bool _checkMultiplayerAmount, bool _CheckGrimacePass,bool _checkGrimaceTournament)
     {
         bool _havebalance = false;
         int _amountToCheck = 0;
@@ -619,6 +637,10 @@ public class WalletManager : MonoBehaviour
                 _amountToCheck = Constants.TournamentPassPrice;
             else if (_checkMultiplayerAmount)
                 _amountToCheck = Constants.CalculatedCrace;
+            else if (_CheckGrimacePass)
+                _amountToCheck = Constants.GrimaceTournamentPassPrice;
+            else if (_checkGrimaceTournament)
+                _amountToCheck = Constants.GrimaceTicketPrice;
 
             if (actualBalance >= _amountToCheck || Constants.IsTest)
                 _havebalance = true;

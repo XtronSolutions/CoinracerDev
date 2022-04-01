@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 
 [Serializable]
 public class LeaderBoardDataUI
 {
+    public Button CoinracerLeaderboard;
+    public Button GramiceLeaderboard;
     public GameObject MainScreen;
     public GameObject ObjectPrefab;
     public Transform ScrollContent;
@@ -30,7 +33,29 @@ public class LeaderboardManager : MonoBehaviour
         LeaderBoardUIData.MainScreen.SetActive(true);
         LeaderBoardUIData.LoaderObj.SetActive(true);
 
-        FirebaseManager.Instance.QueryDB("TimeSeconds", "desc");
+        FirebaseManager.Instance.QueryDB("TimeSeconds", "desc",false);
+        ToggleCoinracerButton(false);
+        ToggleGrimaceButton(true);
+    }
+
+    public void EnableGrimaceGameplayLeaderboard()
+    {
+        LeaderBoardUIData.MainScreen.SetActive(true);
+        LeaderBoardUIData.LoaderObj.SetActive(true);
+
+        FirebaseManager.Instance.QueryDB("TimeSeconds", "desc",true);
+        ToggleCoinracerButton(true);
+        ToggleGrimaceButton(false);
+    }
+
+    public void ToggleCoinracerButton(bool state)
+    {
+        LeaderBoardUIData.CoinracerLeaderboard.interactable = state;
+    }
+
+    public void ToggleGrimaceButton(bool state)
+    {
+        LeaderBoardUIData.GramiceLeaderboard.interactable = state;
     }
 
     public void CloseLeaderBoard()

@@ -452,6 +452,12 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
             GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseManager.Instance.PlayerData.WalletAddress);
             GamePlayUIHandler.Instance.SetInputUsername_InputFieldUI(FirebaseManager.Instance.PlayerData.UserName);
         }
+        else if (GamePlayUIHandler.Instance && Constants.IsGrimaceTournament)
+        {
+            GamePlayUIHandler.Instance.ToggleInputScreen_InputFieldUI(true);
+            GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseManager.Instance.PlayerData.WalletAddress);
+            GamePlayUIHandler.Instance.SetInputUsername_InputFieldUI(FirebaseManager.Instance.PlayerData.UserName);
+        }
         else if (GamePlayUIHandler.Instance && Constants.IsPractice)
         {
             _raceOverMenuObject.SetActive(true);

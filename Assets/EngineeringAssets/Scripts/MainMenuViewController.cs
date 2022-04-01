@@ -15,6 +15,20 @@ using Photon.Pun;
 #region SuperClasses
 
 [Serializable]
+public class GrimaceTournamentUI
+{
+    public GameObject MainScreen;
+    public TextMeshProUGUI LowerHeaderText;
+    public TextMeshProUGUI TimerText;
+    public TextMeshProUGUI FotterText;
+    public TextMeshProUGUI Fotter2Text;
+    public GameObject NextWeekScreen;
+    public GameObject ActiveScreen;
+    public GameObject LoaderObj;
+    public TextMeshProUGUI TournamentStartText;
+}
+
+[Serializable]
 public class TokenCarSelectionUI
 {
     public GameObject MainScreen;
@@ -156,6 +170,22 @@ public class FlagSelectionUI
 }
 
 [Serializable]
+public class GrimaceSelectionUI
+{
+    public GameObject MainScreen;
+    public Button BuyPassButton;
+    public TextMeshProUGUI BuyPassText;
+    public Button PlayFromPassButton;
+    public TextMeshProUGUI PlayFromPassText;
+    public Button SingleTryButton;
+    public TextMeshProUGUI SingleTryText;
+    public Button CancelButton;
+    public Button BuyPassCraceButton;
+    public Button BuyPassCancelButton;
+    public GameObject TournamentPassScreen;
+}
+
+[Serializable]
 public class SelectionUI
 {
     public GameObject MainScreen;
@@ -237,6 +267,7 @@ public class MainMenuViewController : MonoBehaviour
     [SerializeField] private GameObject MapSelection = null;
     [SerializeField] private Button _singlePlayerButton = null;
     [SerializeField] private Button _tournamentButton = null;
+    [SerializeField] private Button _grimaceTournamentButton = null;
     [SerializeField] private Button _backToModeSelectionButton = null;
     [SerializeField] private Button _goToMapSelectionButton = null;
     [SerializeField] private Button _backToCarSelectionButton = null;
@@ -266,9 +297,11 @@ public class MainMenuViewController : MonoBehaviour
 
     public GameObject TournamentMiniScreen;
     public TournamentUI UITournament;
+    public GrimaceTournamentUI UIGrimaceTournament;
     public RegisterUI UIRegister;
     public LoginUI UILogin;
     public SelectionUI UISelection;
+    public GrimaceSelectionUI UIGrimaceSelection;
     public FlagSelectionUI UIFlagSelection;
     public GarageUI UIGarage;
     public ForgetPasswordUI UIForgetPassword;
@@ -333,7 +366,11 @@ public class MainMenuViewController : MonoBehaviour
         ResetRegisterFields();
         _audioSource.GetComponent<AudioSource>();
         _singlePlayerButton.onClick.AddListener(OnGoToCarSelectionPractice);
+
         _tournamentButton.onClick.AddListener(OnGoToCarSelectionTournament);
+        _grimaceTournamentButton.onClick.AddListener(OnGoToCarSelectionGrimaceTournament);
+
+
         //_backToModeSelectionButton.onClick.AddListener(OnGoBackToModeSelection);
         _goToMapSelectionButton.onClick.AddListener(OnGoToMapSelection);
         _backToCarSelectionButton.onClick.AddListener(BackToGoToCarSelection);
@@ -360,6 +397,7 @@ public class MainMenuViewController : MonoBehaviour
         ButtonListenerRegister();
         ButtonListenerLogin();
         ButtonListeners_SelectionUI();
+        GrimaceButtonListeners_SelectionUI();
         ButtonListener_FlagSelectionUI();
         CheckForAutoLogin();
         SubscribeEvents_PasswordReset();
@@ -395,9 +433,22 @@ public class MainMenuViewController : MonoBehaviour
         UISelection.MainScreen.SetActive(_state);
     }
 
+    public void GrimaceToggleScreen_SelectionUI(bool _state)
+    {
+        if (_state)
+            GrimaceChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.GrimaceTournamentPassPrice + " $crace. unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + Constants.GrimaceTicketPrice + " $crace, if you hold " + Constants.DiscountForCrace + " $crace - " + Constants.DiscountPercentage + "% discount.");
+
+        UIGrimaceSelection.MainScreen.SetActive(_state);
+    }
+
     public void TogglePassScreen_SelectionUI(bool _state)
     {
         UISelection.TournamentPassScreen.SetActive(_state);
+    }
+
+    public void GrimaceTogglePassScreen_SelectionUI(bool _state)
+    {
+        UIGrimaceSelection.TournamentPassScreen.SetActive(_state);
     }
 
     public void ButtonListeners_SelectionUI()
@@ -409,6 +460,17 @@ public class MainMenuViewController : MonoBehaviour
         UISelection.BuyPassCancelButton.onClick.AddListener(BackClickedPassScreen_SelectionUI);
         UISelection.SingleTryButton.onClick.AddListener(PlayOnce_SelectionUI);
     }
+
+    public void GrimaceButtonListeners_SelectionUI()
+    {
+        UIGrimaceSelection.BuyPassButton.onClick.AddListener(GrimaceBuyPassClicked_SelectionUI);
+        UIGrimaceSelection.PlayFromPassButton.onClick.AddListener(GrimacePlayFromPass_SelectionUI);
+        UIGrimaceSelection.CancelButton.onClick.AddListener(GrimaceCancelSelection_SelectionUI);
+        UIGrimaceSelection.BuyPassCraceButton.onClick.AddListener(GrimaceBuyPassCraceClicked_SelectionUI);
+        UIGrimaceSelection.BuyPassCancelButton.onClick.AddListener(GrimaceBackClickedPassScreen_SelectionUI);
+        UIGrimaceSelection.SingleTryButton.onClick.AddListener(GrimacePlayOnce_SelectionUI);
+    }
+
     public void ChangeDisclaimerTexts_SelectionUI(string txt1, string txt2, string txt3)
     {
         UISelection.BuyPassText.text = txt1;
@@ -416,14 +478,33 @@ public class MainMenuViewController : MonoBehaviour
         UISelection.SingleTryText.text = txt3;
     }
 
+    public void GrimaceChangeDisclaimerTexts_SelectionUI(string txt1, string txt2, string txt3)
+    {
+        UIGrimaceSelection.BuyPassText.text = txt1;
+        UIGrimaceSelection.PlayFromPassText.text = txt2;
+        UIGrimaceSelection.SingleTryText.text = txt3;
+    }
+
     public void CancelSelection_SelectionUI()
     {
         ToggleScreen_SelectionUI(false);
     }
+
+    public void GrimaceCancelSelection_SelectionUI()
+    {
+        GrimaceToggleScreen_SelectionUI(false);
+    }
+
     public void BuyPassClicked_SelectionUI()
     {
         ToggleScreen_SelectionUI(false);
         TogglePassScreen_SelectionUI(true);
+    }
+
+    public void GrimaceBuyPassClicked_SelectionUI()
+    {
+        GrimaceToggleScreen_SelectionUI(false);
+        GrimaceTogglePassScreen_SelectionUI(true);
     }
 
     public void BackClickedPassScreen_SelectionUI()
@@ -432,11 +513,17 @@ public class MainMenuViewController : MonoBehaviour
         TogglePassScreen_SelectionUI(false);
     }
 
+    public void GrimaceBackClickedPassScreen_SelectionUI()
+    {
+        GrimaceToggleScreen_SelectionUI(false);
+        GrimaceTogglePassScreen_SelectionUI(false);
+    }
 
     public void BuyPasswithCrace()
     {
-        if (WalletManager.Instance.CheckBalanceTournament(false, false, true, false))
+        if (WalletManager.Instance.CheckBalanceTournament(false, false, true, false,false,false))
         {
+            GrimaceBuyingPass = false;
             BuyingPass = true;
             WalletManager.Instance.TransferToken(TournamentPassPrice);
         }
@@ -446,6 +533,22 @@ public class MainMenuViewController : MonoBehaviour
             ShowToast(3f, "Insufficient $CRACE value, need " + Constants.TournamentPassPrice + " $CRACE");
         }
     }
+
+    public void GrimaceBuyPasswithCrace()
+    {
+        if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false,true,false))
+        {
+            BuyingPass = false;
+            GrimaceBuyingPass = true;
+            WalletManager.Instance.TransferToken(GrimaceTournamentPassPrice);
+        }
+        else
+        {
+            LoadingScreen.SetActive(false);
+            ShowToast(3f, "Insufficient $CRACE value, need " + Constants.GrimaceTournamentPassPrice + " $CRACE");
+        }
+    }
+
     public void BuyPassCraceClicked_SelectionUI()
     {
         if (WalletConnected)
@@ -501,6 +604,44 @@ public class MainMenuViewController : MonoBehaviour
         }
     }
 
+    public void GrimaceBuyPassCraceClicked_SelectionUI()
+    {
+        if (WalletConnected)
+        {
+            if (GrimaceTournamentActive == true)
+            {
+                LoadingScreen.SetActive(true);
+                if (WalletManager.Instance)
+                {
+                    if (FirebaseManager.Instance.PlayerData.GPassBought == false)
+                    {
+                        GrimaceBuyPasswithCrace();
+                    }
+                    else
+                    {
+                        LoadingScreen.SetActive(false);
+                        ShowToast(3f, "You already own a tournament pass");
+                    }
+                }
+                else
+                {
+                    LoadingScreen.SetActive(false);
+                    Constants.PrintError("WM instance is null BuyPassCraceClicked_SelectionUI");
+                }
+            }
+            else
+            {
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "No active tournament at the moment.");
+            }
+        }
+        else
+        {
+            LoadingScreen.SetActive(false);
+            ShowToast(3f, "Please connect your wallet first.");
+        }
+    }
+
     public void OnPassBuy(bool _state)
     {
         if (_state)
@@ -511,6 +652,26 @@ public class MainMenuViewController : MonoBehaviour
 
             FirebaseManager.Instance.PlayerData.PassBought = true;
             FirebaseManager.Instance.PlayerData.TournamentEndDate = TournamentManager.Instance.DataTournament.EndDate;
+            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+        }
+        else
+        {
+            LoadingScreen.SetActive(false);
+            ShowToast(3f, "Transaction was not successful, please try again.");
+        }
+
+    }
+
+    public void GrimaceOnPassBuy(bool _state)
+    {
+        if (_state)
+        {
+            ShowToast(3f, "You have successfully bought tournament pass for this tournament week.");
+            LoadingScreen.SetActive(false);
+            GrimaceBackClickedPassScreen_SelectionUI();
+
+            FirebaseManager.Instance.PlayerData.GPassBought = true;
+            FirebaseManager.Instance.PlayerData.GTournamentEndDate = TournamentManager.Instance.DataTournament.GEndDate;
             FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
         }
         else
@@ -579,6 +740,47 @@ public class MainMenuViewController : MonoBehaviour
         }
     }
 
+    public void GrimacePlayFromPass_SelectionUI()
+    {
+        if (WalletConnected)
+        {
+            if (GrimaceTournamentActive == true)
+            {
+                LoadingScreen.SetActive(true);
+                if (WalletManager.Instance)
+                {
+                    if (FirebaseManager.Instance.PlayerData.GPassBought)
+                    {
+
+                        GrimaceBackClickedPassScreen_SelectionUI();
+                        GrimaceStartTournament(true);   
+                    }
+                    else
+                    {
+                        LoadingScreen.SetActive(false);
+                        ShowToast(3f, "you have not bought tournament pass or pass expired");
+                    }
+
+                }
+                else
+                {
+                    LoadingScreen.SetActive(false);
+                    Constants.PrintError("WM instance is null PlayFromPass_SelectionUI");
+                }
+            }
+            else
+            {
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "No active tournament at the moment.");
+            }
+        }
+        else
+        {
+            LoadingScreen.SetActive(false);
+            ShowToast(3f, "Please connect your wallet first.");
+        }
+    }
+
     public void PlayOnce_SelectionUI()
     {
         if (Constants.IsTest)
@@ -595,13 +797,13 @@ public class MainMenuViewController : MonoBehaviour
                 if (WalletManager.Instance)
                 {
                     TicketPrice = TournamentManager.Instance.DataTournament.TicketPrice;
-                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false, false))
+                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false, false,false,false))
                     {
                         ShowToast(2f, "Congrats!, You have received " + Constants.DiscountPercentage + "% discount.");
                         TicketPrice = (TicketPrice * DiscountPercentage) / 100;
                     }
 
-                    if (WalletManager.Instance.CheckBalanceTournament(true, false, false, false))
+                    if (WalletManager.Instance.CheckBalanceTournament(true, false, false, false,false,false))
                     {
                         WalletManager.Instance.TransferToken(TicketPrice);
                     }
@@ -630,6 +832,56 @@ public class MainMenuViewController : MonoBehaviour
         }
     }
 
+    public void GrimacePlayOnce_SelectionUI()
+    {
+        if (Constants.IsTest)
+        {
+            MainMenuViewController.Instance.GrimaceStartTournament(true);
+            return;
+        }
+
+        if (WalletConnected)
+        {
+            if (GrimaceTournamentActive == true)
+            {
+                LoadingScreen.SetActive(true);
+                if (WalletManager.Instance)
+                {
+                    GrimaceTicketPrice = TournamentManager.Instance.DataTournament.GTicketPrice;
+                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false, false, false,false))
+                    {
+                        ShowToast(2f, "Congrats!, You have received " + Constants.DiscountPercentage + "% discount.");
+                        GrimaceTicketPrice = (GrimaceTicketPrice * DiscountPercentage) / 100;
+                    }
+
+                    if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, false,true))
+                    {
+                        WalletManager.Instance.TransferToken(TicketPrice);
+                    }
+                    else
+                    {
+                        LoadingScreen.SetActive(false);
+                        ShowToast(3f, "Insufficient $CRACE value.");
+                    }
+                }
+                else
+                {
+                    LoadingScreen.SetActive(false);
+                    Constants.PrintError("WM instance is null PlayOnce_SelectionUI");
+                }
+            }
+            else
+            {
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "No active tournament at the moment.");
+            }
+        }
+        else
+        {
+            LoadingScreen.SetActive(false);
+            ShowToast(3f, "Please connect your wallet first.");
+        }
+    }
     #endregion
 
     #region FlagSelection
@@ -1148,6 +1400,12 @@ public class MainMenuViewController : MonoBehaviour
                 _levelsSettings.Add(_allLevelsSettings[1]);
                 //_levelsSettings.Add(_allLevelsSettings[2]);
             }
+            else if (IsGrimaceTournament)
+            {
+                _levelsSettings.Add(_allLevelsSettings[4]);
+                //_levelsSettings.Add(_allLevelsSettings[2]);
+            }
+
         }
 
 
@@ -1237,6 +1495,41 @@ public class MainMenuViewController : MonoBehaviour
                     Constants.PrintError("WM instance is null OnGoToCarSelectionTournament");
                 }
             } else
+            {
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "No active tournament at the moment.");
+            }
+        }
+        else
+        {
+            LoadingScreen.SetActive(false);
+            ShowToast(3f, "Please connect your wallet first.");
+        }
+    }
+
+    public void OnGoToCarSelectionGrimaceTournament()
+    {
+        if (Constants.IsTest)
+        {
+            GrimaceToggleScreen_SelectionUI(true);
+            return;
+        }
+
+        if (WalletConnected)
+        {
+            if (GrimaceTournamentActive == true)
+            {
+                if (WalletManager.Instance)
+                {
+                    GrimaceToggleScreen_SelectionUI(true);
+                }
+                else
+                {
+                    LoadingScreen.SetActive(false);
+                    Constants.PrintError("WM instance is null OnGoToCarSelectionTournament");
+                }
+            }
+            else
             {
                 LoadingScreen.SetActive(false);
                 ShowToast(3f, "No active tournament at the moment.");
@@ -1349,6 +1642,7 @@ public class MainMenuViewController : MonoBehaviour
             LoadingScreen.SetActive(true);
             CheckBoughtCars();
             IsTournament = true;
+            IsGrimaceTournament = false;
             IsPractice = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
@@ -1364,6 +1658,7 @@ public class MainMenuViewController : MonoBehaviour
             LoadingScreen.SetActive(true);
             CheckBoughtCars();
             IsTournament = true;
+            IsGrimaceTournament = false;
             IsPractice = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
@@ -1373,6 +1668,47 @@ public class MainMenuViewController : MonoBehaviour
             CarSelection3dObject.SetActive(true);
             MapSelection.SetActive(false);
         } else
+        {
+            LoadingScreen.SetActive(false);
+            ShowToast(3f, "Transaction was not successful, please try again.");
+            //Invoke("StartWithDelay", 4f);
+        }
+    }
+
+    public void GrimaceStartTournament(bool _canstart = false)
+    {
+        if (Constants.IsTest)
+        {
+            LoadingScreen.SetActive(true);
+            CheckBoughtCars();
+            IsTournament = false;
+            IsGrimaceTournament = true;
+            IsPractice = false;
+            IsMultiplayer = false;
+            Constants.EarnMultiplayer = false;
+            GameModeSelectionObject.SetActive(false);
+            CarSelectionObject.SetActive(true);
+            CarSelection3dObject.SetActive(true);
+            MapSelection.SetActive(false);
+            return;
+        }
+
+        if (_canstart)
+        {
+            LoadingScreen.SetActive(true);
+            CheckBoughtCars();
+            IsTournament = false;
+            IsGrimaceTournament = true;
+            IsPractice = false;
+            IsMultiplayer = false;
+            Constants.EarnMultiplayer = false;
+
+            GameModeSelectionObject.SetActive(false);
+            CarSelectionObject.SetActive(true);
+            CarSelection3dObject.SetActive(true);
+            MapSelection.SetActive(false);
+        }
+        else
         {
             LoadingScreen.SetActive(false);
             ShowToast(3f, "Transaction was not successful, please try again.");

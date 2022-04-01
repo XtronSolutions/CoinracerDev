@@ -20,14 +20,16 @@ public class UserData
     public double NumberOfTriesPractice { get; set; }
     public bool PassBought { get; set; }
     public string Email { get; set; }
-    
     public string StalkedNFT { get; set; }
-
     public int AvatarID { get; set; }
     public EndDate TournamentEndDate { get; set; }
-
     public Timestamp ProfileCreated { get; set; }
     public int TotalWins { get; set; }
+
+    public double GNumberOfTries { get; set; }
+    public bool GPassBought { get; set; }
+    public double GTimeSeconds { get; set; }
+    public EndDate GTournamentEndDate { get; set; }
 }
 
 public class AuthCredentials
@@ -95,7 +97,7 @@ public class FirebaseManager : MonoBehaviour
     public void SetPlayerData(string _response)
     {
         JToken response = JObject.Parse(_response);
-        //Debug.Log(response);
+//        Debug.Log(response);
         PlayerData = new UserData();
         PlayerData.Email = (string)response.SelectToken("data").SelectToken("Email");
         PlayerData.UserName = (string)response.SelectToken("data").SelectToken("UserName");
@@ -115,6 +117,14 @@ public class FirebaseManager : MonoBehaviour
         PlayerData.ProfileCreated = new Timestamp();
         PlayerData.ProfileCreated.nanoseconds = (double)response.SelectToken("data").SelectToken("ProfileCreated").SelectToken("nanoseconds");
         PlayerData.ProfileCreated.seconds = (double)response.SelectToken("data").SelectToken("ProfileCreated").SelectToken("seconds");
+
+        PlayerData.GTimeSeconds = (double)response.SelectToken("data").SelectToken("GTimeSeconds");
+        PlayerData.GNumberOfTries = (double)response.SelectToken("data").SelectToken("GNumberOfTries");
+        PlayerData.GPassBought = (bool)response.SelectToken("data").SelectToken("GPassBought");
+        PlayerData.GTournamentEndDate = new EndDate();
+        PlayerData.GTournamentEndDate.nanoseconds = (double)response.SelectToken("data").SelectToken("GTournamentEndDate").SelectToken("nanoseconds");
+        PlayerData.GTournamentEndDate.seconds = (double)response.SelectToken("data").SelectToken("GTournamentEndDate").SelectToken("seconds");
+
         Constants.UserName = PlayerData.UserName;
         Constants.FlagSelectedIndex = PlayerData.AvatarID;
         if (MainMenuViewController.Instance)
@@ -469,6 +479,12 @@ public class FirebaseManager : MonoBehaviour
             PlayerData.Email = Constants.SavedEmail;
             PlayerData.TournamentEndDate = null;
             PlayerData.AvatarID = Constants.FlagSelectedIndex;
+
+            PlayerData.GNumberOfTries = 0;
+            PlayerData.GPassBought = false;
+            PlayerData.GTimeSeconds = 0;
+            PlayerData.GTournamentEndDate = null;
+
             if(Constants.isUsingFirebaseSDK)
                 AddFireStoreData(PlayerData);
         }
@@ -554,7 +570,7 @@ public class FirebaseManager : MonoBehaviour
         Debug.LogError("Doc update error : "+error);
     }
 
-    public void QueryDB(string _field, string _type)
+    public void QueryDB(string _field, string _type,bool isGrimace)
     {
         if (Constants.isUsingFirebaseSDK)
         {
@@ -565,7 +581,7 @@ public class FirebaseManager : MonoBehaviour
         else
         {
             //Send Leaderboard request to api
-            apiRequestHandler.Instance.getLeaderboard();
+            apiRequestHandler.Instance.getLeaderboard(isGrimace);
         }
     }
 

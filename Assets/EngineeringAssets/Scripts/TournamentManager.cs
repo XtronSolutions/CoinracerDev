@@ -35,6 +35,11 @@ public class TournamentData
     public int DiscountOnCrace { get; set; }
     public bool IsSingleMap { get; set; }
     public int LevelIndex { get; set; }
+
+    public int GTicketPrice { get; set; }
+    public StartDate GStartDate { get; set; }
+    public EndDate GEndDate { get; set; }
+    public int GPassPrice { get; set; }
 }
 public class TournamentClassData
 {
@@ -50,8 +55,25 @@ public class TournamentManager : MonoBehaviour
     string CollectionPath = "tournament";
     string DocPath = "TournamentData";
 
+    bool GrimaceStartTimer = false;
+    bool GrimaceTournamentStartTimer = false;
+    string GMainTime;
+    double GRemainingTimeSeconds;
+    double GStartTimeDiffSeconds;
+    TimeSpan GRemainingTime;
+    TimeSpan GTournamentRemainingTime;
+    float GtimeSpanConversionDays;
+    float GtimeSpanConversionHours;
+    float GtimeSpanConversiondMinutes;
+    float GtimeSpanConversionSeconds;
+    string Gtextfielddays;
+    string GtextfieldHours;
+    string GtextfieldMinutes;
+    string GtextfieldSeconds;
+
     bool StartTimer = false;
     bool TournamentStartTimer = false;
+
     string MainTime;
     double RemainingTimeSeconds;
     double StartTimeDiffSeconds;
@@ -83,21 +105,50 @@ public class TournamentManager : MonoBehaviour
         StartTimer = false;
         TournamentStartTimer = false;
 
-        if (Constants.IsStagging)
-        {
-            torunamentDataURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Tournament";
-        }
-        else
-        {
-            torunamentDataURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Tournament";
-        }
+        GrimaceStartTimer = false;
+        GrimaceTournamentStartTimer = false;
 
+        if (Constants.IsStagging)
+            torunamentDataURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Tournament";
+        else
+            torunamentDataURL = "https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/Tournament";
+     
         GetTournamentDataDB();
       
     }
     void Update()
     {
-        if(StartTimer)
+        //for grimace tournament
+        if (GrimaceStartTimer)
+        {
+            GRemainingTimeSeconds -= Time.deltaTime;
+            GrimaceConvertTime(GRemainingTimeSeconds);
+            DisplayGrimaceTournamentTimer();
+
+            if (GRemainingTimeSeconds <= 0)
+            {
+                MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = "0:00:00:00";
+                GrimaceStartTimer = false;
+                GetTournamentDataDB();
+            }
+        }
+        else if (GrimaceTournamentStartTimer)
+        {
+            GStartTimeDiffSeconds -= Time.deltaTime;
+            GrimaceConvertTime(GStartTimeDiffSeconds);
+            DisplayGrimaceTournamentTimer();
+
+            if (GStartTimeDiffSeconds <= 0)
+            {
+                MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = "0:00:00:00";
+                GrimaceTournamentStartTimer = false;
+                GetTournamentDataDB();
+            }
+        }
+
+
+        //for coinracer tournament
+        if (StartTimer)
         {
             RemainingTimeSeconds -= Time.deltaTime;
             ConvertTime(RemainingTimeSeconds);
@@ -138,12 +189,58 @@ public class TournamentManager : MonoBehaviour
                 ManipulateTournamnetStartTimer("0:00:00:00");
                 StartTimer = false;
                 TournamentStartTimer = false;
+
+                Constants.GrimaceTournamentActive = false;
+                ManipulateGrimaceTournamnetUIActivness(false, true, false, false, true, false, false);
+                ManipulateGrimaceTournamnetStartTimer("0:00:00:00");
+                GrimaceStartTimer = false;
+                GrimaceTournamentStartTimer = false;
             }
             else
             {
                 RemainingTimeSeconds = _data.EndDate.seconds - _data.timestamp.seconds;
                 StartTimeDiffSeconds = _data.timestamp.seconds-_data.StartDate.seconds;
 
+                GRemainingTimeSeconds = _data.GEndDate.seconds - _data.timestamp.seconds;
+                GStartTimeDiffSeconds = _data.timestamp.seconds - _data.GStartDate.seconds;
+
+                //for grimace tournament
+                if (Mathf.Sign((float)GStartTimeDiffSeconds) == -1)
+                {
+                    GStartTimeDiffSeconds = Mathf.Abs((float)GStartTimeDiffSeconds);
+                    GTournamentRemainingTime = TimeSpan.FromSeconds(GStartTimeDiffSeconds);
+                    ManipulateGrimaceTournamnetUIActivness(false, true, false, false, true, true, false);
+                    GrimaceStartTimer = false;
+                    GrimaceTournamentStartTimer = true;
+                    ManipulateGrimaceTournamnetStartTimer(GTournamentRemainingTime.Days.ToString() + ":" + GTournamentRemainingTime.Hours.ToString() + ":" + GTournamentRemainingTime.Minutes.ToString() + ":" + GTournamentRemainingTime.Seconds.ToString());
+                    Constants.GrimaceTournamentActive = false;
+
+                }
+                else
+                {
+                    if (Mathf.Sign((float)GRemainingTimeSeconds) == -1)
+                    {
+                        Constants.GrimaceTournamentActive = false;
+                        ManipulateGrimaceTournamnetUIActivness(false, true, false, false, true, false, false);
+                        ManipulateGrimaceTournamnetStartTimer("0:00:00:00");
+                        GrimaceStartTimer = false;
+                        GrimaceTournamentStartTimer = false;
+                    }
+                    else
+                    {
+                        Constants.GrimaceTournamentActive = true;
+                        GRemainingTime = TimeSpan.FromSeconds(GRemainingTimeSeconds);
+
+                        //Debug.LogError(RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString());
+
+                        ManipulateGrimaceTournamnetUIActivness(true, true, true, false, false, false, true);
+                        ManipulateGrimaceTournamnetUIData("", GRemainingTime.Days.ToString() + ":" + GRemainingTime.Hours.ToString() + ":" + GRemainingTime.Minutes.ToString() + ":" + GRemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.GTicketPrice.ToString() + " $CRACE", "*" + Constants.DiscountPercentage.ToString() + "% off if you hold " + Constants.DiscountForCrace.ToString() + " $crace or more");
+                        GrimaceStartTimer = true;
+                        GrimaceTournamentStartTimer = false;
+                    }
+                }
+
+                //for coinracer tournament
                 if (Mathf.Sign((float)StartTimeDiffSeconds) == -1)
                 {
                     StartTimeDiffSeconds = Mathf.Abs((float)StartTimeDiffSeconds);
@@ -183,6 +280,7 @@ public class TournamentManager : MonoBehaviour
         {
             Debug.LogError("MainMenuViewController instance is null");
             Constants.TournamentActive = false;
+            Constants.GrimaceTournamentActive = false;
         }
     }
 
@@ -200,10 +298,32 @@ public class TournamentManager : MonoBehaviour
         textfieldMinutes = timeSpanConversiondMinutes.ToString();
         textfieldSeconds = timeSpanConversionSeconds.ToString();
     }
+
+    public void GrimaceConvertTime(double _sec)
+    {
+        //Store TimeSpan into variable.
+        GtimeSpanConversionDays = TimeSpan.FromSeconds(_sec).Days;
+        GtimeSpanConversionHours = TimeSpan.FromSeconds(_sec).Hours;
+        GtimeSpanConversiondMinutes = TimeSpan.FromSeconds(_sec).Minutes;
+        GtimeSpanConversionSeconds = TimeSpan.FromSeconds(_sec).Seconds;
+
+        //Convert TimeSpan variables into strings for textfield display
+        Gtextfielddays = GtimeSpanConversionDays.ToString();
+        GtextfieldHours = GtimeSpanConversionHours.ToString();
+        GtextfieldMinutes = GtimeSpanConversiondMinutes.ToString();
+        GtextfieldSeconds = GtimeSpanConversionSeconds.ToString();
+    }
+
     public void DisplayTournamentTimer()
     {
         MainTime = textfielddays + ":" + textfieldHours + ":" + textfieldMinutes + ":" + textfieldSeconds;
         MainMenuViewController.Instance.UITournament.TimerText.text = MainTime;
+    }
+
+    public void DisplayGrimaceTournamentTimer()
+    {
+        GMainTime = Gtextfielddays + ":" + GtextfieldHours + ":" + GtextfieldMinutes + ":" + GtextfieldSeconds;
+        MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = GMainTime;
     }
 
     public void GetTournamentDataDB()
@@ -235,6 +355,11 @@ public class TournamentManager : MonoBehaviour
                 Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
                 Constants.TicketPrice = DataTournament.TicketPrice;
 
+                Constants.GrimaceTournamentPassPrice = DataTournament.GPassPrice;
+                Constants.GrimaceDiscountPercentage = DataTournament.DiscountOnCrace;
+                Constants.GrimaceDiscountForCrace= DataTournament.DiscountOnCrace;
+                Constants.GrimaceTicketPrice = DataTournament.GTicketPrice;
+
                 StartTournamentCounter(false, DataTournament);
             }
             else
@@ -254,6 +379,11 @@ public class TournamentManager : MonoBehaviour
                 Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
                 Constants.TicketPrice = DataTournament.TicketPrice;
 
+                Constants.GrimaceTournamentPassPrice = DataTournament.GPassPrice;
+                Constants.GrimaceDiscountPercentage = DataTournament.DiscountOnCrace;
+                Constants.GrimaceDiscountForCrace = DataTournament.DiscountOnCrace;
+                Constants.GrimaceTicketPrice = DataTournament.GTicketPrice;
+
                 StartTournamentCounter(false, DataTournament);
             }
             else
@@ -264,7 +394,6 @@ public class TournamentManager : MonoBehaviour
     }
     public void OnGetTournamentDataError(string error)
     {
-        Debug.LogError(error);
         StartTournamentCounter(true,null);
     }
     public void ManipulateTournamnetUIActivness(bool LowerHeaderActive, bool TimerActive, bool FotterActive, bool LoaderObjActive, bool DisclaimerActive, bool DisclaimerActive2,bool _isActive)
@@ -280,6 +409,21 @@ public class TournamentManager : MonoBehaviour
             MainMenuViewController.Instance.UITournament.ActiveScreen.SetActive(_isActive);
         }
     }
+
+    public void ManipulateGrimaceTournamnetUIActivness(bool LowerHeaderActive, bool TimerActive, bool FotterActive, bool LoaderObjActive, bool DisclaimerActive, bool DisclaimerActive2, bool _isActive)
+    {
+        if (MainMenuViewController.Instance) //if instance of UI class is created
+        {
+            MainMenuViewController.Instance.UIGrimaceTournament.LowerHeaderText.gameObject.SetActive(LowerHeaderActive);
+            MainMenuViewController.Instance.UIGrimaceTournament.TimerText.gameObject.SetActive(TimerActive);
+            MainMenuViewController.Instance.UIGrimaceTournament.FotterText.gameObject.SetActive(FotterActive);
+            MainMenuViewController.Instance.UIGrimaceTournament.LoaderObj.gameObject.SetActive(LoaderObjActive);
+            MainMenuViewController.Instance.UIGrimaceTournament.NextWeekScreen.gameObject.SetActive(DisclaimerActive);
+            MainMenuViewController.Instance.UIGrimaceTournament.TournamentStartText.gameObject.SetActive(DisclaimerActive2);
+            MainMenuViewController.Instance.UIGrimaceTournament.ActiveScreen.SetActive(_isActive);
+        }
+    }
+
     public void ManipulateTournamnetUIData(string LowerHeaderText, string TimerText, string FotterText, string Fotter2Text)
     {
         if (MainMenuViewController.Instance) //if instance of UI class is created
@@ -290,6 +434,18 @@ public class TournamentManager : MonoBehaviour
             MainMenuViewController.Instance.UITournament.Fotter2Text.text = Fotter2Text;
         }
     }
+
+    public void ManipulateGrimaceTournamnetUIData(string LowerHeaderText, string TimerText, string FotterText, string Fotter2Text)
+    {
+        if (MainMenuViewController.Instance) //if instance of UI class is created
+        {
+            MainMenuViewController.Instance.UIGrimaceTournament.LowerHeaderText.text = LowerHeaderText;
+            MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = TimerText;
+            MainMenuViewController.Instance.UIGrimaceTournament.FotterText.text = FotterText;
+            MainMenuViewController.Instance.UIGrimaceTournament.Fotter2Text.text = Fotter2Text;
+        }
+    }
+
     public void ManipulateTournamnetStartTimer(string TimerText)
     {
         if (MainMenuViewController.Instance) //if instance of UI class is created
@@ -297,6 +453,15 @@ public class TournamentManager : MonoBehaviour
             MainMenuViewController.Instance.UITournament.TimerText.text = TimerText;
         }
     }
+
+    public void ManipulateGrimaceTournamnetStartTimer(string TimerText)
+    {
+        if (MainMenuViewController.Instance) //if instance of UI class is created
+        {
+            MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = TimerText;
+        }
+    }
+
     public void getTournamentData()
     {
         StartCoroutine(processTournamentRequest());
@@ -390,8 +555,16 @@ public class TournamentManager : MonoBehaviour
                 DataTournament.EndDate = new EndDate();
                 DataTournament.EndDate.nanoseconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_nanoseconds");
                 DataTournament.EndDate.seconds = (double)token.SelectToken("data").SelectToken("EndDate").SelectToken("_seconds");
-            
-            
+
+                DataTournament.GTicketPrice = (int)token.SelectToken("data").SelectToken("GTicketPrice");
+                DataTournament.GPassPrice = (int)token.SelectToken("data").SelectToken("GPassPrice");
+                DataTournament.GStartDate = new StartDate();
+                DataTournament.GStartDate.nanoseconds = (double)token.SelectToken("data").SelectToken("GStartDate").SelectToken("_nanoseconds");
+                DataTournament.GStartDate.seconds = (double)token.SelectToken("data").SelectToken("GStartDate").SelectToken("_seconds");
+                DataTournament.GEndDate = new EndDate();
+                DataTournament.GEndDate.nanoseconds = (double)token.SelectToken("data").SelectToken("GEndDate").SelectToken("_nanoseconds");
+                DataTournament.GEndDate.seconds = (double)token.SelectToken("data").SelectToken("GEndDate").SelectToken("_seconds");
+
                 OnGetTournamentData("");
             }
             else

@@ -310,8 +310,6 @@ public class apiRequestHandler : MonoBehaviour
         form.AddField("returnSecureToken", "true");
         using UnityWebRequest request = UnityWebRequest.Post(firebaseLoginUrl+firebaseApiKey,form);
         
-
-
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
@@ -363,7 +361,7 @@ public class apiRequestHandler : MonoBehaviour
         FirebaseManager.Instance.updatePlayerDataPayload();
         string req = JsonConvert.SerializeObject(FirebaseManager.Instance.PlayerDataPayload);
         //Debug.Log(req);
-        using UnityWebRequest request = UnityWebRequest.Put(BaseURL+"UpdateUserBO", req);
+        using UnityWebRequest request = UnityWebRequest.Put(BaseURL+ "GUpdateUserBO", req);//GUpdateUserBO//UpdateUserBO
         request.SetRequestHeader("Content-Type", "application/json");
         string _reqToken = "Bearer " + _tID;
         //Debug.Log(_reqToken);
@@ -493,13 +491,13 @@ public class apiRequestHandler : MonoBehaviour
         }
     }
 
-    public void getLeaderboard()
+    public void getLeaderboard(bool isGrimace)
     {
         StartCoroutine(processLeaderboardToken(FirebaseManager.Instance.Credentails.Email,
-            FirebaseManager.Instance.Credentails.Password));
+            FirebaseManager.Instance.Credentails.Password, isGrimace));
     }
 
-    private IEnumerator processLeaderboardToken(string _email, string _password)
+    private IEnumerator processLeaderboardToken(string _email, string _password, bool isGrimace)
     {
         if(LeaderboardManager.Instance)
             LeaderboardManager.Instance.ClearLeaderboard();
@@ -510,8 +508,6 @@ public class apiRequestHandler : MonoBehaviour
         form.AddField("returnSecureToken", "true");
         using UnityWebRequest request = UnityWebRequest.Post(firebaseLoginUrl+firebaseApiKey,form);
         
-
-
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
@@ -526,7 +522,7 @@ public class apiRequestHandler : MonoBehaviour
             //Debug.Log(request.downloadHandler.text);
             JToken token = JObject.Parse(request.downloadHandler.text);
             string tID = (string)token.SelectToken("idToken");
-            StartCoroutine(processLeaderBoardRequest(tID));
+            StartCoroutine(processLeaderBoardRequest(tID, isGrimace));
             //Debug.Log(tID);
         }
         else
@@ -536,15 +532,20 @@ public class apiRequestHandler : MonoBehaviour
 
     }
 
-    private IEnumerator processLeaderBoardRequest(string _tID)
+    private IEnumerator processLeaderBoardRequest(string _tID, bool isGrimace)
     {
         LeaderboardCounter _count = new LeaderboardCounter();
         _count.number = Constants.LeaderboardCount;
         LeaderboardPayload obj = new LeaderboardPayload();
         obj.data = _count;
         string req = JsonConvert.SerializeObject(obj);
-        //Debug.Log(req);
-        using UnityWebRequest request = UnityWebRequest.Put(BaseURL+"Leaderboard", req);
+
+        string _mainURL = BaseURL + "Leaderboard";
+
+        if (isGrimace)
+            _mainURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/GLeaderboard";
+
+        using UnityWebRequest request = UnityWebRequest.Put(_mainURL, req);
         request.SetRequestHeader("Content-Type", "application/json");
         string _reqToken = "Bearer " + _tID;
         //Debug.Log(_reqToken);
@@ -562,9 +563,9 @@ public class apiRequestHandler : MonoBehaviour
             // JToken response = JObject.Parse(request.downloadHandler.text);
             // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
             
-            //Debug.Log("LeaderBoard Result is: ");
-            //Debug.Log(request.result);
-            //Debug.Log(request.downloadHandler.text);
+            Debug.Log("LeaderBoard Result is: ");
+            Debug.Log(request.result);
+            Debug.Log(request.downloadHandler.text);
            
             if (request.result == UnityWebRequest.Result.Success)
             {

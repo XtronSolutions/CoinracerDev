@@ -19,6 +19,18 @@ public static class Constants
     public static bool IsPractice = false;
     public static bool IsTournament = false;
     public static bool TournamentActive = false;
+
+    public static bool IsGrimaceTournament = false;
+    public static bool GrimaceTournamentActive = false;
+    public static int GrimaceTournamentPassPrice = 200;
+    public static bool GrimaceBuyingPass = false;
+    public static int GrimaceDiscountPercentage = 50;
+    public static int GrimaceDiscountForCrace = 25000;
+    public static int GrimaceTicketPrice = 0;
+    public static double GrimaceGameSeconds = 0;
+    public static bool GrimacePushingTime = false;
+    public static bool GrimacePushingTries = false;
+
     public static bool WalletConnected = false;//false
     public static bool MoveCar = false;
     public static bool PushingTime = false;
