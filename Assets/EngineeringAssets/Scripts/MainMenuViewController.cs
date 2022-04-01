@@ -649,7 +649,6 @@ public class MainMenuViewController : MonoBehaviour
             ShowToast(3f, "You have successfully bought tournament pass for this tournament week.");
             LoadingScreen.SetActive(false);
             BackClickedPassScreen_SelectionUI();
-
             FirebaseManager.Instance.PlayerData.PassBought = true;
             FirebaseManager.Instance.PlayerData.TournamentEndDate = TournamentManager.Instance.DataTournament.EndDate;
             FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
@@ -1729,6 +1728,12 @@ public class MainMenuViewController : MonoBehaviour
         {
             PushingTries = true;
             FirebaseManager.Instance.PlayerData.NumberOfTries++;
+            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+        } 
+        else if (IsGrimaceTournament)
+        {
+            PushingTries = true;
+            FirebaseManager.Instance.PlayerData.GNumberOfTries++;
             FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
         }
 #endif

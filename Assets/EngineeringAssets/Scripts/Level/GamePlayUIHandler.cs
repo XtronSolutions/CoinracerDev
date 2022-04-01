@@ -100,20 +100,42 @@ public class GamePlayUIHandler : MonoBehaviour
 
         Debug.Log("Previous Time: " + FirebaseManager.Instance.PlayerData.TimeSeconds.ToString() + " " + "Current Time" + Constants.GameSeconds.ToString()) ;
 
-        if (FirebaseManager.Instance.PlayerData.TimeSeconds == 0)
+
+        if (Constants.IsTournament)
         {
-            FirebaseManager.Instance.PlayerData.TimeSeconds = Constants.GameSeconds;
-            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            if (FirebaseManager.Instance.PlayerData.TimeSeconds == 0)
+            {
+                FirebaseManager.Instance.PlayerData.TimeSeconds = Constants.GameSeconds;
+                FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            }
+            else if (Constants.GameSeconds < FirebaseManager.Instance.PlayerData.TimeSeconds)
+            {
+                FirebaseManager.Instance.PlayerData.TimeSeconds = Constants.GameSeconds;
+                FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            }
+            else
+            {
+                RaceManager.Instance.RaceEnded();
+                Debug.Log("no pushing time, as current is greater than previous");
+            }
         }
-        else if (Constants.GameSeconds < FirebaseManager.Instance.PlayerData.TimeSeconds)
+        else if (Constants.IsGrimaceTournament)
         {
-            FirebaseManager.Instance.PlayerData.TimeSeconds = Constants.GameSeconds;
-            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
-        }
-        else
-        {
-            RaceManager.Instance.RaceEnded();
-            Debug.Log("no pushing time, as current is greater than previous");
+            if (FirebaseManager.Instance.PlayerData.GTimeSeconds == 0)
+            {
+                FirebaseManager.Instance.PlayerData.GTimeSeconds = Constants.GameSeconds;
+                FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            }
+            else if (Constants.GameSeconds < FirebaseManager.Instance.PlayerData.GTimeSeconds)
+            {
+                FirebaseManager.Instance.PlayerData.GTimeSeconds = Constants.GameSeconds;
+                FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            }
+            else
+            {
+                RaceManager.Instance.RaceEnded();
+                Debug.Log("no pushing time, as current is greater than previous");
+            }
         }
     }
     #endregion

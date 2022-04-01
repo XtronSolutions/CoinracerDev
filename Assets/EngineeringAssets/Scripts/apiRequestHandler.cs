@@ -563,14 +563,14 @@ public class apiRequestHandler : MonoBehaviour
             // JToken response = JObject.Parse(request.downloadHandler.text);
             // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
             
-            Debug.Log("LeaderBoard Result is: ");
-            Debug.Log(request.result);
-            Debug.Log(request.downloadHandler.text);
+            //Debug.Log("LeaderBoard Result is: ");
+            //Debug.Log(request.result);
+            //Debug.Log(request.downloadHandler.text);
            
             if (request.result == UnityWebRequest.Result.Success)
             {
                 //Debug.Log(request.downloadHandler.text);
-                FirebaseManager.Instance.OnQueryUpdate(request.downloadHandler.text);
+                FirebaseManager.Instance.OnQueryUpdate(request.downloadHandler.text, isGrimace);
             }
             else
             {

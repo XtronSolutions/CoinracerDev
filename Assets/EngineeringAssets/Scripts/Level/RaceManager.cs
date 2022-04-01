@@ -446,13 +446,7 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
             Constants.MoveCar = false;
             MultiplayerManager.Instance.CallEndMultiplayerGameRPC();
         }
-        else if (GamePlayUIHandler.Instance && Constants.IsTournament)
-        {
-            GamePlayUIHandler.Instance.ToggleInputScreen_InputFieldUI(true);
-            GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseManager.Instance.PlayerData.WalletAddress);
-            GamePlayUIHandler.Instance.SetInputUsername_InputFieldUI(FirebaseManager.Instance.PlayerData.UserName);
-        }
-        else if (GamePlayUIHandler.Instance && Constants.IsGrimaceTournament)
+        else if (GamePlayUIHandler.Instance && (Constants.IsTournament || Constants.IsGrimaceTournament))
         {
             GamePlayUIHandler.Instance.ToggleInputScreen_InputFieldUI(true);
             GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseManager.Instance.PlayerData.WalletAddress);
@@ -468,7 +462,7 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
         if (Constants.IsMultiplayer)
             Time.timeScale = 1f;
         else
-            Time.timeScale = 0.1f;
+            Time.timeScale = 0.3f;
     }
     public void RaceEnded()
     {
@@ -476,8 +470,12 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
 
         if(GamePlayUIHandler.Instance)
         {
-            LeaderboardManager.Instance.EnableGameplayLeaderboard();
-        }else
+            if(Constants.IsTournament)
+                LeaderboardManager.Instance.EnableRespectiveLeaderboard(false);
+            else if (Constants.IsGrimaceTournament)
+                LeaderboardManager.Instance.EnableRespectiveLeaderboard(true);
+        }
+        else
         {
             Constants.PrintError("GUH is null for RaceEnded");
         }

@@ -585,10 +585,10 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
-    public void OnQueryUpdate(string info)
+    public void OnQueryUpdate(string info,bool IsGrimace)
     {
         PlayerDataArray = JsonConvert.DeserializeObject<UserData[]>(info);
-        LeaderboardManager.Instance.PopulateLeaderboardData(PlayerDataArray);
+        LeaderboardManager.Instance.PopulateLeaderboardData(PlayerDataArray, IsGrimace);
     }
 
     public void OnQueryUpdateError(string error)

@@ -28,6 +28,17 @@ public class LeaderboardManager : MonoBehaviour
     {
         Instance = this;
     }
+
+    public void EnableRespectiveLeaderboard(bool isGrimace)
+    {
+        LeaderBoardUIData.MainScreen.SetActive(true);
+        LeaderBoardUIData.LoaderObj.SetActive(true);
+
+        FirebaseManager.Instance.QueryDB("TimeSeconds", "desc", isGrimace);
+        ToggleCoinracerButton(isGrimace);
+        ToggleGrimaceButton(!isGrimace);
+    }
+
     public void EnableGameplayLeaderboard()
     {
         LeaderBoardUIData.MainScreen.SetActive(true);
@@ -73,7 +84,7 @@ public class LeaderboardManager : MonoBehaviour
         BoardObjects.Clear();
     }
 
-    public void PopulateLeaderboardData(UserData[] _data)
+    public void PopulateLeaderboardData(UserData[] _data, bool IsGrimace)
     {
         ClearLeaderboard();
 
@@ -84,8 +95,12 @@ public class LeaderboardManager : MonoBehaviour
 
             //string _time = FirebaseManager.Instance.EncryptDecrypt(_data[i].TimeSeconds);
             //float _floatime = float.Parse(_time);
+            float Seconds = (float)_data[i].TimeSeconds;
 
-            _UIInstance.SetPrefabData((i + 1).ToString(), _data[i].UserName, _data[i].WalletAddress, (float)_data[i].TimeSeconds, _data[i].AvatarID);
+            if(IsGrimace)
+                Seconds = (float)_data[i].GTimeSeconds;
+
+            _UIInstance.SetPrefabData((i + 1).ToString(), _data[i].UserName, _data[i].WalletAddress, Seconds, _data[i].AvatarID);
             _obj.transform.SetParent(LeaderBoardUIData.ScrollContent);
             _obj.transform.localScale = new Vector3(1, 1, 1);
             LeaderBoardUIData.ScrollContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, LeaderBoardUIData.ContentHeight * (i + 1));
