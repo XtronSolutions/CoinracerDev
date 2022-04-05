@@ -1391,7 +1391,7 @@ public class MainMenuViewController : MonoBehaviour
                 _levelsSettings.Add(_allLevelsSettings[1]);
                 _levelsSettings.Add(_allLevelsSettings[2]);
                 _levelsSettings.Add(_allLevelsSettings[3]);
-                _levelsSettings.Add(_allLevelsSettings[4]);
+                //_levelsSettings.Add(_allLevelsSettings[4]);
                 //_levelsSettings.Add(_allLevelsSettings[3]);
             }
             else if (IsTournament)
@@ -1401,7 +1401,7 @@ public class MainMenuViewController : MonoBehaviour
             }
             else if (IsGrimaceTournament)
             {
-                _levelsSettings.Add(_allLevelsSettings[4]);
+                _levelsSettings.Add(_allLevelsSettings[3]);
                 //_levelsSettings.Add(_allLevelsSettings[2]);
             }
 
@@ -1832,6 +1832,14 @@ public class MainMenuViewController : MonoBehaviour
     {
         UITokenCarSelection.MainScreen.SetActive(_state);
     }
+
+    public void DeactivateCars()
+    {
+        for (int i = 0; i < _selecteableCars.Count; i++)
+        {
+            _selecteableCars[i].Deactivate();
+        }
+    }
     public void CheckBoughtCars()
     {
         if (Constants.EarnMultiplayer)
@@ -1872,6 +1880,7 @@ public class MainMenuViewController : MonoBehaviour
                 storedNFTS += Constants.NFTStored[i];
             if (storedNFTS == 0)
             {
+                DeactivateCars();
                 _selecteableCars.Clear();
                 if (!Constants.EarnMultiplayer)
                 {
@@ -1888,6 +1897,7 @@ public class MainMenuViewController : MonoBehaviour
 
             else if (Constants.StoredCarNames.Count != 0)
             {
+                DeactivateCars();
                 _selecteableCars.Clear();
 
                 if (!Constants.EarnMultiplayer)
