@@ -36,7 +36,12 @@ public class HoverAnimations : MonoBehaviour, IPointerEnterHandler, IPointerExit
             return;
         //if this button is a game mode button
         if (gameObject.tag == "GameModeButton")
-            AnimationsHandler.Instance.onGameModePointerEnter(gameObject);
+        {
+            //if main menu's entrance animation is completed
+            if(!AnimationsHandler.Instance.mainMenuAnimating)
+                AnimationsHandler.Instance.onGameModePointerEnter(gameObject);
+        }
+            
         //if this button is not a game mode button
         else
             AnimationsHandler.Instance.scaleUpButton(gameObject);

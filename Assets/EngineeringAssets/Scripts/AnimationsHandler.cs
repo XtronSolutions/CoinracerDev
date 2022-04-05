@@ -56,6 +56,9 @@ public class AnimationsHandler : MonoBehaviour
     public static AnimationsHandler Instance;
     public MainMenuUI UIMainMenu;
     public LoginScreenUI UILoginScreen;
+    [HideInInspector]
+    public bool mainMenuAnimating = false; //this variable will be used to tell if the main menu buttons entrance animation is running
+
     #endregion
 
     #endregion
@@ -160,6 +163,7 @@ public class AnimationsHandler : MonoBehaviour
     //@return {} no return
     public void animateMainMenuScreen()
     {
+        mainMenuAnimating = true;
         List<Button> buttons = getMainMenuButtonsList();
         defaultMainMenuButtonsPos = getPosition(buttons);
         setPositionX(buttons, defaultMainMenuButtonsPos, mainMenuButtonsPositionX);
@@ -196,6 +200,7 @@ public class AnimationsHandler : MonoBehaviour
 
         if ((int)hstbl["value"] >= mainMenuButtons.Count)
         {
+            mainMenuAnimating = false;
             animateGameModeButtons();
             return;
         }
