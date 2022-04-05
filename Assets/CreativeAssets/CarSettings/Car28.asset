@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a8c435c818a3314ea44d4fc872b3500, type: 3}
+  m_Name: Car28
+  m_EditorClassIdentifier: 
+  carType: 27
+  Name: Grimace Car
+  CarPrefab: {fileID: 7644685520093282575, guid: c6e8edf1b071e1843baa191c9149992b, type: 3}
+  CarMultiplayerPrefab: {fileID: 7644685520093282575, guid: b45e9ee49bc649e40a5f3feb8ed69ce9, type: 3}
+  Icon: {fileID: 21300000, guid: 38d6f4f713f672244a45e586742b9cf4, type: 3}

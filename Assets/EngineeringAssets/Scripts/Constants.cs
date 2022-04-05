@@ -30,6 +30,7 @@ public static class Constants
     public static double GrimaceGameSeconds = 0;
     public static bool GrimacePushingTime = false;
     public static bool GrimacePushingTries = false;
+    public static bool GrimaceTransfer = false;
 
     public static bool WalletConnected = false;//false
     public static bool MoveCar = false;

@@ -525,7 +525,7 @@ public class MainMenuViewController : MonoBehaviour
         {
             GrimaceBuyingPass = false;
             BuyingPass = true;
-            WalletManager.Instance.TransferToken(TournamentPassPrice);
+            WalletManager.Instance.TransferToken(TournamentPassPrice,false);
         }
         else
         {
@@ -540,7 +540,7 @@ public class MainMenuViewController : MonoBehaviour
         {
             BuyingPass = false;
             GrimaceBuyingPass = true;
-            WalletManager.Instance.TransferToken(GrimaceTournamentPassPrice);
+            WalletManager.Instance.TransferToken(GrimaceTournamentPassPrice,false);
         }
         else
         {
@@ -804,7 +804,7 @@ public class MainMenuViewController : MonoBehaviour
 
                     if (WalletManager.Instance.CheckBalanceTournament(true, false, false, false,false,false))
                     {
-                        WalletManager.Instance.TransferToken(TicketPrice);
+                        WalletManager.Instance.TransferToken(TicketPrice,false);
                     }
                     else
                     {
@@ -855,7 +855,7 @@ public class MainMenuViewController : MonoBehaviour
 
                     if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, false,true))
                     {
-                        WalletManager.Instance.TransferToken(TicketPrice);
+                        WalletManager.Instance.TransferToken(TicketPrice,true);
                     }
                     else
                     {
@@ -1451,9 +1451,10 @@ public class MainMenuViewController : MonoBehaviour
         if (WalletConnected)//WalletConnected
         {
             LoadingScreen.SetActive(true);
-            CheckBoughtCars();
             IsTournament = false;
+            IsGrimaceTournament = false;
             IsPractice = true;
+            CheckBoughtCars();
             // IsMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
@@ -1639,9 +1640,9 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.IsTest)
         {
             LoadingScreen.SetActive(true);
-            CheckBoughtCars();
             IsTournament = true;
             IsGrimaceTournament = false;
+            CheckBoughtCars();
             IsPractice = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
@@ -1655,9 +1656,9 @@ public class MainMenuViewController : MonoBehaviour
         if (_canstart)
         {
             LoadingScreen.SetActive(true);
-            CheckBoughtCars();
             IsTournament = true;
             IsGrimaceTournament = false;
+            CheckBoughtCars();
             IsPractice = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
@@ -1679,9 +1680,9 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.IsTest)
         {
             LoadingScreen.SetActive(true);
-            CheckBoughtCars();
             IsTournament = false;
             IsGrimaceTournament = true;
+            CheckBoughtCars();  
             IsPractice = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
@@ -1694,10 +1695,10 @@ public class MainMenuViewController : MonoBehaviour
 
         if (_canstart)
         {
-            LoadingScreen.SetActive(true);
-            CheckBoughtCars();
             IsTournament = false;
             IsGrimaceTournament = true;
+            LoadingScreen.SetActive(true);
+            CheckBoughtCars();
             IsPractice = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
@@ -1874,7 +1875,10 @@ public class MainMenuViewController : MonoBehaviour
                 _selecteableCars.Clear();
                 if (!Constants.EarnMultiplayer)
                 {
-                    _selecteableCars.Add(_allCars[0].CarDetail);
+                    if(IsGrimaceTournament)
+                        _selecteableCars.Add(_allCars[26].CarDetail);
+                    else
+                        _selecteableCars.Add(_allCars[0].CarDetail);
 
                     LoadingScreen.SetActive(false);
                     _currentSelectedCarIndex = 0;
@@ -1887,7 +1891,12 @@ public class MainMenuViewController : MonoBehaviour
                 _selecteableCars.Clear();
 
                 if (!Constants.EarnMultiplayer)
-                    _selecteableCars.Add(_allCars[0].CarDetail);
+                {
+                    if (IsGrimaceTournament)
+                        _selecteableCars.Add(_allCars[26].CarDetail);
+                    else
+                        _selecteableCars.Add(_allCars[0].CarDetail);
+                }
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
                 {

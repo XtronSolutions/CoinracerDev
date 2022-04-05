@@ -431,8 +431,9 @@ public class WalletManager : MonoBehaviour
     /// <summary>
     /// Transfer BEP20 token (transfer certain amount of crace for tournament)
     /// </summary>
-    async public void TransferToken(int _amount)
+    async public void TransferToken(int _amount,bool IsGrimace)
     {
+        Constants.GrimaceTransfer = IsGrimace;
         BigInteger _mainAmount = _amount * mainBalance;
         amount = _mainAmount.ToString();
         string method = "transfer"; //function name to call on contract
@@ -522,8 +523,16 @@ public class WalletManager : MonoBehaviour
                     break;
                 case "transfer":
                     Constants.PrintLog("transaction was success for tournament");
-                    MainMenuViewController.Instance.StartTournament(true);
-                    break;
+                    if (Constants.GrimaceTransfer)
+                    {
+                        Constants.GrimaceTransfer = false;
+                        MainMenuViewController.Instance.GrimaceStartTournament(true);
+                    }
+                    else
+                    {
+                        MainMenuViewController.Instance.StartTournament(true);
+                    }
+                        break;
                 case "createRace":
                     Constants.PrintLog("createRace was success");
                     OnRaceCreateCalled(true);
