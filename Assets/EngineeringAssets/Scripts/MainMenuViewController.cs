@@ -855,7 +855,7 @@ public class MainMenuViewController : MonoBehaviour
 
                     if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, false,true))
                     {
-                        WalletManager.Instance.TransferToken(TicketPrice,true);
+                        WalletManager.Instance.TransferToken(GrimaceTicketPrice, true);
                     }
                     else
                     {

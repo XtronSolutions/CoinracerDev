@@ -204,6 +204,10 @@ public class TournamentManager : MonoBehaviour
                 GRemainingTimeSeconds = _data.GEndDate.seconds - _data.timestamp.seconds;
                 GStartTimeDiffSeconds = _data.timestamp.seconds - _data.GStartDate.seconds;
 
+                //Debug.Log(_data.GEndDate.seconds);
+                //Debug.Log(_data.timestamp.seconds);
+                //Debug.Log(_data.GStartDate.seconds);
+                //Debug.Log(GStartTimeDiffSeconds);
                 //for grimace tournament
                 if (Mathf.Sign((float)GStartTimeDiffSeconds) == -1)
                 {

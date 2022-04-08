@@ -898,6 +898,7 @@ MonoBehaviour:
     email: {fileID: 0}
     password: {fileID: 0}
     login: {fileID: 0}
+  mainMenuAnimating: 0
 --- !u!4 &26971035
 Transform:
   m_ObjectHideFlags: 0
@@ -28392,7 +28393,7 @@ MonoBehaviour:
     PopUpScreen: {fileID: 1288785390}
     PopUpScreenContainer: {fileID: 720539030}
     MsgText: {fileID: 1662186046}
-  GameplaySource: {fileID: 0}
+  GameplaySource: {fileID: 610202716}
   _username: 
 --- !u!114 &1557233535
 MonoBehaviour:

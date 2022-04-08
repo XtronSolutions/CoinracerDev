@@ -535,7 +535,12 @@ public class apiRequestHandler : MonoBehaviour
     private IEnumerator processLeaderBoardRequest(string _tID, bool isGrimace)
     {
         LeaderboardCounter _count = new LeaderboardCounter();
-        _count.number = Constants.LeaderboardCount;
+
+        if(isGrimace)
+            _count.number = Constants.GLeaderboardCount;
+        else
+            _count.number = Constants.LeaderboardCount;
+
         LeaderboardPayload obj = new LeaderboardPayload();
         obj.data = _count;
         string req = JsonConvert.SerializeObject(obj);
@@ -543,7 +548,7 @@ public class apiRequestHandler : MonoBehaviour
         string _mainURL = BaseURL + "Leaderboard";
 
         if (isGrimace)
-            _mainURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/GLeaderboard";
+            _mainURL = BaseURL + "GLeaderboard";
 
         using UnityWebRequest request = UnityWebRequest.Put(_mainURL, req);
         request.SetRequestHeader("Content-Type", "application/json");
