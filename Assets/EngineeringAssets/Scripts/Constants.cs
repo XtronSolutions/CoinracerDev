@@ -278,5 +278,8 @@ public static class Constants
         //DiscountPercentage = 50;
         //DiscountForCrace = 25000;//25000
         //TicketPrice = 0;
+
+
+        //{"NFTNameList":["Malibu Express","Malibu Mutant","Coinrarri","Nightcrawler Mutant","Malibu Mutant","Malibu Mutant","Malibu Mutant","Coinrrari Mutant","Malibu Express"],"NFTList":[1273,20005,1157,20069,20068,20071,20070,20139,1841]}
     }
 }
