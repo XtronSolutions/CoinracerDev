@@ -11,6 +11,7 @@ public static class Constants
 {
     public static string APP_VERSION = "Alpha 2.0";
     public static string WalletAccoutKey = "Account";
+    public static string NameCurrency = "CRACE";
     public static string SoundKey = "Sound";
     public static string MusicKey = "Music";
     public static string CredKey = "Credentails";
