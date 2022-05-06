@@ -5,9 +5,10 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using UnityEngine;
 
+#if UNITY_WEBGL
 public class Web3GL
 {
-    [DllImport("__Internal")]
+  [DllImport("__Internal")]
     private static extern void SendContractJs(string method, string abi, string contract, string args, string value, string gasLimit, string gasPrice);
 
     [DllImport("__Internal")]
@@ -52,10 +53,10 @@ public class Web3GL
     [DllImport("__Internal")]
     private static extern int GetNetwork();
 
-    public static string eventResponse = "";
+    public static string eventResponse;
 
     // this function will create a metamask tx for user to confirm.
-    async public static Task<string> SendContract(string _method, string _abi, string _contract, string _args, string _value, string _gasLimit = "", string _gasPrice = "",bool _hasEvent=false)
+    async public static Task<string> SendContract(string _method, string _abi, string _contract, string _args, string _value, string _gasLimit = "", string _gasPrice = "", bool _hasEvent = false)
     {
         // Set response to empty
         eventResponse = "";
@@ -70,7 +71,7 @@ public class Web3GL
         }
         SetContractResponse("");
 
-        if(_hasEvent)
+        if (_hasEvent)
         {
             eventResponse = SendContractEventResponse();
             while (eventResponse == "" && eventResponse != "error")
@@ -83,13 +84,13 @@ public class Web3GL
 
             SetContractEventResponse("");
         }
-      
+
         // check if user submmited or user rejected
-        if (response.Length == 66) 
+        if (response.Length == 66)
         {
             return response;
-        } 
-        else 
+        }
+        else
         {
             throw new Exception(response);
         }
@@ -103,7 +104,7 @@ public class Web3GL
         string response = SendEncodedResponse();
         while (response == "")
         {
-           // Debug.Log("encoded response is empty");
+            // Debug.Log("encoded response is empty");
             await new WaitForSeconds(1f);
             response = SendEncodedResponse();
         }
@@ -114,13 +115,13 @@ public class Web3GL
 
         // check if user submmited or user rejected
         //if (response.Length == 66)
-       // {
-         //   return response;
-       // }
-       // else
+        // {
+        //   return response;
+        // }
+        // else
         //{
-         //   throw new Exception(response);
-       // }
+        //   throw new Exception(response);
+        // }
     }
 
     async public static Task<string> SendTransaction(string _to, string _value, string _gasLimit = "", string _gasPrice = "")
@@ -136,11 +137,11 @@ public class Web3GL
         }
         SetTransactionResponse("");
         // check if user submmited or user rejected
-        if (response.Length == 66) 
+        if (response.Length == 66)
         {
             return response;
-        } 
-        else 
+        }
+        else
         {
             throw new Exception(response);
         }
@@ -174,3 +175,4 @@ public class Web3GL
     }
 
 }
+#endif

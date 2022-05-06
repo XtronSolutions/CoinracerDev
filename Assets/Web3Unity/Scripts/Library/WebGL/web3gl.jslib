@@ -1,5 +1,5 @@
 mergeInto(LibraryManager.library, {
-  SetStorage:function(_newkey,_newval){
+SetStorage:function(_newkey,_newval){
 	//console.log("key: "+Pointer_stringify(_newkey)+" value: "+Pointer_stringify(_newval));
 	localStorage.setItem(Pointer_stringify(_newkey), Pointer_stringify(_newval));
   },
@@ -34,9 +34,9 @@ mergeInto(LibraryManager.library, {
 		unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, _storage);
 	}
 
-  },
-  
-  Web3Connect: function () {
+  },  
+
+Web3Connect: function () {
     window.web3gl.connect();
   },
 
@@ -96,8 +96,7 @@ mergeInto(LibraryManager.library, {
 		}
   },
 
-
-   ContractHashJs: function (pid, address, key) {
+ContractHashJs: function (pid, address, key) {
 		var parsedKey=Pointer_stringify(key);
 		var parsedAddress=Pointer_stringify(address);
 		var parsedpid=Pointer_stringify(pid);
@@ -118,7 +117,8 @@ mergeInto(LibraryManager.library, {
     window.web3gl.sendContractResponse = value;
   },
 
-  SetEncodedResponse: function (value) {
+
+SetEncodedResponse: function (value) {
     window.web3gl.EncodedResponse = value;
   },
   

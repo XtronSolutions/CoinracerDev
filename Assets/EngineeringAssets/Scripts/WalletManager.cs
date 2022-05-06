@@ -276,6 +276,7 @@ public class WalletManager : MonoBehaviour
 #endif
     }
 
+    #if UNITY_WEBGL
     /// <summary>
     /// Aysnc call when user is connected to a wallet
     /// </summary>
@@ -341,6 +342,7 @@ public class WalletManager : MonoBehaviour
 
         GetHashEncoded();
     }
+#endif
 
     /// <summary>
     /// Called to print connected wallet address on Connected button in short form (with **** in between of wallet addresses)
@@ -445,7 +447,10 @@ public class WalletManager : MonoBehaviour
 
         try
         {
-            string response = await Web3GL.SendContract(method, abi, contract, args, value, gasLimit, gasPrice);
+            string response = "";
+            #if UNITY_WEBGL
+            response = await Web3GL.SendContract(method, abi, contract, args, value, gasLimit, gasPrice);
+            #endif
 
             if (response.Contains("Returned error: internal error"))
             {
@@ -682,9 +687,9 @@ public class WalletManager : MonoBehaviour
 
         return _havebalance;
     }
-    #endregion
+#endregion
 
-    #region NFT Functionality
+#region NFT Functionality
     /// <summary>
     /// Call to get balance of specific BEP721/ERC721 nft contract
     /// </summary>
@@ -1194,9 +1199,9 @@ public class WalletManager : MonoBehaviour
             }
         }
     }
-    #endregion
+#endregion
 
-    #region CSP Contract
+#region CSP Contract
 
     public void CallDeposit()
     {
@@ -1421,8 +1426,10 @@ public class WalletManager : MonoBehaviour
             try
             {
                 Constants.EventRaised = _raiseEvent;
-                string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
-
+                string response = "";
+#if UNITY_WEBGL
+                response=await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -1482,8 +1489,10 @@ public class WalletManager : MonoBehaviour
             try
             {
                 Constants.EventRaised = _raiseEvent;
-                string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
-
+                string response = "";
+#if UNITY_WEBGL
+                response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -1518,8 +1527,10 @@ public class WalletManager : MonoBehaviour
         else
             tempHash = Constants.HashKey;
 
-
-        string _hash = await Web3GL.GetEncodedHash(_pid, Constants.WalletAddress, tempHash);
+        string _hash = "";
+#if UNITY_WEBGL
+         _hash = await Web3GL.GetEncodedHash(_pid, Constants.WalletAddress, tempHash);
+#endif
 
         string methodCrace = "checkHash";// smart contract method to call
         string[] obj = { _pid, Constants.WalletAddress, _hash };
@@ -1556,8 +1567,11 @@ public class WalletManager : MonoBehaviour
             else
                 tempHash = Constants.HashKey;
 
+            string _hash = "";
 
-            string _hash = await Web3GL.GetEncodedHash(_pid, Constants.WalletAddress, tempHash);
+#if UNITY_WEBGL
+            _hash = await Web3GL.GetEncodedHash(_pid, Constants.WalletAddress, tempHash);
+#endif
             string methodCSP = "endRace";
 
             EndRacePayload _data = new EndRacePayload();
@@ -1584,8 +1598,10 @@ public class WalletManager : MonoBehaviour
             try
             {
                 Constants.EventRaised = _raiseEvent;
-                string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
-
+                string response = "";
+#if UNITY_WEBGL
+               response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -1638,8 +1654,10 @@ public class WalletManager : MonoBehaviour
             try
             {
                 Constants.EventRaised = _raiseEvent;
-                string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
-
+                string response = "";
+#if UNITY_WEBGL
+               response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -1686,8 +1704,10 @@ public class WalletManager : MonoBehaviour
             try
             {
                 Constants.EventRaised = _raiseEvent;
-                string response = await Web3GL.SendContract(methodCrace, abi, contract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
-
+                string response = "";
+#if UNITY_WEBGL
+                response = await Web3GL.SendContract(methodCrace, abi, contract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -1799,8 +1819,10 @@ public class WalletManager : MonoBehaviour
             try
             {
                 Constants.EventRaised = _raiseEvent;
-                string response = await Web3GL.SendContract(methodCrace, abi, contract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
-
+                string response = "";
+#if UNITY_WEBGL
+                response = await Web3GL.SendContract(methodCrace, abi, contract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -1904,7 +1926,8 @@ public class WalletManager : MonoBehaviour
             try
             {
                 Constants.EventRaised = _raiseEvent;
-                string response;
+                string response="";
+#if UNITY_WEBGL
                 //if token to be approved has ID greater than 20,000 i.e. it is a mutant NFT
                 if(Constants.NFTTokenApproval > 20000)
                     response = await Web3GL.SendContract(methodCrace, NFTContractsAbi[2], NFTContracts[2], argsCSP, value, gasLimit, gasPrice, _raiseEvent);
@@ -1914,7 +1937,7 @@ public class WalletManager : MonoBehaviour
                 //if token has id less than 5,000 i.e. it is a token of NFT1.0
                 else
                     response = await Web3GL.SendContract(methodCrace, NFTContractsAbi[0], NFTContracts[0], argsCSP, value, gasLimit, gasPrice, _raiseEvent);
-
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -2035,9 +2058,9 @@ public class WalletManager : MonoBehaviour
         Constants.PIDString = response;
     }
 
-    #endregion
+#endregion
 
-    #region Chiprace Contract
+#region Chiprace Contract
 
     public void DelayLoading()
     {
@@ -2125,8 +2148,11 @@ public class WalletManager : MonoBehaviour
                     contract = mutantChipraceContract;
                     abi = abiMutantChipraceContract;
                 }
-                string response = await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
+                string response = "";
 
+#if UNITY_WEBGL
+                response=await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -2235,8 +2261,10 @@ public class WalletManager : MonoBehaviour
                     abi = abiMutantChipraceContract;
                 }
                 Constants.EventRaised = _raiseEvent;
-                string response = await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
-
+                string response = "";
+#if UNITY_WEBGL
+                response=await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -2346,8 +2374,10 @@ public class WalletManager : MonoBehaviour
                     abi = abiMutantChipraceContract;
                 }
                 Constants.EventRaised = _raiseEvent;
-                string response = await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
-
+                string response = "";
+#if UNITY_WEBGL
+                response=await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -2449,8 +2479,10 @@ public class WalletManager : MonoBehaviour
                     abi = abiMutantChipraceContract;
                 }
                 Constants.EventRaised = _raiseEvent;
-                string response = await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
-
+                string response = "";
+#if UNITY_WEBGL
+                response= await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
+#endif
                 if (response.Contains("Returned error: internal error"))
                 {
                     Constants.PrintLog("Returned error: internal error");
@@ -2849,7 +2881,7 @@ public class WalletManager : MonoBehaviour
         return _havebalance;
     }
 
-    #endregion
+#endregion
     public void PrintOnConsoleEditor(string _con)
     {
 #if UNITY_EDITOR

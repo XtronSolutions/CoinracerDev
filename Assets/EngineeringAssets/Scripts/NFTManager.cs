@@ -141,6 +141,7 @@ public class NFTManager : MonoBehaviour
 
     }
 
+    #if UNITY_WEBGL && !UNITY_EDITOR
     /// <summary>
     /// Aysnc call when user is connected to a wallet
     /// </summary>
@@ -167,6 +168,7 @@ public class NFTManager : MonoBehaviour
         //BEP721BalanceOf();
         
     }
+#endif
 
     /// <summary>
     /// Call to get balance of specific BEP721/ERC721 nft contract
@@ -278,7 +280,10 @@ public class NFTManager : MonoBehaviour
 
             try
             {
-                string response = await Web3GL.SendContract(method, Abi, contractAllowance, argsApprove, valueAllowance, gasAllowance, gasprice);
+                string response = "";
+#if UNITY_WEBGL
+                response=await Web3GL.SendContract(method, Abi, contractAllowance, argsApprove, valueAllowance, gasAllowance, gasprice);
+#endif
                 Debug.Log(response);
                 Debug.LogError(response);
 
@@ -340,7 +345,10 @@ public class NFTManager : MonoBehaviour
 
                 try
                 {
-                    string response = await Web3GL.SendContract(methodApprove, abiApprove, contractApprove, argsApprove, valueApprove, gasApprove, gasprice);
+                    string response = "";
+#if UNITY_WEBGL
+                    response=await Web3GL.SendContract(methodApprove, abiApprove, contractApprove, argsApprove, valueApprove, gasApprove, gasprice);
+#endif
                     Debug.Log(response);
 
                     if (response != "")
@@ -397,7 +405,10 @@ public class NFTManager : MonoBehaviour
 
                 try
                 {
-                    string response = await Web3GL.SendContract(methodMint, abiMint, contractMint, argsMint, valueMint, gasLimitMint, gaspriceMint);
+                string response = "";
+#if UNITY_WEBGL
+                response=await Web3GL.SendContract(methodMint, abiMint, contractMint, argsMint, valueMint, gasLimitMint, gaspriceMint);
+#endif
                     Debug.Log(response);
                     NFTUIManager.Instance.ToggleLoadingScreen(false);
                     NFTUIManager.Instance.ShowToast("Minting was done.", 3f);
