@@ -55,21 +55,21 @@ public class TournamentManager : MonoBehaviour
     string CollectionPath = "tournament";
     string DocPath = "TournamentData";
 
-    bool GrimaceStartTimer = false;
-    bool GrimaceTournamentStartTimer = false;
-    string GMainTime;
-    double GRemainingTimeSeconds;
-    double GStartTimeDiffSeconds;
-    TimeSpan GRemainingTime;
-    TimeSpan GTournamentRemainingTime;
-    float GtimeSpanConversionDays;
-    float GtimeSpanConversionHours;
-    float GtimeSpanConversiondMinutes;
-    float GtimeSpanConversionSeconds;
-    string Gtextfielddays;
-    string GtextfieldHours;
-    string GtextfieldMinutes;
-    string GtextfieldSeconds;
+    bool SecondTourStartTimer = false;
+    bool SecondTournamentStartTimer = false;
+    string SMainTime;
+    double SRemainingTimeSeconds;
+    double SStartTimeDiffSeconds;
+    TimeSpan SRemainingTime;
+    TimeSpan STournamentRemainingTime;
+    float StimeSpanConversionDays;
+    float StimeSpanConversionHours;
+    float StimeSpanConversiondMinutes;
+    float StimeSpanConversionSeconds;
+    string Stextfielddays;
+    string StextfieldHours;
+    string StextfieldMinutes;
+    string StextfieldSeconds;
 
     bool StartTimer = false;
     bool TournamentStartTimer = false;
@@ -105,8 +105,8 @@ public class TournamentManager : MonoBehaviour
         StartTimer = false;
         TournamentStartTimer = false;
 
-        GrimaceStartTimer = false;
-        GrimaceTournamentStartTimer = false;
+        SecondTourStartTimer = false;
+        SecondTournamentStartTimer = false;
 
         if (Constants.IsStagging)
             torunamentDataURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/Tournament";
@@ -118,30 +118,30 @@ public class TournamentManager : MonoBehaviour
     }
     void Update()
     {
-        //for grimace tournament
-        if (GrimaceStartTimer)
+        //for Second tournament
+        if (SecondTourStartTimer)
         {
-            GRemainingTimeSeconds -= Time.deltaTime;
-            GrimaceConvertTime(GRemainingTimeSeconds);
-            DisplayGrimaceTournamentTimer();
+            SRemainingTimeSeconds -= Time.deltaTime;
+            SecondTourConvertTime(SRemainingTimeSeconds);
+            DisplaySecondTournamentTimer();
 
-            if (GRemainingTimeSeconds <= 0)
+            if (SRemainingTimeSeconds <= 0)
             {
-                MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = "0:00:00:00";
-                GrimaceStartTimer = false;
+                MainMenuViewController.Instance.UISecondTournament.TimerText.text = "0:00:00:00";
+                SecondTourStartTimer = false;
                 GetTournamentDataDB();
             }
         }
-        else if (GrimaceTournamentStartTimer)
+        else if (SecondTournamentStartTimer)
         {
-            GStartTimeDiffSeconds -= Time.deltaTime;
-            GrimaceConvertTime(GStartTimeDiffSeconds);
-            DisplayGrimaceTournamentTimer();
+            SStartTimeDiffSeconds -= Time.deltaTime;
+            SecondTourConvertTime(SStartTimeDiffSeconds);
+            DisplaySecondTournamentTimer();
 
-            if (GStartTimeDiffSeconds <= 0)
+            if (SStartTimeDiffSeconds <= 0)
             {
-                MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = "0:00:00:00";
-                GrimaceTournamentStartTimer = false;
+                MainMenuViewController.Instance.UISecondTournament.TimerText.text = "0:00:00:00";
+                SecondTournamentStartTimer = false;
                 GetTournamentDataDB();
             }
         }
@@ -190,57 +190,57 @@ public class TournamentManager : MonoBehaviour
                 StartTimer = false;
                 TournamentStartTimer = false;
 
-                Constants.GrimaceTournamentActive = false;
-                ManipulateGrimaceTournamnetUIActivness(false, true, false, false, true, false, false);
-                ManipulateGrimaceTournamnetStartTimer("0:00:00:00");
-                GrimaceStartTimer = false;
-                GrimaceTournamentStartTimer = false;
+                Constants.SecondTournamentActive = false;
+                ManipulateSecondTournamnetUIActivness(false, true, false, false, true, false, false);
+                ManipulateSecondTournamnetStartTimer("0:00:00:00");
+                SecondTourStartTimer = false;
+                SecondTournamentStartTimer = false;
             }
             else
             {
                 RemainingTimeSeconds = _data.EndDate.seconds - _data.timestamp.seconds;
                 StartTimeDiffSeconds = _data.timestamp.seconds-_data.StartDate.seconds;
 
-                GRemainingTimeSeconds = _data.GEndDate.seconds - _data.timestamp.seconds;
-                GStartTimeDiffSeconds = _data.timestamp.seconds - _data.GStartDate.seconds;
+                SRemainingTimeSeconds = _data.GEndDate.seconds - _data.timestamp.seconds;
+                SStartTimeDiffSeconds = _data.timestamp.seconds - _data.GStartDate.seconds;
 
                 //Debug.Log(_data.GEndDate.seconds);
                 //Debug.Log(_data.timestamp.seconds);
                 //Debug.Log(_data.GStartDate.seconds);
                 //Debug.Log(GStartTimeDiffSeconds);
-                //for grimace tournament
-                if (Mathf.Sign((float)GStartTimeDiffSeconds) == -1)
+                //for Second tournament
+                if (Mathf.Sign((float)SStartTimeDiffSeconds) == -1)
                 {
-                    GStartTimeDiffSeconds = Mathf.Abs((float)GStartTimeDiffSeconds);
-                    GTournamentRemainingTime = TimeSpan.FromSeconds(GStartTimeDiffSeconds);
-                    ManipulateGrimaceTournamnetUIActivness(false, true, false, false, true, true, false);
-                    GrimaceStartTimer = false;
-                    GrimaceTournamentStartTimer = true;
-                    ManipulateGrimaceTournamnetStartTimer(GTournamentRemainingTime.Days.ToString() + ":" + GTournamentRemainingTime.Hours.ToString() + ":" + GTournamentRemainingTime.Minutes.ToString() + ":" + GTournamentRemainingTime.Seconds.ToString());
-                    Constants.GrimaceTournamentActive = false;
+                    SStartTimeDiffSeconds = Mathf.Abs((float)SStartTimeDiffSeconds);
+                    STournamentRemainingTime = TimeSpan.FromSeconds(SStartTimeDiffSeconds);
+                    ManipulateSecondTournamnetUIActivness(false, true, false, false, true, true, false);
+                    SecondTourStartTimer = false;
+                    SecondTournamentStartTimer = true;
+                    ManipulateSecondTournamnetStartTimer(STournamentRemainingTime.Days.ToString() + ":" + STournamentRemainingTime.Hours.ToString() + ":" + STournamentRemainingTime.Minutes.ToString() + ":" + STournamentRemainingTime.Seconds.ToString());
+                    Constants.SecondTournamentActive = false;
 
                 }
                 else
                 {
-                    if (Mathf.Sign((float)GRemainingTimeSeconds) == -1)
+                    if (Mathf.Sign((float)SRemainingTimeSeconds) == -1)
                     {
-                        Constants.GrimaceTournamentActive = false;
-                        ManipulateGrimaceTournamnetUIActivness(false, true, false, false, true, false, false);
-                        ManipulateGrimaceTournamnetStartTimer("0:00:00:00");
-                        GrimaceStartTimer = false;
-                        GrimaceTournamentStartTimer = false;
+                        Constants.SecondTournamentActive = false;
+                        ManipulateSecondTournamnetUIActivness(false, true, false, false, true, false, false);
+                        ManipulateSecondTournamnetStartTimer("0:00:00:00");
+                        SecondTourStartTimer = false;
+                        SecondTournamentStartTimer = false;
                     }
                     else
                     {
-                        Constants.GrimaceTournamentActive = true;
-                        GRemainingTime = TimeSpan.FromSeconds(GRemainingTimeSeconds);
+                        Constants.SecondTournamentActive = true;
+                        SRemainingTime = TimeSpan.FromSeconds(SRemainingTimeSeconds);
 
                         //Debug.LogError(RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString());
 
-                        ManipulateGrimaceTournamnetUIActivness(true, true, true, false, false, false, true);
-                        ManipulateGrimaceTournamnetUIData("", GRemainingTime.Days.ToString() + ":" + GRemainingTime.Hours.ToString() + ":" + GRemainingTime.Minutes.ToString() + ":" + GRemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.GTicketPrice.ToString() + " $CRACE", "*" + Constants.DiscountPercentage.ToString() + "% off if you hold " + Constants.DiscountForCrace.ToString() + " $crace or more");
-                        GrimaceStartTimer = true;
-                        GrimaceTournamentStartTimer = false;
+                        ManipulateSecondTournamnetUIActivness(true, true, true, false, false, false, true);
+                        ManipulateSecondTournamnetUIData("", SRemainingTime.Days.ToString() + ":" + SRemainingTime.Hours.ToString() + ":" + SRemainingTime.Minutes.ToString() + ":" +SRemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.GTicketPrice.ToString() + " $CRACE", "*" + Constants.DiscountPercentage.ToString() + "% off if you hold " + Constants.DiscountForCrace.ToString() + " $crace or more");
+                        SecondTourStartTimer = true;
+                        SecondTournamentStartTimer = false;
                     }
                 }
 
@@ -284,7 +284,7 @@ public class TournamentManager : MonoBehaviour
         {
             Debug.LogError("MainMenuViewController instance is null");
             Constants.TournamentActive = false;
-            Constants.GrimaceTournamentActive = false;
+            Constants.SecondTournamentActive = false;
         }
     }
 
@@ -303,19 +303,19 @@ public class TournamentManager : MonoBehaviour
         textfieldSeconds = timeSpanConversionSeconds.ToString();
     }
 
-    public void GrimaceConvertTime(double _sec)
+    public void SecondTourConvertTime(double _sec)
     {
         //Store TimeSpan into variable.
-        GtimeSpanConversionDays = TimeSpan.FromSeconds(_sec).Days;
-        GtimeSpanConversionHours = TimeSpan.FromSeconds(_sec).Hours;
-        GtimeSpanConversiondMinutes = TimeSpan.FromSeconds(_sec).Minutes;
-        GtimeSpanConversionSeconds = TimeSpan.FromSeconds(_sec).Seconds;
+        StimeSpanConversionDays = TimeSpan.FromSeconds(_sec).Days;
+        StimeSpanConversionHours = TimeSpan.FromSeconds(_sec).Hours;
+        StimeSpanConversiondMinutes = TimeSpan.FromSeconds(_sec).Minutes;
+        StimeSpanConversionSeconds = TimeSpan.FromSeconds(_sec).Seconds;
 
         //Convert TimeSpan variables into strings for textfield display
-        Gtextfielddays = GtimeSpanConversionDays.ToString();
-        GtextfieldHours = GtimeSpanConversionHours.ToString();
-        GtextfieldMinutes = GtimeSpanConversiondMinutes.ToString();
-        GtextfieldSeconds = GtimeSpanConversionSeconds.ToString();
+        Stextfielddays = StimeSpanConversionDays.ToString();
+        StextfieldHours = StimeSpanConversionHours.ToString();
+        StextfieldMinutes = StimeSpanConversiondMinutes.ToString();
+        StextfieldSeconds = StimeSpanConversionSeconds.ToString();
     }
 
     public void DisplayTournamentTimer()
@@ -324,10 +324,10 @@ public class TournamentManager : MonoBehaviour
         MainMenuViewController.Instance.UITournament.TimerText.text = MainTime;
     }
 
-    public void DisplayGrimaceTournamentTimer()
+    public void DisplaySecondTournamentTimer()
     {
-        GMainTime = Gtextfielddays + ":" + GtextfieldHours + ":" + GtextfieldMinutes + ":" + GtextfieldSeconds;
-        MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = GMainTime;
+        SMainTime = Stextfielddays + ":" + StextfieldHours + ":" + StextfieldMinutes + ":" + StextfieldSeconds;
+        MainMenuViewController.Instance.UISecondTournament.TimerText.text = SMainTime;
     }
 
     public void GetTournamentDataDB()
@@ -359,10 +359,10 @@ public class TournamentManager : MonoBehaviour
                 Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
                 Constants.TicketPrice = DataTournament.TicketPrice;
 
-                Constants.GrimaceTournamentPassPrice = DataTournament.GPassPrice;
-                Constants.GrimaceDiscountPercentage = DataTournament.DiscountOnCrace;
-                Constants.GrimaceDiscountForCrace= DataTournament.DiscountOnCrace;
-                Constants.GrimaceTicketPrice = DataTournament.GTicketPrice;
+                Constants.SecondTournamentPassPrice = DataTournament.GPassPrice;
+                Constants.SecondTourDiscountPercentage = DataTournament.DiscountOnCrace;
+                Constants.SecondTourDiscountForCrace = DataTournament.DiscountOnCrace;
+                Constants.SecondTourTicketPrice = DataTournament.GTicketPrice;
 
                 StartTournamentCounter(false, DataTournament);
             }
@@ -383,10 +383,10 @@ public class TournamentManager : MonoBehaviour
                 Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
                 Constants.TicketPrice = DataTournament.TicketPrice;
 
-                Constants.GrimaceTournamentPassPrice = DataTournament.GPassPrice;
-                Constants.GrimaceDiscountPercentage = DataTournament.DiscountOnCrace;
-                Constants.GrimaceDiscountForCrace = DataTournament.DiscountOnCrace;
-                Constants.GrimaceTicketPrice = DataTournament.GTicketPrice;
+                Constants.SecondTournamentPassPrice = DataTournament.GPassPrice;
+                Constants.SecondTourDiscountPercentage = DataTournament.DiscountOnCrace;
+                Constants.SecondTourDiscountForCrace = DataTournament.DiscountOnCrace;
+                Constants.SecondTourTicketPrice = DataTournament.GTicketPrice;
 
                 StartTournamentCounter(false, DataTournament);
             }
@@ -414,17 +414,17 @@ public class TournamentManager : MonoBehaviour
         }
     }
 
-    public void ManipulateGrimaceTournamnetUIActivness(bool LowerHeaderActive, bool TimerActive, bool FotterActive, bool LoaderObjActive, bool DisclaimerActive, bool DisclaimerActive2, bool _isActive)
+    public void ManipulateSecondTournamnetUIActivness(bool LowerHeaderActive, bool TimerActive, bool FotterActive, bool LoaderObjActive, bool DisclaimerActive, bool DisclaimerActive2, bool _isActive)
     {
         if (MainMenuViewController.Instance) //if instance of UI class is created
         {
-            MainMenuViewController.Instance.UIGrimaceTournament.LowerHeaderText.gameObject.SetActive(LowerHeaderActive);
-            MainMenuViewController.Instance.UIGrimaceTournament.TimerText.gameObject.SetActive(TimerActive);
-            MainMenuViewController.Instance.UIGrimaceTournament.FotterText.gameObject.SetActive(FotterActive);
-            MainMenuViewController.Instance.UIGrimaceTournament.LoaderObj.gameObject.SetActive(LoaderObjActive);
-            MainMenuViewController.Instance.UIGrimaceTournament.NextWeekScreen.gameObject.SetActive(DisclaimerActive);
-            MainMenuViewController.Instance.UIGrimaceTournament.TournamentStartText.gameObject.SetActive(DisclaimerActive2);
-            MainMenuViewController.Instance.UIGrimaceTournament.ActiveScreen.SetActive(_isActive);
+            MainMenuViewController.Instance.UISecondTournament.LowerHeaderText.gameObject.SetActive(LowerHeaderActive);
+            MainMenuViewController.Instance.UISecondTournament.TimerText.gameObject.SetActive(TimerActive);
+            MainMenuViewController.Instance.UISecondTournament.FotterText.gameObject.SetActive(FotterActive);
+            MainMenuViewController.Instance.UISecondTournament.LoaderObj.gameObject.SetActive(LoaderObjActive);
+            MainMenuViewController.Instance.UISecondTournament.NextWeekScreen.gameObject.SetActive(DisclaimerActive);
+            MainMenuViewController.Instance.UISecondTournament.TournamentStartText.gameObject.SetActive(DisclaimerActive2);
+            MainMenuViewController.Instance.UISecondTournament.ActiveScreen.SetActive(_isActive);
         }
     }
 
@@ -439,14 +439,14 @@ public class TournamentManager : MonoBehaviour
         }
     }
 
-    public void ManipulateGrimaceTournamnetUIData(string LowerHeaderText, string TimerText, string FotterText, string Fotter2Text)
+    public void ManipulateSecondTournamnetUIData(string LowerHeaderText, string TimerText, string FotterText, string Fotter2Text)
     {
         if (MainMenuViewController.Instance) //if instance of UI class is created
         {
-            MainMenuViewController.Instance.UIGrimaceTournament.LowerHeaderText.text = LowerHeaderText;
-            MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = TimerText;
-            MainMenuViewController.Instance.UIGrimaceTournament.FotterText.text = FotterText;
-            MainMenuViewController.Instance.UIGrimaceTournament.Fotter2Text.text = Fotter2Text;
+            MainMenuViewController.Instance.UISecondTournament.LowerHeaderText.text = LowerHeaderText;
+            MainMenuViewController.Instance.UISecondTournament.TimerText.text = TimerText;
+            MainMenuViewController.Instance.UISecondTournament.FotterText.text = FotterText;
+            MainMenuViewController.Instance.UISecondTournament.Fotter2Text.text = Fotter2Text;
         }
     }
 
@@ -458,11 +458,11 @@ public class TournamentManager : MonoBehaviour
         }
     }
 
-    public void ManipulateGrimaceTournamnetStartTimer(string TimerText)
+    public void ManipulateSecondTournamnetStartTimer(string TimerText)
     {
         if (MainMenuViewController.Instance) //if instance of UI class is created
         {
-            MainMenuViewController.Instance.UIGrimaceTournament.TimerText.text = TimerText;
+            MainMenuViewController.Instance.UISecondTournament.TimerText.text = TimerText;
         }
     }
 

@@ -491,13 +491,13 @@ public class apiRequestHandler : MonoBehaviour
         }
     }
 
-    public void getLeaderboard(bool isGrimace)
+    public void getLeaderboard(bool IsSecondTour)
     {
         StartCoroutine(processLeaderboardToken(FirebaseManager.Instance.Credentails.Email,
-            FirebaseManager.Instance.Credentails.Password, isGrimace));
+            FirebaseManager.Instance.Credentails.Password, IsSecondTour));
     }
 
-    private IEnumerator processLeaderboardToken(string _email, string _password, bool isGrimace)
+    private IEnumerator processLeaderboardToken(string _email, string _password, bool IsSecondTour)
     {
         if(LeaderboardManager.Instance)
             LeaderboardManager.Instance.ClearLeaderboard();
@@ -522,7 +522,7 @@ public class apiRequestHandler : MonoBehaviour
             //Debug.Log(request.downloadHandler.text);
             JToken token = JObject.Parse(request.downloadHandler.text);
             string tID = (string)token.SelectToken("idToken");
-            StartCoroutine(processLeaderBoardRequest(tID, isGrimace));
+            StartCoroutine(processLeaderBoardRequest(tID, IsSecondTour));
             //Debug.Log(tID);
         }
         else
@@ -532,11 +532,11 @@ public class apiRequestHandler : MonoBehaviour
 
     }
 
-    private IEnumerator processLeaderBoardRequest(string _tID, bool isGrimace)
+    private IEnumerator processLeaderBoardRequest(string _tID, bool IsSecondTour)
     {
         LeaderboardCounter _count = new LeaderboardCounter();
 
-        if(isGrimace)
+        if(IsSecondTour)
             _count.number = Constants.GLeaderboardCount;
         else
             _count.number = Constants.LeaderboardCount;
@@ -547,7 +547,7 @@ public class apiRequestHandler : MonoBehaviour
 
         string _mainURL = BaseURL + "Leaderboard";
 
-        if (isGrimace)
+        if (IsSecondTour)
             _mainURL = BaseURL + "GLeaderboard";
 
         using UnityWebRequest request = UnityWebRequest.Put(_mainURL, req);
@@ -575,7 +575,7 @@ public class apiRequestHandler : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 //Debug.Log(request.downloadHandler.text);
-                FirebaseManager.Instance.OnQueryUpdate(request.downloadHandler.text, isGrimace);
+                FirebaseManager.Instance.OnQueryUpdate(request.downloadHandler.text, IsSecondTour);
             }
             else
             {

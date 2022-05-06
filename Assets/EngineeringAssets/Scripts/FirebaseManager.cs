@@ -570,7 +570,7 @@ public class FirebaseManager : MonoBehaviour
         Debug.LogError("Doc update error : "+error);
     }
 
-    public void QueryDB(string _field, string _type,bool isGrimace)
+    public void QueryDB(string _field, string _type,bool IsSecondTour)
     {
         if (Constants.isUsingFirebaseSDK)
         {
@@ -581,14 +581,14 @@ public class FirebaseManager : MonoBehaviour
         else
         {
             //Send Leaderboard request to api
-            apiRequestHandler.Instance.getLeaderboard(isGrimace);
+            apiRequestHandler.Instance.getLeaderboard(IsSecondTour);
         }
     }
 
-    public void OnQueryUpdate(string info,bool IsGrimace)
+    public void OnQueryUpdate(string info,bool IsSecondTour)
     {
         PlayerDataArray = JsonConvert.DeserializeObject<UserData[]>(info);
-        LeaderboardManager.Instance.PopulateLeaderboardData(PlayerDataArray, IsGrimace);
+        LeaderboardManager.Instance.PopulateLeaderboardData(PlayerDataArray, IsSecondTour);
     }
 
     public void OnQueryUpdateError(string error)

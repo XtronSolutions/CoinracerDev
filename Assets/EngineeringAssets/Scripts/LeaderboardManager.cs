@@ -29,14 +29,14 @@ public class LeaderboardManager : MonoBehaviour
         Instance = this;
     }
 
-    public void EnableRespectiveLeaderboard(bool isGrimace)
+    public void EnableRespectiveLeaderboard(bool IsSecondTour)
     {
         LeaderBoardUIData.MainScreen.SetActive(true);
         LeaderBoardUIData.LoaderObj.SetActive(true);
 
-        FirebaseManager.Instance.QueryDB("TimeSeconds", "desc", isGrimace);
-        ToggleCoinracerButton(isGrimace);
-        ToggleGrimaceButton(!isGrimace);
+        FirebaseManager.Instance.QueryDB("TimeSeconds", "desc", IsSecondTour);
+        ToggleCoinracerButton(IsSecondTour);
+        ToggleSecondTourButton(!IsSecondTour);
     }
 
     public void EnableGameplayLeaderboard()
@@ -46,17 +46,17 @@ public class LeaderboardManager : MonoBehaviour
 
         FirebaseManager.Instance.QueryDB("TimeSeconds", "desc",false);
         ToggleCoinracerButton(false);
-        ToggleGrimaceButton(true);
+        ToggleSecondTourButton(true);
     }
 
-    public void EnableGrimaceGameplayLeaderboard()
+    public void EnableSecondTourGameplayLeaderboard()
     {
         LeaderBoardUIData.MainScreen.SetActive(true);
         LeaderBoardUIData.LoaderObj.SetActive(true);
 
         FirebaseManager.Instance.QueryDB("TimeSeconds", "desc",true);
         ToggleCoinracerButton(true);
-        ToggleGrimaceButton(false);
+        ToggleSecondTourButton(false);
     }
 
     public void ToggleCoinracerButton(bool state)
@@ -64,7 +64,7 @@ public class LeaderboardManager : MonoBehaviour
         LeaderBoardUIData.CoinracerLeaderboard.interactable = state;
     }
 
-    public void ToggleGrimaceButton(bool state)
+    public void ToggleSecondTourButton(bool state)
     {
         LeaderBoardUIData.GramiceLeaderboard.interactable = state;
     }
@@ -84,7 +84,7 @@ public class LeaderboardManager : MonoBehaviour
         BoardObjects.Clear();
     }
 
-    public void PopulateLeaderboardData(UserData[] _data, bool IsGrimace)
+    public void PopulateLeaderboardData(UserData[] _data, bool IsSecondTour)
     {
         ClearLeaderboard();
 
@@ -97,7 +97,7 @@ public class LeaderboardManager : MonoBehaviour
             //float _floatime = float.Parse(_time);
             float Seconds = (float)_data[i].TimeSeconds;
 
-            if(IsGrimace)
+            if(IsSecondTour)
                 Seconds = (float)_data[i].GTimeSeconds;
 
             _UIInstance.SetPrefabData((i + 1).ToString(), _data[i].UserName, _data[i].WalletAddress, Seconds, _data[i].AvatarID);

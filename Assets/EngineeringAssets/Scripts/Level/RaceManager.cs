@@ -93,6 +93,20 @@ public class RaceManager : MonoBehaviour
         }
 
         setAudioSource();
+
+        //push game start event
+        if(AnalyticsManager.Instance)
+        {
+            AnalyticsManager.Instance.StoredProgression.TimeSeconds = 0;
+
+            if (AnalyticsManager.Instance.StoredProgression.fields.ContainsKey("TimeSeconds"))
+                AnalyticsManager.Instance.StoredProgression.fields["TimeSeconds"] = "0";
+            else
+                AnalyticsManager.Instance.StoredProgression.fields.Add("TimeSeconds","0");
+
+            AnalyticsManager.Instance.PushProgressionEvent(true);
+        }
+
         //ClaimRewardButton.onClick.AddListener(ClaimReward);
     }
 
@@ -412,6 +426,23 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
         }
     }
 
+    public string ReturnConvertedTime(double _sec)
+    {
+        //Store TimeSpan into variable.
+        float timeSpanConversionHours = TimeSpan.FromSeconds(_sec).Hours;
+        float timeSpanConversiondMinutes = TimeSpan.FromSeconds(_sec).Minutes;
+        float timeSpanConversionSeconds = TimeSpan.FromSeconds(_sec).Seconds;
+        float timeSpanConversionMiliSeconds = TimeSpan.FromSeconds(_sec).Milliseconds / 10;
+
+        //Convert TimeSpan variables into strings for textfield display
+        string textfieldHours = timeSpanConversionHours.ToString();
+        string textfieldMinutes = timeSpanConversiondMinutes.ToString();
+        string textfieldSeconds = timeSpanConversionSeconds.ToString();
+        string textfieldMiliSeconds = timeSpanConversionMiliSeconds.ToString();
+
+        return textfieldHours + ":" + textfieldMinutes + ":" + textfieldSeconds + ":" + textfieldMiliSeconds;
+    }
+
     public void showPositions(bool winner)
     {
         if (winner)
@@ -446,7 +477,7 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
             Constants.MoveCar = false;
             MultiplayerManager.Instance.CallEndMultiplayerGameRPC();
         }
-        else if (GamePlayUIHandler.Instance && (Constants.IsTournament || Constants.IsGrimaceTournament))
+        else if (GamePlayUIHandler.Instance && (Constants.IsTournament || Constants.IsSecondTournament))
         {
             GamePlayUIHandler.Instance.ToggleInputScreen_InputFieldUI(true);
             GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseManager.Instance.PlayerData.WalletAddress);
@@ -463,6 +494,20 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
             Time.timeScale = 1f;
         else
             Time.timeScale = 0.3f;
+
+
+        //push game end progress
+        if (AnalyticsManager.Instance)
+        {
+            AnalyticsManager.Instance.StoredProgression.TimeSeconds = (int)Constants.GameSeconds;
+
+            if (AnalyticsManager.Instance.StoredProgression.fields.ContainsKey("TimeSeconds"))
+                AnalyticsManager.Instance.StoredProgression.fields["TimeSeconds"] = ReturnConvertedTime(Constants.GameSeconds);
+            else
+                AnalyticsManager.Instance.StoredProgression.fields.Add("TimeSeconds", ReturnConvertedTime(Constants.GameSeconds));
+
+            AnalyticsManager.Instance.PushProgressionEvent(false);
+        }
     }
     public void RaceEnded()
     {
@@ -472,7 +517,7 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
         {
             if(Constants.IsTournament)
                 LeaderboardManager.Instance.EnableRespectiveLeaderboard(false);
-            else if (Constants.IsGrimaceTournament)
+            else if (Constants.IsSecondTournament)
                 LeaderboardManager.Instance.EnableRespectiveLeaderboard(true);
         }
         else

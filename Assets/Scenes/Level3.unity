@@ -7093,7 +7093,7 @@ GameObject:
   - component: {fileID: 369540823}
   - component: {fileID: 369540822}
   m_Layer: 5
-  m_Name: GrimaceTournament
+  m_Name: SecondTournament
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7240,7 +7240,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1832451062}
         m_TargetAssemblyTypeName: LeaderboardManager, Assembly-CSharp
-        m_MethodName: EnableGrimaceGameplayLeaderboard
+        m_MethodName: EnableSecondTourGameplayLeaderboard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14666,7 +14666,7 @@ MonoBehaviour:
     settings: {fileID: 0}
     garage: {fileID: 0}
     Chiprace: {fileID: 0}
-    grimaceTournament: {fileID: 0}
+    SecondTournament: {fileID: 0}
   UILoginScreen:
     email: {fileID: 0}
     password: {fileID: 0}
@@ -16569,19 +16569,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'G
+  m_text: 'S
 
-    R
+    E
 
-    I
+    K
 
-    M
+    U
 
-    A
+    Y
 
-    C
-
-    E'
+    A'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5187f1c0deabe6448a2ece3fd1eef251, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: cfc5db40ffc1d40e1bba6a95eda8b858, type: 2}

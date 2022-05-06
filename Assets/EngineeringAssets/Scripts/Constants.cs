@@ -21,17 +21,17 @@ public static class Constants
     public static bool IsTournament = false;
     public static bool TournamentActive = false;
 
-    public static bool IsGrimaceTournament = false;
-    public static bool GrimaceTournamentActive = false;
-    public static int GrimaceTournamentPassPrice = 200;
-    public static bool GrimaceBuyingPass = false;
-    public static int GrimaceDiscountPercentage = 50;
-    public static int GrimaceDiscountForCrace = 25000;
-    public static int GrimaceTicketPrice = 0;
-    public static double GrimaceGameSeconds = 0;
-    public static bool GrimacePushingTime = false;
-    public static bool GrimacePushingTries = false;
-    public static bool GrimaceTransfer = false;
+    public static bool IsSecondTournament = false;
+    public static bool SecondTournamentActive = false;
+    public static int SecondTournamentPassPrice = 200;
+    public static bool SecondTourBuyingPass = false;
+    public static int SecondTourDiscountPercentage = 50;
+    public static int SecondTourDiscountForCrace = 25000;
+    public static int SecondTourTicketPrice = 0;
+    public static double SecondTourGameSeconds = 0;
+    public static bool SecondTourPushingTime = false;
+    public static bool SecondTourPushingTries = false;
+    public static bool SecondTourTransfer = false;
 
     public static bool WalletConnected = false;//false
     public static bool MoveCar = false;
@@ -179,6 +179,8 @@ public static class Constants
     public static int SelectedSingleLevel = 0;
     public static string storedName;
     public static string storedToken;
+
+    public static double GATransferAmount = 0;
 
     async public static void GetCracePrice()
     {

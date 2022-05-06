@@ -431,9 +431,10 @@ public class WalletManager : MonoBehaviour
     /// <summary>
     /// Transfer BEP20 token (transfer certain amount of crace for tournament)
     /// </summary>
-    async public void TransferToken(int _amount,bool IsGrimace)
+    async public void TransferToken(int _amount,bool IsSecondTour)
     {
-        Constants.GrimaceTransfer = IsGrimace;
+        Constants.SecondTourTransfer = IsSecondTour;
+        Constants.GATransferAmount = _amount;
         BigInteger _mainAmount = _amount * mainBalance;
         amount = _mainAmount.ToString();
         string method = "transfer"; //function name to call on contract
@@ -467,7 +468,7 @@ public class WalletManager : MonoBehaviour
                     StoredMethodName = "BuyingPass";
 
                 }
-                else if (Constants.GrimaceBuyingPass) //if buying pass call was initiated for transaction
+                else if (Constants.SecondTourBuyingPass) //if buying pass call was initiated for transaction
                 {
                     StoredHash = response;
                     StoredMethodName = "GBuyingPass";
@@ -490,10 +491,10 @@ public class WalletManager : MonoBehaviour
                 Constants.BuyingPass = false;
                 MainMenuViewController.Instance.OnPassBuy(false);
             }
-            else if (Constants.GrimaceBuyingPass)
+            else if (Constants.SecondTourBuyingPass)
             {
-                Constants.GrimaceBuyingPass = false;
-                MainMenuViewController.Instance.GrimaceOnPassBuy(false);
+                Constants.SecondTourBuyingPass = false;
+                MainMenuViewController.Instance.SecondTourOnPassBuy(false);
             }
             else
             {
@@ -512,21 +513,31 @@ public class WalletManager : MonoBehaviour
             {
                 
                 case "BuyingPass":
+                    if (AnalyticsManager.Instance)
+                        AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
+
                     Constants.BuyingPass = false;
                     Constants.PrintLog("pass bought was success");
                     MainMenuViewController.Instance.OnPassBuy(true);
                     break;
                 case "GBuyingPass":
-                    Constants.GrimaceBuyingPass = false;
-                    Constants.PrintLog("pass bought for grimace was success");
-                    MainMenuViewController.Instance.GrimaceOnPassBuy(true);
+                    if (AnalyticsManager.Instance)
+                        AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
+
+                    Constants.SecondTourBuyingPass = false;
+                    Constants.PrintLog("pass bought for second tournament was success");
+                    MainMenuViewController.Instance.SecondTourOnPassBuy(true);
                     break;
                 case "transfer":
+
+                    if(AnalyticsManager.Instance)
+                        AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
+
                     Constants.PrintLog("transaction was success for tournament");
-                    if (Constants.GrimaceTransfer)
+                    if (Constants.SecondTourTransfer)
                     {
-                        Constants.GrimaceTransfer = false;
-                        MainMenuViewController.Instance.GrimaceStartTournament(true);
+                        Constants.SecondTourTransfer = false;
+                        MainMenuViewController.Instance.SecondTourStartTournament(true);
                     }
                     else
                     {
@@ -535,10 +546,18 @@ public class WalletManager : MonoBehaviour
                         break;
                 case "createRace":
                     Constants.PrintLog("createRace was success");
+
+                    if (AnalyticsManager.Instance)
+                        AnalyticsManager.Instance.MultiplayerEvent(Constants.GATransferAmount);
+
                     OnRaceCreateCalled(true);
                     break;
                 case "deposit":
                     Constants.PrintLog("deposit was success");
+
+                    if (AnalyticsManager.Instance)
+                        AnalyticsManager.Instance.MultiplayerEvent(Constants.GATransferAmount);
+
                     OnDepositCalled(true);
                     break;
                 case "endRace":
@@ -561,6 +580,9 @@ public class WalletManager : MonoBehaviour
                     OnEmergencyExitChipRaceCalled(true);
                     break;
                 case "upgradeNFT":
+                    if (AnalyticsManager.Instance)
+                        AnalyticsManager.Instance.ChipraceEvent(Constants.GATransferAmount);
+
                     OnUpgradeNFTCalled(true);
                     break;
                 case "approveNFT":
@@ -632,7 +654,7 @@ public class WalletManager : MonoBehaviour
     /// Called to check amount of  BEP20 (crace) before entering tournament
     /// </summary>
     /// <returns></returns>
-    public bool CheckBalanceTournament(bool _checkBalance, bool _checkDiscountBalance, bool _checkPassBalance, bool _checkMultiplayerAmount, bool _CheckGrimacePass,bool _checkGrimaceTournament)
+    public bool CheckBalanceTournament(bool _checkBalance, bool _checkDiscountBalance, bool _checkPassBalance, bool _checkMultiplayerAmount, bool _CheckSecondTourPass, bool _checkSecondTourTournament)
     {
         bool _havebalance = false;
         int _amountToCheck = 0;
@@ -646,10 +668,10 @@ public class WalletManager : MonoBehaviour
                 _amountToCheck = Constants.TournamentPassPrice;
             else if (_checkMultiplayerAmount)
                 _amountToCheck = Constants.CalculatedCrace;
-            else if (_CheckGrimacePass)
-                _amountToCheck = Constants.GrimaceTournamentPassPrice;
-            else if (_checkGrimaceTournament)
-                _amountToCheck = Constants.GrimaceTicketPrice;
+            else if (_CheckSecondTourPass)
+                _amountToCheck = Constants.SecondTournamentPassPrice;
+            else if (_checkSecondTourTournament)
+                _amountToCheck = Constants.SecondTourTicketPrice;
 
             if (actualBalance >= _amountToCheck || Constants.IsTest)
                 _havebalance = true;
@@ -1395,6 +1417,8 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
+
+            Constants.GATransferAmount = _price;
             MainMenuViewController.Instance.LoadingScreen.SetActive(true);
             BigInteger _totalPrice = GetPrice(_price);
 
@@ -1457,6 +1481,7 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
+            Constants.GATransferAmount = _price;
             MainMenuViewController.Instance.LoadingScreen.SetActive(true);
             BigInteger _totalPrice = GetPrice(_price);
             bool _isapproved = await CheckCraceApproval(_totalPrice);
@@ -2424,6 +2449,7 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
+            Constants.GATransferAmount = _amount;
             if (MainMenuViewController.Instance)
                 MainMenuViewController.Instance.LoadingScreen.SetActive(true);
 

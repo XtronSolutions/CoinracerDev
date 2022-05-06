@@ -7,7 +7,7 @@ using GameAnalyticsSDK.Events;
 public class BusinessEventPayload
 {
     public string CurrencyName; //name of the currency
-    public int CurrencyAmount;//amount of currency
+    public double CurrencyAmount;//amount of currency
     public string ItemType; //The type / category of the item.//GoldPacks
     public string ItemID;//Specific item bought.//1000GoldPack
     public string CartType;//The game location of the purchase.Max 10 unique values. //EndOfLevel
@@ -27,6 +27,7 @@ public class AnalyticsManager : MonoBehaviour
     public static AnalyticsManager Instance;
     public BusinessEventPayload PayloadBusinessEvent;
     public ProgressionEventPayload PayloadProgressionEvent;
+    public ProgressionEventPayload StoredProgression;
 
     string LogLevel;
     GAErrorSeverity ErrorSeverity;
@@ -40,6 +41,7 @@ public class AnalyticsManager : MonoBehaviour
 
             PayloadBusinessEvent = new BusinessEventPayload();
             PayloadProgressionEvent = new ProgressionEventPayload();
+            StoredProgression= new ProgressionEventPayload();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
 	    Application.logMessageReceived += HandleLog;
@@ -61,7 +63,7 @@ public class AnalyticsManager : MonoBehaviour
 
     #region BusinessEvents/TransactionEvents
 
-    public void SetBusinessPayload(int amount, string itemType, string itemId, string cartType)
+    public void SetBusinessPayload(double amount, string itemType, string itemId, string cartType)
     {
         PayloadBusinessEvent.CurrencyName = Constants.NameCurrency;
         PayloadBusinessEvent.CurrencyAmount = amount;
@@ -72,34 +74,34 @@ public class AnalyticsManager : MonoBehaviour
 
     public void RegisterBusinessEvents(BusinessEventPayload Obj)
     {
-        GameAnalytics.NewBusinessEvent(Obj.CurrencyName, Obj.CurrencyAmount, Obj.ItemType, Obj.ItemID, Obj.CartType);
+        GameAnalytics.NewBusinessEvent(Obj.CurrencyName, (int)Obj.CurrencyAmount, Obj.ItemType, Obj.ItemID, Obj.CartType);
     }
 
-    public void TournamentTicketEvent(int _amount)
+    public void TournamentTicketEvent(double _amount)
     {
         SetBusinessPayload(_amount, "Tournament", "TournamentTicket", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
     }
 
-    public void TournamentLeagueTicketEvent(int _amount)
+    public void TournamentLeagueTicketEvent(double _amount)
     {
         SetBusinessPayload(_amount, "TournamentLeague", "TournamentTicket", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
     }
 
-    public void TournamentPassEvent(int _amount)
+    public void TournamentPassEvent(double _amount)
     {
         SetBusinessPayload(_amount, "Tournament", "TournamentPass", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
     }
 
-    public void MultiplayerEvent(int _amount)
+    public void MultiplayerEvent(double _amount)
     {
         SetBusinessPayload(_amount, "Multiplayer", "BidAmount", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
     }
 
-    public void ChipraceEvent(int _amount)
+    public void ChipraceEvent(double _amount)
     {
         SetBusinessPayload(_amount, "Chiprace", "UpdateNFT", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
@@ -122,11 +124,16 @@ public class AnalyticsManager : MonoBehaviour
         GameAnalytics.NewProgressionEvent(Obj.ProgressionStatus, Obj.Mode, Obj.MapUsed, Obj.CarName, Obj.TimeSeconds,Obj.fields);
     }
 
-    public void GameProgressionEvent(string _mode,string _map,string _carName,int _time,string _timeString,string nftID,bool isStart)
+    public void PushProgressionEvent(bool isStart)
     {
-        Dictionary<string, object> Optionsfields = new Dictionary<string, object>();
-        Optionsfields.Add("TimeSeconds", _timeString);
-        Optionsfields.Add("NFTID", nftID);
+        GameProgressionEvent(StoredProgression.Mode, StoredProgression.MapUsed, StoredProgression.CarName, StoredProgression.TimeSeconds, StoredProgression.fields,isStart);
+    }
+
+    public void GameProgressionEvent(string _mode,string _map,string _carName,int _time, Dictionary<string, object> Optionsfields, bool isStart)
+    {
+        //Dictionary<string, object> Optionsfields = new Dictionary<string, object>();
+        //Optionsfields.Add("TimeSeconds", _timeString);
+        //Optionsfields.Add("NFTID", nftID);
 
         if(isStart)
             SetProgressionePayload(GAProgressionStatus.Start, _mode, _map, _carName, _time, Optionsfields);

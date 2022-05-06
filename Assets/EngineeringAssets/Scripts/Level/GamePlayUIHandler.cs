@@ -119,7 +119,7 @@ public class GamePlayUIHandler : MonoBehaviour
                 Debug.Log("no pushing time, as current is greater than previous");
             }
         }
-        else if (Constants.IsGrimaceTournament)
+        else if (Constants.IsSecondTournament)
         {
             if (FirebaseManager.Instance.PlayerData.GTimeSeconds == 0)
             {

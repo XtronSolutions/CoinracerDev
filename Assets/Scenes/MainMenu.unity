@@ -3754,7 +3754,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '*price: 50 $crace, if you hold 25000 $crace - 50% discount.'
+  m_text: -------------------------
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5187f1c0deabe6448a2ece3fd1eef251, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: cfc5db40ffc1d40e1bba6a95eda8b858, type: 2}
@@ -9761,6 +9761,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 203521198}
   m_CullTransparentMesh: 1
+--- !u!1 &203537976 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+  m_PrefabInstance: {fileID: 2101691148}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &204488794
 GameObject:
   m_ObjectHideFlags: 0
@@ -21649,7 +21654,7 @@ GameObject:
   - component: {fileID: 427579183}
   - component: {fileID: 427579184}
   m_Layer: 5
-  m_Name: GrimaceSettings
+  m_Name: SecondTournamentSettings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27788,7 +27793,7 @@ MonoBehaviour:
   MapSelection: {fileID: 1375449920}
   _singlePlayerButton: {fileID: 1727386688}
   _tournamentButton: {fileID: 1289179723}
-  _grimaceTournamentButton: {fileID: 2098709588}
+  _secondTournamentButton: {fileID: 2098709588}
   _backToModeSelectionButton: {fileID: 1002833161}
   _goToMapSelectionButton: {fileID: 467632977}
   _backToCarSelectionButton: {fileID: 787007322}
@@ -27854,6 +27859,8 @@ MonoBehaviour:
     CarDetail: {fileID: 657685494}
   - CarName: Grimace Car
     CarDetail: {fileID: 2108706980}
+  - CarName: Sekuya Car
+    CarDetail: {fileID: 1170753524}
   _versionText: {fileID: 1086913394}
   _selectedCarName: {fileID: 1891370648}
   _levelsSettings: []
@@ -27861,6 +27868,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2d2aa959c4a19a74a84f3912f7c9f737, type: 2}
   - {fileID: 11400000, guid: 0a6f739ace181b148b1f4fe6c6d68df6, type: 2}
   - {fileID: 11400000, guid: a65729f13fa8f4d4ca3c94fb5ffdf51b, type: 2}
+  - {fileID: 11400000, guid: 10a183a20f1f3a141a397c4d36df2842, type: 2}
   - {fileID: 11400000, guid: 250967fac9c66114290bfaf7f73b4607, type: 2}
   _selectedMapImage: {fileID: 1528107328}
   _levelNameText: {fileID: 1308522816}
@@ -27883,7 +27891,7 @@ MonoBehaviour:
     ActiveScreen: {fileID: 609503021}
     LoaderObj: {fileID: 2095739247}
     TournamentStartText: {fileID: 1596699800}
-  UIGrimaceTournament:
+  UISecondTournament:
     MainScreen: {fileID: 203521198}
     LowerHeaderText: {fileID: 1994574247}
     TimerText: {fileID: 259741357}
@@ -27922,7 +27930,7 @@ MonoBehaviour:
     BuyPassCraceButton: {fileID: 505601817}
     BuyPassCancelButton: {fileID: 174698568}
     TournamentPassScreen: {fileID: 126152354}
-  UIGrimaceSelection:
+  UISecondTourSelection:
     MainScreen: {fileID: 1907929409}
     BuyPassButton: {fileID: 1342030217}
     BuyPassText: {fileID: 883545895}
@@ -34340,7 +34348,7 @@ MonoBehaviour:
     settings: {fileID: 93382549}
     garage: {fileID: 1580056375}
     Chiprace: {fileID: 1190054754}
-    grimaceTournament: {fileID: 2098709588}
+    SecondTournament: {fileID: 2098709588}
   UILoginScreen:
     email: {fileID: 303656352}
     password: {fileID: 1200846918}
@@ -34358,7 +34366,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &651463807
 GameObject:
@@ -46824,6 +46832,7 @@ Transform:
   - {fileID: 2015052647}
   - {fileID: 657685495}
   - {fileID: 2108706979}
+  - {fileID: 1170753523}
   m_Father: {fileID: 1177041508}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -49369,7 +49378,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &876991573
 GameObject:
@@ -49972,7 +49981,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '*Price: 500 $crace. unlimited attempts in a single tournament'
+  m_text: -------------------------
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5187f1c0deabe6448a2ece3fd1eef251, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: cfc5db40ffc1d40e1bba6a95eda8b858, type: 2}
@@ -52791,7 +52800,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Grimace Tournament active
+  m_text: 'Sekuya Tournament active
 
 '
   m_isRightToLeft: 0
@@ -65720,6 +65729,52 @@ MonoBehaviour:
     TweenSpeed: 0
     EaseType: 0
     LoopType: 0
+--- !u!1 &1170753522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1170753523}
+  - component: {fileID: 1170753524}
+  m_Layer: 6
+  m_Name: SelectableCar29(SekuyaCar)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1170753523
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170753522}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2101691149}
+  m_Father: {fileID: 814055822}
+  m_RootOrder: 27
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1170753524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170753522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83fdd8c441964b8984f62e5a9d9c64b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carSettings: {fileID: 11400000, guid: 1836732087ebdbb4fa0abec2374e45e0, type: 2}
+  _visual: {fileID: 203537976}
 --- !u!1 &1172085550
 GameObject:
   m_ObjectHideFlags: 0
@@ -68822,49 +68877,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1215135606}
   m_CullTransparentMesh: 1
---- !u!1 &1216520274
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1216520275}
-  - component: {fileID: 1216520276}
-  m_Layer: 0
-  m_Name: LogHandler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1216520275
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1216520274}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 316.62164, y: 187.31291, z: -30.156782}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1216520276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1216520274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e7fbd160f0ea8247b236acce6aa2e72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1217810570
 GameObject:
   m_ObjectHideFlags: 0
@@ -84866,7 +84878,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7214874014776137172, guid: fbdd780be4eda4cc6bdc34d90184dd9a, type: 3}
       propertyPath: m_RootOrder
-      value: 20
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 7214874014776137172, guid: fbdd780be4eda4cc6bdc34d90184dd9a, type: 3}
       propertyPath: m_AnchorMax.x
@@ -91908,7 +91920,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Grimace Tournament will start next week
+  m_text: 'Sekuya Tournament will start next week
 
     <size=12><color=#cOcOcOFF>Pre
     register are now available</color></size>'
@@ -94817,7 +94829,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2001480032169333116, guid: f9fc7cdc772f64a71b7dd9919f76b637, type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 2001480032169333116, guid: f9fc7cdc772f64a71b7dd9919f76b637, type: 3}
       propertyPath: m_LocalPosition.x
@@ -100458,19 +100470,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'G
+  m_text: 'S
 
-    R
+    E
 
-    I
+    K
 
-    M
+    U
 
-    A
+    Y
 
-    C
-
-    E'
+    A'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5187f1c0deabe6448a2ece3fd1eef251, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: cfc5db40ffc1d40e1bba6a95eda8b858, type: 2}
@@ -107464,7 +107474,7 @@ GameObject:
   - component: {fileID: 1907929412}
   - component: {fileID: 1907929411}
   m_Layer: 5
-  m_Name: GrimaceSelection
+  m_Name: SecondTourSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -108607,7 +108617,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1928962785
 GameObject:
@@ -110999,7 +111009,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Grimace Tournament will \nstart next week."
+  m_text: "Sekuya Tournament will \nstart next week."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: aecf25e54e09c7f4fba570eb5896c768, type: 2}
   m_sharedMaterial: {fileID: -987019306340266323, guid: aecf25e54e09c7f4fba570eb5896c768, type: 2}
@@ -116047,7 +116057,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2039676313
 GameObject:
@@ -117804,7 +117814,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2077395932
 GameObject:
@@ -118752,7 +118762,7 @@ GameObject:
   - component: {fileID: 2098709588}
   - component: {fileID: 2098709587}
   m_Layer: 5
-  m_Name: TournamentGrimaceButton
+  m_Name: TournamentSecondButton
   m_TagString: GameModeButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118874,7 +118884,7 @@ GameObject:
   - component: {fileID: 2098807338}
   - component: {fileID: 2098807337}
   m_Layer: 5
-  m_Name: GrimaceTournamentPassScreen
+  m_Name: SecondTournamentPassScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119109,6 +119119,108 @@ MonoBehaviour:
     TweenSpeed: 0
     EaseType: 0
     LoopType: 0
+--- !u!1001 &2101691148
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1170753523}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6722536593783302276, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -5328339231639785262, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -3099043874885310413, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -2147642314998828177, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -1364697955622806466, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_Name
+      value: SekuyaCarEarth
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+--- !u!4 &2101691149 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2e60b3a5fea8a47498fa07faacbdaeca, type: 3}
+  m_PrefabInstance: {fileID: 2101691148}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2103855515
 GameObject:
   m_ObjectHideFlags: 0
@@ -120110,7 +120222,7 @@ GameObject:
   - component: {fileID: 2124288515}
   - component: {fileID: 2124288514}
   m_Layer: 5
-  m_Name: GrimaceTournament
+  m_Name: SecondTournament
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -120257,7 +120369,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 529261823}
         m_TargetAssemblyTypeName: LeaderboardManager, Assembly-CSharp
-        m_MethodName: EnableGrimaceGameplayLeaderboard
+        m_MethodName: EnableSecondTourGameplayLeaderboard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
