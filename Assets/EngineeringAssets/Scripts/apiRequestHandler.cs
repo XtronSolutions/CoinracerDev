@@ -15,6 +15,8 @@ public class UserDataBO
 
     public string email { get; set; }
     public string walletAddress { get; set; }
+
+    public int AvatarID { get; set; }
 }
 public class userDataPayload
 {
@@ -156,6 +158,10 @@ public class apiRequestHandler : MonoBehaviour
                     //Debug.Log(request.downloadHandler.text);
                     JToken token = JObject.Parse(request.downloadHandler.text);
                     string tID = (string)token.SelectToken("idToken");
+
+                    FirebaseManager.Instance.Credentails.Email = _email;
+                    FirebaseManager.Instance.Credentails.Password = _pwd;
+
                     StartCoroutine(signupBORequest(_email,_username,_pwd,tID));
                   //Debug.Log(tID);
         }
@@ -197,6 +203,7 @@ public class apiRequestHandler : MonoBehaviour
         userDataObj.userName = _username;
         userDataObj.email = _email;
         userDataObj.walletAddress = _walletAddress;
+        userDataObj.AvatarID = Constants.FlagSelectedIndex;
 
         userDataPayload obj = new userDataPayload();
         obj.data = userDataObj;
@@ -228,7 +235,6 @@ public class apiRequestHandler : MonoBehaviour
                 //StartCoroutine(processTokenRequest(_email,_pwd,false));
                 //Debug.Log(_BOtoken);
                 StartCoroutine(sendVerificationLink(_BOtoken));
-               
             }
             else if ((string) res.SelectToken("message") == "Same WalletAddress already in Use")
             {
@@ -617,11 +623,4 @@ public class apiRequestHandler : MonoBehaviour
 
     }
 
-   
-    
-    
-    // private void Update()
-    // {
-    //  
-    // }
 }
