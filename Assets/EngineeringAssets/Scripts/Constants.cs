@@ -147,8 +147,8 @@ public static class Constants
     public static int WithdrawTime = 300; //time in seconds//300
     public static bool TimerRunning = false;
     public static bool ClaimedReward = false;
-    public static readonly string HashKey = "us-H*?fBg9]6Kse";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"//us-H*?fBg9]6Kse
-    public static readonly string TestnetHashKey = "testingkey";//testingkey//@Hhg4*NnMQM5sf$W//us-H*?fBg"9]6Kse//testkey//"us-H*?fBg"+'"'+"9]6Kse"//us-H*?fBg9]6Kse
+    public static readonly string HashKey = "us-H*?fBg9]6Kse";
+    public static readonly string TestnetHashKey = "testingkey";
 
     public static bool FreeMultiplayer = false;
     public static bool EarnMultiplayer = false;
@@ -277,12 +277,5 @@ public static class Constants
         }
         CheckAllNFT = false;
         StoredCarNames.Clear();
-        //TournamentPassPrice = 500;//500
-        //DiscountPercentage = 50;
-        //DiscountForCrace = 25000;//25000
-        //TicketPrice = 0;
-
-
-        //{"NFTNameList":["Malibu Express","Malibu Mutant","Coinrarri","Nightcrawler Mutant","Malibu Mutant","Malibu Mutant","Malibu Mutant","Coinrrari Mutant","Malibu Express"],"NFTList":[1273,20005,1157,20069,20068,20071,20070,20139,1841]}
     }
 }

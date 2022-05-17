@@ -186,8 +186,6 @@ public class FirebaseManager : MonoBehaviour
 
     public void OnEmailCheck(string info)
     {
-       // Debug.Log("Checked email : email existed");
-
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.EmailAlreadyExisted();
     }
@@ -196,7 +194,6 @@ public class FirebaseManager : MonoBehaviour
     {
         if (error.Contains("Email Not Registered"))
         {
-           // Debug.Log("Checked email : email does not exist, creating one.");
             CreateNewUser(Constants.SavedEmail, Constants.SavedPass);
         }else
         {
@@ -240,13 +237,12 @@ public class FirebaseManager : MonoBehaviour
         Credentails.Email = _email;
         Credentails.Password = _pass;
         Credentails.UserName = _username;
+
         //Login with Firebase SDK and API
         if(Constants.isUsingFirebaseSDK)
             FirebaseAuth.SignInWithEmailAndPassword(_email, _pass, gameObject.name, "OnLoginUser", "OnLoginUserError");
         else
-        {
             apiRequestHandler.Instance.signInWithEmail(_email, _pass);
-        }
     }
 
     public void CheckVerification()
@@ -263,7 +259,6 @@ public class FirebaseManager : MonoBehaviour
         }
         else
         {
-            //Debug.Log("Email verification pending");
             MainMenuViewController.Instance.ShowResendScreen(5f);
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             MainMenuViewController.Instance.ResetRegisterFields();
@@ -323,7 +318,6 @@ public class FirebaseManager : MonoBehaviour
     {
         var parsedUser = StringSerializationAPI.Deserialize(typeof(FirebaseUser), user) as FirebaseUser;
         UID = parsedUser.uid;
-        //DisplayData($"Email: {parsedUser.email}, UserId: {parsedUser.uid}, EmailVerified: {parsedUser.isEmailVerified}");
     }
 
     public void OnAuthChangedError(string info)
@@ -405,15 +399,6 @@ public class FirebaseManager : MonoBehaviour
         yield return new WaitUntil(() => FetchUserData == true);
         if (UserDataFetched)
         {
-            //Debug.Log(_walletID);
-            //Debug.Log(PlayerData.WalletAddress);
-            //Debug.Log(PlayerData.UserName);
-            //Debug.Log(PlayerData.TimeSeconds);
-            //Debug.Log(PlayerData.UID);
-            //Debug.Log(PlayerData.NumberOfTries);
-            //Debug.Log(PlayerData.PassBought);
-            //Debug.Log(PlayerData.Email);
-            //Debug.Log(PlayerData.TournamentEndDate);
             Constants.UserName = PlayerData.UserName;
             Constants.FlagSelectedIndex = PlayerData.AvatarID;
             Constants.TotalWins = PlayerData.TotalWins;
@@ -450,15 +435,6 @@ public class FirebaseManager : MonoBehaviour
 
         if (DocFetched == true) //document existed
         {
-            //Debug.Log(_walletID);
-            //Debug.Log(PlayerData.WalletAddress);
-            //Debug.Log(PlayerData.UserName);
-            //Debug.Log(PlayerData.TimeSeconds);
-            //Debug.Log(PlayerData.UID);
-            //Debug.Log(PlayerData.NumberOfTries);
-            //Debug.Log(PlayerData.PassBought);
-            //Debug.Log(PlayerData.Email);
-            //Debug.Log(PlayerData.TournamentEndDate);
             Constants.UserName = PlayerData.UserName;
             Constants.FlagSelectedIndex = PlayerData.AvatarID;
             Constants.TotalWins = PlayerData.TotalWins;
@@ -542,7 +518,6 @@ public class FirebaseManager : MonoBehaviour
         }
         else
         {
-            //TODO: call update api to update the data
             apiRequestHandler.Instance.updatePlayerData();
         }
     }
@@ -641,7 +616,6 @@ public class FirebaseManager : MonoBehaviour
     }
     public void showVerificationScreen()
     {
-        //Debug.Log("Email verification pending");
         MainMenuViewController.Instance.ShowResendScreen(5f);
         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
         MainMenuViewController.Instance.ResetRegisterFields();

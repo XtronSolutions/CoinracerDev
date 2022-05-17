@@ -1048,14 +1048,12 @@ public class WalletManager : MonoBehaviour
     }
     public void WaitForAllData()
     {
-        //if (NFTCounter == metaDataURL.Count && Constants.LoggedIn)
         if(Constants.CheckAllNFT && Constants.LoggedIn)
         {
             CancelInvoke("WaitForAllData");
             try
             {
                 string info = FirebaseManager.Instance.GetStalkedNFT();
-                //Debug.Log(info);
                 if (info != "" && !string.IsNullOrEmpty(info))
                 {
                     ChipraceHandler.Instance.nftStalked = JsonConvert.DeserializeObject<StalkedNFT>(info);
@@ -1082,7 +1080,6 @@ public class WalletManager : MonoBehaviour
                 if (ChipraceHandler.Instance)
                     ChipraceHandler.Instance.ForceUpdate();
             }
-            //ChipraceHandler.Instance.UpdateChipraceData();
         } else
         {
             Invoke("WaitForAllData", 1f);
@@ -1106,7 +1103,6 @@ public class WalletManager : MonoBehaviour
                 }
             }
 
-            //Constants.CheckAllNFT = true;
             Constants.ChipraceDataChecked = false;
 
             if (Constants.ForceUpdateChiprace)
@@ -1115,7 +1111,6 @@ public class WalletManager : MonoBehaviour
                 if (ChipraceHandler.Instance)
                     ChipraceHandler.Instance.ForceUpdate();
             }
-            //ChipraceHandler.Instance.UpdateChipraceData();
         }
         else
         {
@@ -2939,9 +2934,5 @@ public class WalletManager : MonoBehaviour
 #if UNITY_EDITOR
         //Debug.Log(_con);
 #endif
-
     }
-
-
-    //{"NFTNameList":["CyberCar"],"NFTList":[3184]}
 }

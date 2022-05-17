@@ -106,8 +106,6 @@ public class RaceManager : MonoBehaviour
 
             AnalyticsManager.Instance.PushProgressionEvent(true);
         }
-
-        //ClaimRewardButton.onClick.AddListener(ClaimReward);
     }
 
     //this function will be used to set audio source to play counter sound
@@ -162,24 +160,15 @@ public class RaceManager : MonoBehaviour
         if (Constants.IsMultiplayer)
         {
             racePosition.enabled = true;
-           // racePosition.SetActive(true);
             if (PhotonNetwork.IsConnected)
             {
                 if (MultiplayerManager.Instance)
                     MultiplayerManager.Instance.winnerList.Clear();
 
                 StartCoroutine(StartGameWithDelay());
-                //if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-                //  StartTheRaceTimer();
             }
 
             int _count = MultiplayerManager.Instance.Settings.MaxPlayers;
-            // for (int i = 0; i < _count; i++)
-            // {
-            //     sapwnableSlider[i] =
-            //         Instantiate(slider, sliderPos.transform.position, Quaternion.identity, fieldCanvas.transform) as
-            //             GameObject;
-            // }
         }
         else
             StartTheRaceTimer();
@@ -187,10 +176,6 @@ public class RaceManager : MonoBehaviour
 
         _miniMapCounter = _requiredNumberOfLaps * 10;
         _miniMapCounter = 1 / _miniMapCounter;
-        // miniMap = Instantiate(slider, sliderPos.transform.position, Quaternion.identity,fieldCanvas.transform) as GameObject;
-
-
-        //slider.SetActive(true);
     }
 
     IEnumerator StartGameWithDelay()
@@ -262,11 +247,9 @@ public class RaceManager : MonoBehaviour
             TogglePauseMenu();
         }
 
-        //Debug.Log(TinyCarController.carSpeed);
         if (TinyCarController.carSpeed > 0)
         {
             speedText.text = TinyCarController.carSpeed.ToString();
-            //Debug.Log(Mathf.Floor(body.velocity.magnitude));
         }
         else
         {
@@ -290,34 +273,19 @@ public class RaceManager : MonoBehaviour
 
     public void startSinglePlayerprogressBar()
     {
-
-        //_miniMapCounter++;
-        //Debug.Log(_miniMapCounter);
-        //float val = 1/ (_requiredNumberOfLaps*10);
-        //  Debug.Log(val);
         progressCount = _miniMapCounter;
-        //lerpProgressbar(val);
         StartCoroutine(changeProgressValue(progressCount));
-        // miniMap.value = val;
-        // Debug.Log(_miniMapCounter);
-        // Debug.Log(val);
     }
 
 
     private void OnWayPointData(WayPointData data)
     {
         int indexOfPayPoint = _wayPoints.IndexOf(data.Waypoint);
-        //Debug.Log("indexofwaypoint");
-        //Debug.Log(indexOfPayPoint);
-        // miniMap.GetComponent<MinimapHandler>().startSinglePlayerProgressBar();
-        //startSinglePlayerprogressBar();
 
         if (indexOfPayPoint % _wayPoints.Count == _currentWayPointIndex)
         {
             _currentWayPointIndex++;
             _currentWayPointIndex %= _wayPoints.Count;
-            //  Debug.Log("currentWayPoint");
-            //Debug.Log(_currentWayPointIndex);
 
             if (_currentWayPointIndex == 1)
             {
@@ -342,8 +310,6 @@ public class RaceManager : MonoBehaviour
 
     public void showGameOverMenuMultiplayer(int _position)
     {
-        //Debug.Log("position is:");
-        //Debug.Log(_position);
         Constants.isMultiplayerGameEnded = true;
 
         if (_position >= 0)
@@ -356,8 +322,6 @@ public class RaceManager : MonoBehaviour
             }
 
             WinData _data = MultiplayerManager.Instance.winnerList[0];
-            //positionText.text = (_position + 1).ToString();
-            //secondpositionText.text
             showPositions(true);
             ToggleScreen_MultiplayerUI(true);
             ChangeName_MultiplayerUI(_data.Name);
@@ -365,24 +329,14 @@ public class RaceManager : MonoBehaviour
             ChangeAmount_MultiplayerUI(true, _data.TotalBetValue);
             ConvertTimeAndDisplay(true, double.Parse(_data.RunTime));
             UpdateFlag_MultiplayerUI(_data.FlagIndex);
-            //Updatef
             foreach (var item in MultiplayerManager.Instance.winnerList)
             {
                 Debug.Log(item.Name);
             }
-
-            // WinData _loserData = MultiplayerManager.Instance.winnerList[1];
-            // ChangeName_LoserMultiplayerUI(_loserData.Name);
-            // ChangeWinAmount_LoserMultiplayerUI(_loserData.TotalWins);
-            // ChangeAmount_LoserMultiplayerUI(false, _loserData.TotalBetValue);
-            // ConvertTimeAndDisplay(false,double.Parse(_loserData.RunTime));
-            // UpdateFlag_LoserMultiplayerUI(_loserData.FlagIndex);
-
         }
 
         if (_position > 0) //only looser can access
         {
-            //TODO: disable winner logo
             //raise an event to disable position loader
             string _Json = JsonConvert.SerializeObject(MultiplayerManager.Instance.winnerList[1]);
             RPCCalls.Instance.PHView.RPC("ShowOtherPlayersPosition", RpcTarget.AllViaServer, _Json);
@@ -394,7 +348,6 @@ public class RaceManager : MonoBehaviour
     {
         WinData _mainData = JsonConvert.DeserializeObject<WinData>(_data);
         
-        // WinData _loserData = MultiplayerManager.Instance.winnerList[1];
         ChangeName_LoserMultiplayerUI(_mainData.Name);
         ChangeWinAmount_LoserMultiplayerUI(_mainData.TotalWins);
         ChangeAmount_LoserMultiplayerUI(false, _mainData.TotalBetValue);
@@ -609,14 +562,9 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
     {
         if(isWinner)
             UIMultiplayer.AmountWinText.text =  _amount.ToString();
-        // else
-        //     UIMultiplayer.AmountWinText.text = "0";
     }
     public void ChangeAmount_LoserMultiplayerUI(bool isWinner,int _amount)
     {
-        // if(isWinner)
-        //     UIMultiplayer.LoserAmountWinText.text =  _amount.ToString();
-        // else
             UIMultiplayer.LoserAmountWinText.text = "0";
     }
     public void ChangeRunTime_MultiplayerUI(string _time)

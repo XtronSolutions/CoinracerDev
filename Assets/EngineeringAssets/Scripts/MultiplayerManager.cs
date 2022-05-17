@@ -74,6 +74,7 @@ public class WinData
 
 public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
+    #region DataMembers
     public static MultiplayerManager Instance; //static instance of the class
     public PhotonSetting Settings; //class instance for PhotonSetting
     [HideInInspector] public List<string> ActorNumbers = new List<string>(); //list of string to store actor numbers in room
@@ -81,7 +82,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     string _customPlayerPropString = ""; //string to store response of player data from PUN
     string _customRoomPropString = ""; //string to store response of room data from PUN
     private CustomRoomPropData DataRoomPropData; //class instance of CustomRoomPropData
+    #endregion
 
+    #region MultiplayerPhoton
     void Awake()
     {
         MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
@@ -90,7 +93,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             Destroy(this.gameObject);
 
         DontDestroyOnLoad(this.gameObject);
-
     }
 
     private void Start()
@@ -120,7 +122,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void ConnectToPhotonServer()
     {
         PhotonNetwork.GotPingResult = false;
-       // Debug.Log("connect to photn called");
         Constants.OpponentTokenID = "0";
         UpdatePlayerCountText("0");
         Constants.DepositDone = false;
@@ -137,9 +138,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsConnected)
         {
-            //Debug.Log("already connected to master");
-            // MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
-            //ConnectionMaster();
             PhotonNetwork.GotPingResult = false;
 
             Constants.RegionChanged = false;
@@ -231,7 +229,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
 
         Constants.StoredPID= roomCode.ToString(); 
-        //string roomName = "Room_" + roomCode.ToString();
         string roomName = roomCode.ToString();
 
         RoomOptions roomOptions = new RoomOptions();
@@ -317,6 +314,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(_sec);
         GetCustomProps(isRoom, _key);
     }
+    #endregion
 
     #region PunCallbacks
     public override void OnConnectedToMaster()
@@ -382,7 +380,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        //UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
         UpdateConnectionText("Joined Room");
         Constants.StoredPID = PhotonNetwork.CurrentRoom.Name;
 
@@ -450,8 +447,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        //UpdatePlayerCountText("Player Count : "+PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
             if(PhotonNetwork.IsMasterClient)
@@ -502,8 +497,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             {
                 yield return new WaitForEndOfFrame();
             }
-
-            //CallStartRPC();
         }
         else
         {

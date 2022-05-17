@@ -59,9 +59,7 @@ public class RPCCalls : MonoBehaviour
         MultiplayerManager.Instance.winnerList.Add(_mainData);
         if (_mainData.ID == PhotonNetwork.LocalPlayer.ActorNumber.ToString())
         {
-            //TODO: Active END screen according to position
             int positionNumber = -1;
-            //Debug.Log("_mainData.ID: " + _mainData.ID);
             foreach (var item in MultiplayerManager.Instance.winnerList)
             {
                 //Debug.Log("item.ID: " + item.ID);
@@ -72,9 +70,6 @@ public class RPCCalls : MonoBehaviour
                 if (item.ID == _mainData.ID)
                     break;
             }
-            // RaceManager.Instance.showPositions(positionNumber);
-
-            //Debug.Log("My position is: " + positionNumber);
 
             if (positionNumber == 0)
             {

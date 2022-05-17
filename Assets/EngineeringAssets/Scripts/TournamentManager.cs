@@ -8,6 +8,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using UnityEngine.Networking;
 
+#region SuperClasses
 public class Timestamp
 {
     public double seconds { get; set; }
@@ -45,6 +46,7 @@ public class TournamentClassData
 {
     public TournamentData data { get; set; }
 }
+#endregion
 
 public class TournamentManager : MonoBehaviour
 {
@@ -204,10 +206,6 @@ public class TournamentManager : MonoBehaviour
                 SRemainingTimeSeconds = _data.GEndDate.seconds - _data.timestamp.seconds;
                 SStartTimeDiffSeconds = _data.timestamp.seconds - _data.GStartDate.seconds;
 
-                //Debug.Log(_data.GEndDate.seconds);
-                //Debug.Log(_data.timestamp.seconds);
-                //Debug.Log(_data.GStartDate.seconds);
-                //Debug.Log(GStartTimeDiffSeconds);
                 //for Second tournament
                 if (Mathf.Sign((float)SStartTimeDiffSeconds) == -1)
                 {
@@ -234,8 +232,6 @@ public class TournamentManager : MonoBehaviour
                     {
                         Constants.SecondTournamentActive = true;
                         SRemainingTime = TimeSpan.FromSeconds(SRemainingTimeSeconds);
-
-                        //Debug.LogError(RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString());
 
                         ManipulateSecondTournamnetUIActivness(true, true, true, false, false, false, true);
                         ManipulateSecondTournamnetUIData("", SRemainingTime.Days.ToString() + ":" + SRemainingTime.Hours.ToString() + ":" + SRemainingTime.Minutes.ToString() + ":" +SRemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.GTicketPrice.ToString() + " $CRACE", "*" + Constants.DiscountPercentage.ToString() + "% off if you hold " + Constants.DiscountForCrace.ToString() + " $crace or more");
@@ -270,8 +266,6 @@ public class TournamentManager : MonoBehaviour
                     {
                         Constants.TournamentActive = true;
                         RemainingTime = TimeSpan.FromSeconds(RemainingTimeSeconds);
-
-                        //Debug.LogError(RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString());
 
                         ManipulateTournamnetUIActivness(true, true, true, false, false, false,true);
                         ManipulateTournamnetUIData("", RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.TicketPrice.ToString() + " $CRACE", "*"+Constants.DiscountPercentage.ToString()+"% off if you hold "+Constants.DiscountForCrace.ToString()+" $crace or more");
@@ -375,9 +369,6 @@ public class TournamentManager : MonoBehaviour
         {
             if (DataTournament != null )
             {
-               // Debug.Log(DataTournament.PassPrice);
-               // DataTournament = JsonConvert.DeserializeObject<TournamentData>(info);
-
                 Constants.TournamentPassPrice = DataTournament.PassPrice;
                 Constants.DiscountPercentage = DataTournament.DiscountPercentage;
                 Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
@@ -480,17 +471,13 @@ public class TournamentManager : MonoBehaviour
          yield return request.SendWebRequest();
          if (request.result == UnityWebRequest.Result.ConnectionError)
          {
-             //Debug.Log(request.error);
+             Debug.Log(request.error);
          }
          else if (request.result == UnityWebRequest.Result.Success)
          {
-             //Debug.Log("Result is: ");
-             //Debug.Log(request.result);
-             //Debug.Log(request.downloadHandler.text);
              JToken token = JObject.Parse(request.downloadHandler.text);
              string tID = (string) token.SelectToken("idToken");
              StartCoroutine(processTournamentRequest());
-             //Debug.Log(tID);
          }
          else
          {
@@ -500,45 +487,23 @@ public class TournamentManager : MonoBehaviour
      private IEnumerator processTournamentRequest()
     {
         using UnityWebRequest request = UnityWebRequest.Get(torunamentDataURL);
-       // request.SetRequestHeader("Authorization","Bearer "+ _token);
         yield return request.SendWebRequest();
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
-            //MainMenuViewController.Instance.SomethingWentWrongMessage();
-           // Debug.Log(request.error);
+            Debug.Log(request.error);
         }
         else
         {
-            //"message": "Unauthorized" //wrong password
-            // JToken response = JObject.Parse(request.downloadHandler.text);
-            // string reqResponse = (string)response.SelectToken("data").SelectToken("Email");
-            
-            //Debug.Log("Result is: ");
-            //Debug.Log(request.result);
-            //Debug.Log(request.downloadHandler.text);
             JToken token = JObject.Parse(request.downloadHandler.text);
             
-           // JsonConvert.DeserializeObject<TournamentClassData>(token.SelectToken("data"));
-            // string tID = (string)token.SelectToken("data");
-          
-            
-            
             if ((string) token.SelectToken("message") == "No User Found.")
-            {
                 MainMenuViewController.Instance.SomethingWentWrong();
-            }
             else if ((string) token.SelectToken("message") == "Unauthorized")
-            {
                 MainMenuViewController.Instance.SomethingWentWrongMessage();
-            }
             else if ((string) token.SelectToken("message") == "Required parameters are missing")
-            {
                 MainMenuViewController.Instance.SomethingWentWrongMessage();
-            }
             else if ((string) token.SelectToken("message") == "Invalid request.")
-            {
                 MainMenuViewController.Instance.SomethingWentWrongMessage();
-            }
             else if (request.result == UnityWebRequest.Result.Success)
             {
                 DataTournament = new TournamentData();
@@ -575,9 +540,6 @@ public class TournamentManager : MonoBehaviour
             {
                 MainMenuViewController.Instance.SomethingWentWrongMessage();
             }
-            
-            //UserData _player;
-            //_player.UserName = 
         }
     }
 }

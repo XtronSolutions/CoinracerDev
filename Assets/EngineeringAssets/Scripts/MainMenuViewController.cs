@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TMPro;
-using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -252,11 +251,13 @@ public class AllCarSelection
 public class MainMenuViewController : MonoBehaviour
 {
     #region DataMembers
+#if UNITY_WEBGL
     [DllImport("__Internal")]
     private static extern string GetStorageClass(string key, string ObjectName, string callback);
 
     [DllImport("__Internal")]
     private static extern string GetStorage(string key, string ObjectName, string callback);
+#endif
 
     public static CarSettings SelectedCar;
     public static MainMenuViewController Instance;
@@ -335,7 +336,7 @@ public class MainMenuViewController : MonoBehaviour
     private const string MatchEmailPattern = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
     #endregion
 
-    #region Start Functionality
+    #region StartFunctionality
     private void OnEnable()
     {
         Instance = this;
@@ -424,7 +425,7 @@ public class MainMenuViewController : MonoBehaviour
 
     #endregion
 
-    #region SeletionUI (MainData/Selections)
+    #region TournamentSelectionUI (MainData/Selections)
     public void ToggleScreen_SelectionUI(bool _state)
     {
         if (_state)
@@ -566,23 +567,6 @@ public class MainMenuViewController : MonoBehaviour
                     {
                         LoadingScreen.SetActive(false);
                         ShowToast(3f, "You already own a tournament pass");
-
-                        //var _data = TournamentManager.Instance.DataTournament;
-                        //RemainingTimeSecondPass = FirebaseManager.Instance.PlayerData.TournamentEndDate.seconds - _data.timestamp.seconds;
-
-                        //if (Mathf.Sign((float)RemainingTimeSecondPass) == -1)
-                        //{
-                        //    Constants.PrintError("pass time is over, resting it");
-                        //    LoadingScreen.SetActive(true);
-                        //    FirebaseManager.Instance.PlayerData.PassBought = false;
-                        //    FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
-                        //    BuyPasswithCrace();
-                        //}
-                        //else
-                        //{
-                        //    LoadingScreen.SetActive(false);
-                        //    ShowToast(3f, "You already own a tournament pass");
-                        //}
                     }
                 }
                 else
@@ -658,7 +642,6 @@ public class MainMenuViewController : MonoBehaviour
             LoadingScreen.SetActive(false);
             ShowToast(3f, "Transaction was not successful, please try again.");
         }
-
     }
 
     public void SecondTourOnPassBuy(bool _state)
@@ -678,7 +661,6 @@ public class MainMenuViewController : MonoBehaviour
             LoadingScreen.SetActive(false);
             ShowToast(3f, "Transaction was not successful, please try again.");
         }
-
     }
 
     public void PlayFromPass_SelectionUI()
@@ -692,26 +674,8 @@ public class MainMenuViewController : MonoBehaviour
                 {
                     if (FirebaseManager.Instance.PlayerData.PassBought)
                     {
-
                         BackClickedPassScreen_SelectionUI();
                         StartTournament(true);
-
-                        //var _data = TournamentManager.Instance.DataTournament;
-                        //RemainingTimeSecondPass = FirebaseManager.Instance.PlayerData.TournamentEndDate.seconds - _data.timestamp.seconds;
-
-                        //if (Mathf.Sign((float)RemainingTimeSecondPass) == -1)
-                        //{
-                        //   Constants.PrintError("pass time is over, resting it");
-                        //    LoadingScreen.SetActive(false);
-                        //    FirebaseManager.Instance.PlayerData.PassBought = false;
-                        //    FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
-                        //    ShowToast(3f, "you have not bought tournament pass or pass expired");
-                        //}
-                        //else
-                        //{
-                        //    BackClickedPassScreen_SelectionUI();
-                        //    StartTournament(true);
-                        //}
                     }
                     else
                     {
@@ -759,7 +723,6 @@ public class MainMenuViewController : MonoBehaviour
                         LoadingScreen.SetActive(false);
                         ShowToast(3f, "you have not bought tournament pass or pass expired");
                     }
-
                 }
                 else
                 {
@@ -903,7 +866,6 @@ public class MainMenuViewController : MonoBehaviour
 
         if (FlagHandler.Instance)
             FlagHandler.Instance.EnableFlags();
-
     }
 
     public void SubmitSelection_FlagSelectionUI()
@@ -931,7 +893,6 @@ public class MainMenuViewController : MonoBehaviour
             FirebaseManager.Instance.LogoutUser();
     }
 
-
     public void OnGetCred(string info)
     {
         tempInfo = info;
@@ -956,7 +917,6 @@ public class MainMenuViewController : MonoBehaviour
 
     public void LoginAfterConnect(string info)
     {
-
         if (info != "null" && info != "" && info != null)
         {
             if (!Constants.LoggedIn)
@@ -986,6 +946,7 @@ public class MainMenuViewController : MonoBehaviour
             }
         }
     }
+
     public void ChangeUserNameText(string _txt)
     {
         FlagIcon.sprite = FlagSkins.Instance.FlagSpriteWithIndex(Constants.FlagSelectedIndex);
@@ -1020,24 +981,28 @@ public class MainMenuViewController : MonoBehaviour
         ResetRegisterFields();
         ShowToast(3f, "User with entered email already registered.");
     }
+
     public void ErrorMessage(string message = "Something went wrong, Please try again")
     {
         LoadingScreen.SetActive(false);
         ResetRegisterFields();
         ShowToast(3f, message);
     }
+
     public void SomethingWentWrong()
     {
         LoadingScreen.SetActive(false);
         ResetRegisterFields();
         ShowToast(3f, "credentails invalid, please try again.");
     }
+
     public void SomethingWentWrongMessage()
     {
         LoadingScreen.SetActive(false);
         ResetRegisterFields();
         ShowToast(3f, "Something went wrong, Please try again");
     }
+
     public void ShowToast(float _time, string _msg,bool showSuccessIcon=false)
     {
         MessageUI.SetActive(true);
@@ -1055,10 +1020,7 @@ public class MainMenuViewController : MonoBehaviour
             SuccessIcon.SetActive(false);
             WarningIcon.SetActive(true);
         }
-
     }
-
-    
 
     public void ShowResendScreen(float _Sec)
     {
@@ -1105,7 +1067,6 @@ public class MainMenuViewController : MonoBehaviour
     {
         UILogin.RegisterButton.onClick.AddListener(EnabledRegisterScreen);
         UILogin.LoginButton.onClick.AddListener(SubmitLogin);
-
     }
 
     public void DisableRegisterLogin()
@@ -1168,7 +1129,6 @@ public class MainMenuViewController : MonoBehaviour
         walletAddress = "";
         confirmPass = "";
         userName = "";
-
         SavedEmail = email;
         SavedPass = pass;
         SavedUserName = userName;
@@ -1192,7 +1152,6 @@ public class MainMenuViewController : MonoBehaviour
     {
         walletAddress = _val;
     }
-
     public void OnPassConfirmChanged_Register(string _val)
     {
         confirmPass = _val;
@@ -1255,8 +1214,6 @@ public class MainMenuViewController : MonoBehaviour
         {
             apiRequestHandler.Instance.signUpWithEmail(email, pass, userName);
         }
-        //FirebaseManager.Instance.CheckEmailForAuth(email, pass, userName);
-
     }
     #endregion
 
@@ -1370,6 +1327,16 @@ public class MainMenuViewController : MonoBehaviour
             AnalyticsManager.Instance.StoredProgression.MapUsed = _levelsSettings[i].LevelName;
     }
 
+    public void AddLevels(bool isSelective=false, int Index=0)
+    {
+        for (int q = 0; q < _allLevelsSettings.Count; q++)
+        {   
+            if(isSelective)
+                _levelsSettings.Add(_allLevelsSettings[Index]);
+            else
+            _levelsSettings.Add(_allLevelsSettings[q]);
+        }
+    }
     private void OnGoToMapSelection()
     {
         _levelsSettings.Clear();
@@ -1383,11 +1350,7 @@ public class MainMenuViewController : MonoBehaviour
                     _levelsSettings.Add(_allLevelsSettings[Constants.SelectedSingleLevel - 1]);
                 }else
                 {
-                    _levelsSettings.Add(_allLevelsSettings[0]);
-                    _levelsSettings.Add(_allLevelsSettings[1]);
-                    _levelsSettings.Add(_allLevelsSettings[2]);
-                    _levelsSettings.Add(_allLevelsSettings[3]);
-                    _levelsSettings.Add(_allLevelsSettings[4]);
+                    AddLevels();
                 }
             }    
         }
@@ -1398,32 +1361,24 @@ public class MainMenuViewController : MonoBehaviour
                 if (AnalyticsManager.Instance)
                     AnalyticsManager.Instance.StoredProgression.Mode = "Practice";
 
-                _levelsSettings.Add(_allLevelsSettings[0]);
-                _levelsSettings.Add(_allLevelsSettings[1]);
-                _levelsSettings.Add(_allLevelsSettings[2]);
-                _levelsSettings.Add(_allLevelsSettings[3]);
-                _levelsSettings.Add(_allLevelsSettings[4]);
-                //_levelsSettings.Add(_allLevelsSettings[3]);
+                AddLevels();
             }
             else if (IsTournament)
             {
                 if (AnalyticsManager.Instance)
                     AnalyticsManager.Instance.StoredProgression.Mode = "Coinracer Tournament";
 
-                _levelsSettings.Add(_allLevelsSettings[1]);
-                //_levelsSettings.Add(_allLevelsSettings[2]);
+                AddLevels(true,1);
             }
             else if (IsSecondTournament)
             {
                 if (AnalyticsManager.Instance)
                     AnalyticsManager.Instance.StoredProgression.Mode = "Second Tournament";
 
-                _levelsSettings.Add(_allLevelsSettings[3]);
-                //_levelsSettings.Add(_allLevelsSettings[2]);
+                AddLevels(true, 3);
             }
 
         }
-
 
         OnLevelSelected(0);
         GameModeSelectionObject.SetActive(false);
@@ -1445,8 +1400,7 @@ public class MainMenuViewController : MonoBehaviour
             WalletConnected = true;
 
         if (WalletConnected)//WalletConnected
-        {
-            
+        {   
             LoadingScreen.SetActive(true);
             CheckBoughtCars();
             GameModeSelectionObject.SetActive(false);
@@ -1465,15 +1419,13 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.IsTest)
             WalletConnected = true;
 
-        if (WalletConnected)//WalletConnected
+        if (WalletConnected)
         {
             LoadingScreen.SetActive(true);
             IsTournament = false;
             IsSecondTournament = false;
             IsPractice = true;
-
             CheckBoughtCars();
-            // IsMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
             CarSelection3dObject.SetActive(true);
@@ -1663,20 +1615,17 @@ public class MainMenuViewController : MonoBehaviour
             _selecteableCars[i].Deactivate();
         }
 
-        //_selecteableCars[_currentSelectedCarIndex].Deactivate();
         _currentSelectedCarIndex = newIndex;
         _selecteableCars[_currentSelectedCarIndex].Activate();
         _selectedCarName.text = _selecteableCars[_currentSelectedCarIndex].carSettings.Name;
 
         if (AnalyticsManager.Instance)
             AnalyticsManager.Instance.StoredProgression.CarName = _selecteableCars[_currentSelectedCarIndex].carSettings.Name;
-
-
     }
 
     #endregion
 
-    #region Tournament UI/Data
+    #region Tournament Data
     public void StartTournament(bool _canstart = false)
     {
         if (Constants.IsTest)
@@ -1713,7 +1662,6 @@ public class MainMenuViewController : MonoBehaviour
         {
             LoadingScreen.SetActive(false);
             ShowToast(3f, "Transaction was not successful, please try again.");
-            //Invoke("StartWithDelay", 4f);
         }
     }
 
@@ -1754,7 +1702,6 @@ public class MainMenuViewController : MonoBehaviour
         {
             LoadingScreen.SetActive(false);
             ShowToast(3f, "Transaction was not successful, please try again.");
-            //Invoke("StartWithDelay", 4f);
         }
     }
 
@@ -1787,7 +1734,6 @@ public class MainMenuViewController : MonoBehaviour
             if (MultiplayerManager.Instance)
             {
                 Constants.SelectedLevel = MainMenuViewController.Instance.getSelectedLevel() + 1;
-                //MultiplayerManager.Instance.ConnectToPhotonServer();
                 MainMenuViewController.Instance.SelectMultiplayer_ConnectionUI();
             } else
             {
@@ -1830,11 +1776,8 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.IsTest)
             WalletConnected = true;
 
-        if (WalletConnected)//WalletConnected
+        if (WalletConnected)
         {
-            /*int storedNFTS = 0;
-            for (int i = 0; i < Constants.NFTStored.Length; i++)
-                storedNFTS += Constants.NFTStored[i];*/
             if (Constants.CheckAllNFT)
             {
                 ToggleScreen_Garage(true);
@@ -1851,11 +1794,6 @@ public class MainMenuViewController : MonoBehaviour
                 {
                     NFTGameplayManager.Instance.InstantiateNFT();
                 }
-
-                //if(Constants.CheckAllNFT)
-                //{
-                //    WalletManager.Instance.CheckNFTBalance(true);
-                //}
             }
             else
             {
@@ -1914,7 +1852,6 @@ public class MainMenuViewController : MonoBehaviour
             return;
         }
         
-        
         if (Constants.CheckAllNFT)
         {
             int storedNFTS = 0;
@@ -1952,7 +1889,6 @@ public class MainMenuViewController : MonoBehaviour
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
                 {
-                    //Debug.Log("Car name: " + Constants.StoredCarNames[i].ToLower());
                     for (int j = 0; j < _allCars.Count; j++)
                     {
                         if (Constants.StoredCarNames[i].ToLower() == _allCars[j].CarName.ToLower())
@@ -2117,10 +2053,9 @@ public class MainMenuViewController : MonoBehaviour
 
     #endregion
 
-    #region ConnectionUI
+    #region MultiplayerConnectionUI/Data
     public void SubscribeEvents_ConnectionUI()
     {
-        //UIConnection.MultiplayerButton.onClick.AddListener(onMultiplayerBtnClick);
         UIConnection.MultiplayerButton.onClick.AddListener(EnableSelection_MultiplayerSelection);
         UIConnection.BackButton.onClick.AddListener(DisableScreen_ConnectionUI);
         UIConnection.DepositButton.onClick.AddListener(DepositAmount);
@@ -2283,9 +2218,6 @@ public class MainMenuViewController : MonoBehaviour
         RegionPinged = false;
         ToggleScreen_ConnectionUI(true);
         AnimateConnectingDetail_ConnectionUI(UIConnection.Detail01.DetailScreen,true);
-
-        //Debug.Log(_levelsSettings[_currentlySelectedLevelIndex].SceneName);
-
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.ConnectToPhotonServer();
     }
@@ -2308,7 +2240,6 @@ public class MainMenuViewController : MonoBehaviour
 
     public void DisableScreen_ConnectionUI()
     {
-        //Constants.IsMultiplayer = false;
         ChangeConnectionText_ConnectionUI("connecting...");
         ChangeRegionText_ConnectionUI("Selected Region : n/a");
         ToggleScreen_ConnectionUI(false);
@@ -2357,7 +2288,6 @@ public class MainMenuViewController : MonoBehaviour
         if (!RegionPinged)
         {
             RegionPinged = true;
-            //RegionPingsDropdown
             var dropdown = UIConnection.RegionPingsDropdown.GetComponent<Dropdown>();
             SetManualRegion _RegionRef = UIConnection.RegionPingsDropdown.GetComponent<SetManualRegion>();
             dropdown.options.Clear();
@@ -2418,15 +2348,6 @@ public class MainMenuViewController : MonoBehaviour
 
         if (IsDebugBuild)
             Constants.ChipraceScore = "550";
-
-        //if (_amount == 5)
-           // Constants.ChipraceScore = "10";
-        //if (_amount == 10)
-            //Constants.ChipraceScore = "25";
-        //if (_amount == 50)
-            //Constants.ChipraceScore = "100";
-        //if (_amount == 100)
-            //Constants.ChipraceScore = "250";
 
         Constants.ConvertDollarToCrace(Constants.SelectedWage);
         Constants.SelectedCrace = Constants.CalculatedCrace;
