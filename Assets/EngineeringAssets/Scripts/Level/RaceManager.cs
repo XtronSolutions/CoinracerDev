@@ -235,26 +235,17 @@ public class RaceManager : MonoBehaviour
     private void Update()
     {
         if (player1Position > player2Position)
-        {
             racePosition.text = "1st";
-        }
         else if (player2Position > player1Position)
-        {
             racePosition.text = "2nd";
-        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
-        {
             TogglePauseMenu();
-        }
 
         if (TinyCarController.carSpeed > 0)
-        {
             speedText.text = TinyCarController.carSpeed.ToString();
-        }
         else
-        {
             speedText.text = "0";
-        }
     }
 
     IEnumerator changeProgressValue(float _val)
