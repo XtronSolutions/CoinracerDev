@@ -107,11 +107,11 @@ public static class Constants
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = false;
+    public static bool IsTestNet = true;
     public static bool IsTest = false;
-    public static bool IsStagging = false;
+    public static bool IsStagging = true;
     public static bool DebugAllCars = false;// bool to enable all cars
-    public static bool IsDebugBuild = false;//apply pvp score 500+/enable force end race on levels
+    public static bool IsDebugBuild = true;//apply pvp score 500+/enable force end race on levels// and bid pf 1 crace for pvp
 
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;

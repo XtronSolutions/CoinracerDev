@@ -57,7 +57,7 @@ mergeInto(LibraryManager.library, {
 		
 		if(Pointer_stringify(method)=="endRace")
 		{
-			var newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._hash];
+			var newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._signature,parsedJSOn._nonce];
 			 window.web3gl.sendContract(
 				  Pointer_stringify(method),
 				  Pointer_stringify(abi),

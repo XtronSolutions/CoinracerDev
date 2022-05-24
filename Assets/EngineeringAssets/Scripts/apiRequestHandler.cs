@@ -1,10 +1,17 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
 #region SuperClasses
+public class SignatureResponse
+{
+    public string signature { get; set; }
+    public int nonce { get; set; }
+}
+
 public class UserDataBO
 {
     public string userName { get; set; }
@@ -313,7 +320,6 @@ public class apiRequestHandler : MonoBehaviour
                 MainMenuViewController.Instance.SomethingWentWrongMessage();
         }
     }
-    
 
     private IEnumerator processRequest(string _token)//Login API
     {
@@ -403,7 +409,6 @@ public class apiRequestHandler : MonoBehaviour
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();
         }
-
     }
 
     private IEnumerator processLeaderBoardRequest(string _tID, bool IsSecondTour)
@@ -466,4 +471,86 @@ public class apiRequestHandler : MonoBehaviour
             FirebaseManager.Instance.OnPassEmailSentError("");
     }
 
+
+    async public Task<string> GetSignature(string _pid, string _winner, string _score)
+    {
+        string _token = await processSignatureToken(FirebaseManager.Instance.Credentails.Email, FirebaseManager.Instance.Credentails.Password);
+        if (!string.IsNullOrEmpty(_token))
+        {
+            string signature = await processSignatureRequest(_token, _pid, _winner, _score);
+
+            if (!string.IsNullOrEmpty(signature))
+            {
+                return signature;
+            }
+            else
+            {
+                return "";
+            }
+        }
+        else
+        {
+            return "";
+        }
+
+    }
+
+    async public Task<string> processSignatureToken(string _email, string _password)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("email", _email);
+        form.AddField("password", _password);
+        form.AddField("returnSecureToken", "true");
+        using UnityWebRequest request = UnityWebRequest.Post(firebaseLoginUrl + firebaseApiKey, form);
+
+       await request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrong();
+            return "";
+        }
+        else if (request.result == UnityWebRequest.Result.Success)
+        {
+            JToken token = JObject.Parse(request.downloadHandler.text);
+            string tID = (string)token.SelectToken("idToken");
+            return tID;
+        }
+        else
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+    }
+
+    async public Task<string> processSignatureRequest(string _tID,string _pid,string _winner,string _score)
+    {
+        string _mainURL = BaseURL + "getSignature"+ "?params="+ _pid+"," + _winner + ","+ _score;
+        Debug.Log(_mainURL);  
+
+        using UnityWebRequest request = UnityWebRequest.Get(_mainURL);
+        request.SetRequestHeader("Content-Type", "application/json");
+        string _reqToken = "Bearer " + _tID;
+        request.SetRequestHeader("Authorization", _reqToken);
+
+        await request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.Log(request.error);
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
+    }
 }
