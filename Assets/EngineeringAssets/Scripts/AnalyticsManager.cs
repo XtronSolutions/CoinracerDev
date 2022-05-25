@@ -66,6 +66,7 @@ public class AnalyticsManager : MonoBehaviour
     public void SetBusinessPayload(double amount, string itemType, string itemId, string cartType)
     {
         PayloadBusinessEvent.CurrencyName = Constants.NameCurrency;
+       // double _usd = amount * Constants.CracePrice;
         PayloadBusinessEvent.CurrencyAmount = amount;
         PayloadBusinessEvent.ItemType = itemType;
         PayloadBusinessEvent.ItemID = itemId;
@@ -79,30 +80,35 @@ public class AnalyticsManager : MonoBehaviour
 
     public void TournamentTicketEvent(double _amount)
     {
+        Constants.GetCracePrice();
         SetBusinessPayload(_amount, "Tournament", "TournamentTicket", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
     }
 
     public void TournamentLeagueTicketEvent(double _amount)
     {
+        Constants.GetCracePrice();
         SetBusinessPayload(_amount, "TournamentLeague", "TournamentTicket", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
     }
 
     public void TournamentPassEvent(double _amount)
     {
+        Constants.GetCracePrice();
         SetBusinessPayload(_amount, "Tournament", "TournamentPass", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
     }
 
     public void MultiplayerEvent(double _amount)
     {
+        Constants.GetCracePrice();
         SetBusinessPayload(_amount, "Multiplayer", "BidAmount", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
     }
 
     public void ChipraceEvent(double _amount)
     {
+        Constants.GetCracePrice();
         SetBusinessPayload(_amount, "Chiprace", "UpdateNFT", "MainMenu");
         RegisterBusinessEvents(PayloadBusinessEvent);
     }

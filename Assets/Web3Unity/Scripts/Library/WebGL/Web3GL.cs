@@ -54,10 +54,8 @@ public class Web3GL
 
     public static string eventResponse = "";
 
-    // this function will create a metamask tx for user to confirm.
     async public static Task<string> SendContract(string _method, string _abi, string _contract, string _args, string _value, string _gasLimit = "", string _gasPrice = "",bool _hasEvent=false)
     {
-        // Set response to empty
         eventResponse = "";
         SetContractResponse("");
         SetContractEventResponse("");
@@ -84,48 +82,28 @@ public class Web3GL
             SetContractEventResponse("");
         }
       
-        // check if user submmited or user rejected
         if (response.Length == 66) 
-        {
             return response;
-        } 
         else 
-        {
             throw new Exception(response);
-        }
     }
 
     async public static Task<string> GetEncodedHash(string _pid, string _address, string _key)
     {
-        // Set response to empty
         SetEncodedResponse("");
         ContractHashJs(_pid, _address, _key);
         string response = SendEncodedResponse();
         while (response == "")
         {
-           // Debug.Log("encoded response is empty");
             await new WaitForSeconds(1f);
             response = SendEncodedResponse();
         }
         SetEncodedResponse("");
-
-        //Debug.Log(response);
         return response;
-
-        // check if user submmited or user rejected
-        //if (response.Length == 66)
-       // {
-         //   return response;
-       // }
-       // else
-        //{
-         //   throw new Exception(response);
-       // }
     }
 
     async public static Task<string> SendTransaction(string _to, string _value, string _gasLimit = "", string _gasPrice = "")
     {
-        // Set response to empty
         SetTransactionResponse("");
         SendTransactionJs(_to, _value, _gasLimit, _gasPrice);
         string response = SendTransactionResponse();
@@ -135,15 +113,10 @@ public class Web3GL
             response = SendTransactionResponse();
         }
         SetTransactionResponse("");
-        // check if user submmited or user rejected
         if (response.Length == 66) 
-        {
             return response;
-        } 
         else 
-        {
             throw new Exception(response);
-        }
     }
 
     async public static Task<string> Sign(string _message)
@@ -155,17 +128,11 @@ public class Web3GL
             await new WaitForSeconds(1f);
             response = SignMessageResponse();
         }
-        // Set response to empty
         SetSignMessageResponse("");
-        // check if user submmited or user rejected
         if (response.Length == 132)
-        {
             return response;
-        } 
         else 
-        {
             throw new Exception(response);
-        }
     }
 
     public static int Network()

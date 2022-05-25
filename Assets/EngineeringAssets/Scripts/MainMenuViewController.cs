@@ -1999,7 +1999,6 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SendEmailConfirmationClicked_PasswordReset()
     {
-       // Debug.LogError(("Sending email verification"));
         LoadingScreen.SetActive(true);
         if (UIForgetPassword.EmailInput.text == "")
         {
@@ -2313,7 +2312,7 @@ public class MainMenuViewController : MonoBehaviour
             }
             else
             {
-                //Debug.LogError("region list is empty");
+                //Debug.Log("region list is empty");
             }
         }
     }

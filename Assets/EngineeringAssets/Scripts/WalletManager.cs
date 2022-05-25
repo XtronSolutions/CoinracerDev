@@ -28,6 +28,17 @@ public class EndRacePayload
     public string _nonce;
 }
 
+[Serializable]
+public class EndRacePayloadHash
+{
+    public string _pid;
+    public string _winner;
+    public string _score;
+    public string[] _tokenIds = new string[2];
+    public string _hash;
+}
+
+
 /// <summary>
 /// response from contract 
 /// </summary>
@@ -1566,48 +1577,72 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
-            if(MainMenuViewController.Instance)
+            EndRacePayloadHash _dataHash = new EndRacePayloadHash();
+            EndRacePayload _data = new EndRacePayload();
+
+            if (MainMenuViewController.Instance)
                 MainMenuViewController.Instance.LoadingScreen.SetActive(true);
 
             if (RaceManager.Instance)
                 RaceManager.Instance.ToggleLoadingScreen(true);
 
-            string tempHash = "";
-            if (Constants.IsTestNet)
-                tempHash = Constants.TestnetHashKey;
-            else
-                tempHash = Constants.HashKey;
-
-            string _signature = await apiRequestHandler.Instance.GetSignature(_pid, Constants.WalletAddress, Constants.ChipraceScore);
-
-            if (string.IsNullOrEmpty(_signature))
+            if (Constants.UseHashMec)
             {
-                Debug.Log("sig is empty");
-                OnEndRaceCalled(false);
-                return;
+                string tempHash = "";
+                if (Constants.IsTestNet)
+                    tempHash = Constants.TestnetHashKey;
+                else
+                    tempHash = Constants.HashKey;
+
+                string _hash = await Web3GL.GetEncodedHash(_pid, Constants.WalletAddress, tempHash);
+
+                _dataHash._pid = _pid;
+                _dataHash._winner = Constants.WalletAddress;
+                _dataHash._score = Constants.ChipraceScore;
+                _dataHash._hash = _hash;
+            }
+            else
+            {
+                string _signature = await apiRequestHandler.Instance.GetSignature(_pid, Constants.WalletAddress, Constants.ChipraceScore);
+
+                if (string.IsNullOrEmpty(_signature))
+                {
+                    OnEndRaceCalled(false);
+                    return;
+                }
+
+                var _sig = JsonConvert.DeserializeObject<SignatureResponse>(_signature);
+
+                _data._pid = _pid;
+                _data._winner = Constants.WalletAddress;
+                _data._score = Constants.ChipraceScore;
+                _data._signature = _sig.signature;
+                _data._nonce = _sig.nonce.ToString();
             }
 
-            var _sig = JsonConvert.DeserializeObject<SignatureResponse>(_signature);
 
             string methodCSP = "endRace";
-
-            EndRacePayload _data = new EndRacePayload();
-            _data._pid = _pid;
-            _data._winner = Constants.WalletAddress;
-            _data._score = Constants.ChipraceScore;
-            _data._signature = _sig.signature;
-            _data._nonce = _sig.nonce.ToString();
-
             string[] Tokens;
             if (Constants.OpponentTokenID != "0")
                 Tokens = new string[2] { Constants.OpponentTokenID, Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString() };
             else
                 Tokens = new string[1] { Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString() };
 
-            for (int i = 0; i < _data._tokenIds.Length; i++)
-                _data._tokenIds[i] = Tokens[i];
+            string argsCSP;
+            if (Constants.UseHashMec)
+            {
+                for (int i = 0; i < _dataHash._tokenIds.Length; i++)
+                    _dataHash._tokenIds[i] = Tokens[i];
 
-            string argsCSP = JsonConvert.SerializeObject(_data);
+                argsCSP = JsonConvert.SerializeObject(_dataHash);
+            } else
+            {
+                for (int i = 0; i < _data._tokenIds.Length; i++)
+                    _data._tokenIds[i] = Tokens[i];
+
+                argsCSP = JsonConvert.SerializeObject(_data);
+            }
+ 
             string value = "0";
             string gasLimit = "";//310000//2100000
             string gasPrice = "";//10000000000
