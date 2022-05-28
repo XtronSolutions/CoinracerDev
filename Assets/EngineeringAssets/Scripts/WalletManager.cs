@@ -1234,7 +1234,7 @@ public class WalletManager : MonoBehaviour
     /// </summary>
     public void CallRaceWinner()
     {
-        if (isConnected)
+        if (Constants.WalletConnected) //isConnected
             EndRace(Constants.StoredPID);
         else
             ConnectWallet();
@@ -2027,6 +2027,7 @@ public class WalletManager : MonoBehaviour
                     }
                 }
 
+                Debug.LogError(response);
                 if (response != "")
                 {
                     StoredHash = response;

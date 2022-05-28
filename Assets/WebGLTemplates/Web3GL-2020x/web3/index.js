@@ -153,7 +153,18 @@ window.web3gl.sendContract(method, abi, contract, args, value, gasLimit, gasPric
 */
 async function sendContract(method, abi, contract, args, value, gasLimit, gasPrice) {
   const from = (await web3.eth.getAccounts())[0];
-  new web3.eth.Contract(JSON.parse(abi), contract).methods[method](...JSON.parse(args))
+    var f = new web3.eth.Contract(JSON.parse(abi), contract);
+    f.once("allEvents", {
+        filter: { myIndexedParam: [20, 23], myOtherIndexedParam: '0x123456789...' }, // Using an array means OR: e.g. 20 or 23
+        fromBlock: 0
+    }, function (error, event) {
+        if (error == null)
+            window.web3gl.sendContractEventResponse = JSON.stringify(event);
+        else
+            window.web3gl.sendContractEventResponse = error.message;
+    });
+
+    f.methods[method](...JSON.parse(args))
     .send({
       from,
       value,
@@ -163,15 +174,6 @@ async function sendContract(method, abi, contract, args, value, gasLimit, gasPri
     .on("transactionHash", (transactionHash) => {
       window.web3gl.sendContractResponse = transactionHash;
     })
-      .once("allEvents", {
-          filter: { myIndexedParam: [20, 23], myOtherIndexedParam: '0x123456789...' }, // Using an array means OR: e.g. 20 or 23
-          fromBlock: 0
-      }, function (error, event) {
-              if (error == null)
-                  window.web3gl.sendContractEventResponse = JSON.stringify(event);
-              else
-                  window.web3gl.sendContractEventResponse = error.message;
-      })
     .on("error", (error) => {
       window.web3gl.sendContractResponse = error.message;
     });
