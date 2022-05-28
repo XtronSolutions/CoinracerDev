@@ -906,7 +906,7 @@ public class MainMenuViewController : MonoBehaviour
             }
             else
             {
-                Invoke("InvokeCallCred", 0.4f);
+                Invoke("InvokeCallCred", 0.1f);
             }
         }
     }

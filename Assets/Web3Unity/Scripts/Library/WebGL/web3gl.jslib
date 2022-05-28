@@ -40,28 +40,38 @@ Web3Connect: function () {
 
   SendContractJs: function (method, abi, contract, args, value, gasLimit, gasPrice) {
     var parsedArgs=Pointer_stringify(args);
-	var parsedJSOn=JSON.parse(parsedArgs);
+	  var parsedJSOn=JSON.parse(parsedArgs);
+    var methodName=Pointer_stringify(method);
     var newargs=args;
 
-    if(Pointer_stringify(method)=="endRace")
-		{
-			newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._hash];
-		    //newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._signature,parsedJSOn._nonce];
-		}
-		else if(Pointer_stringify(method)=="mint")
-		{
+    if(methodName=="endRace")
+			newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._hash];//newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._signature,parsedJSOn._nonce];
+		else if(methodName=="mint")
 			newargs=[parsedJSOn.amount, parsedJSOn.craceValue,parsedJSOn._data];
-		}
 
-    window.web3gl.sendContract(
-      Pointer_stringify(method),
-      Pointer_stringify(abi),
-      Pointer_stringify(contract),
-      Pointer_stringify(newargs),
-      Pointer_stringify(value),
-      Pointer_stringify(gasLimit),
-      Pointer_stringify(gasPrice)
-    );
+    if(methodName=="endRace" || methodName=="mint")
+    {
+      window.web3gl.sendContract(
+        Pointer_stringify(method),
+        Pointer_stringify(abi),
+        Pointer_stringify(contract),
+        JSON.stringify(newargs),
+        Pointer_stringify(value),
+        Pointer_stringify(gasLimit),
+        Pointer_stringify(gasPrice)
+      );
+    }else
+    {
+      window.web3gl.sendContract(
+        Pointer_stringify(method),
+        Pointer_stringify(abi),
+        Pointer_stringify(contract),
+        Pointer_stringify(newargs),
+        Pointer_stringify(value),
+        Pointer_stringify(gasLimit),
+        Pointer_stringify(gasPrice)
+      );
+    }
   },
 
   ContractHashJs: function (pid, address, key) {
