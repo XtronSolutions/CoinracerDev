@@ -1,42 +1,29 @@
 mergeInto(LibraryManager.library, {
-  SetStorage:function(_newkey,_newval){
-	//console.log("key: "+Pointer_stringify(_newkey)+" value: "+Pointer_stringify(_newval));
+ SetStorage:function(_newkey,_newval){
 	localStorage.setItem(Pointer_stringify(_newkey), Pointer_stringify(_newval));
   },
-  
-  GetStorage:function(_newkey2,objectName, callback){
+
+GetStorage:function(_newkey2,objectName, callback){
 	var parsedObjectName = Pointer_stringify(objectName);
     var parsedCallback = Pointer_stringify(callback);
 	var parsedkey = Pointer_stringify(_newkey2);
-	
 	var _storage=localStorage.getItem(parsedkey);
-	
-	//console.log("Getkey: "+parsedkey+" value: "+_storage);
 	unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(_storage));
-
   },
-  
-  GetStorageClass:function(_newkey2,objectName, callback){
+
+GetStorageClass:function(_newkey2,objectName, callback){
 	var parsedObjectName = Pointer_stringify(objectName);
     var parsedCallback = Pointer_stringify(callback);
 	var parsedkey = Pointer_stringify(_newkey2);
-	
 	var _storage=localStorage.getItem(parsedkey);
-	
-	//console.log("Getkey: "+parsedkey+" value: "+_storage);
-	
+		
 	if(_storage==null)
-	{
 		unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(_storage));
-	}
 	else
-	{
 		unityInstance.Module.SendMessage(parsedObjectName, parsedCallback, _storage);
-	}
-
   },
-  
-  Web3Connect: function () {
+
+Web3Connect: function () {
     window.web3gl.connect();
   },
 
@@ -52,61 +39,36 @@ mergeInto(LibraryManager.library, {
   },
 
   SendContractJs: function (method, abi, contract, args, value, gasLimit, gasPrice) {
-	var parsedArgs=Pointer_stringify(args);
-		var parsedJSOn=JSON.parse(parsedArgs);
-		
-		if(Pointer_stringify(method)=="endRace")
-		{
-			var newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._hash];
+    var parsedArgs=Pointer_stringify(args);
+	var parsedJSOn=JSON.parse(parsedArgs);
+    var newargs=args;
 
-			//var newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._signature,parsedJSOn._nonce];
-			 window.web3gl.sendContract(
-				  Pointer_stringify(method),
-				  Pointer_stringify(abi),
-				  Pointer_stringify(contract),
-				  JSON.stringify(newargs),
-				  Pointer_stringify(value),
-				  Pointer_stringify(gasLimit),
-				  Pointer_stringify(gasPrice)
-				);
+    if(Pointer_stringify(method)=="endRace")
+		{
+			newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._hash];
+		    //newargs=[parsedJSOn._pid, parsedJSOn._winner,parsedJSOn._score,parsedJSOn._tokenIds,parsedJSOn._signature,parsedJSOn._nonce];
 		}
 		else if(Pointer_stringify(method)=="mint")
 		{
-			var newargs=[parsedJSOn.amount, parsedJSOn.craceValue,parsedJSOn._data];
-			 window.web3gl.sendContract(
-				  Pointer_stringify(method),
-				  Pointer_stringify(abi),
-				  Pointer_stringify(contract),
-				  JSON.stringify(newargs),
-				  Pointer_stringify(value),
-				  Pointer_stringify(gasLimit),
-				  Pointer_stringify(gasPrice)
-				);
+			newargs=[parsedJSOn.amount, parsedJSOn.craceValue,parsedJSOn._data];
 		}
-		else
-		{
-  
-			window.web3gl.sendContract(
-			  Pointer_stringify(method),
-			  Pointer_stringify(abi),
-			  Pointer_stringify(contract),
-			  Pointer_stringify(args),
-			  Pointer_stringify(value),
-			  Pointer_stringify(gasLimit),
-			  Pointer_stringify(gasPrice)
-			);
-		}
+
+    window.web3gl.sendContract(
+      Pointer_stringify(method),
+      Pointer_stringify(abi),
+      Pointer_stringify(contract),
+      Pointer_stringify(newargs),
+      Pointer_stringify(value),
+      Pointer_stringify(gasLimit),
+      Pointer_stringify(gasPrice)
+    );
   },
 
-
-   ContractHashJs: function (pid, address, key) {
+  ContractHashJs: function (pid, address, key) {
 		var parsedKey=Pointer_stringify(key);
 		var parsedAddress=Pointer_stringify(address);
 		var parsedpid=Pointer_stringify(pid);
-
-
 		window.web3gl.ContractHash(parsedpid , parsedAddress, parsedKey);
-
 	},
 
   SendContractResponse: function () {

@@ -901,11 +901,12 @@ public class MainMenuViewController : MonoBehaviour
         {
             if (Constants.WalletConnected)
             {
+                CancelInvoke("InvokeCallCred");
                 LoginAfterConnect(info);
             }
             else
             {
-                Invoke("InvokeCallCred", 1f);
+                Invoke("InvokeCallCred", 0.4f);
             }
         }
     }
@@ -937,7 +938,7 @@ public class MainMenuViewController : MonoBehaviour
                 else
                 {
                     Constants.WalletChanged = false;
-                    ShowToast(3f, "Previous connected wallet was changed, auto login will not work.");
+                    ShowToast(3f, "Previous connected wallet was changed, auto login will not work, please login again.");
                     LoadingScreen.SetActive(false);
 
                     if (FirebaseManager.Instance)

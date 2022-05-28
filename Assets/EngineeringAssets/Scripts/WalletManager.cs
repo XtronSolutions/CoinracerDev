@@ -262,6 +262,7 @@ public class WalletManager : MonoBehaviour
     /// </summary>
     async private void OnConnected()
     {
+        Debug.Log("Connected to wallet");
         CancelInvoke();
         account = ConnectAccount(); //get connected wallet address and store it inside a variable
 
@@ -271,7 +272,7 @@ public class WalletManager : MonoBehaviour
             account = ConnectAccount();
         };
 
-        PlayerPrefs.SetString(Constants.WalletAccoutKey, account); //save connected wallet address in a playerpref
+        //PlayerPrefs.SetString(Constants.WalletAccoutKey, account); //save connected wallet address in a playerpref
         Constants.WalletAddress = account;//store wallet address in a singleton static class as well (for single session)
         string _newAcount = '"' + account.ToLower() + '"';
 
@@ -285,7 +286,7 @@ public class WalletManager : MonoBehaviour
 
         //store connected wallet address in local storage by a key
 #if UNITY_WEBGL && !UNITY_EDITOR
-            SetStorage("Account", PlayerPrefs.GetString(Constants.WalletAccoutKey));
+            SetStorage("Account", Constants.WalletAddress);
 #endif
         Constants.WalletConnected = true;
         FirebaseManager.Instance.DocFetched = false;
@@ -315,7 +316,7 @@ public class WalletManager : MonoBehaviour
             EndRace(Constants.StoredPID);
         }
 
-        GetHashEncoded();
+        //GetHashEncoded();
     }
 
     /// <summary>
