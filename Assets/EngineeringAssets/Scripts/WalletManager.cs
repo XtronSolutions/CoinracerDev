@@ -227,7 +227,7 @@ public class WalletManager : MonoBehaviour
         if (info != "null" && info != "" && info != null && info != string.Empty) //if received data is not empty (we had stored some wallet address before)
         {
             StoredWallet = info;
-            ConnectWallet();
+            //ConnectWallet();
         } else
         {
             StoredWallet = "null";

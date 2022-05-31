@@ -1458,7 +1458,10 @@ public class MainMenuViewController : MonoBehaviour
             {
                 if (WalletManager.Instance)
                 {
-                    ToggleScreen_SelectionUI(true);
+                    if (Constants.FreeTournament)
+                        StartTournament(true);
+                    else
+                        ToggleScreen_SelectionUI(true);
                 }
                 else
                 {

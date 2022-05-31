@@ -341,6 +341,7 @@ public class TournamentManager : MonoBehaviour
     public void OnGetTournamentData(string info)
     {
         //Debug.Log("Data successfully fetched for tournament");
+        Constants.FreeTournament = false;
 
         if (Constants.isUsingFirebaseSDK)
         {
@@ -352,6 +353,9 @@ public class TournamentManager : MonoBehaviour
                 Constants.DiscountPercentage = DataTournament.DiscountPercentage;
                 Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
                 Constants.TicketPrice = DataTournament.TicketPrice;
+
+                if (Constants.TicketPrice == 0)
+                    Constants.FreeTournament = true;
 
                 Constants.SecondTournamentPassPrice = DataTournament.GPassPrice;
                 Constants.SecondTourDiscountPercentage = DataTournament.DiscountOnCrace;
@@ -373,6 +377,9 @@ public class TournamentManager : MonoBehaviour
                 Constants.DiscountPercentage = DataTournament.DiscountPercentage;
                 Constants.DiscountForCrace = DataTournament.DiscountOnCrace;
                 Constants.TicketPrice = DataTournament.TicketPrice;
+
+                if (Constants.TicketPrice == 0)
+                    Constants.FreeTournament = true;
 
                 Constants.SecondTournamentPassPrice = DataTournament.GPassPrice;
                 Constants.SecondTourDiscountPercentage = DataTournament.DiscountOnCrace;
