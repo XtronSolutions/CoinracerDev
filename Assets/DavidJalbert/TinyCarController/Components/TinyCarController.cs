@@ -108,6 +108,7 @@ namespace DavidJalbert
         private float cubicScale = 1;
         private float inverseScaleAdjustment = 1;
         public static float carSpeed = 0f;
+        public static int CarHealth = 100;
         public bool debugCollider;
         public GameObject DebugColliderObject;
 
@@ -145,6 +146,7 @@ namespace DavidJalbert
 
             body = GetComponent<Rigidbody>();
             sphereCollider = GetComponent<SphereCollider>();
+            CarHealth = 100;
 
             customPhysicMaterial = new PhysicMaterial();
             customPhysicMaterial.bounciness = 0;

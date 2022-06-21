@@ -29,9 +29,14 @@ public class GamePlayUIHandler : MonoBehaviour
     public InputFieldUI UIInputField;
     public PopMessageUI MessagePopUI;
     public AudioSource GameplaySource;
+    public TextMeshProUGUI HealthText;
 
     string storedUsername;
 
+    public void SetHealthText(string txt)
+    {
+        HealthText.text = txt;
+    }
     private void OnEnable()
     {
         Instance = this;

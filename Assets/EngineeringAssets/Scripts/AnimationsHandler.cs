@@ -44,7 +44,7 @@ public class AnimationsHandler : MonoBehaviour
     private float mainMenuPulsateScale = 0.10f; //this variable the value to which the game mode buttons will scale up
     private float pulsateAnimationTime = 5f; // this variable will store the time for the pulsate animation
     private int mainMenuButtonsPositionX = -750; //this variable will store that value of Y where the buttons will be positioned before the animation starts
-    private float mainMenuAnimationTime = 0.25f; //this variable will store the time of animation for each button on main menu screen
+    private float mainMenuAnimationTime = 0.2f; //this variable will store the time of animation for each button on main menu screen
     private float scaleAnimationValue = 1.10f; //this variable will store the scale to which the buttons will be scaled when the mouse is hovered over them
     private float popupAnimationTime = 0.20f; //this variable will store the time for which each popup animation cycle will run
     private float popupAnimationCycles = 2; //the number of cycle that the popup animation will complete
@@ -184,8 +184,8 @@ public class AnimationsHandler : MonoBehaviour
                 "x", positions[_index].x,
                 "time", mainMenuAnimationTime,
                 "easetype", iTween.EaseType.easeInOutQuad,
-                "oncomplete", "mainMenuAnimationHandler",
                 "oncompleteparams", iTween.Hash("value", _index + 1),
+                "oncomplete", "mainMenuAnimationHandler",
                 "oncompletetarget", gameObject
                 ));
         }
@@ -216,7 +216,7 @@ public class AnimationsHandler : MonoBehaviour
         {
             //adding the game mode buttons to the list
             mainMenuGameModeButtons.Add(UIMainMenu.tournament);
-            mainMenuGameModeButtons.Add(UIMainMenu.SecondTournament);
+            //mainMenuGameModeButtons.Add(UIMainMenu.SecondTournament);
             mainMenuGameModeButtons.Add(UIMainMenu.practice);
             mainMenuGameModeButtons.Add(UIMainMenu.multiplayer);
             mainMenuGameModeButtons.Add(UIMainMenu.Chiprace);
@@ -247,14 +247,14 @@ public class AnimationsHandler : MonoBehaviour
         if (mainMenuButtons.Count > 0)
             return mainMenuButtons;
 
-        mainMenuButtons.Add(UIMainMenu.settings);
         mainMenuButtons.Add(UIMainMenu.tournament);
-        mainMenuButtons.Add(UIMainMenu.SecondTournament);
+        //mainMenuButtons.Add(UIMainMenu.SecondTournament);
         mainMenuButtons.Add(UIMainMenu.practice);
         mainMenuButtons.Add(UIMainMenu.multiplayer);
         mainMenuButtons.Add(UIMainMenu.Chiprace);
         mainMenuButtons.Add(UIMainMenu.leaderboard);
         mainMenuButtons.Add(UIMainMenu.garage);
+        mainMenuButtons.Add(UIMainMenu.settings);
         return mainMenuButtons;
     }
 
