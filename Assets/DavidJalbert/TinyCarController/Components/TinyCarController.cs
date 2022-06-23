@@ -108,13 +108,12 @@ namespace DavidJalbert
         private float cubicScale = 1;
         private float inverseScaleAdjustment = 1;
         public static float carSpeed = 0f;
-        public static int CarHealth = 100;
+        public static float speedMultiplier = 1;
         public bool debugCollider;
         public GameObject DebugColliderObject;
 
         private void OnEnable()
         {
-
         }
 
         private float OnGetValue(Data data) => (float)this.GetType().GetField(data.Key)?.GetValue(this);
@@ -146,8 +145,7 @@ namespace DavidJalbert
 
             body = GetComponent<Rigidbody>();
             sphereCollider = GetComponent<SphereCollider>();
-            CarHealth = 100;
-
+            
             customPhysicMaterial = new PhysicMaterial();
             customPhysicMaterial.bounciness = 0;
             customPhysicMaterial.bounceCombine = PhysicMaterialCombine.Minimum;
@@ -438,9 +436,8 @@ namespace DavidJalbert
             return getMotor() != 0 && getVelocityDirection() == -getZeroSign(getMotor());
         }
 
-        public float getMaxSpeed()
-        {
-            return getVelocityDirection() >= 0 ? maxSpeedForward * scaleAdjustment : maxSpeedReverse * scaleAdjustment;
+        public float getMaxSpeed()        {
+            return getVelocityDirection() >= 0 ? maxSpeedForward *speedMultiplier* scaleAdjustment : maxSpeedReverse * scaleAdjustment* speedMultiplier;
         }
 
         public float getMaxAcceleration()

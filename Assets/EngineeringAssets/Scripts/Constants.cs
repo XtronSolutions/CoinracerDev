@@ -109,10 +109,10 @@ public static class Constants
     public static bool WalletChanged = false;
 
     public static bool IsTestNet = false;
-    public static bool IsTest = true;
-    public static bool IsStagging = true;
-    public static bool DebugAllCars = true;// bool to enable all cars
-    public static bool IsDebugBuild = true;//apply pvp score 500+/enable force end race on levels// and force bid of 1 crace for pvp
+    public static bool IsTest = false;
+    public static bool IsStagging = false;
+    public static bool DebugAllCars = false;// bool to enable all cars
+    public static bool IsDebugBuild = false;//apply pvp score 500+/enable force end race on levels// and force bid of 1 crace for pvp
     public static bool UseHashMec = true;//bool to store if contracts use hash mechanism or signature for verification
 
     public static bool IsSendConfirmation = false;
@@ -163,8 +163,8 @@ public static class Constants
     public static bool RegionPinged = false;
     
     public static bool isUsingFirebaseSDK = false;
-    public static int LeaderboardCount = 100;
-    public static int GLeaderboardCount = 20;
+    public static int LeaderboardCount = 200;
+    public static int GLeaderboardCount = 200;
     public static int PoolCounter = 5;
     public static List<TotalNFTData> NFTTotalData=new List<TotalNFTData>();
     public static List<NFTTokens> TokenNFT = new List<NFTTokens>();
@@ -184,6 +184,10 @@ public static class Constants
     public static bool FreeTournament = false; //if tournament entrance fees from server is zero , this means tournament is free to enter
 
     public static double GATransferAmount = 0;
+    public static int MaxCarHealth = 100;
+    public static int StoredCarHealth = 100;
+
+    public static bool GameMechanics = false;
 
     async public static void GetCracePrice()
     {

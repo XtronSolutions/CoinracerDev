@@ -29,7 +29,17 @@ window.web3gl = {
 // will be defined after connect()
 let provider;
 let web3;
+var gameReady=false;
 
+function GameControlReady () {
+    gameReady = true;
+}
+
+function FocusCanvas(focus) {
+    if (gameReady) {
+        this.unityInstance.SendMessage("GameControl", "FocusCanvas", focus);
+    }
+}
 /*
 paste this in inspector to connect to wallet:
 window.web3gl.connect()

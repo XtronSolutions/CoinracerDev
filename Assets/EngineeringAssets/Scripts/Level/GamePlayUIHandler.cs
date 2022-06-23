@@ -29,18 +29,31 @@ public class GamePlayUIHandler : MonoBehaviour
     public InputFieldUI UIInputField;
     public PopMessageUI MessagePopUI;
     public AudioSource GameplaySource;
-    public TextMeshProUGUI HealthText;
+    public GameObject CanvasParent;
+    public GameObject HealthPrefab;
+    public GameObject GameOverCarTotaled_prefab;
 
     string storedUsername;
 
-    public void SetHealthText(string txt)
-    {
-        HealthText.text = txt;
-    }
     private void OnEnable()
     {
         Instance = this;
         UpdateMusicVolume();
+
+        if (!Constants.GameMechanics)
+            return;
+
+        InstantiateHealthBar();  
+    }
+
+    public void InstantiateHealthBar()
+    {
+        GameObject _healthBar= Instantiate(HealthPrefab, CanvasParent.transform);
+    }
+
+    public void InstantiateGameOver_CarTotaled()
+    {
+        GameObject _go = Instantiate(GameOverCarTotaled_prefab, CanvasParent.transform);
     }
     public void UpdateMusicVolume()
     {
