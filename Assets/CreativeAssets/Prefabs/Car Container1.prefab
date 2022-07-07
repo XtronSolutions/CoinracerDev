@@ -14692,7 +14692,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2111542848180404238}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.119, z: 0}
+  m_LocalPosition: {x: 0, y: 2.774, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4031107808516280825}
@@ -14759,7 +14759,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.32, y: 0.3, z: 1.68}
+  m_Size: {x: 1.3, y: 1.19, z: 1.3}
   m_Center: {x: 0, y: -1.12, z: 0}
 --- !u!54 &434247419982917398
 Rigidbody:
@@ -15084,7 +15084,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4229840597267123768}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a3da8774c92f4a51bc9034b54ccc9e0, type: 3}
   m_Name: 
@@ -15105,82 +15105,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ColliderDamage:
-  - Name: Side01
+  - Name: Side1
     Collider: {fileID: 6294589586958629586}
     LimitForDamage: 15
-    ImpactInfo:
-    - Name: SideImpact1
-      SpeedForDamage: 15
-      HealthDeduction: 2
-    - Name: SideImpact2
-      SpeedForDamage: 40
-      HealthDeduction: 5
-    - Name: SideImpact3
-      SpeedForDamage: 65
-      HealthDeduction: 10
-  - Name: Side02
+    ImpactInfo: {fileID: 11400000, guid: a0ee7a4de0f442a4d9f6ce2e0a6c8cbf, type: 2}
+  - Name: Side2
     Collider: {fileID: 8532544190524985734}
     LimitForDamage: 15
-    ImpactInfo:
-    - Name: SideImpact1
-      SpeedForDamage: 15
-      HealthDeduction: 2
-    - Name: SideImpact2
-      SpeedForDamage: 40
-      HealthDeduction: 5
-    - Name: SideImpact3
-      SpeedForDamage: 65
-      HealthDeduction: 10
+    ImpactInfo: {fileID: 11400000, guid: a0ee7a4de0f442a4d9f6ce2e0a6c8cbf, type: 2}
   - Name: Front
     Collider: {fileID: 6077770840280991342}
     LimitForDamage: 15
-    ImpactInfo:
-    - Name: FrontImpact1
-      SpeedForDamage: 15
-      HealthDeduction: 10
-    - Name: FrontImpact2
-      SpeedForDamage: 40
-      HealthDeduction: 15
-    - Name: FrontImpact3
-      SpeedForDamage: 65
-      HealthDeduction: 25
+    ImpactInfo: {fileID: 11400000, guid: f1d41a1b68b9355438e12b5754eefe48, type: 2}
   - Name: Back
     Collider: {fileID: 3766696471037120606}
     LimitForDamage: 15
-    ImpactInfo:
-    - Name: BackImpact1
-      SpeedForDamage: 15
-      HealthDeduction: 5
-    - Name: BackImpact2
-      SpeedForDamage: 40
-      HealthDeduction: 10
-    - Name: BackImpact3
-      SpeedForDamage: 65
-      HealthDeduction: 15
+    ImpactInfo: {fileID: 11400000, guid: 70f3e658a7793c840920a5e7caf9605b, type: 2}
   - Name: Top
     Collider: {fileID: 2111542848180404238}
     LimitForDamage: 15
-    ImpactInfo:
-    - Name: TopImpact1
-      SpeedForDamage: 15
-      HealthDeduction: 15
-    - Name: TopImpact2
-      SpeedForDamage: 40
-      HealthDeduction: 25
-    - Name: TopImpact3
-      SpeedForDamage: 65
-      HealthDeduction: 35
-  HP_Speed:
-  - HpPercentage: 100
-    SpeedPercentage: 100
-  - HpPercentage: 75
-    SpeedPercentage: 75
-  - HpPercentage: 50
-    SpeedPercentage: 50
-  - HpPercentage: 25
-    SpeedPercentage: 25
-  - HpPercentage: 0
-    SpeedPercentage: 0
+    ImpactInfo: {fileID: 11400000, guid: 1e7113ed2a9472d41bfeafe24f381ab3, type: 2}
+  SettingsHP: {fileID: 11400000, guid: 88ef7e34c65cb454b8e6cb84d775ce69, type: 2}
 --- !u!1 &4713812187399843511
 GameObject:
   m_ObjectHideFlags: 0
@@ -20120,7 +20065,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3655509459720622639
 Transform:
   m_ObjectHideFlags: 0
