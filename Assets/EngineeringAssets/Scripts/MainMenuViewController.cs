@@ -14,6 +14,32 @@ using Photon.Pun;
 #region SuperClasses
 
 [Serializable]
+public class StoreUI
+{
+    public GameObject MainScreen;
+    public Button StoreButton;
+    public TextMeshProUGUI CCashTxt;
+
+    public Button BuyVCButton;
+    public TextMeshProUGUI BuyVC_Txt;
+
+    public Button FixTyresButton;
+    public TextMeshProUGUI FixTyres_Txt;
+
+    public Button FillOilButton;
+    public TextMeshProUGUI FillOil_Txt;
+
+    public Button FillGasButton;
+    public TextMeshProUGUI FillGas_Txt;
+
+    public Button RepairDamageButton;
+    public TextMeshProUGUI RepairDamage_Text;
+
+    public Button BackButton;
+}
+
+
+[Serializable]
 public class SecondTournamentUI
 {
     public GameObject MainScreen;
@@ -296,6 +322,8 @@ public class MainMenuViewController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI UserNameText = null;
     [SerializeField] private Image FlagIcon = null;
 
+    [SerializeField] private TextMeshProUGUI CCashText = null;
+
     public GameObject TournamentMiniScreen;
     public TournamentUI UITournament;
     public SecondTournamentUI UISecondTournament;
@@ -314,6 +342,7 @@ public class MainMenuViewController : MonoBehaviour
     public MultiplayerSelectionUI UIMultiplayerSelection;
     public CraceApprovalUI UICraceApproval;
     public TokenCarSelectionUI UITokenCarSelection;
+    public StoreUI UIStore;
     public GameObject MultiplayerPrefab;
 
     public GameObject SuccessIcon;
@@ -406,6 +435,7 @@ public class MainMenuViewController : MonoBehaviour
         SubscribeEvents_ConnectionUI();
         SubscribeEvents_MultiplayerSelection();
         SubscribeButton_CraceUI();
+        ButtonListeners_StoreUI();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
             GetStorage(Constants.SoundKey,this.gameObject.name,"OnGetSound");
@@ -522,11 +552,11 @@ public class MainMenuViewController : MonoBehaviour
 
     public void BuyPasswithCrace()
     {
-        if (WalletManager.Instance.CheckBalanceTournament(false, false, true, false,false,false))
+        if (WalletManager.Instance.CheckBalanceTournament(false, false, true, false, false, false))
         {
             SecondTourBuyingPass = false;
             BuyingPass = true;
-            WalletManager.Instance.TransferToken(TournamentPassPrice,false);
+            WalletManager.Instance.TransferToken(TournamentPassPrice, false);
         }
         else
         {
@@ -537,7 +567,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SecondTourBuyPasswithCrace()
     {
-        if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false,true,false))
+        if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, true, false))
         {
             BuyingPass = false;
             SecondTourBuyingPass = true;
@@ -716,7 +746,7 @@ public class MainMenuViewController : MonoBehaviour
                     {
 
                         SecondTourBackClickedPassScreen_SelectionUI();
-                        SecondTourStartTournament(true);   
+                        SecondTourStartTournament(true);
                     }
                     else
                     {
@@ -759,15 +789,15 @@ public class MainMenuViewController : MonoBehaviour
                 if (WalletManager.Instance)
                 {
                     TicketPrice = TournamentManager.Instance.DataTournament.TicketPrice;
-                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false, false,false,false))
+                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false, false, false, false))
                     {
                         ShowToast(2f, "Congrats!, You have received " + Constants.DiscountPercentage + "% discount.");
                         TicketPrice = (TicketPrice * DiscountPercentage) / 100;
                     }
 
-                    if (WalletManager.Instance.CheckBalanceTournament(true, false, false, false,false,false))
+                    if (WalletManager.Instance.CheckBalanceTournament(true, false, false, false, false, false))
                     {
-                        WalletManager.Instance.TransferToken(TicketPrice,false);
+                        WalletManager.Instance.TransferToken(TicketPrice, false);
                     }
                     else
                     {
@@ -813,13 +843,13 @@ public class MainMenuViewController : MonoBehaviour
                 if (WalletManager.Instance)
                 {
                     SecondTourTicketPrice = TournamentManager.Instance.DataTournament.GTicketPrice;
-                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false, false, false,false))
+                    if (WalletManager.Instance.CheckBalanceTournament(false, true, false, false, false, false))
                     {
                         ShowToast(2f, "Congrats!, You have received " + Constants.DiscountPercentage + "% discount.");
                         SecondTourTicketPrice = (SecondTourTicketPrice * DiscountPercentage) / 100;
                     }
 
-                    if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, false,true))
+                    if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, false, true))
                     {
                         WalletManager.Instance.TransferToken(SecondTourTicketPrice, true);
                     }
@@ -883,6 +913,11 @@ public class MainMenuViewController : MonoBehaviour
     #endregion
 
     #region MISC
+
+    public void UpdateVCText(string txt)
+    {
+        CCashText.text = txt;
+    }
     public void SignOutUser()
     {
         Constants.LoggedIn = false;
@@ -1004,7 +1039,7 @@ public class MainMenuViewController : MonoBehaviour
         ShowToast(3f, "Something went wrong, Please try again");
     }
 
-    public void ShowToast(float _time, string _msg,bool showSuccessIcon=false)
+    public void ShowToast(float _time, string _msg, bool showSuccessIcon = false)
     {
         MessageUI.SetActive(true);
         ToastMsgText.text = _msg;
@@ -1235,6 +1270,7 @@ public class MainMenuViewController : MonoBehaviour
         }
 
         ChangeUserNameText(Constants.UserName);
+        UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
         LoadingScreen.SetActive(false);
         DisableRegisterLogin();
         TournamentMiniScreen.SetActive(false);
@@ -1328,14 +1364,14 @@ public class MainMenuViewController : MonoBehaviour
             AnalyticsManager.Instance.StoredProgression.MapUsed = _levelsSettings[i].LevelName;
     }
 
-    public void AddLevels(bool isSelective=false, int Index=0)
+    public void AddLevels(bool isSelective = false, int Index = 0)
     {
         for (int q = 0; q < _allLevelsSettings.Count; q++)
-        {   
-            if(isSelective)
+        {
+            if (isSelective)
                 _levelsSettings.Add(_allLevelsSettings[Index]);
             else
-            _levelsSettings.Add(_allLevelsSettings[q]);
+                _levelsSettings.Add(_allLevelsSettings[q]);
         }
     }
     private void OnGoToMapSelection()
@@ -1343,17 +1379,17 @@ public class MainMenuViewController : MonoBehaviour
         _levelsSettings.Clear();
         if (IsMultiplayer)
         {
-            if(TournamentManager.Instance)
+            if (TournamentManager.Instance)
             {
-                if(TournamentManager.Instance.DataTournament.IsSingleMap)
+                if (TournamentManager.Instance.DataTournament.IsSingleMap)
                 {
                     Constants.SelectedSingleLevel = TournamentManager.Instance.DataTournament.LevelIndex;
                     _levelsSettings.Add(_allLevelsSettings[Constants.SelectedSingleLevel - 1]);
-                }else
+                } else
                 {
                     AddLevels();
                 }
-            }    
+            }
         }
         else
         {
@@ -1369,7 +1405,7 @@ public class MainMenuViewController : MonoBehaviour
                 if (AnalyticsManager.Instance)
                     AnalyticsManager.Instance.StoredProgression.Mode = "Coinracer Tournament";
 
-                AddLevels(true,1);
+                AddLevels(true, 1);
             }
             else if (IsSecondTournament)
             {
@@ -1401,7 +1437,7 @@ public class MainMenuViewController : MonoBehaviour
             WalletConnected = true;
 
         if (WalletConnected)//WalletConnected
-        {   
+        {
             LoadingScreen.SetActive(true);
             CheckBoughtCars();
             GameModeSelectionObject.SetActive(false);
@@ -1565,7 +1601,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void OnNextToken()
     {
-        if (_SelectedTokenIDIndex < Constants.TokenNFT[_SelectedTokenNameIndex].ID.Count-1)
+        if (_SelectedTokenIDIndex < Constants.TokenNFT[_SelectedTokenNameIndex].ID.Count - 1)
             _SelectedTokenIDIndex++;
 
         UpdateToken();
@@ -1676,7 +1712,7 @@ public class MainMenuViewController : MonoBehaviour
             LoadingScreen.SetActive(true);
             IsTournament = false;
             IsSecondTournament = true;
-            CheckBoughtCars();  
+            CheckBoughtCars();
             IsPractice = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
@@ -1711,6 +1747,18 @@ public class MainMenuViewController : MonoBehaviour
 
     public void StartRace()
     {
+        if(Constants.GameMechanics)
+        {
+            if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Health)
+            { ShowToast(4f, "Your car health is zero, go to store to repair your car.", false); return; }
+            else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Tyres)
+            { ShowToast(4f, "Your Tyres has been worn out, go to store to repair them.", false); return; }
+            else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Oil)
+            { ShowToast(4f, "Your Engine oil is empty, go to store to fill it.", false); return; }
+            else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Gas)
+            { ShowToast(4f, "Your Gas is empty, go to store to fill it.", false); return; }
+        }
+
 #if UNITY_WEBGL && !UNITY_EDITOR
         if (IsPractice)
         {
@@ -1835,11 +1883,11 @@ public class MainMenuViewController : MonoBehaviour
 
             ToggleTokenScreen(true);
             UpdateToken();
-        }else
+        } else
         {
             ToggleTokenScreen(false);
         }
-        
+
         if (Constants.DebugAllCars)
         {
             for (int j = 0; j < _allCars.Count; j++)
@@ -1855,7 +1903,7 @@ public class MainMenuViewController : MonoBehaviour
             UpdateToken();
             return;
         }
-        
+
         if (Constants.CheckAllNFT)
         {
             int storedNFTS = 0;
@@ -1867,7 +1915,7 @@ public class MainMenuViewController : MonoBehaviour
                 _selecteableCars.Clear();
                 if (!Constants.EarnMultiplayer)
                 {
-                    if(IsSecondTournament)
+                    if (IsSecondTournament)
                         _selecteableCars.Add(_allCars[27].CarDetail);
                     else
                         _selecteableCars.Add(_allCars[0].CarDetail);
@@ -2162,7 +2210,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void onMultiplayerBtnClick()
     {
-        if(IsTest)
+        if (IsTest)
             WalletConnected = true;
 
         if (WalletConnected)
@@ -2220,12 +2268,12 @@ public class MainMenuViewController : MonoBehaviour
 
         RegionPinged = false;
         ToggleScreen_ConnectionUI(true);
-        AnimateConnectingDetail_ConnectionUI(UIConnection.Detail01.DetailScreen,true);
+        AnimateConnectingDetail_ConnectionUI(UIConnection.Detail01.DetailScreen, true);
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.ConnectToPhotonServer();
     }
 
-    public void ToggleSecondDetail(bool _enable,string _name,string _wins,int _index)
+    public void ToggleSecondDetail(bool _enable, string _name, string _wins, int _index)
     {
         if (_enable)
         {
@@ -2262,12 +2310,12 @@ public class MainMenuViewController : MonoBehaviour
             MultiplayerManager.Instance.DisconnectPhoton();
     }
 
-    public void UpdateDetailData(bool isPlayer1, string _name,string _wins,int index)
+    public void UpdateDetailData(bool isPlayer1, string _name, string _wins, int index)
     {
         if (isPlayer1)
         {
             UIConnection.Detail01.WinnerNameText.text = _name;
-            UIConnection.Detail01.WinText.text = "WINS : "+_wins;
+            UIConnection.Detail01.WinText.text = "WINS : " + _wins;
             UIConnection.Detail01.FlagImage.sprite = FlagSkins.Instance.FlagSpriteWithIndex(index);
         }
         else
@@ -2325,7 +2373,7 @@ public class MainMenuViewController : MonoBehaviour
     //@param {_screen,_isMyScreen}, _screen: type(gameobject), contains reference to the screen to animate
     //_isMyScreen, _isMyScreen: type(bool), indicates if this is my player's screen that you are animating
     //@return {} no return
-    private void AnimateConnectingDetail_ConnectionUI(GameObject _screen,Boolean _isMyScreen)
+    private void AnimateConnectingDetail_ConnectionUI(GameObject _screen, Boolean _isMyScreen)
     {
         //save the initial position of this screen
         Vector3 initialPos = _screen.transform.position;
@@ -2460,6 +2508,133 @@ public class MainMenuViewController : MonoBehaviour
     public void CancelApprove_CraceUI()
     {
         ToogleScreen_CraceUI(false);
+    }
+    #endregion
+
+    #region StoreUI/Functionality
+    public void ToggleMainScreen_StoreUI(bool state)
+    {
+        UIStore.MainScreen.SetActive(state);
+    }
+
+    public void SetCCashText_StoreUI(string txt)
+    {
+        UIStore.CCashTxt.text = txt;
+    }
+
+    public void ButtonListeners_StoreUI()
+    {
+        UIStore.StoreButton.onClick.AddListener(EnableStore_StoreUI);
+        UIStore.BackButton.onClick.AddListener(DisableStore_StoreUI);
+        UIStore.FixTyresButton.onClick.AddListener(FixTyre_StoreUI);
+        UIStore.BuyVCButton.onClick.AddListener(BuyVC_StoreUI);
+        UIStore.FillGasButton.onClick.AddListener(FillGas_StoreUI);
+        UIStore.FillOilButton.onClick.AddListener(FillEngineOil_StoreUI);
+        UIStore.RepairDamageButton.onClick.AddListener(RepairDamage_StoreUI);
+    }
+
+    public void EnableStore_StoreUI()
+    {
+        ToggleMainScreen_StoreUI(true);
+        SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
+        UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+    }
+
+    public void DisableStore_StoreUI()
+    {
+        ToggleMainScreen_StoreUI(false);
+    }
+    public void UpdateTexts_StoreUI(string VC_Txt)
+    {
+        MechanicsManager.Instance.UpdateConsumables();
+        UIStore.BuyVC_Txt.text ="*"+ VC_Txt+" "+ Constants.VirtualCurrency + " will be added in single"+"\n" +"  transaction";
+        UIStore.FixTyres_Txt.text = "*Remaining playable laps : " + MechanicsManager.Instance.GetRemainingTyreLaps()+ " laps" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost+" "+ Constants.VirtualCurrency;
+        UIStore.FillOil_Txt.text = "*Remaining playable laps : " + MechanicsManager.Instance.GetRemainingOilLaps() + " laps" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost + " " + Constants.VirtualCurrency;
+        UIStore.FillGas_Txt.text = "*Remaining playable laps : " + MechanicsManager.Instance.GetRemainingGasLaps() + " laps" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.Gas.VC_Cost + " " + Constants.VirtualCurrency;
+        UIStore.RepairDamage_Text.text = "*Health : " + Constants.StoredCarHealth + " %" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost + " " + Constants.VirtualCurrency;
+    }
+
+    public void BuyVC_StoreUI()
+    {
+        FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount += Constants.CCashPurchaseAmount;
+        Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+        apiRequestHandler.Instance.updatePlayerData();
+        ShowToast(3f, Constants.VirtualCurrency + " was successfully purchased.", true);
+        SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
+        UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+    }
+
+    public void FixTyre_StoreUI()
+    {
+        if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost)
+        {
+            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost;
+            FirebaseManager.Instance.PlayerData.Mechanics.Tyre_Laps = 0;
+            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+            apiRequestHandler.Instance.updatePlayerData();
+            ShowToast(3f, "Tyres were successfully fixed.", true);
+            SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
+            UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+        }
+        else
+        {
+            ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency+" , buy more.", false);
+        }
+    }
+
+    public void FillEngineOil_StoreUI()
+    {
+        if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost)
+        {
+            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost;
+            FirebaseManager.Instance.PlayerData.Mechanics.EngineOil_Laps = 0;
+            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+            apiRequestHandler.Instance.updatePlayerData();
+            ShowToast(3f, "Engine Oil was successfully filled.", true);
+            SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
+            UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+        }
+        else
+        {
+            ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
+        }
+    }
+
+    public void FillGas_StoreUI()
+    {
+        if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost)
+        {
+            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost;
+            FirebaseManager.Instance.PlayerData.Mechanics.Gas_Laps = 0;
+            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+            apiRequestHandler.Instance.updatePlayerData();
+            ShowToast(3f, "Gas was successfully filled.", true);
+            SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
+            UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+        }
+        else
+        {
+            ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
+        }
+    }
+
+    public void RepairDamage_StoreUI()
+    {
+        if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost)
+        {
+            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost;
+            FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = 100;
+            Constants.StoredCarHealth = FirebaseManager.Instance.PlayerData.Mechanics.CarHealth;
+            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+            apiRequestHandler.Instance.updatePlayerData();
+            ShowToast(3f, "Damage were repaired. health is full.", true);
+            SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
+            UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+        }
+        else
+        {
+            ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
+        }
     }
     #endregion
 }

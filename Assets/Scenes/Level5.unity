@@ -8709,6 +8709,14 @@ PrefabInstance:
       value: Jungle_Collider
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7b3cd5bc7b7f76c44bf6fed8a7e8c2b8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7b3cd5bc7b7f76c44bf6fed8a7e8c2b8, type: 3}
+      propertyPath: m_TagString
+      value: SideCollider
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7b3cd5bc7b7f76c44bf6fed8a7e8c2b8, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
@@ -16419,6 +16427,7 @@ MonoBehaviour:
     garage: {fileID: 0}
     Chiprace: {fileID: 0}
     SecondTournament: {fileID: 0}
+    StoreButton: {fileID: 0}
   UILoginScreen:
     email: {fileID: 0}
     password: {fileID: 0}
@@ -18567,6 +18576,9 @@ MonoBehaviour:
     PopUpScreenContainer: {fileID: 1990559204}
     MsgText: {fileID: 384454088}
   GameplaySource: {fileID: 0}
+  CanvasParent: {fileID: 1832451059}
+  HealthPrefab: {fileID: 5806024411448820705, guid: 1fc7079c8209c17449320a435f4dc460, type: 3}
+  GameOverCarTotaled_prefab: {fileID: 7437505654331337432, guid: 4fa87703d106489498ae7a5d02e69f31, type: 3}
   _username: 
 --- !u!114 &1832451062
 MonoBehaviour:

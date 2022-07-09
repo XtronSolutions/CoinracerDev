@@ -32,19 +32,47 @@ public class DamageHandler : MonoBehaviour
     private bool CarTotaled = false;
     private float CoolDownTime = 0.75f; //if there are consective collsions then if colldown period is passed only then damage is applied, so multiple damage is not given on multiple hits in few seconds
     private bool CanDamage = true;
+    private int TempHealth;
+
     
     void OnEnable()
     {
         CarTotaled = false; //check if car was totaled from db
-        Constants.StoredCarHealth = 100;
+        //Constants.StoredCarHealth = 100;
         TinyCarController.speedMultiplier = 1;
 
         if (!Constants.GameMechanics)
             return;
 
+        TempHealth = Constants.StoredCarHealth;
         ApplySpeedFactor(Constants.StoredCarHealth);
         TriggerEvent += OnTriggerEvent;
         TriggerLeaveEvent += OnTriggerLeaveEvent;
+
+        StartCoroutine(PushHealth());
+    }
+
+    public IEnumerator PushHealth()
+    {
+        yield return new WaitForSeconds(10f);
+        if(!CarTotaled)
+        {
+            if (TempHealth != Constants.StoredCarHealth)
+            {
+                TempHealth = Constants.StoredCarHealth;
+                FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = Constants.StoredCarHealth;
+                apiRequestHandler.Instance.updatePlayerData();
+            }
+            StartCoroutine(PushHealth());
+        }
+    }
+
+    private void Start()
+    {
+        if (UIHealth.Instance)
+            UIHealth.Instance.UpdateHealth(Constants.StoredCarHealth);
+        else
+            Debug.LogError("UIHealth instance is null");
     }
 
     void OnDisable()
@@ -96,8 +124,12 @@ public class DamageHandler : MonoBehaviour
                             CarTotaled = true;
                             Constants.StoredCarHealth = 0;
 
+                            StopCoroutine(PushHealth());
+                            FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = Constants.StoredCarHealth;
+                            apiRequestHandler.Instance.updatePlayerData();
+
                             if (GamePlayUIHandler.Instance)
-                                GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled();
+                                GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Car is destroyed, better luck next time.");
                         }
 
                         if (UIHealth.Instance)

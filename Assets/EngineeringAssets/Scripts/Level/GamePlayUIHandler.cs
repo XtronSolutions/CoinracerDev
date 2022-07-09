@@ -51,9 +51,10 @@ public class GamePlayUIHandler : MonoBehaviour
         GameObject _healthBar= Instantiate(HealthPrefab, CanvasParent.transform);
     }
 
-    public void InstantiateGameOver_CarTotaled()
+    public void InstantiateGameOver_CarTotaled(string txt)
     {
         GameObject _go = Instantiate(GameOverCarTotaled_prefab, CanvasParent.transform);
+        _go.GetComponent<UIGO_CarTotaled>().ChangeDisclaimerText(txt);
     }
     public void UpdateMusicVolume()
     {

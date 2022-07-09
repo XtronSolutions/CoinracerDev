@@ -21,6 +21,7 @@ public class MainMenuUI
     public Button garage;
     public Button Chiprace;
     public Button SecondTournament;
+    public Button StoreButton;
 }
 
 [Serializable]
@@ -254,6 +255,7 @@ public class AnimationsHandler : MonoBehaviour
         mainMenuButtons.Add(UIMainMenu.Chiprace);
         mainMenuButtons.Add(UIMainMenu.leaderboard);
         mainMenuButtons.Add(UIMainMenu.garage);
+        mainMenuButtons.Add(UIMainMenu.StoreButton);
         mainMenuButtons.Add(UIMainMenu.settings);
         return mainMenuButtons;
     }

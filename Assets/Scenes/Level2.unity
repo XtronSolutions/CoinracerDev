@@ -894,6 +894,7 @@ MonoBehaviour:
     garage: {fileID: 0}
     Chiprace: {fileID: 0}
     SecondTournament: {fileID: 0}
+    StoreButton: {fileID: 0}
   UILoginScreen:
     email: {fileID: 0}
     password: {fileID: 0}
@@ -5785,7 +5786,7 @@ GameObject:
   - component: {fileID: 272952394}
   m_Layer: 0
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: SideCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -14216,7 +14217,7 @@ GameObject:
   - component: {fileID: 762876009}
   m_Layer: 0
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: SideCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -27775,7 +27776,7 @@ GameObject:
   - component: {fileID: 1541636934}
   m_Layer: 0
   m_Name: HW_2_Collider_w
-  m_TagString: Untagged
+  m_TagString: SideCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -28467,6 +28468,9 @@ MonoBehaviour:
     PopUpScreenContainer: {fileID: 720539030}
     MsgText: {fileID: 1662186046}
   GameplaySource: {fileID: 610202716}
+  CanvasParent: {fileID: 1557233532}
+  HealthPrefab: {fileID: 5806024411448820705, guid: 1fc7079c8209c17449320a435f4dc460, type: 3}
+  GameOverCarTotaled_prefab: {fileID: 7437505654331337432, guid: 4fa87703d106489498ae7a5d02e69f31, type: 3}
   _username: 
 --- !u!114 &1557233535
 MonoBehaviour:
@@ -31124,7 +31128,7 @@ GameObject:
   - component: {fileID: 1675187893}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: SideCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -32723,7 +32727,7 @@ GameObject:
   - component: {fileID: 1742654021}
   m_Layer: 0
   m_Name: HW_1_Collider_w
-  m_TagString: Untagged
+  m_TagString: SideCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647

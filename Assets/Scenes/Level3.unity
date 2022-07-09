@@ -10805,7 +10805,7 @@ GameObject:
   - component: {fileID: 585518070}
   m_Layer: 0
   m_Name: Collider_walls
-  m_TagString: Untagged
+  m_TagString: SideCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -14667,6 +14667,7 @@ MonoBehaviour:
     garage: {fileID: 0}
     Chiprace: {fileID: 0}
     SecondTournament: {fileID: 0}
+    StoreButton: {fileID: 0}
   UILoginScreen:
     email: {fileID: 0}
     password: {fileID: 0}
@@ -39742,6 +39743,9 @@ MonoBehaviour:
     PopUpScreenContainer: {fileID: 1990559204}
     MsgText: {fileID: 384454088}
   GameplaySource: {fileID: 0}
+  CanvasParent: {fileID: 1832451059}
+  HealthPrefab: {fileID: 5806024411448820705, guid: 1fc7079c8209c17449320a435f4dc460, type: 3}
+  GameOverCarTotaled_prefab: {fileID: 7437505654331337432, guid: 4fa87703d106489498ae7a5d02e69f31, type: 3}
   _username: 
 --- !u!114 &1832451062
 MonoBehaviour:

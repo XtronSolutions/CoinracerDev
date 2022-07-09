@@ -9,6 +9,7 @@ using System;
 
 public static class Constants
 {
+    public static string VirtualCurrency = "CCash";
     public static string APP_VERSION = "Alpha 2.0";
     public static string WalletAccoutKey = "Account";
     public static string NameCurrency = "USD";
@@ -110,7 +111,7 @@ public static class Constants
 
     public static bool IsTestNet = false;
     public static bool IsTest = true;
-    public static bool IsStagging = false;
+    public static bool IsStagging = true;
     public static bool DebugAllCars = true;// bool to enable all cars
     public static bool IsDebugBuild = true;//apply pvp score 500+/enable force end race on levels// and force bid of 1 crace for pvp
     public static bool UseHashMec = true;//bool to store if contracts use hash mechanism or signature for verification
@@ -187,6 +188,8 @@ public static class Constants
     public static double GATransferAmount = 0;
     public static int MaxCarHealth = 100;
     public static int StoredCarHealth = 100;
+    public static double VirtualCurrencyAmount = 0;
+    public static int CCashPurchaseAmount = 100;
 
     
 

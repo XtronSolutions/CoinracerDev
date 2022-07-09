@@ -10,6 +10,15 @@ using System.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
 
+
+public class GameMechanics
+{
+    public double VC_Amount;
+    public int CarHealth;
+    public float Tyre_Laps;
+    public float EngineOil_Laps;
+    public float Gas_Laps;
+}
 public class UserData
 {
     public string UserName { get; set; }
@@ -25,11 +34,11 @@ public class UserData
     public EndDate TournamentEndDate { get; set; }
     public Timestamp ProfileCreated { get; set; }
     public int TotalWins { get; set; }
-
     public double GNumberOfTries { get; set; }
     public bool GPassBought { get; set; }
     public double GTimeSeconds { get; set; }
     public EndDate GTournamentEndDate { get; set; }
+    public GameMechanics Mechanics { get; set; }
 }
 
 public class AuthCredentials
@@ -97,7 +106,7 @@ public class FirebaseManager : MonoBehaviour
     public void SetPlayerData(string _response)
     {
         JToken response = JObject.Parse(_response);
-//        Debug.Log(response);
+        Debug.Log(response);
         PlayerData = new UserData();
         PlayerData.Email = (string)response.SelectToken("data").SelectToken("Email");
         PlayerData.UserName = (string)response.SelectToken("data").SelectToken("UserName");
@@ -125,8 +134,24 @@ public class FirebaseManager : MonoBehaviour
         PlayerData.GTournamentEndDate.nanoseconds = (double)response.SelectToken("data").SelectToken("GTournamentEndDate").SelectToken("nanoseconds");
         PlayerData.GTournamentEndDate.seconds = (double)response.SelectToken("data").SelectToken("GTournamentEndDate").SelectToken("seconds");
 
+        PlayerData.Mechanics = new GameMechanics();
+        PlayerData.Mechanics.VC_Amount = response.SelectToken("data").SelectToken("Mechanics").SelectToken("VC_Amount") != null ? (double)response.SelectToken("data").SelectToken("Mechanics").SelectToken("VC_Amount") : 0;
+        PlayerData.Mechanics.CarHealth = response.SelectToken("data").SelectToken("Mechanics").SelectToken("CarHealth") != null ? (int)response.SelectToken("data").SelectToken("Mechanics").SelectToken("CarHealth") : 100;
+        PlayerData.Mechanics.Tyre_Laps = response.SelectToken("data").SelectToken("Mechanics").SelectToken("Tyre_Laps") != null ? (float)response.SelectToken("data").SelectToken("Mechanics").SelectToken("Tyre_Laps") : 0;
+        PlayerData.Mechanics.EngineOil_Laps = response.SelectToken("data").SelectToken("Mechanics").SelectToken("EngineOil_Laps") != null ? (float)response.SelectToken("data").SelectToken("Mechanics").SelectToken("EngineOil_Laps") : 0;
+        PlayerData.Mechanics.Gas_Laps = response.SelectToken("data").SelectToken("Mechanics").SelectToken("Gas_Laps") != null ? (float)response.SelectToken("data").SelectToken("Mechanics").SelectToken("Gas_Laps") : 0;
+
+        //Debug.Log(PlayerData.Mechanics.VC_Amount);
+        //Debug.Log(PlayerData.Mechanics.CarHealth);
+        //Debug.Log(PlayerData.Mechanics.Tyre_Laps);
+        //Debug.Log(PlayerData.Mechanics.EngineOil_Laps);
+        //Debug.Log(PlayerData.Mechanics.Gas_Laps);
+
         Constants.UserName = PlayerData.UserName;
         Constants.FlagSelectedIndex = PlayerData.AvatarID;
+        Constants.VirtualCurrencyAmount = PlayerData.Mechanics.VC_Amount;
+        Constants.StoredCarHealth = PlayerData.Mechanics.CarHealth;
+
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ChangeUserNameText(Constants.UserName);
         if (Constants.PushingTime)
@@ -431,6 +456,7 @@ public class FirebaseManager : MonoBehaviour
 
         if(Constants.isUsingFirebaseSDK)
             GetFireStoreData(DocPath, _walletID);
+
         yield return new WaitUntil(() => ResultFetched == true);
 
         if (DocFetched == true) //document existed
@@ -460,6 +486,7 @@ public class FirebaseManager : MonoBehaviour
             PlayerData.GPassBought = false;
             PlayerData.GTimeSeconds = 0;
             PlayerData.GTournamentEndDate = null;
+            PlayerData.Mechanics = null;
 
             if(Constants.isUsingFirebaseSDK)
                 AddFireStoreData(PlayerData);
