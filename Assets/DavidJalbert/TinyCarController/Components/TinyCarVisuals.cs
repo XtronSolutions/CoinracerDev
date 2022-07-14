@@ -71,6 +71,22 @@ namespace DavidJalbert
         private float pitchModifier = 0;
         private Quaternion groundRotationSmooth;
 
+        public GameObject[] MultiplayerObject;
+
+        private void Awake()
+        {
+            if (MultiplayerObject.Length!=0)
+            {
+                for (int i = 0; i < MultiplayerObject.Length; i++)
+                {
+                    if (Constants.IsMultiplayer)
+                        MultiplayerObject[i].SetActive(true);
+                    else
+                        MultiplayerObject[i].SetActive(false);
+                }  
+            }
+        }
+
         void Start()
         {
             stopAllParticles();

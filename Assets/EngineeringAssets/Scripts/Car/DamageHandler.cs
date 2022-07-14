@@ -24,6 +24,8 @@ public class DamageHandler : MonoBehaviour
     public List<DamageCollider> ColliderDamage = new List<DamageCollider>();
     public HPSettings SettingsHP;
 
+    public CarReferenceHandler Ref;
+
     private int StartRange = 0;
     private int EndRange = 0;
     private int CarSpeed = 0;
@@ -34,10 +36,12 @@ public class DamageHandler : MonoBehaviour
     private bool CanDamage = true;
     private int TempHealth;
 
+    [HideInInspector] public int CarHealthStored = 100;
     
     void OnEnable()
     {
         CarTotaled = false; //check if car was totaled from db
+        CarHealthStored = 100;
         //Constants.StoredCarHealth = 100;
         TinyCarController.speedMultiplier = 1;
 
@@ -45,11 +49,11 @@ public class DamageHandler : MonoBehaviour
             return;
 
         TempHealth = Constants.StoredCarHealth;
-        ApplySpeedFactor(Constants.StoredCarHealth);
+        ApplySpeedFactor(CarHealthStored);
         TriggerEvent += OnTriggerEvent;
         TriggerLeaveEvent += OnTriggerLeaveEvent;
 
-        StartCoroutine(PushHealth());
+        //StartCoroutine(PushHealth());
     }
 
     public IEnumerator PushHealth()
@@ -59,18 +63,31 @@ public class DamageHandler : MonoBehaviour
         {
             if (TempHealth != Constants.StoredCarHealth)
             {
-                TempHealth = Constants.StoredCarHealth;
-                FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = Constants.StoredCarHealth;
-                apiRequestHandler.Instance.updatePlayerData();
+                //TempHealth = Constants.StoredCarHealth;
+                //FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = Constants.StoredCarHealth;
+                //apiRequestHandler.Instance.updatePlayerData();
             }
             StartCoroutine(PushHealth());
         }
     }
 
+    public void UpdateMiniBar()
+    {
+        if (Constants.IsMultiplayer)
+        {
+            if (Ref.tinyCarController.PHView.IsMine)
+            {
+                if (Ref.uIHealth)
+                    Ref.uIHealth.UpdateHealth(CarHealthStored);
+            }
+        }
+    }
     private void Start()
     {
+        UpdateMiniBar();
+
         if (UIHealth.Instance)
-            UIHealth.Instance.UpdateHealth(Constants.StoredCarHealth);
+            UIHealth.Instance.UpdateHealth(CarHealthStored);
         else
             Debug.LogError("UIHealth instance is null");
     }
@@ -117,27 +134,29 @@ public class DamageHandler : MonoBehaviour
                         StartCoroutine(InitiateCoolDown());
 
                         Debug.Log("Damage Collider hit: " + obj.name + " with damage :" + ColliderDamage[StoredIndex].ImpactInfo.DamageInfo[i].HealthDeduction.ToString() + " at speed : " + TinyCarController.carSpeed.ToString());
-                        Constants.StoredCarHealth -= (int)ColliderDamage[StoredIndex].ImpactInfo.DamageInfo[i].HealthDeduction;
+                        CarHealthStored -= (int)ColliderDamage[StoredIndex].ImpactInfo.DamageInfo[i].HealthDeduction;
 
-                        if (Constants.StoredCarHealth <= 0)
+                        if (CarHealthStored <= 0)
                         {
                             CarTotaled = true;
-                            Constants.StoredCarHealth = 0;
+                            CarHealthStored = 0;
 
-                            StopCoroutine(PushHealth());
-                            FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = Constants.StoredCarHealth;
-                            apiRequestHandler.Instance.updatePlayerData();
+                            //StopCoroutine(PushHealth());
+                            //FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = Constants.StoredCarHealth;
+                            //apiRequestHandler.Instance.updatePlayerData();
 
                             if (GamePlayUIHandler.Instance)
                                 GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Car is destroyed, better luck next time.");
                         }
 
+                        UpdateMiniBar();
+
                         if (UIHealth.Instance)
-                            UIHealth.Instance.UpdateHealth(Constants.StoredCarHealth);
+                            UIHealth.Instance.UpdateHealth(CarHealthStored);
                         else
                             Debug.LogError("UIHealth instance is null");
 
-                        ApplySpeedFactor(Constants.StoredCarHealth);
+                        ApplySpeedFactor(CarHealthStored);
 
                         break;
                     }
@@ -179,7 +198,7 @@ public class DamageHandler : MonoBehaviour
         if (!Constants.GameMechanics)
             return;
 
-        if (obj.tag == "DamageCol" && TriggerEnterted && (col.gameObject.tag == "SideCollider" || col.transform.parent.tag == "SideCollider"))
+        if (obj.tag == "DamageCol" && TriggerEnterted && (col.gameObject.tag == "SideCollider" || col.transform.parent.tag == "SideCollider" || col.gameObject.tag == "DamageCol"))
             TriggerEnterted = false;
     }
 

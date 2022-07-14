@@ -12,10 +12,16 @@ public class UIHealth : MonoBehaviour
 
     private Color Red = Color.red;
     private Color Green = Color.green;
+
+    public bool IsMiniBar=false;
+
     private void OnEnable()
     {
-        Instance = this;
-        UpdateHealth(Constants.StoredCarHealth);
+        if (!IsMiniBar)
+        {
+            Instance = this;
+            UpdateHealth(Constants.StoredCarHealth);
+        }
     }
 
     private void OnDisable()

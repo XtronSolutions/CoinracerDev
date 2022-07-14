@@ -1749,14 +1749,14 @@ public class MainMenuViewController : MonoBehaviour
     {
         if(Constants.GameMechanics)
         {
-            if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Health)
-            { ShowToast(4f, "Your car health is zero, go to store to repair your car.", false); return; }
-            else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Tyres)
-            { ShowToast(4f, "Your Tyres has been worn out, go to store to repair them.", false); return; }
-            else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Oil)
-            { ShowToast(4f, "Your Engine oil is empty, go to store to fill it.", false); return; }
-            else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Gas)
-            { ShowToast(4f, "Your Gas is empty, go to store to fill it.", false); return; }
+            //if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Health)
+            //{ ShowToast(4f, "Your car health is zero, go to store to repair your car.", false); return; }
+            //else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Tyres)
+            //{ ShowToast(4f, "Your Tyres has been worn out, go to store to repair them.", false); return; }
+            //else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Oil)
+            //{ ShowToast(4f, "Your Engine oil is empty, go to store to fill it.", false); return; }
+            //else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Gas)
+            //{ ShowToast(4f, "Your Gas is empty, go to store to fill it.", false); return; }
         }
 
 #if UNITY_WEBGL && !UNITY_EDITOR

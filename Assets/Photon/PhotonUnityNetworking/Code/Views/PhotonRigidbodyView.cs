@@ -14,14 +14,14 @@ namespace Photon.Pun
     using UnityEngine;
 
 
-    [RequireComponent(typeof(Rigidbody))]
+    //[RequireComponent(typeof(Rigidbody))]
     [AddComponentMenu("Photon Networking/Photon Rigidbody View")]
     public class PhotonRigidbodyView : MonoBehaviourPun, IPunObservable
     {
         private float m_Distance;
         private float m_Angle;
 
-        private Rigidbody m_Body;
+        public Rigidbody m_Body;
 
         private Vector3 m_NetworkPosition;
 
@@ -39,7 +39,7 @@ namespace Photon.Pun
 
         public void Awake()
         {
-            this.m_Body = GetComponent<Rigidbody>();
+            //this.m_Body = GetComponent<Rigidbody>();
 
             this.m_NetworkPosition = new Vector3();
             this.m_NetworkRotation = new Quaternion();

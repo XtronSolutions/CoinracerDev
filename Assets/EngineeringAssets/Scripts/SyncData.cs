@@ -8,6 +8,7 @@ public class SyncData : MonoBehaviourPun, IPunObservable
     public GameObject[] localObjects; //Objects that should only be active for the local player (Ex. Camera)
     public Transform[] wheels; //Car wheel transforms
     public Transform MainBody;
+    public CarReferenceHandler Ref;
     PhotonView PHView;
 
     Rigidbody r;
@@ -35,6 +36,7 @@ public class SyncData : MonoBehaviourPun, IPunObservable
     Vector3 velocityAtLastPacket = Vector3.zero;
     Vector3 angularVelocityAtLastPacket = Vector3.zero;
 
+    private int _health;
     // Start is called before the first frame update
     void Awake()
     {
@@ -94,6 +96,15 @@ public class SyncData : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(Ref.damageHandler.CarHealthStored);
+        }
+        else
+        {
+            _health = (int)stream.ReceiveNext();
+            Ref.uIHealth.UpdateHealth(_health);
+        }
         //    if (stream.IsWriting)
         //    {
         //        // We own this player: send the others our data
@@ -133,5 +144,5 @@ public class SyncData : MonoBehaviourPun, IPunObservable
         //        //velocityAtLastPacket = r.velocity;
         //        //angularVelocityAtLastPacket = r.angularVelocity;
         //    }
-        }
     }
+}

@@ -112,6 +112,10 @@ namespace DavidJalbert
         public bool debugCollider;
         public GameObject DebugColliderObject;
 
+        private void Awake()
+        {
+            IsMultiplayer = Constants.IsMultiplayer;
+        }
         private void OnEnable()
         {
         }
@@ -170,7 +174,7 @@ namespace DavidJalbert
 
             if (Constants.IsMultiplayer)
             {
-                PHView = GetComponent<PhotonView>();
+                //PHView = GetComponent<PhotonView>();
                 if (PHView.IsMine)
                 {
                     MapDebugValues();
