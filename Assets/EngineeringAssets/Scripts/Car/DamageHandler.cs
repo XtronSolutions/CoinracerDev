@@ -112,6 +112,12 @@ public class DamageHandler : MonoBehaviour
         if (!CanDamage)
             return;
 
+        if(Constants.IsMultiplayer)
+        {
+            if (!Ref.tinyCarController.PHView.IsMine)
+                return;
+        }
+
         if (obj.tag == "DamageCol" && !TriggerEnterted && (col.gameObject.tag=="SideCollider" || col.transform.parent.tag== "SideCollider" || col.gameObject.tag == "DamageCol"))
         {
             if (!CarTotaled)

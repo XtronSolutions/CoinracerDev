@@ -75,6 +75,22 @@ namespace DavidJalbert
 
         private void Awake()
         {
+            if(carController && Constants.IsMultiplayer)
+            {
+                if(carController.PHView)
+                {
+                    Rigidbody r = carController.gameObject.GetComponent<Rigidbody>();
+                    if (!carController.PHView.IsMine)
+                    {
+                        r.constraints= RigidbodyConstraints.FreezeAll;
+                    }else
+                    {
+                        r.constraints = RigidbodyConstraints.None;
+                        r.constraints = RigidbodyConstraints.FreezeRotation;
+                    }
+                }
+            }
+
             if (MultiplayerObject.Length!=0)
             {
                 for (int i = 0; i < MultiplayerObject.Length; i++)

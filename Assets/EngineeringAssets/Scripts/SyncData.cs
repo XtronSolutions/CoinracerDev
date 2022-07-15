@@ -40,7 +40,7 @@ public class SyncData : MonoBehaviourPun, IPunObservable
     // Start is called before the first frame update
     void Awake()
     {
-        r = GetComponent<Rigidbody>();
+        //r = GetComponent<Rigidbody>();
         PHView = GetComponent<PhotonView>();
         // r.isKinematic = !PHView.IsMine;
 
@@ -49,6 +49,9 @@ public class SyncData : MonoBehaviourPun, IPunObservable
 
         for (int i = 0; i < localScripts.Length; i++)
         {
+            if (localScripts[i].TryGetComponent(out SphereCollider sphere))
+                sphere.enabled = photonView.IsMine;
+
             localScripts[i].enabled = photonView.IsMine;
         }
 
