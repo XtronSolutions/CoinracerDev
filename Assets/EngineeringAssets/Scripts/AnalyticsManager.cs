@@ -130,12 +130,12 @@ public class AnalyticsManager : MonoBehaviour
         GameAnalytics.NewProgressionEvent(Obj.ProgressionStatus, Obj.Mode, Obj.MapUsed, Obj.CarName, Obj.TimeSeconds,Obj.fields);
     }
 
-    public void PushProgressionEvent(bool isStart)
+    public void PushProgressionEvent(bool isStart, bool isFail = false)
     {
-        GameProgressionEvent(StoredProgression.Mode, StoredProgression.MapUsed, StoredProgression.CarName, StoredProgression.TimeSeconds, StoredProgression.fields,isStart);
+        GameProgressionEvent(StoredProgression.Mode, StoredProgression.MapUsed, StoredProgression.CarName, StoredProgression.TimeSeconds, StoredProgression.fields,isStart, isFail);
     }
 
-    public void GameProgressionEvent(string _mode,string _map,string _carName,int _time, Dictionary<string, object> Optionsfields, bool isStart)
+    public void GameProgressionEvent(string _mode,string _map,string _carName,int _time, Dictionary<string, object> Optionsfields, bool isStart, bool isFail = false)
     {
         //Dictionary<string, object> Optionsfields = new Dictionary<string, object>();
         //Optionsfields.Add("TimeSeconds", _timeString);
@@ -143,6 +143,8 @@ public class AnalyticsManager : MonoBehaviour
 
         if(isStart)
             SetProgressionePayload(GAProgressionStatus.Start, _mode, _map, _carName, _time, Optionsfields);
+        else if(isFail)
+            SetProgressionePayload(GAProgressionStatus.Fail, _mode, _map, _carName, _time, Optionsfields);
         else
             SetProgressionePayload(GAProgressionStatus.Complete, _mode, _map, _carName, _time, Optionsfields);
 

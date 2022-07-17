@@ -68,6 +68,8 @@ public class WinData
     public string RunTime;
     [Tooltip("Wallet address of the race winner")]
     public string WalletAddress;
+    [Tooltip("variable to store if car is damaged/totaled")]
+    public bool IsTotaled = false;
 }
 
 #endregion
@@ -522,14 +524,18 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             RPCCalls.Instance.PHView.RPC("StartRace", RpcTarget.AllBufferedViaServer);
         }
     }
-    public void CallEndMultiplayerGameRPC()
+    public void CallEndMultiplayerGameRPC(bool isTotaled=false)
     {
         WinData _data = new WinData();
         _data.Name = PhotonNetwork.LocalPlayer.NickName;
         _data.ID = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
         _data.TotalBetValue = Constants.SelectedCrace+ Constants.SelectedCrace;
         _data.RunTime = Constants.GameSeconds.ToString();
-        _data.TotalWins = Constants.TotalWins+1;
+        _data.IsTotaled = isTotaled;
+
+        if (!isTotaled)
+            _data.TotalWins = Constants.TotalWins+1;
+
         _data.FlagIndex = Constants.FlagSelectedIndex;
         _data.WalletAddress = Constants.WalletAddress;
 

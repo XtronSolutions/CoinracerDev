@@ -56,7 +56,10 @@ public class RPCCalls : MonoBehaviour
     public void EndMultiplayerRace(string _data)
     {
         WinData _mainData = JsonConvert.DeserializeObject<WinData>(_data);
+
+        if(!_mainData.IsTotaled)
         MultiplayerManager.Instance.winnerList.Add(_mainData);
+
         if (_mainData.ID == PhotonNetwork.LocalPlayer.ActorNumber.ToString())
         {
             int positionNumber = -1;
@@ -97,7 +100,8 @@ public class RPCCalls : MonoBehaviour
                     RaceManager.Instance.ToggleClaimReward(false);
             }
 
-            RaceManager.Instance.showGameOverMenuMultiplayer(positionNumber);
+            if (!_mainData.IsTotaled)
+                RaceManager.Instance.showGameOverMenuMultiplayer(positionNumber);
         }
     }
 

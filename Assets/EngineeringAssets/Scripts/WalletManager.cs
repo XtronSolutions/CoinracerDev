@@ -171,8 +171,8 @@ public class WalletManager : MonoBehaviour
 
         if (Constants.IsStagging)
         {
-            MainMenuViewController.Instance.OnEmailChanged_Login("humzakhalid99@gmail.com");
-            MainMenuViewController.Instance.OnPassChanged_Login("12345678");
+            MainMenuViewController.Instance.OnEmailChanged_Login("hr.xtronsolutions@gmail.com");
+            MainMenuViewController.Instance.OnPassChanged_Login("123456789");
         }
         else
         {

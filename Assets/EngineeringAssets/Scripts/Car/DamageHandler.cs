@@ -31,7 +31,6 @@ public class DamageHandler : MonoBehaviour
     private int CarSpeed = 0;
     private bool TriggerEnterted = false;
     private int StoredIndex = 0;
-    private bool CarTotaled = false;
     private float CoolDownTime = 0.75f; //if there are consective collsions then if colldown period is passed only then damage is applied, so multiple damage is not given on multiple hits in few seconds
     private bool CanDamage = true;
     private int TempHealth;
@@ -40,7 +39,7 @@ public class DamageHandler : MonoBehaviour
     
     void OnEnable()
     {
-        CarTotaled = false; //check if car was totaled from db
+        Constants.CarTotaled = false; //check if car was totaled from db
         CarHealthStored = 100;
         //Constants.StoredCarHealth = 100;
         TinyCarController.speedMultiplier = 1;
@@ -59,7 +58,7 @@ public class DamageHandler : MonoBehaviour
     public IEnumerator PushHealth()
     {
         yield return new WaitForSeconds(10f);
-        if(!CarTotaled)
+        if(!Constants.CarTotaled)
         {
             if (TempHealth != Constants.StoredCarHealth)
             {
@@ -120,7 +119,7 @@ public class DamageHandler : MonoBehaviour
 
         if (obj.tag == "DamageCol" && !TriggerEnterted && (col.gameObject.tag=="SideCollider" || col.transform.parent.tag== "SideCollider" || col.gameObject.tag == "DamageCol"))
         {
-            if (!CarTotaled)
+            if (!Constants.CarTotaled)
             {
                 CarSpeed = (int)TinyCarController.carSpeed;
                 TriggerEnterted = true;
@@ -144,15 +143,15 @@ public class DamageHandler : MonoBehaviour
 
                         if (CarHealthStored <= 0)
                         {
-                            CarTotaled = true;
+                            Constants.CarTotaled = true;
                             CarHealthStored = 0;
 
                             //StopCoroutine(PushHealth());
                             //FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = Constants.StoredCarHealth;
                             //apiRequestHandler.Instance.updatePlayerData();
 
-                            if (GamePlayUIHandler.Instance)
-                                GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Car is destroyed, better luck next time.");
+                            GameOver();
+                            
                         }
 
                         UpdateMiniBar();
@@ -171,12 +170,36 @@ public class DamageHandler : MonoBehaviour
         }
     }
 
+    public void GameOver()
+    {
+        TimeHandler.Instance.timerIsRunning = false;
+        if (GamePlayUIHandler.Instance)
+            GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Car is destroyed, better luck next time.");
+           
+        if(Constants.IsMultiplayer)
+        {
+            Constants.MoveCar = false;
+            MultiplayerManager.Instance.CallEndMultiplayerGameRPC(true);
+        }
+
+        if (AnalyticsManager.Instance)
+        {
+            AnalyticsManager.Instance.StoredProgression.TimeSeconds = (int)Constants.GameSeconds;
+
+            if (AnalyticsManager.Instance.StoredProgression.fields.ContainsKey("TimeSeconds"))
+                AnalyticsManager.Instance.StoredProgression.fields["TimeSeconds"] = 0;
+            else
+                AnalyticsManager.Instance.StoredProgression.fields.Add("TimeSeconds", 0);
+
+            AnalyticsManager.Instance.PushProgressionEvent(false,true);
+        }
+    }
     public void ApplySpeedFactor(int _health)
     {
         if (!Constants.GameMechanics)
             return;
 
-        if (!CarTotaled)
+        if (!Constants.CarTotaled)
         {
             for (int k = 0; k < SettingsHP.HP_Speed.Count; k++)
             {

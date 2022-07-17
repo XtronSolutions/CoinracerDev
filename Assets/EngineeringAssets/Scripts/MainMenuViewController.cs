@@ -1617,6 +1617,9 @@ public class MainMenuViewController : MonoBehaviour
 
     public void UpdateToken()
     {
+        if (DebugAllCars)
+            return;
+
         try
         {
             UITokenCarSelection.TokenText.text = "#" + Constants.TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];

@@ -425,6 +425,9 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
 
     public void OnRaceDone()
     {
+        if (Constants.CarTotaled)
+            return;
+
         Constants.GameSeconds = 0;
 
         if (TimeHandler.Instance)
