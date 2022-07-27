@@ -4164,11 +4164,11 @@ RectTransform:
   - {fileID: 1209426264}
   - {fileID: 1653649580}
   m_Father: {fileID: 198895322}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -130.00002, y: 124.630005}
+  m_AnchoredPosition: {x: 0, y: 23.85}
   m_SizeDelta: {x: 189.4335, y: 65.0579}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &83332613
@@ -5337,7 +5337,7 @@ RectTransform:
   - {fileID: 1934373514}
   - {fileID: 753286682}
   m_Father: {fileID: 198895322}
-  m_RootOrder: 1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -9875,13 +9875,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 285098956}
-  - {fileID: 109226587}
   - {fileID: 714061817}
   - {fileID: 83332612}
-  - {fileID: 409692398}
-  - {fileID: 1781540462}
-  - {fileID: 1977736221}
-  - {fileID: 2074231635}
+  - {fileID: 1944638140}
+  - {fileID: 109226587}
   m_Father: {fileID: 529261821}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -21289,8 +21286,8 @@ RectTransform:
   m_Children:
   - {fileID: 1113428433}
   - {fileID: 502070750}
-  m_Father: {fileID: 198895322}
-  m_RootOrder: 4
+  m_Father: {fileID: 1944638140}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -29086,6 +29083,7 @@ MonoBehaviour:
     FillGas_Txt: {fileID: 1574917104}
     RepairDamageButton: {fileID: 2074231638}
     RepairDamage_Text: {fileID: 1157240942}
+    ConsumablesObject: {fileID: 1944638139}
     BackButton: {fileID: 109226590}
   MultiplayerPrefab: {fileID: 2001480032169333118, guid: f9fc7cdc772f64a71b7dd9919f76b637, type: 3}
   SuccessIcon: {fileID: 97669703}
@@ -33607,7 +33605,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &622247122
 RectTransform:
   m_ObjectHideFlags: 0
@@ -42768,7 +42766,7 @@ RectTransform:
   - {fileID: 2058293889}
   - {fileID: 1796661883}
   m_Father: {fileID: 198895322}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -60032,6 +60030,7 @@ MonoBehaviour:
   - name: Malibu Express
     description: 1 out of 7 cars on Coinracer 1.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/bafyreifofk4rlsod6t3jucmeci4bdxjslmj4vfzcdlfzff7fc6nf67hdxa/metadata.json
     AnimationSequence:
     - {fileID: 21300000, guid: c0d6decd11a0b1e4d8e1d6b77b6c4534, type: 3}
     - {fileID: 21300000, guid: c1da9b5f2a1718045b75c0518a5ccd4f, type: 3}
@@ -60074,6 +60073,7 @@ MonoBehaviour:
   - name: CyberCar
     description: 1 out of 7 cars on Coinracer 1.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/bafyreigjsodevy6wlwlg2hh3v376tuo3m6ld645btmk6gyf3khi7mjflzm/metadata.json
     AnimationSequence:
     - {fileID: 21300000, guid: 4e6f270725e9a3d46bd42f4d4d73de4e, type: 3}
     - {fileID: 21300000, guid: f1eb0cad65ab0b240a6c69a2b04d1588, type: 3}
@@ -60116,6 +60116,7 @@ MonoBehaviour:
   - name: Merky
     description: 1 out of 7 cars on Coinracer 1.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/bafyreidnv2aig6airf734o6w5y6cydm7tzecnpx6vkazrcpit54x2v6zoi/metadata.json
     AnimationSequence:
     - {fileID: 21300000, guid: 28a837b26feec20448abadc66a9b678e, type: 3}
     - {fileID: 21300000, guid: ba9b0e1df5f92c64ca6d1ff6907e6d43, type: 3}
@@ -60158,6 +60159,7 @@ MonoBehaviour:
   - name: Coinrarri
     description: 1 out of 7 cars on Coinracer 1.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/bafyreihbyzydz55hilb4qvk3ckmygrv3c23o45uednc5jwltlktd4su26a/metadata.json
     AnimationSequence:
     - {fileID: 21300000, guid: abf5c7b73d12bd54b9887bce1b6d025e, type: 3}
     - {fileID: 21300000, guid: d3ae08c02e2cacf4da73ed1a9d54ad39, type: 3}
@@ -60200,6 +60202,7 @@ MonoBehaviour:
   - name: Bonecrusher
     description: 1 out of 7 cars on Coinracer 1.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/bafyreigt3yvfpkcisozcmyviavprdsdyncvklnluacjq3yzakhybh2qc74/metadata.json
     AnimationSequence:
     - {fileID: 21300000, guid: 40271c0e53f5dd6478cf977008d2ff71, type: 3}
     - {fileID: 21300000, guid: 9fa7e5405d3f1154a958f435ec2da592, type: 3}
@@ -60242,6 +60245,7 @@ MonoBehaviour:
   - name: Nightcrawler
     description: 1 out of 7 cars on Coinracer 1.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/bafyreiaqwc3xwvjx7ndzmdxrly7gurddkrgqzdi6oxsrb4pt6jgob5icky/metadata.json
     AnimationSequence:
     - {fileID: 21300000, guid: 3c9b361800d39054c8334b0cd2a29717, type: 3}
     - {fileID: 21300000, guid: 09f4585f0b5263d4c8fccb6f3efeefc4, type: 3}
@@ -60284,6 +60288,7 @@ MonoBehaviour:
   - name: CoinracerGT
     description: 1 out of 7 cars on Coinracer 1.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/bafyreibpievbwxvrt3itegt2eenv23ahtbjrpcfn6c7uhdtwoq2v25qleu/metadata.json
     AnimationSequence:
     - {fileID: 21300000, guid: 7f82dba15954b174b856e08b08f9c1c8, type: 3}
     - {fileID: 21300000, guid: ea9606fd2a40aeb489d5d6d023be03b2, type: 3}
@@ -60326,6 +60331,7 @@ MonoBehaviour:
   - name: BSC News Van
     description: Exclusive 1/1 BSC News Van (06.01.2022 AMA Event). Coinracer - Race.
       Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmSbaDjkWr8jFvf7Tzb2sZNPyi1jLYCRamBqg6GPtjHhJL
     AnimationSequence:
     - {fileID: 21300000, guid: f255430900e1d4c4297cacd04d9e76cc, type: 3}
     - {fileID: 21300000, guid: 6c1534cb82f2c6c42b8c77ba4f7a9642, type: 3}
@@ -60368,6 +60374,7 @@ MonoBehaviour:
   - name: Telecoin
     description: 1 out of 5 cars of Coinracer 2.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmP9XJX5Ler2pa7sWyRdoLRXtNgk8ffC4Hjt9aYnSDk2U2
     AnimationSequence:
     - {fileID: 21300000, guid: bda00386434710844bf135d4dc1fad24, type: 3}
     - {fileID: 21300000, guid: 05c4d093ed8470945a9adf4e4a94297a, type: 3}
@@ -60410,6 +60417,7 @@ MonoBehaviour:
   - name: Lambo
     description: 1 out of 5 cars of Coinracer 2.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmQBZksfbruM4QXoiVbsao9tSqk7TLZoPFvzqTw3t94ZaE
     AnimationSequence:
     - {fileID: 21300000, guid: c103067e1db183a47bf5a1c39dd3e83f, type: 3}
     - {fileID: 21300000, guid: 09be452f58bfbee4684ef3be2983a7c0, type: 3}
@@ -60452,6 +60460,7 @@ MonoBehaviour:
   - name: Hovercar
     description: 1 out of 5 cars of Coinracer 2.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmUZnADARvRJU2hVoXYFBuezSoxhrmJGPsntRmyafhRi8V
     AnimationSequence:
     - {fileID: 21300000, guid: 0487c471fe7d0db459431e19b8ec766f, type: 3}
     - {fileID: 21300000, guid: 20ea7352fae15824a87f7cb68301c34a, type: 3}
@@ -60494,6 +60503,7 @@ MonoBehaviour:
   - name: Black Ace
     description: 1 out of 5 cars of Coinracer 2.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/Qma7oWboiRMQvrF5CebWL9dGKeqcF1m1A5KGLLAfnZQfZE
     AnimationSequence:
     - {fileID: 21300000, guid: deadcf3895714cc428c1139ee861da37, type: 3}
     - {fileID: 21300000, guid: 95492ed97bdbb8d479f89df267afce4b, type: 3}
@@ -60536,6 +60546,7 @@ MonoBehaviour:
   - name: Lucky Bus
     description: 1 out of 5 cars of Coinracer 2.0 Collection. Coinracer - Race. Win.
       Earn.
+    metaDataURL: https://ipfs.io/ipfs/Qmb9dF1AjPd2fHjWatGWvGugZTowA7J6c79S3ZKqViaEgF
     AnimationSequence:
     - {fileID: 21300000, guid: 1e16f1e855985344da69772923cdd887, type: 3}
     - {fileID: 21300000, guid: d32bbf10b3eab5543871808d16208536, type: 3}
@@ -60577,6 +60588,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: be255154edd0eb746a23fe298a52735f, type: 3}
   - name: Malibu Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmXgD6t3YzYfryMQUvjskX7r9kHXzf7yNtinXtGm8NFtGF
     AnimationSequence:
     - {fileID: 21300000, guid: 525a8b223f6c85c44bc3e7082cc1e7de, type: 3}
     - {fileID: 21300000, guid: 40e340efa483ea845a02f60b95003d0a, type: 3}
@@ -60618,6 +60630,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: f7ac6eb9572bb33428c47569253bb662, type: 3}
   - name: CoinracerGT Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmZoLMCrgmsfD4Ug6krPZR4gypARBhqgU5qpb2F5KVJLLC
     AnimationSequence:
     - {fileID: 21300000, guid: 0bc4af630da496c48ad3f3e22edbdea2, type: 3}
     - {fileID: 21300000, guid: 11c7d8e84a637a542a90fa6bc50d157b, type: 3}
@@ -60659,6 +60672,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 173745aa1bc3d104cb51a31bb0cabaee, type: 3}
   - name: Nightcrawler Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/Qma7PcSQ4oST4rGi577oJkmnJ1nQ3HCKE5PEoiDdhQMYWh
     AnimationSequence:
     - {fileID: 21300000, guid: c79da5725b5ea2c44b08a4a42f894589, type: 3}
     - {fileID: 21300000, guid: 838ccdfbf7f33ab4cb75a0d15853b1e4, type: 3}
@@ -60700,6 +60714,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: c544c003a53d3c346a76c57b3bd9cbbe, type: 3}
   - name: Telecoin Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmWJ3vu1pF5A5rkYmoJDrYP5J3rUFcovmv5mxbZMQ1LNeD
     AnimationSequence:
     - {fileID: 21300000, guid: bc562ee1e99c6024585f7342a9a23613, type: 3}
     - {fileID: 21300000, guid: f5ea588d6921e794a9a090bfd2275e17, type: 3}
@@ -60741,6 +60756,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 6dce0cc3ce869694a8084e616080ba68, type: 3}
   - name: Coinrrari Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmZmkA7vuVitAUZvRMkN87frbvy6V84xkinTMVwGpwxXdy
     AnimationSequence:
     - {fileID: 21300000, guid: af795a7d227860e48abfc34cf3d920c6, type: 3}
     - {fileID: 21300000, guid: 14d6608154d49154e835fa1459954467, type: 3}
@@ -60783,6 +60799,7 @@ MonoBehaviour:
   - name: Lambo Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.1
       out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/Qmewv66BvPBMCiJhjecqkXRNtkwLPbziXXT25dcSjmpm8r
     AnimationSequence:
     - {fileID: 21300000, guid: a3c80c00b1d5b724d99b3fe2db74bd7a, type: 3}
     - {fileID: 21300000, guid: 3df0fbd8f1e0ddf40a0bfb2d60a57979, type: 3}
@@ -60825,6 +60842,7 @@ MonoBehaviour:
   - name: Cybercar Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.1
       out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmR2xa2nrmtG2viEwYHxzgV7u2YijNZV1wkTsQxjFpeZiW
     AnimationSequence:
     - {fileID: 21300000, guid: 47c6bc9c658020a4faad87adb261b409, type: 3}
     - {fileID: 21300000, guid: 0a9ea003d268c63489b30e04c3be48d0, type: 3}
@@ -60867,6 +60885,7 @@ MonoBehaviour:
   - name: Hovercar Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.1
       out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmaVgQHFKzHVruPDogLuVaruAtGDs25FeYR6Fo5hxYN3HL
     AnimationSequence:
     - {fileID: 21300000, guid: 4fc514e9114662543af858254a430663, type: 3}
     - {fileID: 21300000, guid: 1a7219de949f62943b25f3824547f776, type: 3}
@@ -60909,6 +60928,7 @@ MonoBehaviour:
   - name: Merky Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.1
       out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmQhFT5xPdhhCRLvJ1vJnBuBKPGSqWdPGaGyVmFyyjtGE3
     AnimationSequence:
     - {fileID: 21300000, guid: 8c9b160f0014cc248828d72269938af7, type: 3}
     - {fileID: 21300000, guid: 3a286710af88c5e4b9ca0cc775dbab31, type: 3}
@@ -60951,6 +60971,7 @@ MonoBehaviour:
   - name: Black Ace Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.1
       out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmPoM4hdGjA2KrLB3qgx1EG2u1rgPmW21nsEK3pXrU2LE3
     AnimationSequence:
     - {fileID: 21300000, guid: 85409ff14916caa4fb0ef9a6c837c4c3, type: 3}
     - {fileID: 21300000, guid: 43b9273d798c6ca4f9ded9d22f8a6c68, type: 3}
@@ -60993,6 +61014,7 @@ MonoBehaviour:
   - name: Bonecrusher Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.1
       out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmY7bPHVAD9Ycf62oo8gknPJvTcxsEMgTYjLxCfdFmU1t3
     AnimationSequence:
     - {fileID: 21300000, guid: a760edfc152d1d946b2f75d5463dc16c, type: 3}
     - {fileID: 21300000, guid: 26ea2b5e3e642624d8a6709d85805ac0, type: 3}
@@ -61035,6 +61057,7 @@ MonoBehaviour:
   - name: Lucky Bus Mutant
     description: 1 out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.1
       out of 13 exclusive mutant cars. Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmQv6m25wVEVcsPWU91uh1f35m4hn6yq5YAfcU7merQcEH
     AnimationSequence:
     - {fileID: 21300000, guid: be68c80056ba926488c07f703f954645, type: 3}
     - {fileID: 21300000, guid: 8fa2500d557ae624aa165d39b334e785, type: 3}
@@ -61077,6 +61100,7 @@ MonoBehaviour:
   - name: Grimace Car
     description: Exclusive 1/1 Grimace Car (08.04.2022 Grimace Tournament Event).
       Coinracer - Race. Win. Earn.
+    metaDataURL: https://ipfs.io/ipfs/QmSFdungFVPxT1rJ2md7boiHearzRuTah1o5xdt94sF2gt
     AnimationSequence:
     - {fileID: 21300000, guid: b660a0444b8e4aa4082fb632db3760e0, type: 3}
     - {fileID: 21300000, guid: 782ba974d1ea1644b8e5a0e668e7dd0a, type: 3}
@@ -67518,7 +67542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1167977312
 RectTransform:
   m_ObjectHideFlags: 0
@@ -95126,8 +95150,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 251.66998, y: -2.6999998}
-  m_SizeDelta: {x: 103.05997, y: -5.4000006}
+  m_AnchoredPosition: {x: -51.585007, y: -69.34999}
+  m_SizeDelta: {x: 108.22998, y: -26.100014}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1653649581
 MonoBehaviour:
@@ -95149,7 +95173,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "*100 CCash will be added in single\n   transaction"
+  m_text: '*100 CCash will be added in single transaction'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5187f1c0deabe6448a2ece3fd1eef251, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 99a63762f156e479393cb6ef82f79b60, type: 2}
@@ -103995,8 +104019,8 @@ RectTransform:
   m_Children:
   - {fileID: 1740818894}
   - {fileID: 2079682361}
-  m_Father: {fileID: 198895322}
-  m_RootOrder: 5
+  m_Father: {fileID: 1944638140}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -113701,6 +113725,85 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1944255979}
   m_CullTransparentMesh: 1
+--- !u!1 &1944638139
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1944638140}
+  - component: {fileID: 1944638142}
+  - component: {fileID: 1944638141}
+  m_Layer: 5
+  m_Name: Consumables
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1944638140
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944638139}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 409692398}
+  - {fileID: 1781540462}
+  - {fileID: 1977736221}
+  - {fileID: 2074231635}
+  m_Father: {fileID: 198895322}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1944638141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944638139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1944638142
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944638139}
+  m_CullTransparentMesh: 1
 --- !u!1 &1945971084
 GameObject:
   m_ObjectHideFlags: 0
@@ -115606,8 +115709,8 @@ RectTransform:
   m_Children:
   - {fileID: 1299185492}
   - {fileID: 1574917103}
-  m_Father: {fileID: 198895322}
-  m_RootOrder: 6
+  m_Father: {fileID: 1944638140}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -122040,8 +122143,8 @@ RectTransform:
   m_Children:
   - {fileID: 1722388695}
   - {fileID: 1157240941}
-  m_Father: {fileID: 198895322}
-  m_RootOrder: 7
+  m_Father: {fileID: 1944638140}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

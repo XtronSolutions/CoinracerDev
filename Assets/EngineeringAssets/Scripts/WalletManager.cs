@@ -750,13 +750,40 @@ public class WalletManager : MonoBehaviour
         //ownerNFT = await ERC721.OwnerOf(chain, network, contractNFT, tokenId);
     }
 
+    public void EnableAllCars()
+    {
+        Constants.NFTBought[0] = NFTGameplayManager.Instance.DataNFTModel.Count;
+        Constants.NFTStored[0] = NFTGameplayManager.Instance.DataNFTModel.Count;
+
+        NFTTokens[0].Clear();
+        metaDataURL[0].Clear();
+        for (int f = 0; f < NFTGameplayManager.Instance.DataNFTModel.Count; f++)
+        {
+            NFTTokens[0].Add(f + 1);
+            metaDataURL[0].Add(NFTGameplayManager.Instance.DataNFTModel[f].metaDataURL);
+        }
+
+        for (int i = 0; i < NFTTokens[0].Count; i++)
+        {
+            Debug.Log(NFTTokens[0][i]);
+        }
+
+        Constants.TokenNFT.Clear();
+
+        StartCoroutine(getNftsMetaData(metaDataURL[0], NFTTokens[0], 0, 0));
+    }
+
    /// <summary>
    /// function to called, to check NFT data
    /// </summary>
     async public void getNftsData()
     {
         if (Constants.DebugAllCars)
+        {
+            EnableAllCars();
+            CancelInvoke("getNftsData");
             return;
+        }
 
         for (int i = 0; i < NFTContracts.Length; i++)
             checkNFTsBalance(i);
@@ -893,6 +920,8 @@ public class WalletManager : MonoBehaviour
                     return;
                 }
             }
+
+            Debug.Log(response);
             if (!Constants.gifLinks.Contains(response))
             {
                 metaDataURL[_index].Add(response);
@@ -935,17 +964,28 @@ public class WalletManager : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     IPFSdata dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
-
+                    Debug.Log(dataIPFS.name);
                     StoreNameWithToken(dataIPFS.name, _tokens[_entryIndex]);
                     StoreChipraceData(dataIPFS.name, _tokens[_entryIndex]);
 
                     if (!Constants.StoredCarNames.Contains(dataIPFS.name))
                         Constants.StoredCarNames.Add(dataIPFS.name);
-                        
+
                     if (_entryIndex < Ipfs.Count - 1)
+                    {
                         StartCoroutine(getNftsMetaData(Ipfs, _tokens, _contractIndex, _entryIndex + 1));
+                    }
                     else
-                        markFetchCompleted(_contractIndex);
+                    {
+                        if (Constants.DebugAllCars)
+                        {
+                            Constants.CheckAllNFT = true;
+                        }
+                        else
+                        {
+                            markFetchCompleted(_contractIndex);
+                        }
+                    }
                     break;
             }
         }
@@ -1126,6 +1166,15 @@ public class WalletManager : MonoBehaviour
             }
           
             Constants.CheckAllNFT = true;
+
+            for (int i = 0; i < Constants.TokenNFT.Count; i++)
+            {
+                Debug.Log(Constants.TokenNFT[i].Name);
+                for (int j = 0; j < Constants.TokenNFT[i].ID.Count; j++)
+                {
+                    Debug.Log(Constants.TokenNFT[i].ID[j]);
+                }
+            }
             Constants.ChipraceDataChecked = false;
 
             if(Constants.ForceUpdateChiprace)
@@ -1174,6 +1223,15 @@ public class WalletManager : MonoBehaviour
 
     public void StoreNameWithToken(string _name, int _token)
     {
+
+        if (Constants.TokenNFT.Count == 0)
+        {
+            NFTTokens _data = new NFTTokens();
+            _data.Name = "Bolt";
+            _data.ID.Add(0);
+            Constants.TokenNFT.Add(_data);
+        }
+
         bool _found = false;
         int _index = 0;
 
@@ -1181,7 +1239,7 @@ public class WalletManager : MonoBehaviour
         {
             for (int i = 0; i < Constants.TokenNFT.Count; i++)
             {
-                if (Constants.TokenNFT[i].Name.Contains(_name))
+                if (Constants.TokenNFT[i].Name.ToLower()==_name.ToLower())
                 {
                     _index = i;
                     _found = true;

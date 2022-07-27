@@ -10,13 +10,28 @@ using System.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
 
-public class NFTMechanicsData
+public class MechanicsData
 {
     public string CarName;
     public int CarHealth;
     public float Tyre_Laps;
     public float EngineOil_Laps;
     public float Gas_Laps;
+
+    public MechanicsData(string carName,int carHealth,float tyre_Laps,float engineOil_Laps,float gas_Laps)
+    {
+        this.CarName = carName;
+        this.CarHealth = carHealth;
+        this.Tyre_Laps = tyre_Laps;
+        this.EngineOil_Laps = engineOil_Laps;
+        this.Gas_Laps = gas_Laps;
+    }
+}
+
+public class NFTMehanicsData
+{
+    public string OwnerWalletAddress;
+    public MechanicsData mechanicsData;
 }
 public class GameMechanics
 {
@@ -25,6 +40,8 @@ public class GameMechanics
     public float Tyre_Laps;
     public float EngineOil_Laps;
     public float Gas_Laps;
+
+     
 }
 public class UserData
 {
@@ -68,14 +85,15 @@ public class FirebaseManager : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void SetStorage(string key, string val);
 
-    private int key=129;
+    private int key = 129;
     private string UID = "";
     public UserData PlayerData;
     public updateDataPayload PlayerDataPayload;
-    
-    
+
+
     public UserData[] PlayerDataArray;
     public static FirebaseManager Instance;
+    public Dictionary<int, NFTMehanicsData> NFTMehanics = new Dictionary<int, NFTMehanicsData>();
 
     [HideInInspector]
     public AuthCredentials Credentails;
@@ -90,6 +108,7 @@ public class FirebaseManager : MonoBehaviour
     bool UserDataFetched = false;
     void Start()
     {
+        GetNFTData();
         Credentails = new AuthCredentials();
 
         if (!Instance)
@@ -99,7 +118,7 @@ public class FirebaseManager : MonoBehaviour
         }
 
         //AuthenticateFirebase();
-        if(Constants.isUsingFirebaseSDK)
+        if (Constants.isUsingFirebaseSDK)
             OnAuthChanged();
     }
     public void updatePlayerDataPayload()
@@ -107,7 +126,52 @@ public class FirebaseManager : MonoBehaviour
         PlayerDataPayload = new updateDataPayload();
         PlayerDataPayload.data = PlayerData;
     }
-    
+
+    public void StoreNFTLocally(string _data)
+    {
+        PlayerPrefs.SetString("NFTLocalData", _data);
+    }
+
+    public string GetNFTLocally()
+    {
+        return PlayerPrefs.GetString("NFTLocalData", "");
+    }
+
+    public void GetNFTData()
+    {
+        //this is function that will be used to pupulate data from moralis
+        
+        if(Constants.DebugAllCars)
+        {
+            if (GetNFTLocally() == "")
+            {
+                NFTMehanics.Clear();
+
+                NFTMehanicsData _data = new NFTMehanicsData();
+                _data.OwnerWalletAddress = "testone";
+                _data.mechanicsData = new MechanicsData("Bolt", 100, 0, 0, 0);
+                NFTMehanics.Add(0, _data);
+
+                for (int i = 0; i < NFTGameplayManager.Instance.DataNFTModel.Count; i++)
+                {
+                    NFTMehanicsData _newData = new NFTMehanicsData();
+                    _newData.OwnerWalletAddress = "testone";
+                    _data.mechanicsData = new MechanicsData(NFTGameplayManager.Instance.DataNFTModel[0].name, 100, 0, 0, 0);
+                    NFTMehanics.Add(i + 1, _newData);
+                }
+
+                string _json = JsonConvert.SerializeObject(NFTMehanics);
+                StoreNFTLocally(_json);
+                Debug.Log("NFT DATA STORED");
+            }
+            else
+            {
+                Debug.Log("NFT DATA Retrieved");
+                NFTMehanics.Clear();
+                NFTMehanics = JsonConvert.DeserializeObject<Dictionary<int, NFTMehanicsData>>(GetNFTLocally());
+            }
+        }
+    }
      //Setting playerData got from Login API
      //Call this Function if Constants.isUsingSDK is false
     public void SetPlayerData(string _response)

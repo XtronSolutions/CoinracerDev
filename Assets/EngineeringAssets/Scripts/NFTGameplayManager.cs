@@ -8,6 +8,7 @@ public class NFTModelData
 {
     public string name;
     public string description;
+    public string metaDataURL;
     public Sprite[] AnimationSequence;
 }
 public class NFTGameplayManager : MonoBehaviour
@@ -36,6 +37,7 @@ public class NFTGameplayManager : MonoBehaviour
             int totalNFTS = 0;
             for (int i = 0; i < Constants.NFTBought.Length; i++)
                 totalNFTS += Constants.NFTBought[i];
+
             for(int i = 0; i < Constants.NFTBought.Length; i++)
             {
                 for (int j = 0; j < Constants.NFTBought[i]; j++)

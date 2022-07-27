@@ -18,9 +18,19 @@ public class NFTDataHandler : MonoBehaviour
     public Image AnimationRef;
     public TextMeshProUGUI ModelName;
     public TextMeshProUGUI ModelID;
+    public Button ConsumableButton;
  
     private float speed = 0.052f;
     private int tokenID = 0;
+
+    private void Start()
+    {
+        ConsumableButton.onClick.AddListener(AccessConsumables);
+    }
+    public void AccessConsumables()
+    {
+        MainMenuViewController.Instance.EnableConsumables_StoreUI();
+    }
     public void AssignData(Sprite[] _sprites,string _name, string _id)
     {
         StartCoroutine(PlayAnimation(_sprites));
@@ -56,6 +66,8 @@ public class NFTDataHandler : MonoBehaviour
                     Debug.LogError("Getting IPFS : HTTP Error : " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
+                    //Debug.Log(tokenID);
+                    //Debug.Log(webRequest.downloadHandler.text);
                     dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
 
                     if(!Constants.StoredCarNames.Contains(dataIPFS.name))

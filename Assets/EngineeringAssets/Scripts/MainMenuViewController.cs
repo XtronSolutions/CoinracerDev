@@ -35,6 +35,8 @@ public class StoreUI
     public Button RepairDamageButton;
     public TextMeshProUGUI RepairDamage_Text;
 
+    public GameObject ConsumablesObject;
+
     public Button BackButton;
 }
 
@@ -1552,24 +1554,28 @@ public class MainMenuViewController : MonoBehaviour
         }
     }
 
-    private void OnNextCar()
+    public void CheckTokenIndex(int newIndex)
     {
-        ToggleTokenScreen(true);
-        int newIndex = _currentSelectedCarIndex + 1;
-        newIndex %= _selecteableCars.Count;
-
-        if (!Constants.EarnMultiplayer)
-            ToggleTokenScreen(false);
         for (int i = 0; i < Constants.TokenNFT.Count; i++)
         {
-            if (Constants.TokenNFT[i].Name.Contains(_selecteableCars[newIndex].carSettings.Name))
+            if (Constants.TokenNFT[i].Name.ToLower() == _selecteableCars[newIndex].carSettings.Name.ToLower())
             {
                 _SelectedTokenNameIndex = i;
                 _SelectedTokenIDIndex = 0;
                 break;
             }
         }
+    }
+    private void OnNextCar()
+    {
+        ToggleTokenScreen(true);
+        int newIndex = _currentSelectedCarIndex + 1;
+        newIndex %= _selecteableCars.Count;
 
+        //if (!Constants.EarnMultiplayer)
+        //ToggleTokenScreen(false);
+
+        CheckTokenIndex(newIndex);
         UpdateSelectedCarVisual(newIndex);
         UpdateToken();
     }
@@ -1582,19 +1588,10 @@ public class MainMenuViewController : MonoBehaviour
         if (newIndex < 0)
             newIndex = _selecteableCars.Count + newIndex;
 
-        if (!Constants.EarnMultiplayer)
-            ToggleTokenScreen(false);
+        // if (!Constants.EarnMultiplayer)
+        //ToggleTokenScreen(false);
 
-        for (int i = 0; i < Constants.TokenNFT.Count; i++)
-        {
-            if (Constants.TokenNFT[i].Name.Contains(_selecteableCars[newIndex].carSettings.Name))
-            {
-                _SelectedTokenNameIndex = i;
-                _SelectedTokenIDIndex = 0;
-                break;
-            }
-        }
-
+        CheckTokenIndex(newIndex);
         UpdateSelectedCarVisual(newIndex);
         UpdateToken();
     }
@@ -1617,8 +1614,8 @@ public class MainMenuViewController : MonoBehaviour
 
     public void UpdateToken()
     {
-        if (DebugAllCars)
-            return;
+        //if (DebugAllCars)
+            //return;
 
         try
         {
@@ -1831,11 +1828,21 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.IsTest)
             WalletConnected = true;
 
+
+        if (Constants.DebugAllCars)
+        {
+            ToggleScreen_Garage(true);
+            NFTGameplayManager.Instance.InstantiateNFT();
+
+            return;
+        }
+
         if (WalletConnected)
         {
             if (Constants.CheckAllNFT)
             {
                 ToggleScreen_Garage(true);
+
                 int storedNFTS = 0;
                 for (int i = 0; i < Constants.NFTStored.Length; i++)
                     storedNFTS += Constants.NFTStored[i];
@@ -1877,41 +1884,53 @@ public class MainMenuViewController : MonoBehaviour
     }
     public void CheckBoughtCars()
     {
-        if (Constants.EarnMultiplayer)
-        {
-            for (int i = 0; i < _selecteableCars.Count; i++)
-            {
-                _selecteableCars[i].Deactivate();
-            }
 
-            ToggleTokenScreen(true);
-            UpdateToken();
-        } else
+        for (int i = 0; i < _selecteableCars.Count; i++)
         {
-            ToggleTokenScreen(false);
+            _selecteableCars[i].Deactivate();
         }
 
-        if (Constants.DebugAllCars)
-        {
-            for (int j = 0; j < _allCars.Count; j++)
-            {
-                _selecteableCars.Add(_allCars[j].CarDetail);
-            }
+        ToggleTokenScreen(true);
+        //UpdateToken();
 
-            LoadingScreen.SetActive(false);
-            _currentSelectedCarIndex = 0;
-            _SelectedTokenNameIndex = 0;
-            _SelectedTokenIDIndex = 0;
-            UpdateSelectedCarVisual(_currentSelectedCarIndex);
-            UpdateToken();
-            return;
-        }
+        //if (Constants.EarnMultiplayer)
+        //{
+        //    for (int i = 0; i < _selecteableCars.Count; i++)
+        //    {
+        //        _selecteableCars[i].Deactivate();
+        //    }
+
+        //    ToggleTokenScreen(true);
+        //    UpdateToken();
+        //} else
+        //{
+
+        //    ToggleTokenScreen(false);
+        //}
+
+        //if (Constants.DebugAllCars)
+        //{
+        //    for (int j = 0; j < _allCars.Count; j++)
+        //    {
+        //        _selecteableCars.Add(_allCars[j].CarDetail);
+        //    }
+
+        //    LoadingScreen.SetActive(false);
+        //    _currentSelectedCarIndex = 0;
+        //    _SelectedTokenNameIndex = 0;
+        //    _SelectedTokenIDIndex = 0;
+        //    UpdateSelectedCarVisual(_currentSelectedCarIndex);
+        //    UpdateToken();
+        //    return;
+        //}
 
         if (Constants.CheckAllNFT)
         {
             int storedNFTS = 0;
+
             for (int i = 0; i < Constants.NFTStored.Length; i++)
                 storedNFTS += Constants.NFTStored[i];
+
             if (storedNFTS == 0)
             {
                 DeactivateCars();
@@ -1928,7 +1947,6 @@ public class MainMenuViewController : MonoBehaviour
                     UpdateSelectedCarVisual(_currentSelectedCarIndex);
                 }
             }
-
             else if (Constants.StoredCarNames.Count != 0)
             {
                 DeactivateCars();
@@ -2539,18 +2557,34 @@ public class MainMenuViewController : MonoBehaviour
     public void EnableStore_StoreUI()
     {
         ToggleMainScreen_StoreUI(true);
+        UIStore.ConsumablesObject.SetActive(false);
+        UIStore.BuyVCButton.gameObject.SetActive(true);
         SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-        UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+        UpdateBUYVCText_StoreUI(Constants.CCashPurchaseAmount.ToString());
     }
+
+    public void EnableConsumables_StoreUI()
+    {
+        ToggleMainScreen_StoreUI(true);
+        UIStore.ConsumablesObject.SetActive(true);
+        UIStore.BuyVCButton.gameObject.SetActive(false);
+        SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
+        //UpdateBUYVCText_StoreUI(Constants.CCashPurchaseAmount.ToString());
+    }
+
 
     public void DisableStore_StoreUI()
     {
         ToggleMainScreen_StoreUI(false);
     }
-    public void UpdateTexts_StoreUI(string VC_Txt)
+
+    public void UpdateBUYVCText_StoreUI(string VC_Txt)
+    {
+        UIStore.BuyVC_Txt.text = "*" + VC_Txt + " " + Constants.VirtualCurrency + " will be added in single transaction";
+    }
+    public void UpdateConsumableText_StoreUI(string VC_Txt)
     {
         MechanicsManager.Instance.UpdateConsumables();
-        UIStore.BuyVC_Txt.text ="*"+ VC_Txt+" "+ Constants.VirtualCurrency + " will be added in single"+"\n" +"  transaction";
         UIStore.FixTyres_Txt.text = "*Remaining playable laps : " + MechanicsManager.Instance.GetRemainingTyreLaps()+ " laps" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost+" "+ Constants.VirtualCurrency;
         UIStore.FillOil_Txt.text = "*Remaining playable laps : " + MechanicsManager.Instance.GetRemainingOilLaps() + " laps" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost + " " + Constants.VirtualCurrency;
         UIStore.FillGas_Txt.text = "*Remaining playable laps : " + MechanicsManager.Instance.GetRemainingGasLaps() + " laps" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.Gas.VC_Cost + " " + Constants.VirtualCurrency;
@@ -2564,7 +2598,7 @@ public class MainMenuViewController : MonoBehaviour
         apiRequestHandler.Instance.updatePlayerData();
         ShowToast(3f, Constants.VirtualCurrency + " was successfully purchased.", true);
         SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-        UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+        UpdateBUYVCText_StoreUI(Constants.CCashPurchaseAmount.ToString());
     }
 
     public void FixTyre_StoreUI()
@@ -2577,7 +2611,7 @@ public class MainMenuViewController : MonoBehaviour
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Tyres were successfully fixed.", true);
             SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-            UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+            //UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
         }
         else
         {
@@ -2595,7 +2629,7 @@ public class MainMenuViewController : MonoBehaviour
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Engine Oil was successfully filled.", true);
             SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-            UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+            //UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
         }
         else
         {
@@ -2613,7 +2647,7 @@ public class MainMenuViewController : MonoBehaviour
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Gas was successfully filled.", true);
             SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-            UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+           // UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
         }
         else
         {
@@ -2632,7 +2666,7 @@ public class MainMenuViewController : MonoBehaviour
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Damage were repaired. health is full.", true);
             SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-            UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
+            //UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
         }
         else
         {
