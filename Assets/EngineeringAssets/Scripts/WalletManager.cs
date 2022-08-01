@@ -760,7 +760,7 @@ public class WalletManager : MonoBehaviour
         for (int f = 0; f < NFTGameplayManager.Instance.DataNFTModel.Count; f++)
         {
             NFTTokens[0].Add(f + 1);
-            metaDataURL[0].Add(NFTGameplayManager.Instance.DataNFTModel[f].metaDataURL);
+            metaDataURL[0].Add(NFTGameplayManager.Instance.DataNFTModel[f].name);
         }
 
         for (int i = 0; i < NFTTokens[0].Count; i++)
@@ -939,6 +939,28 @@ public class WalletManager : MonoBehaviour
         WaitForAllData();
     }
 
+
+    public void AssignNFTMetaData(string carName,List<string> ipfs,List<int> token, int _contractIndex, int startIndex,bool isDebugAllCars=false)
+    {
+        StoreNameWithToken(carName, token[startIndex]);
+        StoreChipraceData(carName, token[startIndex]);
+
+        if (!Constants.StoredCarNames.Contains(carName))
+            Constants.StoredCarNames.Add(carName);
+
+        if (startIndex < ipfs.Count - 1)
+        {
+            StartCoroutine(getNftsMetaData(ipfs, token, _contractIndex, startIndex + 1));
+        }
+        else
+        {
+            if(isDebugAllCars)
+                Constants.CheckAllNFT = true;
+            else
+                markFetchCompleted(_contractIndex);
+        }
+    }
+
     /// <summary>
     /// coroutine to download IPFS metadata
     /// </summary>
@@ -949,44 +971,30 @@ public class WalletManager : MonoBehaviour
     /// <returns></returns>
     public IEnumerator getNftsMetaData(List<string> Ipfs,List<int> _tokens, int _contractIndex, int _entryIndex)
     {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(Ipfs[_entryIndex]))
+        if (Constants.DebugAllCars)
         {
-            yield return webRequest.SendWebRequest();
-
-            switch (webRequest.result)
+            AssignNFTMetaData(Ipfs[_entryIndex], Ipfs, _tokens, _contractIndex,_entryIndex, Constants.DebugAllCars);
+        }
+        else
+        {
+            using (UnityWebRequest webRequest = UnityWebRequest.Get(Ipfs[_entryIndex]))
             {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    Constants.PrintError(": Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.ProtocolError:
-                    Constants.PrintError(": HTTP Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    IPFSdata dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
-                    Debug.Log(dataIPFS.name);
-                    StoreNameWithToken(dataIPFS.name, _tokens[_entryIndex]);
-                    StoreChipraceData(dataIPFS.name, _tokens[_entryIndex]);
+                yield return webRequest.SendWebRequest();
 
-                    if (!Constants.StoredCarNames.Contains(dataIPFS.name))
-                        Constants.StoredCarNames.Add(dataIPFS.name);
-
-                    if (_entryIndex < Ipfs.Count - 1)
-                    {
-                        StartCoroutine(getNftsMetaData(Ipfs, _tokens, _contractIndex, _entryIndex + 1));
-                    }
-                    else
-                    {
-                        if (Constants.DebugAllCars)
-                        {
-                            Constants.CheckAllNFT = true;
-                        }
-                        else
-                        {
-                            markFetchCompleted(_contractIndex);
-                        }
-                    }
-                    break;
+                switch (webRequest.result)
+                {
+                    case UnityWebRequest.Result.ConnectionError:
+                    case UnityWebRequest.Result.DataProcessingError:
+                        Constants.PrintError(": Error: " + webRequest.error);
+                        break;
+                    case UnityWebRequest.Result.ProtocolError:
+                        Constants.PrintError(": HTTP Error: " + webRequest.error);
+                        break;
+                    case UnityWebRequest.Result.Success:
+                        IPFSdata dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
+                        AssignNFTMetaData(dataIPFS.name, Ipfs, _tokens, _contractIndex, _entryIndex, Constants.DebugAllCars);
+                        break;
+                }
             }
         }
     }

@@ -49,38 +49,49 @@ public class NFTDataHandler : MonoBehaviour
         StartCoroutine(PlayAnimation(_sprites));
     }
 
+
+    public void AssignPrefabData(string _data)
+    {
+        if (!Constants.StoredCarNames.Contains(_data))
+            Constants.StoredCarNames.Add(_data);
+
+        for (int i = 0; i < NFTGameplayManager.Instance.DataNFTModel.Count; i++)
+        {
+            if (_data.ToLower() == NFTGameplayManager.Instance.DataNFTModel[i].name.ToLower())
+            {
+                AssignData(NFTGameplayManager.Instance.DataNFTModel[i].AnimationSequence, NFTGameplayManager.Instance.DataNFTModel[i].name, tokenID.ToString());
+            }
+        }
+    }
+
     public IEnumerator GetJSONData(int _tokenID,string _URL)
     {
         tokenID = _tokenID;
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(_URL))
+
+        if (Constants.DebugAllCars)
         {
-            yield return webRequest.SendWebRequest();
-
-            switch (webRequest.result)
+            AssignPrefabData(_URL);
+        }
+        else
+        {
+            using (UnityWebRequest webRequest = UnityWebRequest.Get(_URL))
             {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError("Getting IPFS : Error : " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError("Getting IPFS : HTTP Error : " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    //Debug.Log(tokenID);
-                    //Debug.Log(webRequest.downloadHandler.text);
-                    dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
+                yield return webRequest.SendWebRequest();
 
-                    if(!Constants.StoredCarNames.Contains(dataIPFS.name))
-                        Constants.StoredCarNames.Add(dataIPFS.name);
-
-                    for (int i = 0; i < NFTGameplayManager.Instance.DataNFTModel.Count; i++)
-                    {
-                        if (dataIPFS.name.ToLower() == NFTGameplayManager.Instance.DataNFTModel[i].name.ToLower())
-                        {
-                            AssignData(NFTGameplayManager.Instance.DataNFTModel[i].AnimationSequence, NFTGameplayManager.Instance.DataNFTModel[i].name,tokenID.ToString());
-                        }
-                    }
-                    break;
+                switch (webRequest.result)
+                {
+                    case UnityWebRequest.Result.ConnectionError:
+                    case UnityWebRequest.Result.DataProcessingError:
+                        Debug.LogError("Getting IPFS : Error : " + webRequest.error);
+                        break;
+                    case UnityWebRequest.Result.ProtocolError:
+                        Debug.LogError("Getting IPFS : HTTP Error : " + webRequest.error);
+                        break;
+                    case UnityWebRequest.Result.Success:
+                        dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
+                        AssignPrefabData(dataIPFS.name);
+                        break;
+                }
             }
         }
     }
