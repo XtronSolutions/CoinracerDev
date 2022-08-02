@@ -22,14 +22,25 @@ public class NFTDataHandler : MonoBehaviour
  
     private float speed = 0.052f;
     private int tokenID = 0;
+    private NFTMehanicsData Mechanics=new NFTMehanicsData();
 
     private void Start()
     {
-        ConsumableButton.onClick.AddListener(AccessConsumables);
+        if(Constants.GameMechanics)
+        {
+            ConsumableButton.gameObject.SetActive(true);
+            ConsumableButton.onClick.AddListener(AccessConsumables);
+        }
+        else
+        {
+            ConsumableButton.gameObject.SetActive(false);
+        }
+       
     }
     public void AccessConsumables()
     {
         MainMenuViewController.Instance.EnableConsumables_StoreUI();
+        Debug.Log(Mechanics.mechanicsData.CarName);
     }
     public void AssignData(Sprite[] _sprites,string _name, string _id)
     {
@@ -67,6 +78,7 @@ public class NFTDataHandler : MonoBehaviour
     public IEnumerator GetJSONData(int _tokenID,string _URL)
     {
         tokenID = _tokenID;
+        Mechanics = FirebaseManager.Instance.GetMechanics(tokenID);
 
         if (Constants.DebugAllCars)
         {

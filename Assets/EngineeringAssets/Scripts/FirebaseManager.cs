@@ -10,6 +10,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
 
+[System.Serializable]
 public class MechanicsData
 {
     public string CarName;
@@ -28,6 +29,7 @@ public class MechanicsData
     }
 }
 
+[System.Serializable]
 public class NFTMehanicsData
 {
     public string OwnerWalletAddress;
@@ -40,8 +42,6 @@ public class GameMechanics
     public float Tyre_Laps;
     public float EngineOil_Laps;
     public float Gas_Laps;
-
-     
 }
 public class UserData
 {
@@ -137,9 +137,21 @@ public class FirebaseManager : MonoBehaviour
         return PlayerPrefs.GetString("NFTLocalData", "");
     }
 
+    public NFTMehanicsData GetMechanics(int key)
+    {
+        return NFTMehanics[key];
+    }
+
+    public string TestGett(int key)
+    {
+        return NFTMehanics[key].mechanicsData.CarName;
+    }
+
+
     public void GetNFTData()
     {
-        //this is function that will be used to pupulate data from moralis
+       
+        //this is function that will be used to populate data from moralis
         
         if(Constants.DebugAllCars)
         {
@@ -156,19 +168,29 @@ public class FirebaseManager : MonoBehaviour
                 {
                     NFTMehanicsData _newData = new NFTMehanicsData();
                     _newData.OwnerWalletAddress = "testone";
-                    _data.mechanicsData = new MechanicsData(NFTGameplayManager.Instance.DataNFTModel[0].name, 100, 0, 0, 0);
+                    _newData.mechanicsData = new MechanicsData(NFTGameplayManager.Instance.DataNFTModel[i].name, 100, 0, 0, 0);
                     NFTMehanics.Add(i + 1, _newData);
                 }
 
                 string _json = JsonConvert.SerializeObject(NFTMehanics);
+                Debug.Log(_json);
                 StoreNFTLocally(_json);
                 Debug.Log("NFT DATA STORED");
             }
             else
             {
                 Debug.Log("NFT DATA Retrieved");
+                //PlayerPrefs.DeleteKey("NFTLocalData");
+
                 NFTMehanics.Clear();
                 NFTMehanics = JsonConvert.DeserializeObject<Dictionary<int, NFTMehanicsData>>(GetNFTLocally());
+
+                foreach (var item in NFTMehanics)
+                {
+                    Debug.Log(item.Key);
+                    Debug.Log(item.Value.mechanicsData.CarName);
+                }
+
             }
         }
     }
@@ -205,8 +227,8 @@ public class FirebaseManager : MonoBehaviour
         PlayerData.GTournamentEndDate.nanoseconds = (double)response.SelectToken("data").SelectToken("GTournamentEndDate").SelectToken("nanoseconds");
         PlayerData.GTournamentEndDate.seconds = (double)response.SelectToken("data").SelectToken("GTournamentEndDate").SelectToken("seconds");
 
-        //PlayerData.Mechanics = new GameMechanics();
-        //PlayerData.Mechanics.VC_Amount = response.SelectToken("data").SelectToken("Mechanics").SelectToken("VC_Amount") != null ? (double)response.SelectToken("data").SelectToken("Mechanics").SelectToken("VC_Amount") : 0;
+        PlayerData.Mechanics = new GameMechanics();
+        PlayerData.Mechanics.VC_Amount = response.SelectToken("data").SelectToken("Mechanics").SelectToken("VC_Amount") != null ? (double)response.SelectToken("data").SelectToken("Mechanics").SelectToken("VC_Amount") : 0;
         //PlayerData.Mechanics.CarHealth = response.SelectToken("data").SelectToken("Mechanics").SelectToken("CarHealth") != null ? (int)response.SelectToken("data").SelectToken("Mechanics").SelectToken("CarHealth") : 100;
         //PlayerData.Mechanics.Tyre_Laps = response.SelectToken("data").SelectToken("Mechanics").SelectToken("Tyre_Laps") != null ? (float)response.SelectToken("data").SelectToken("Mechanics").SelectToken("Tyre_Laps") : 0;
         //PlayerData.Mechanics.EngineOil_Laps = response.SelectToken("data").SelectToken("Mechanics").SelectToken("EngineOil_Laps") != null ? (float)response.SelectToken("data").SelectToken("Mechanics").SelectToken("EngineOil_Laps") : 0;
@@ -221,7 +243,7 @@ public class FirebaseManager : MonoBehaviour
         Constants.UserName = PlayerData.UserName;
         Constants.FlagSelectedIndex = PlayerData.AvatarID;
         
-        //Constants.VirtualCurrencyAmount = PlayerData.Mechanics.VC_Amount;
+        Constants.VirtualCurrencyAmount = PlayerData.Mechanics.VC_Amount;
         //Constants.StoredCarHealth = PlayerData.Mechanics.CarHealth;
 
         if (MainMenuViewController.Instance)

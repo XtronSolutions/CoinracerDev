@@ -2599,6 +2599,7 @@ public class MainMenuViewController : MonoBehaviour
         ShowToast(3f, Constants.VirtualCurrency + " was successfully purchased.", true);
         SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
         UpdateBUYVCText_StoreUI(Constants.CCashPurchaseAmount.ToString());
+        UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
     }
 
     public void FixTyre_StoreUI()
@@ -2606,7 +2607,7 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost)
         {
             FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost;
-            FirebaseManager.Instance.PlayerData.Mechanics.Tyre_Laps = 0;
+            //FirebaseManager.Instance.PlayerData.Mechanics.Tyre_Laps = 0;
             Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Tyres were successfully fixed.", true);
@@ -2624,7 +2625,7 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost)
         {
             FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost;
-            FirebaseManager.Instance.PlayerData.Mechanics.EngineOil_Laps = 0;
+            //FirebaseManager.Instance.PlayerData.Mechanics.EngineOil_Laps = 0;
             Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Engine Oil was successfully filled.", true);
@@ -2642,7 +2643,7 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost)
         {
             FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost;
-            FirebaseManager.Instance.PlayerData.Mechanics.Gas_Laps = 0;
+            //FirebaseManager.Instance.PlayerData.Mechanics.Gas_Laps = 0;
             Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Gas was successfully filled.", true);
@@ -2660,8 +2661,8 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost)
         {
             FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost;
-            FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = 100;
-            Constants.StoredCarHealth = FirebaseManager.Instance.PlayerData.Mechanics.CarHealth;
+            //FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = 100;
+            //Constants.StoredCarHealth = FirebaseManager.Instance.PlayerData.Mechanics.CarHealth;
             Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Damage were repaired. health is full.", true);
