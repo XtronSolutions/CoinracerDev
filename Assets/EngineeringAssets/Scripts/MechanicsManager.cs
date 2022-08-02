@@ -41,11 +41,11 @@ public class MechanicsManager : MonoBehaviour
         }
     }
 
-    public void UpdateConsumables()
+    public void UpdateConsumables(NFTMehanicsData _data)
     {
-       //RemainingTyreLaps = _consumableSettings.Tyres.LapLimit - FirebaseManager.Instance.PlayerData.Mechanics.Tyre_Laps<=0?0: _consumableSettings.Tyres.LapLimit - FirebaseManager.Instance.PlayerData.Mechanics.Tyre_Laps;
-       //RemainingOilLaps = _consumableSettings.EngineOil.LapLimit - FirebaseManager.Instance.PlayerData.Mechanics.EngineOil_Laps<=0?0: _consumableSettings.EngineOil.LapLimit - FirebaseManager.Instance.PlayerData.Mechanics.EngineOil_Laps;
-       //RemainingGasLaps = _consumableSettings.Gas.LapLimit - FirebaseManager.Instance.PlayerData.Mechanics.Gas_Laps<=0?0 : _consumableSettings.Gas.LapLimit - FirebaseManager.Instance.PlayerData.Mechanics.Gas_Laps;
+       RemainingTyreLaps = _consumableSettings.Tyres.LapLimit - _data.mechanicsData.Tyre_Laps<=0?0: _consumableSettings.Tyres.LapLimit - _data.mechanicsData.Tyre_Laps;
+       RemainingOilLaps = _consumableSettings.EngineOil.LapLimit - _data.mechanicsData.EngineOil_Laps <=0?0: _consumableSettings.EngineOil.LapLimit - _data.mechanicsData.EngineOil_Laps;
+       RemainingGasLaps = _consumableSettings.Gas.LapLimit - _data.mechanicsData.Gas_Laps <=0?0 : _consumableSettings.Gas.LapLimit - _data.mechanicsData.Gas_Laps;
     }
 
     public ConsumableType CheckConsumables()

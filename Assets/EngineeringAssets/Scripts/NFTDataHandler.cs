@@ -22,7 +22,7 @@ public class NFTDataHandler : MonoBehaviour
  
     private float speed = 0.052f;
     private int tokenID = 0;
-    private NFTMehanicsData Mechanics=new NFTMehanicsData();
+    private NFTMehanicsData Mechanics =new NFTMehanicsData();
 
     private void Start()
     {
@@ -39,7 +39,7 @@ public class NFTDataHandler : MonoBehaviour
     }
     public void AccessConsumables()
     {
-        MainMenuViewController.Instance.EnableConsumables_StoreUI();
+        MainMenuViewController.Instance.EnableConsumables_StoreUI(Mechanics,tokenID);
         Debug.Log(Mechanics.mechanicsData.CarName);
     }
     public void AssignData(Sprite[] _sprites,string _name, string _id)

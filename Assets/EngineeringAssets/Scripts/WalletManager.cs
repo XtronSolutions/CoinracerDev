@@ -763,10 +763,10 @@ public class WalletManager : MonoBehaviour
             metaDataURL[0].Add(NFTGameplayManager.Instance.DataNFTModel[f].name);
         }
 
-        for (int i = 0; i < NFTTokens[0].Count; i++)
-        {
-            Debug.Log(NFTTokens[0][i]);
-        }
+        //for (int i = 0; i < NFTTokens[0].Count; i++)
+        //{
+        //    Debug.Log(NFTTokens[0][i]);
+        //}
 
         Constants.TokenNFT.Clear();
 

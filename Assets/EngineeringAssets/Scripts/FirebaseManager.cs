@@ -142,12 +142,24 @@ public class FirebaseManager : MonoBehaviour
         return NFTMehanics[key];
     }
 
-    public string TestGett(int key)
+    public void UpdateMechanics(int key, NFTMehanicsData _data)
     {
-        return NFTMehanics[key].mechanicsData.CarName;
+        if (NFTMehanics.ContainsKey(key))
+        {
+            NFTMehanics[key] = _data;
+            SaveNFTData();
+        }
+        else
+        {
+            Debug.Log("NO data for NDT was updated as key dpes not exist");
+        }
     }
 
-
+    public void SaveNFTData()
+    {
+        string _json = JsonConvert.SerializeObject(NFTMehanics);
+        StoreNFTLocally(_json);
+    }
     public void GetNFTData()
     {
        
@@ -172,9 +184,7 @@ public class FirebaseManager : MonoBehaviour
                     NFTMehanics.Add(i + 1, _newData);
                 }
 
-                string _json = JsonConvert.SerializeObject(NFTMehanics);
-                Debug.Log(_json);
-                StoreNFTLocally(_json);
+                SaveNFTData();
                 Debug.Log("NFT DATA STORED");
             }
             else
@@ -185,11 +195,11 @@ public class FirebaseManager : MonoBehaviour
                 NFTMehanics.Clear();
                 NFTMehanics = JsonConvert.DeserializeObject<Dictionary<int, NFTMehanicsData>>(GetNFTLocally());
 
-                foreach (var item in NFTMehanics)
-                {
-                    Debug.Log(item.Key);
-                    Debug.Log(item.Value.mechanicsData.CarName);
-                }
+                //foreach (var item in NFTMehanics)
+                //{
+                //    Debug.Log(item.Key);
+                //    Debug.Log(item.Value.mechanicsData.CarName);
+                //}
 
             }
         }
