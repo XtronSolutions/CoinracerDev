@@ -14,6 +14,13 @@ using Photon.Pun;
 #region SuperClasses
 
 [Serializable]
+public class MemberUI
+{
+    public GameObject MainScreen;
+    public Button SubmitButton;
+}
+
+[Serializable]
 public class StoreUI
 {
     public GameObject MainScreen;
@@ -346,6 +353,7 @@ public class MainMenuViewController : MonoBehaviour
     public CraceApprovalUI UICraceApproval;
     public TokenCarSelectionUI UITokenCarSelection;
     public StoreUI UIStore;
+    public MemberUI UIMember;
     public GameObject MultiplayerPrefab;
 
     public GameObject SuccessIcon;
@@ -362,6 +370,7 @@ public class MainMenuViewController : MonoBehaviour
     string confirmPass = "";
     string userName = "";
     string tempInfo;
+    string MemberPass = "";
     private const string MatchEmailPatternOld =
        "^(?(\")(\".+?(?<!\\\\)\"@)|(([0-9a-z]((\\.(?!\\.))|[-!#\\$%&'\\*\\+/=\\?\\^`{}|~\\w])*)(?<=[0-9a-z])@))(?([)([(\\d{1,3}.){3}\\d{1,3}])|(([0-9a-z][-0-9a-z]*[0-9a-z]*.)+[a-z0-9][-a-z0-9]{0,22}[a-z0-9]))$";
 
@@ -424,6 +433,8 @@ public class MainMenuViewController : MonoBehaviour
         UITokenCarSelection.NextButton.onClick.AddListener(OnNextToken);
         UITokenCarSelection.PreviousButton.onClick.AddListener(OnPrevToken);
 
+        UIMember.SubmitButton.onClick.AddListener(OnSubmitClick_MemberUI);
+
         //UIGarage.BackButton.onClick.AddListener(BackButton_Garage);
         // UIGarage.GarageButton.onClick.AddListener(GarageButton_Garage);
 
@@ -439,6 +450,11 @@ public class MainMenuViewController : MonoBehaviour
         SubscribeEvents_MultiplayerSelection();
         SubscribeButton_CraceUI();
         ButtonListeners_StoreUI();
+
+        if (Constants.EarlyBuild)
+            UIMember.MainScreen.SetActive(true);
+        else
+            UIMember.MainScreen.SetActive(false);
 
 #if UNITY_WEBGL && !UNITY_EDITOR
             GetStorage(Constants.SoundKey,this.gameObject.name,"OnGetSound");
@@ -1377,8 +1393,33 @@ public class MainMenuViewController : MonoBehaviour
                 _levelsSettings.Add(_allLevelsSettings[q]);
         }
     }
+
+    public bool CheckMechanics()
+    {
+        Debug.Log("Selected Car : " + TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex]);
+        SelectedCarToken = TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];
+        MechanicsManager.Instance.UpdateMechanicsData(SelectedCarToken);
+
+        if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Health)
+        { ShowToast(4f, "Your car health is zero, go to garage to repair your car.", false); return false; }
+        else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Tyres)
+        { ShowToast(4f, "Your Tyres has been worn out, go to garage to repair them.", false); return false; }
+        else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Oil)
+        { ShowToast(4f, "Your Engine oil is empty, go to garage to fill it.", false); return false; }
+        else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Gas)
+        { ShowToast(4f, "Your Gas is empty, go to garage to fill it.", false); return false; }
+
+        return true;
+    }
     private void OnGoToMapSelection()
     {
+        if (Constants.GameMechanics)
+        {
+            if (!CheckMechanics())
+                return;
+        }
+
+        #region mapLogic
         _levelsSettings.Clear();
         if (IsMultiplayer)
         {
@@ -1388,11 +1429,13 @@ public class MainMenuViewController : MonoBehaviour
                 {
                     Constants.SelectedSingleLevel = TournamentManager.Instance.DataTournament.LevelIndex;
                     _levelsSettings.Add(_allLevelsSettings[Constants.SelectedSingleLevel - 1]);
-                } else
+                }
+                else
                 {
                     AddLevels();
                 }
             }
+
         }
         else
         {
@@ -1425,6 +1468,8 @@ public class MainMenuViewController : MonoBehaviour
         CarSelectionObject.SetActive(false);
         CarSelection3dObject.SetActive(false);
         MapSelection.SetActive(true);
+
+        #endregion
     }
     public int getSelectedLevel()
     {
@@ -1519,7 +1564,6 @@ public class MainMenuViewController : MonoBehaviour
             ShowToast(3f, "Please connect your wallet first.");
         }
     }
-
     public void OnGoToCarSelectionSecondTourTournament()
     {
         if (Constants.IsTest)
@@ -1554,7 +1598,6 @@ public class MainMenuViewController : MonoBehaviour
             ShowToast(3f, "Please connect your wallet first.");
         }
     }
-
     public void CheckTokenIndex(int newIndex)
     {
         for (int i = 0; i < Constants.TokenNFT.Count; i++)
@@ -1580,7 +1623,6 @@ public class MainMenuViewController : MonoBehaviour
         UpdateSelectedCarVisual(newIndex);
         UpdateToken();
     }
-
     private void OnPrevCar()
     {
         ToggleTokenScreen(true);
@@ -1596,7 +1638,6 @@ public class MainMenuViewController : MonoBehaviour
         UpdateSelectedCarVisual(newIndex);
         UpdateToken();
     }
-
     public void OnNextToken()
     {
         if (_SelectedTokenIDIndex < Constants.TokenNFT[_SelectedTokenNameIndex].ID.Count - 1)
@@ -1604,7 +1645,6 @@ public class MainMenuViewController : MonoBehaviour
 
         UpdateToken();
     }
-
     public void OnPrevToken()
     {
         if (_SelectedTokenIDIndex > 0)
@@ -1612,12 +1652,10 @@ public class MainMenuViewController : MonoBehaviour
 
         UpdateToken();
     }
-
     public void UpdateToken()
     {
         //if (DebugAllCars)
             //return;
-
         try
         {
             UITokenCarSelection.TokenText.text = "#" + Constants.TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];
@@ -1648,7 +1686,6 @@ public class MainMenuViewController : MonoBehaviour
             Debug.Log(ex);
         }
     }
-
     public void UpdateSelectedCarVisual(int newIndex)
     {
         for (int i = 0; i < _selecteableCars.Count; i++)
@@ -2575,6 +2612,7 @@ public class MainMenuViewController : MonoBehaviour
     {
         tempNFTData = _mainData;
         tempNFTID = NFTID;
+        Constants.StoredCarHealth = _mainData.mechanicsData.CarHealth;
         UpdateCarName_StoreUI(tempNFTData.mechanicsData.CarName);
         ToggleMainScreen_StoreUI(true);
         UIStore.ConsumablesObject.SetActive(true);
@@ -2628,6 +2666,7 @@ public class MainMenuViewController : MonoBehaviour
 
             SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
             UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
+            UpdateConsumableText_StoreUI();
             //UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
         }
         else
@@ -2650,6 +2689,7 @@ public class MainMenuViewController : MonoBehaviour
 
             SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
             UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
+            UpdateConsumableText_StoreUI();
             //UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
         }
         else
@@ -2672,6 +2712,7 @@ public class MainMenuViewController : MonoBehaviour
 
             SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
             UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
+            UpdateConsumableText_StoreUI();
 
             // UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
         }
@@ -2696,13 +2737,27 @@ public class MainMenuViewController : MonoBehaviour
 
             SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
             UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
-
+            UpdateConsumableText_StoreUI();
             //UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
         }
         else
         {
             ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
         }
+    }
+    #endregion
+
+    #region MemberCheck
+    public void OnPassChanged_MemberUI(string _val)
+    {
+        MemberPass = _val;
+    }
+    public void OnSubmitClick_MemberUI()
+    {
+        if (MemberPass.ToLower() == Constants.VIPPassword.ToLower())
+            UIMember.MainScreen.SetActive(false);
+        else
+            ShowToast(3f, "Entered password is wrong!",false);
     }
     #endregion
 }

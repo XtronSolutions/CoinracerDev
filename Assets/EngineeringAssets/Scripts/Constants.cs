@@ -191,7 +191,10 @@ public static class Constants
     public static double VirtualCurrencyAmount = 0;
     public static int CCashPurchaseAmount = 100;
     public static bool CarTotaled = false;
+    public static int SelectedCarToken = 0;
 
+    public static bool EarlyBuild = false;
+    public static string VIPPassword = "hailcoinracerreloaded";
 
 
 

@@ -10,6 +10,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
 
+#region SuperClasses
 [System.Serializable]
 public class MechanicsData
 {
@@ -78,10 +79,10 @@ public class updateDataPayload
 {
     public UserData data { get; set; }
 }
-
+#endregion
 public class FirebaseManager : MonoBehaviour
 {
-
+    #region DataMembers
     [DllImport("__Internal")]
     private static extern void SetStorage(string key, string val);
 
@@ -106,9 +107,17 @@ public class FirebaseManager : MonoBehaviour
     bool DataFetchError = false;
     bool FetchUserData = false;
     bool UserDataFetched = false;
-    void Start()
+    #endregion
+
+    #region StartFunctionality
+
+    private void Awake()
     {
         GetNFTData();
+    }
+    void Start()
+    {
+        
         Credentails = new AuthCredentials();
 
         if (!Instance)
@@ -126,86 +135,9 @@ public class FirebaseManager : MonoBehaviour
         PlayerDataPayload = new updateDataPayload();
         PlayerDataPayload.data = PlayerData;
     }
+    #endregion
 
-    public void StoreNFTLocally(string _data)
-    {
-        PlayerPrefs.SetString("NFTLocalData", _data);
-    }
-
-    public string GetNFTLocally()
-    {
-        return PlayerPrefs.GetString("NFTLocalData", "");
-    }
-
-    public NFTMehanicsData GetMechanics(int key)
-    {
-        return NFTMehanics[key];
-    }
-
-    public void UpdateMechanics(int key, NFTMehanicsData _data)
-    {
-        if (NFTMehanics.ContainsKey(key))
-        {
-            NFTMehanics[key] = _data;
-            SaveNFTData();
-        }
-        else
-        {
-            Debug.Log("NO data for NDT was updated as key dpes not exist");
-        }
-    }
-
-    public void SaveNFTData()
-    {
-        string _json = JsonConvert.SerializeObject(NFTMehanics);
-        StoreNFTLocally(_json);
-    }
-    public void GetNFTData()
-    {
-       
-        //this is function that will be used to populate data from moralis
-        
-        if(Constants.DebugAllCars)
-        {
-            if (GetNFTLocally() == "")
-            {
-                NFTMehanics.Clear();
-
-                NFTMehanicsData _data = new NFTMehanicsData();
-                _data.OwnerWalletAddress = "testone";
-                _data.mechanicsData = new MechanicsData("Bolt", 100, 0, 0, 0);
-                NFTMehanics.Add(0, _data);
-
-                for (int i = 0; i < NFTGameplayManager.Instance.DataNFTModel.Count; i++)
-                {
-                    NFTMehanicsData _newData = new NFTMehanicsData();
-                    _newData.OwnerWalletAddress = "testone";
-                    _newData.mechanicsData = new MechanicsData(NFTGameplayManager.Instance.DataNFTModel[i].name, 100, 0, 0, 0);
-                    NFTMehanics.Add(i + 1, _newData);
-                }
-
-                SaveNFTData();
-                Debug.Log("NFT DATA STORED");
-            }
-            else
-            {
-                Debug.Log("NFT DATA Retrieved");
-                //PlayerPrefs.DeleteKey("NFTLocalData");
-
-                NFTMehanics.Clear();
-                NFTMehanics = JsonConvert.DeserializeObject<Dictionary<int, NFTMehanicsData>>(GetNFTLocally());
-
-                //foreach (var item in NFTMehanics)
-                //{
-                //    Debug.Log(item.Key);
-                //    Debug.Log(item.Value.mechanicsData.CarName);
-                //}
-
-            }
-        }
-    }
-     //Setting playerData got from Login API
-     //Call this Function if Constants.isUsingSDK is false
+    #region Firebase
     public void SetPlayerData(string _response)
     {
         JToken response = JObject.Parse(_response);
@@ -270,41 +202,33 @@ public class FirebaseManager : MonoBehaviour
                 MainMenuViewController.Instance.OnLoginSuccess(false);
         }
     }
-
     public void SetStalkedNFT(string _key)
     {
         PlayerData.StalkedNFT = _key;
         UpdatedFireStoreData(PlayerData);
     }
-
     public string GetStalkedNFT()
     {
         return PlayerData.StalkedNFT;
     }
-    
     public void SetLocalStorage(string key,string data)
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         SetStorage(key, data);
 #endif
     }
-
     public void AuthenticateFirebase()
     {
         FirebaseAuth.AuthenticateAnonymous(gameObject.name, "OnAuthSuccess", "OnAuthError");
     }
-  
     public void OnAuthSuccess(string info)
     {
         //Debug.Log(info);        
     }
-
-
     public void OnAuthError(string error)
     {
         Debug.LogError(error);
     }
-
     public void CheckEmailForAuth(string _email,string _pass,string _username)
     {
         Credentails.Email = _email;
@@ -312,13 +236,11 @@ public class FirebaseManager : MonoBehaviour
         Credentails.UserName = _username;
         FirebaseAuth.CheckEmail(_email, gameObject.name, "OnEmailCheck", "OnEmailCheckError");
     }
-
     public void OnEmailCheck(string info)
     {
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.EmailAlreadyExisted();
     }
-
     public void OnEmailCheckError(string error)
     {
         if (error.Contains("Email Not Registered"))
@@ -329,12 +251,10 @@ public class FirebaseManager : MonoBehaviour
             Debug.LogError("Email check error : "+error);
         }
     }
-
     public void CreateNewUser(string _email,string _pass)
     {
         FirebaseAuth.CreateUserWithEmailAndPassword(_email,_pass, gameObject.name, "OnCreateUser", "OnCreateUserError");
     }
-
     public void OnCreateUser(string info)
     {
         if(MainMenuViewController.Instance)
@@ -350,17 +270,14 @@ public class FirebaseManager : MonoBehaviour
             Debug.LogError("MMVC is null for OnCreateUser");
         }
     }
-
     public void CallWithDelay()
     {
         MainMenuViewController.Instance.DisableRegisterScreen();
     }
-
     public void OnCreateUserError(string error)
     {
         Debug.LogError("Create user error : "+error);
     }
-
     public void LoginUser(string _email, string _pass,string _username)
     {
         Credentails.Email = _email;
@@ -373,12 +290,10 @@ public class FirebaseManager : MonoBehaviour
         else
             apiRequestHandler.Instance.signInWithEmail(_email, _pass);
     }
-
     public void CheckVerification()
     {
         FirebaseAuth.CheckEmailVerification(gameObject.name, "OnCheckEmail", "OnCheckEmail");
     }
-
     public void OnCheckEmail(string info)
     {
         if (info == "true")
@@ -393,19 +308,16 @@ public class FirebaseManager : MonoBehaviour
             MainMenuViewController.Instance.ResetRegisterFields();
         }
     }
-
     public void OnLoginUser(string info)
     { 
         CheckVerification();
     }
-
     public void OnLoginUserError(string error)
     {
         Debug.LogError("Login User error: "+error);
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.SomethingWentWrong();
     }
-
     public void LogoutUser()
     {
         ResetStorage();
@@ -419,7 +331,6 @@ public class FirebaseManager : MonoBehaviour
         if(Constants.isUsingFirebaseSDK)
             FirebaseAuth.SignOut(gameObject.name, "OnSignOut", "OnSignOutError");
     }
-
     public void ResetStorage()
     {
         string _json = "";
@@ -430,31 +341,26 @@ public class FirebaseManager : MonoBehaviour
     {
         //Debug.Log(info);
     }
-
     public void OnSignOutError(string info)
     {
         Debug.LogError("Logout User error : "+info);
     }
-
     public void OnAuthChanged()
     {
         #if UNITY_WEBGL && !UNITY_EDITOR
         FirebaseAuth.OnAuthStateChanged(gameObject.name, "OnAuthChangedSuccess", "OnAuthChangedError");
         #endif
     }
-
     public void OnAuthChangedSuccess(string user)
     {
         var parsedUser = StringSerializationAPI.Deserialize(typeof(FirebaseUser), user) as FirebaseUser;
         UID = parsedUser.uid;
     }
-
     public void OnAuthChangedError(string info)
     {
         UID = "";
         Debug.LogError("Auth change error : "+info);
     }
-
     public void AddFireStoreData(UserData _data)
     {
         string _json = JsonConvert.SerializeObject(_data);
@@ -464,12 +370,10 @@ public class FirebaseManager : MonoBehaviour
     {
        // Debug.Log("Data successfully added on firestore");
     }
-
     public void OnAddDataError(string error)
     {
         Debug.LogError("firestore data add error: "+error);
     }
-
     public void GetFireStoreData(string _collectionID,string _docID)
     {
         DataFetchError = false;
@@ -477,7 +381,6 @@ public class FirebaseManager : MonoBehaviour
         ResultFetched = false;
         FirebaseFirestore.GetDocument(_collectionID, _docID, gameObject.name, "OnDocGet", "OnDocGetError");
     }
-
     public void OnDocGet(string info)
     {
         if (info == null || info=="null")
@@ -500,7 +403,6 @@ public class FirebaseManager : MonoBehaviour
             FetchUserData = true;
         }
     }
-
     public void OnDocGetError(string error)
     {
         UserDataFetched = false;
@@ -510,7 +412,6 @@ public class FirebaseManager : MonoBehaviour
         FetchUserData = true;
         Debug.Log("Doc fetching error : "+error);
     }
-
     public IEnumerator FetchUserDB(string _walletID, string _username)
     {
         if (Constants.isUsingFirebaseSDK)
@@ -548,7 +449,6 @@ public class FirebaseManager : MonoBehaviour
             yield return null;
         }
     }
-
     public IEnumerator CheckCreateUserDB(string _walletID,string _username)
     {
         DataFetchError = false;
@@ -605,22 +505,18 @@ public class FirebaseManager : MonoBehaviour
             GamePlayUIHandler.Instance.SubmitTime();
         }
     }
-
     public void SendVerEmail()
     {
         FirebaseAuth.SendEmailVerification(gameObject.name, "OnEmailSent", "OnEmailSentError");
     }
-
     public void OnEmailSent(string info)
     {  
     }
-
     public void OnEmailSentError(string info)
     {
         Debug.LogError("Sending Verfication email error: "+info);
         //Invoke("SendVerEmail", 1f);
     }
-
     public IEnumerator CheckWalletDB(string _walletID)
     {
         GetFireStoreData(DocPath, _walletID);
@@ -638,7 +534,6 @@ public class FirebaseManager : MonoBehaviour
             Debug.LogError("MMVC is null for CheckWalletDB");
         }
     }
-
     public void UpdatedFireStoreData(UserData _data)
     {
         string _json = JsonConvert.SerializeObject(_data);
@@ -652,7 +547,6 @@ public class FirebaseManager : MonoBehaviour
             apiRequestHandler.Instance.updatePlayerData();
         }
     }
-
     public void OnDocUpdate(string info)
     {
         if(Constants.PushingTries)
@@ -670,12 +564,10 @@ public class FirebaseManager : MonoBehaviour
         if (RaceManager.Instance)
             RaceManager.Instance.RaceEnded();
     }
-
     public void OnDocUpdateError(string error)
     {
         Debug.LogError("Doc update error : "+error);
     }
-
     public void QueryDB(string _field, string _type,bool IsSecondTour)
     {
         if (Constants.isUsingFirebaseSDK)
@@ -690,18 +582,15 @@ public class FirebaseManager : MonoBehaviour
             apiRequestHandler.Instance.getLeaderboard(IsSecondTour);
         }
     }
-
     public void OnQueryUpdate(string info,bool IsSecondTour)
     {
         PlayerDataArray = JsonConvert.DeserializeObject<UserData[]>(info);
         LeaderboardManager.Instance.PopulateLeaderboardData(PlayerDataArray, IsSecondTour);
     }
-
     public void OnQueryUpdateError(string error)
     {
         Debug.LogError("Leaderboard query error : "+error);
     }
-
     public string EncryptDecrypt(string textToEncrypt)
     {
         StringBuilder inSb = new StringBuilder(textToEncrypt);
@@ -715,7 +604,6 @@ public class FirebaseManager : MonoBehaviour
         }
         return outSb.ToString();
     }
-
     public void SendPasswordResetEmail(string _email)
     {
         Constants.EmailSent = _email;
@@ -732,7 +620,6 @@ public class FirebaseManager : MonoBehaviour
         MainMenuViewController.Instance.BackClicked_PasswordReset();
         MainMenuViewController.Instance.ShowToast(4f,"Reset password link sent to entered email address, please click the link in inbox to reset password.");
     }
-
     public void OnPassEmailSentError(string info)
     {
         Debug.LogError("Password resent sending error : "+info);
@@ -740,7 +627,6 @@ public class FirebaseManager : MonoBehaviour
         MainMenuViewController.Instance.BackClicked_PasswordReset();
         MainMenuViewController.Instance.ShowToast(4f, "Something went wrong while sending password reset link, please try again later.");
     }
-
     public void CallOnError()
     {
         SendPasswordResetEmail(Constants.EmailSent);
@@ -751,7 +637,6 @@ public class FirebaseManager : MonoBehaviour
         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
         MainMenuViewController.Instance.ResetRegisterFields();
     }
-
     public void ResendVerificationEmail()
     {
         MainMenuViewController.Instance.LoadingScreen.SetActive(true);
@@ -762,14 +647,12 @@ public class FirebaseManager : MonoBehaviour
             apiRequestHandler.Instance.sendVerificationAgain();
         }
     }
-
     public void ResendEmailSent(string info)
     {
         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
         MainMenuViewController.Instance.DisableResendScreen();
         MainMenuViewController.Instance.ShowToast(4f, "Confirmation link sent again, please click the link in inbox (or spam) to confirm.");
     }
-
     public void ResendEmailSentError(string info)
     {
         Debug.LogError("Resend verification email error : "+info);
@@ -777,5 +660,100 @@ public class FirebaseManager : MonoBehaviour
         MainMenuViewController.Instance.DisableResendScreen();
         MainMenuViewController.Instance.ShowToast(4f, "Something went wrong while sending confirmation link, please try again later.");
     }
+    #endregion
 
+    #region Mechanics
+
+    public void ResetNFTData()
+    {
+        PlayerPrefs.DeleteKey("NFTLocalData");
+        GetNFTData();
+        MainMenuViewController.Instance.ShowToast(3f, "NFT data was reset, game will be restarted.", false);
+        Invoke("RestartGame", 3.1f);
+    }
+
+    public void RestartGame()
+    {
+        WalletManager.Instance.RestartGame();
+    }
+    public void StoreNFTLocally(string _data)
+    {
+        PlayerPrefs.SetString("NFTLocalData", _data);
+    }
+    public string GetNFTLocally()
+    {
+        return PlayerPrefs.GetString("NFTLocalData", "");
+    }
+    public NFTMehanicsData GetMechanics(int key)
+    {
+        return NFTMehanics[key];
+    }
+    public void UpdateMechanics(int key, NFTMehanicsData _data)
+    {
+        if (key == 0)
+            return;
+
+        if (NFTMehanics.ContainsKey(key))
+        {
+            NFTMehanics[key] = _data;
+            SaveNFTData();
+        }
+        else
+        {
+            Debug.Log("NO data for NDT was updated as key dpes not exist");
+        }
+    }
+    public void SaveNFTData()
+    {
+        string _json = JsonConvert.SerializeObject(NFTMehanics);
+        StoreNFTLocally(_json);
+    }
+    public void GetNFTData()
+    {
+        NFTMehanics.Clear();
+        //this is function that will be used to populate data from moralis
+        if (Constants.DebugAllCars)
+        {
+            if (GetNFTLocally() == "")
+            {
+                NFTMehanicsData _data = new NFTMehanicsData();
+                _data.OwnerWalletAddress = "testone";
+                _data.mechanicsData = new MechanicsData("Bolt", 100, 0, 0, 0);
+                NFTMehanics.Add(0, _data);
+
+                for (int i = 0; i < NFTGameplayManager.Instance.DataNFTModel.Count; i++)
+                {
+                    NFTMehanicsData _newData = new NFTMehanicsData();
+                    _newData.OwnerWalletAddress = "testone";
+                    _newData.mechanicsData = new MechanicsData(NFTGameplayManager.Instance.DataNFTModel[i].name, 100, 0, 0, 0);
+                    NFTMehanics.Add(i + 1, _newData);
+                }
+
+                SaveNFTData();
+                Debug.Log("NFT DATA STORED");
+
+                foreach (var item in NFTMehanics)
+                {
+                    Debug.Log(item.Key);
+                    Debug.Log(item.Value.mechanicsData.CarName);
+                }
+            }
+            else
+            {
+                Debug.Log("NFT DATA Retrieved");
+                //PlayerPrefs.DeleteKey("NFTLocalData");
+
+                //NFTMehanics.Clear();
+                NFTMehanics = JsonConvert.DeserializeObject<Dictionary<int, NFTMehanicsData>>(GetNFTLocally());
+
+                //foreach (var item in NFTMehanics)
+                //{
+                //    Debug.Log(item.Key);
+                //    Debug.Log(item.Value.mechanicsData.CarName);
+                //}
+
+            }
+        }
+    }
+    #endregion
 }

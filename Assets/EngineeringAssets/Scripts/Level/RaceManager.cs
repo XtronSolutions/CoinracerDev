@@ -285,12 +285,8 @@ public class RaceManager : MonoBehaviour
 
                 if(Constants.GameMechanics)
                 {
-                    //FirebaseManager.Instance.PlayerData.Mechanics.Tyre_Laps++;
-                    //FirebaseManager.Instance.PlayerData.Mechanics.Gas_Laps++;
-                    //FirebaseManager.Instance.PlayerData.Mechanics.EngineOil_Laps++;
-
-                    //MechanicsManager.Instance.UpdateConsumables();
-                    //apiRequestHandler.Instance.updatePlayerData();
+                    MechanicsManager.Instance.IncreaseLaps(Constants.SelectedCarToken);
+                    MechanicsManager.Instance.UpdateMechanicsData(Constants.SelectedCarToken,false);
                 }
 
                 if (_lapsCounter == _requiredNumberOfLaps)
@@ -299,12 +295,15 @@ public class RaceManager : MonoBehaviour
                 }
                 else
                 {
-                    // if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Tyres)
-                    //{ GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Your tyres has worn out, better luck next time."); TinyCarController.speedMultiplier = 0.0001f; }
-                    //else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Oil)
-                    //{ GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Your Engine Oil is empty, better luck next time."); TinyCarController.speedMultiplier = 0.0001f; }
-                    //else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Gas)
-                    //{ GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Your Gas is empty, better luck next time."); TinyCarController.speedMultiplier = 0.0001f; }
+                    if (Constants.GameMechanics)
+                    {
+                        if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Tyres)
+                        { GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Your tyres has worn out, better luck next time."); TinyCarController.speedMultiplier = 0.0001f; }
+                        else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Oil)
+                        { GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Your Engine Oil is empty, better luck next time."); TinyCarController.speedMultiplier = 0.0001f; }
+                        else if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Gas)
+                        { GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Your Gas is empty, better luck next time."); TinyCarController.speedMultiplier = 0.0001f; }
+                    }
                 }
             }
             else

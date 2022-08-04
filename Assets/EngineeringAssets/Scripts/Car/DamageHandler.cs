@@ -40,7 +40,7 @@ public class DamageHandler : MonoBehaviour
     void OnEnable()
     {
         Constants.CarTotaled = false; //check if car was totaled from db
-        CarHealthStored = 100;
+        //CarHealthStored = 100;
         //Constants.StoredCarHealth = 100;
         TinyCarController.speedMultiplier = 1;
 
@@ -48,11 +48,11 @@ public class DamageHandler : MonoBehaviour
             return;
 
         TempHealth = Constants.StoredCarHealth;
-        ApplySpeedFactor(CarHealthStored);
+        CarHealthStored = TempHealth;
+        ApplySpeedFactor(TempHealth);
         TriggerEvent += OnTriggerEvent;
         TriggerLeaveEvent += OnTriggerLeaveEvent;
-
-        //StartCoroutine(PushHealth());
+        StartCoroutine(PushHealth());
     }
 
     public IEnumerator PushHealth()
@@ -60,11 +60,10 @@ public class DamageHandler : MonoBehaviour
         yield return new WaitForSeconds(10f);
         if(!Constants.CarTotaled)
         {
-            if (TempHealth != Constants.StoredCarHealth)
+            if (TempHealth != CarHealthStored)
             {
-                //TempHealth = Constants.StoredCarHealth;
-                //FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = Constants.StoredCarHealth;
-                //apiRequestHandler.Instance.updatePlayerData();
+                TempHealth = CarHealthStored;
+                MechanicsManager.Instance.UpdateHealth(Constants.SelectedCarToken, TempHealth);
             }
             StartCoroutine(PushHealth());
         }
@@ -146,10 +145,8 @@ public class DamageHandler : MonoBehaviour
                             Constants.CarTotaled = true;
                             CarHealthStored = 0;
 
-                            //StopCoroutine(PushHealth());
-                            //FirebaseManager.Instance.PlayerData.Mechanics.CarHealth = Constants.StoredCarHealth;
-                            //apiRequestHandler.Instance.updatePlayerData();
-
+                            StopCoroutine(PushHealth());
+                            MechanicsManager.Instance.UpdateHealth(Constants.SelectedCarToken, CarHealthStored);
                             GameOver();
                             
                         }
