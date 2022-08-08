@@ -424,6 +424,9 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
 
     public void OnRaceDone()
     {
+        if(Constants.GameMechanics)
+            GamePlayUIHandler.Instance.GetHealthBarObject().SetActive(false);
+
         if (Constants.CarTotaled)
             return;
 

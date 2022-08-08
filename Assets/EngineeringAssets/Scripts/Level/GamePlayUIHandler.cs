@@ -34,7 +34,7 @@ public class GamePlayUIHandler : MonoBehaviour
     public GameObject GameOverCarTotaled_prefab;
 
     string storedUsername;
-
+    private GameObject HealthBarObject;
     private void OnEnable()
     {
         Instance = this;
@@ -46,9 +46,13 @@ public class GamePlayUIHandler : MonoBehaviour
         InstantiateHealthBar();  
     }
 
+    public GameObject GetHealthBarObject()
+    {
+        return HealthBarObject;
+    }
     public void InstantiateHealthBar()
     {
-        GameObject _healthBar= Instantiate(HealthPrefab, CanvasParent.transform);
+        HealthBarObject = Instantiate(HealthPrefab, CanvasParent.transform);
     }
 
     public void InstantiateGameOver_CarTotaled(string txt)
