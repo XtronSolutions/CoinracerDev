@@ -9,7 +9,8 @@ using System;
 
 public static class Constants
 {
-    public static string VirtualCurrency = "CCash";
+    public static string VirtualCurrency = "CCASH";
+    public static string TokenName = "CRACER";
     public static string APP_VERSION = "Alpha 2.0";
     public static string WalletAccoutKey = "Account";
     public static string NameCurrency = "USD";
@@ -131,8 +132,8 @@ public static class Constants
     public static int MultiplayerPrice_3 = 50;
     public static int MultiplayerPrice_4 = 100;
     public static string CoinBaseURL = "https://www.coinbase.com/api/v2/assets/prices/coinracer?base=USD";
-    public static double CracePrice = 0.0888;
-    public static int CalculatedCrace = 0;
+    public static double CurrencyPrice = 0.0888;
+    public static int CalculatedCurrencyAmount = 0;
     public static string PlayerDataKey = "playerData";
     public static string RoomDataKey = "roomData";
     public static bool isMultiplayerGameEnded = false;
@@ -143,7 +144,7 @@ public static class Constants
     public static int SelectedLevel = 0;
     public static int SelectedWage = 0;
     public static int TotalWins = 0;
-    public static int SelectedCrace = 0;
+    public static int SelectedCurrencyAmount = 0;
     public static int SelectedMaxPlayer = 2;
     public static int TotalPlayingTime = 600;
     public static bool DepositDone = false;
@@ -195,60 +196,68 @@ public static class Constants
 
     public static bool EarlyBuild = false;
     public static string VIPPassword = "hailcoinracerreloaded";
-
+    public static bool ConvertToCCash = true;
+    public static int CCashToDollar = 1;
 
 
     async public static void GetCracePrice()
     {
-        UnityWebRequest webRequest = UnityWebRequest.Get(CoinBaseURL);
-        await webRequest.SendWebRequest();
-        string _json = System.Text.Encoding.UTF8.GetString(webRequest.downloadHandler.data);
-
-        try
+        if (ConvertToCCash)
         {
-            var _data = JObject.Parse(_json);
-            CracePrice = double.Parse(_data["data"]["prices"]["latest"].ToString());
-            CracePrice = System.Math.Round(CracePrice, 4);
+            CurrencyPrice = CCashToDollar;
         }
-        catch (System.Exception)
+        else
         {
-            //Debug.LogError("something went wrong while fetching crace price from coinbase.");
-            CracePrice = 0.0888;
+            UnityWebRequest webRequest = UnityWebRequest.Get(CoinBaseURL);
+            await webRequest.SendWebRequest();
+            string _json = System.Text.Encoding.UTF8.GetString(webRequest.downloadHandler.data);
+
+            try
+            {
+                var _data = JObject.Parse(_json);
+                CurrencyPrice = double.Parse(_data["data"]["prices"]["latest"].ToString());
+                CurrencyPrice = System.Math.Round(CurrencyPrice, 4);
+            }
+            catch (System.Exception)
+            {
+                //Debug.LogError("something went wrong while fetching crace price from coinbase.");
+                CurrencyPrice = 0.0888;
+            }
         }
     }
 
     public static double ConvertDollarToCrace(double _amount)
     {
         double _calulcatedAmount = 0;
-        if (CracePrice != 0)
-            _calulcatedAmount = System.Math.Round(_amount / CracePrice, 4);
+        if (CurrencyPrice != 0)
+            _calulcatedAmount = System.Math.Round(_amount / CurrencyPrice, 4);
 
-        CalculatedCrace = (int)_calulcatedAmount;
+        CalculatedCurrencyAmount = (int)_calulcatedAmount;
         return _calulcatedAmount;
     }
 
     public static double ConvertCraceToDollar(double _amount)
     {
         double _calulcatedAmount = 0;
-        if (CracePrice != 0)
-            _calulcatedAmount = System.Math.Round(_amount * CracePrice, 4);
+        if (CurrencyPrice != 0)
+            _calulcatedAmount = System.Math.Round(_amount * CurrencyPrice, 4);
 
         return _calulcatedAmount;
     }
 
     public static void PrintLog(string Txt)
     {
-        //Debug.Log(Txt);
+        Debug.Log(Txt);
     }
 
     public static void PrintError(string Txt)
     {
-        //Debug.LogError(Txt);
+        Debug.LogError(Txt);
     }
 
     public static void PrintExp(Exception Txt,UnityEngine.Object ins)
     {
-        //Debug.LogException(Txt,ins);
+        Debug.LogException(Txt,ins);
     }
 
     public static void ResetData()
@@ -293,5 +302,13 @@ public static class Constants
         }
         CheckAllNFT = false;
         StoredCarNames.Clear();
+    }
+
+    public static string GetCurrencyName()
+    {
+        if (ConvertToCCash)
+            return VirtualCurrency;
+        else
+            return TokenName;
     }
 }

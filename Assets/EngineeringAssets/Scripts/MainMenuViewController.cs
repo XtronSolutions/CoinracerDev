@@ -478,7 +478,7 @@ public class MainMenuViewController : MonoBehaviour
     public void ToggleScreen_SelectionUI(bool _state)
     {
         if (_state)
-            ChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.TournamentPassPrice + " $crace. unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + Constants.TicketPrice + " $crace, if you hold " + Constants.DiscountForCrace + " $crace - " + Constants.DiscountPercentage + "% discount.");
+            ChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.TournamentPassPrice + " $"+Constants.GetCurrencyName()+". unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + TournamentManager.Instance.DataTournament.TicketPrice + " $" + Constants.GetCurrencyName() +", if you hold " + Constants.DiscountForCrace + " $"+Constants.TokenName+" - " + Constants.DiscountPercentage + "% discount.");
 
         UISelection.MainScreen.SetActive(_state);
     }
@@ -486,7 +486,7 @@ public class MainMenuViewController : MonoBehaviour
     public void SecondTourToggleScreen_SelectionUI(bool _state)
     {
         if (_state)
-            SecondTourChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.SecondTournamentPassPrice + " $crace. unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + Constants.SecondTourTicketPrice + " $crace, if you hold " + Constants.DiscountForCrace + " $crace - " + Constants.DiscountPercentage + "% discount.");
+            SecondTourChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.SecondTournamentPassPrice + " $" + Constants.GetCurrencyName() +". unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + TournamentManager.Instance.DataTournament.GTicketPrice + " $" + Constants.GetCurrencyName() +", if you hold " + Constants.DiscountForCrace + " $"+Constants.TokenName+" - " + Constants.DiscountPercentage + "% discount.");
 
         UISecondTourSelection.MainScreen.SetActive(_state);
     }
@@ -571,31 +571,77 @@ public class MainMenuViewController : MonoBehaviour
 
     public void BuyPasswithCrace()
     {
-        if (WalletManager.Instance.CheckBalanceTournament(false, false, true, false, false, false))
+        if (Constants.ConvertToCCash)
         {
-            SecondTourBuyingPass = false;
-            BuyingPass = true;
-            WalletManager.Instance.TransferToken(TournamentPassPrice, false);
+            if (FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount >= Constants.TournamentPassPrice)
+            {
+                Constants.GATransferAmount = Constants.TournamentPassPrice;
+                FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= Constants.TournamentPassPrice;
+
+                if (AnalyticsManager.Instance)
+                    AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
+
+                Constants.PrintLog("pass bought was success");
+                UpdateVCText(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount.ToString());
+                OnPassBuy(true);
+            }
+            else
+            {
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value, need " + Constants.TournamentPassPrice + " $" + Constants.GetCurrencyName());
+            }
         }
         else
         {
-            LoadingScreen.SetActive(false);
-            ShowToast(3f, "Insufficient $CRACE value, need " + Constants.TournamentPassPrice + " $CRACE");
+            if (WalletManager.Instance.CheckBalanceTournament(false, false, true, false, false, false))
+            {
+                SecondTourBuyingPass = false;
+                BuyingPass = true;
+                WalletManager.Instance.TransferToken(TournamentPassPrice, false);
+            }
+            else
+            {
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value, need " + Constants.TournamentPassPrice + " $" + Constants.GetCurrencyName());
+            }
         }
     }
 
     public void SecondTourBuyPasswithCrace()
     {
-        if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, true, false))
+        if (Constants.ConvertToCCash)
         {
-            BuyingPass = false;
-            SecondTourBuyingPass = true;
-            WalletManager.Instance.TransferToken(SecondTournamentPassPrice, false);
+            if (FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount >= Constants.SecondTournamentPassPrice)
+            {
+                Constants.GATransferAmount = Constants.SecondTournamentPassPrice;
+                FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= Constants.SecondTournamentPassPrice;
+
+                if (AnalyticsManager.Instance)
+                    AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
+
+                Constants.PrintLog("pass bought was success");
+                UpdateVCText(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount.ToString());
+                SecondTourOnPassBuy(true);
+            }
+            else
+            {
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value, need " + Constants.SecondTournamentPassPrice + " $" + Constants.GetCurrencyName());
+            }
         }
         else
         {
-            LoadingScreen.SetActive(false);
-            ShowToast(3f, "Insufficient $CRACE value, need " + Constants.SecondTournamentPassPrice + " $CRACE");
+            if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, true, false))
+            {
+                BuyingPass = false;
+                SecondTourBuyingPass = true;
+                WalletManager.Instance.TransferToken(SecondTournamentPassPrice, false);
+            }
+            else
+            {
+                LoadingScreen.SetActive(false);
+                ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value, need " + Constants.SecondTournamentPassPrice + " $" + Constants.GetCurrencyName());
+            }
         }
     }
 
@@ -796,8 +842,9 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.IsTest)
         {
-            MainMenuViewController.Instance.StartTournament(true);
-            return;
+            WalletConnected = true;
+            //StartTournament(true);
+            //return;
         }
 
         if (WalletConnected)
@@ -808,20 +855,46 @@ public class MainMenuViewController : MonoBehaviour
                 if (WalletManager.Instance)
                 {
                     TicketPrice = TournamentManager.Instance.DataTournament.TicketPrice;
+
                     if (WalletManager.Instance.CheckBalanceTournament(false, true, false, false, false, false))
                     {
                         ShowToast(2f, "Congrats!, You have received " + Constants.DiscountPercentage + "% discount.");
                         TicketPrice = (TicketPrice * DiscountPercentage) / 100;
                     }
 
-                    if (WalletManager.Instance.CheckBalanceTournament(true, false, false, false, false, false))
+                    if (Constants.ConvertToCCash)
                     {
-                        WalletManager.Instance.TransferToken(TicketPrice, false);
+                        if (FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount >= TicketPrice)
+                        {
+                            Constants.GATransferAmount = TicketPrice;
+                            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= TicketPrice;
+                            apiRequestHandler.Instance.updatePlayerData();
+
+                            if (AnalyticsManager.Instance)
+                                AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
+
+                            Constants.PrintLog("transaction was success for tournament");
+                            UpdateVCText(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount.ToString());
+                            StartTournament(true);
+                            
+                        }
+                        else
+                        {
+                            LoadingScreen.SetActive(false);
+                            ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value.");
+                        }
                     }
                     else
                     {
-                        LoadingScreen.SetActive(false);
-                        ShowToast(3f, "Insufficient $CRACE value.");
+                        if (WalletManager.Instance.CheckBalanceTournament(true, false, false, false, false, false))
+                        {
+                            WalletManager.Instance.TransferToken(TicketPrice, false);
+                        }
+                        else
+                        {
+                            LoadingScreen.SetActive(false);
+                            ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value.");
+                        }
                     }
                 }
                 else
@@ -847,11 +920,9 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.IsTest)
         {
-            if (AnalyticsManager.Instance)
-                AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
-
-            MainMenuViewController.Instance.SecondTourStartTournament(true);
-            return;
+            WalletConnected = true;
+            //SecondTourStartTournament(true);
+            //return;
         }
 
         if (WalletConnected)
@@ -868,14 +939,39 @@ public class MainMenuViewController : MonoBehaviour
                         SecondTourTicketPrice = (SecondTourTicketPrice * DiscountPercentage) / 100;
                     }
 
-                    if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, false, true))
+                    if (Constants.ConvertToCCash)
                     {
-                        WalletManager.Instance.TransferToken(SecondTourTicketPrice, true);
+                        if (FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount >= SecondTourTicketPrice)
+                        {
+                            Constants.GATransferAmount = SecondTourTicketPrice;
+                            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= SecondTourTicketPrice;
+                            apiRequestHandler.Instance.updatePlayerData();
+
+                            if (AnalyticsManager.Instance)
+                                AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
+
+                            Constants.PrintLog("transaction was success for tournament");
+                            UpdateVCText(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount.ToString());
+                            SecondTourStartTournament(true);
+
+                        }
+                        else
+                        {
+                            LoadingScreen.SetActive(false);
+                            ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value.");
+                        }
                     }
                     else
                     {
-                        LoadingScreen.SetActive(false);
-                        ShowToast(3f, "Insufficient $CRACE value.");
+                        if (WalletManager.Instance.CheckBalanceTournament(false, false, false, false, false, true))
+                        {
+                            WalletManager.Instance.TransferToken(SecondTourTicketPrice, true);
+                        }
+                        else
+                        {
+                            LoadingScreen.SetActive(false);
+                            ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value.");
+                        }
                     }
                 }
                 else
@@ -1990,13 +2086,13 @@ public class MainMenuViewController : MonoBehaviour
                 DeactivateCars();
                 _selecteableCars.Clear();
 
-                if (!Constants.EarnMultiplayer)
-                {
+                //if (!Constants.EarnMultiplayer)
+                //{
                     if (IsSecondTournament)
                         _selecteableCars.Add(_allCars[27].CarDetail);
                     else
                         _selecteableCars.Add(_allCars[0].CarDetail);
-                }
+                //}
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
                 {
@@ -2252,14 +2348,59 @@ public class MainMenuViewController : MonoBehaviour
 
     public void DepositAmount()
     {
-        if (WalletManager.Instance)
-            WalletManager.Instance.CallDeposit();
+        if (Constants.ConvertToCCash)
+        {
+            if (Constants.IsMultiplayer)
+            {
+                if (PhotonNetwork.IsConnected)
+                {
+                    if(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount>=Constants.SelectedCurrencyAmount)
+                    {
+                        Constants.GATransferAmount = Constants.SelectedCurrencyAmount;
+                        FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= Constants.SelectedCurrencyAmount;
+                        apiRequestHandler.Instance.updatePlayerData();
+
+                        if (AnalyticsManager.Instance)
+                            AnalyticsManager.Instance.MultiplayerEvent(Constants.GATransferAmount);
+
+                        if (PhotonNetwork.IsMasterClient && !Constants.OtherPlayerDeposit)
+                            WalletManager.Instance.OnRaceCreateCalled(true);
+                        else
+                            WalletManager.Instance.OnDepositCalled(true);
+                    }else
+                    {
+                        LoadingScreen.SetActive(false);
+                        ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value.");
+                    }
+                }else
+                {
+                    Debug.LogError("Photon is not connected");
+                }
+            }
+        }
+        else
+        {
+            if (WalletManager.Instance)
+                WalletManager.Instance.CallDeposit();
+        }
     }
 
     public void WithDrawDeposit()
     {
-        if (WalletManager.Instance)
-            WalletManager.Instance.CallWithdraw();
+        if (Constants.ConvertToCCash)
+        {
+            if (Constants.IsMultiplayer && Constants.CanWithdraw)
+            {
+                FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount += Constants.SelectedCurrencyAmount;
+                apiRequestHandler.Instance.updatePlayerData();
+                WalletManager.Instance.OnDepositBackCalled(true);
+            }
+        }
+        else
+        {
+            if (WalletManager.Instance)
+                WalletManager.Instance.CallWithdraw();
+        }
     }
 
     public void ToggleBackButton_ConnectionUI(bool state)
@@ -2460,7 +2601,7 @@ public class MainMenuViewController : MonoBehaviour
             Constants.ChipraceScore = "550";
 
         Constants.ConvertDollarToCrace(Constants.SelectedWage);
-        Constants.SelectedCrace = Constants.CalculatedCrace;
+        Constants.SelectedCurrencyAmount = Constants.CalculatedCurrencyAmount;
 
         onMultiplayerBtnClick();
     }
@@ -2477,22 +2618,22 @@ public class MainMenuViewController : MonoBehaviour
 
     public void ChangeCracePrice_MultiplayerSelection(string _price)
     {
-        UIMultiplayerSelection.CracePriceText.text = "1 $CRACE : " + _price + "$";
+        UIMultiplayerSelection.CracePriceText.text = "1 $"+Constants.GetCurrencyName()+" : " + _price + "$";
     }
 
     public void ChangeDisclaimer_MultiplayerSelection()
     {
         Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_1);
-        UIMultiplayerSelection.Disclaimer_5.text = "*price: " + Constants.MultiplayerPrice_1 + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
+        UIMultiplayerSelection.Disclaimer_5.text = "*price: " + Constants.MultiplayerPrice_1 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $"+Constants.GetCurrencyName()+")";
 
         Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_2);
-        UIMultiplayerSelection.Disclaimer_10.text = "*price: " + Constants.MultiplayerPrice_2 + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
+        UIMultiplayerSelection.Disclaimer_10.text = "*price: " + Constants.MultiplayerPrice_2 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $"+ Constants.GetCurrencyName()+")";
 
         Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_3);
-        UIMultiplayerSelection.Disclaimer_50.text = "*price: " + Constants.MultiplayerPrice_3 + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
+        UIMultiplayerSelection.Disclaimer_50.text = "*price: " + Constants.MultiplayerPrice_3 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $"+ Constants.GetCurrencyName()+")";
 
         Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_4);
-        UIMultiplayerSelection.Disclaimer_100.text = "*price: " + Constants.MultiplayerPrice_4 + "$" + " (" + Constants.CalculatedCrace.ToString() + " $CRACE)";
+        UIMultiplayerSelection.Disclaimer_100.text = "*price: " + Constants.MultiplayerPrice_4 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $"+ Constants.GetCurrencyName()+")";
     }
 
     public void EnableSelection_MultiplayerSelection()
@@ -2519,7 +2660,7 @@ public class MainMenuViewController : MonoBehaviour
             {
                 ToggleSelection_MultiplayerSelection(false);
                 Constants.GetCracePrice();
-                ChangeCracePrice_MultiplayerSelection(Constants.CracePrice.ToString());
+                ChangeCracePrice_MultiplayerSelection(Constants.CurrencyPrice.ToString());
                 ChangeDisclaimer_MultiplayerSelection();
                 ToggleScreen_MultiplayerSelection(true);
                 LoadingScreen.SetActive(false);

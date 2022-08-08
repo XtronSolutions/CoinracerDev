@@ -694,13 +694,13 @@ public class WalletManager : MonoBehaviour
             else if (_checkPassBalance)
                 _amountToCheck = Constants.TournamentPassPrice;
             else if (_checkMultiplayerAmount)
-                _amountToCheck = Constants.CalculatedCrace;
+                _amountToCheck = Constants.CalculatedCurrencyAmount;
             else if (_CheckSecondTourPass)
                 _amountToCheck = Constants.SecondTournamentPassPrice;
             else if (_checkSecondTourTournament)
                 _amountToCheck = Constants.SecondTourTicketPrice;
 
-            if (actualBalance >= _amountToCheck || Constants.IsTest)
+            if (actualBalance >= _amountToCheck) // || Constants.isTest
                 _havebalance = true;
         }
         else
@@ -1323,9 +1323,9 @@ public class WalletManager : MonoBehaviour
             if (PhotonNetwork.IsConnected)
             {
                 if (PhotonNetwork.IsMasterClient && !Constants.OtherPlayerDeposit)
-                   CreateRace(Constants.StoredPID, Constants.SelectedCrace, Constants.SelectedMaxPlayer);
+                   CreateRace(Constants.StoredPID, Constants.SelectedCurrencyAmount, Constants.SelectedMaxPlayer);
                 else
-                   Deposit(Constants.StoredPID, Constants.SelectedCrace);
+                   Deposit(Constants.StoredPID, Constants.SelectedCurrencyAmount);
             }
         }
     }
@@ -1692,6 +1692,15 @@ public class WalletManager : MonoBehaviour
     /// <param name="_pid"></param>
     async public void EndRace(string _pid)
     {
+        if(Constants.ConvertToCCash)
+        {
+            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount += Constants.SelectedCurrencyAmount + Constants.SelectedCurrencyAmount;
+            apiRequestHandler.Instance.updatePlayerData();
+            OnEndRaceCalled(true);
+
+            return;
+        }
+
         if (Constants.IsTest)
         {
             OnEndRaceCalled(true);

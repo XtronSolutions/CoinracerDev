@@ -234,7 +234,7 @@ public class TournamentManager : MonoBehaviour
                         SRemainingTime = TimeSpan.FromSeconds(SRemainingTimeSeconds);
 
                         ManipulateSecondTournamnetUIActivness(true, true, true, false, false, false, true);
-                        ManipulateSecondTournamnetUIData("", SRemainingTime.Days.ToString() + ":" + SRemainingTime.Hours.ToString() + ":" + SRemainingTime.Minutes.ToString() + ":" +SRemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.GTicketPrice.ToString() + " $CRACE", "*" + Constants.DiscountPercentage.ToString() + "% off if you hold " + Constants.DiscountForCrace.ToString() + " $crace or more");
+                        ManipulateSecondTournamnetUIData("", SRemainingTime.Days.ToString() + ":" + SRemainingTime.Hours.ToString() + ":" + SRemainingTime.Minutes.ToString() + ":" +SRemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.GTicketPrice.ToString() + " $"+Constants.GetCurrencyName(), "*" + Constants.DiscountPercentage.ToString() + "% off if you hold " + Constants.DiscountForCrace.ToString() + " $"+Constants.TokenName+" or more");
                         SecondTourStartTimer = true;
                         SecondTournamentStartTimer = false;
                     }
@@ -268,7 +268,7 @@ public class TournamentManager : MonoBehaviour
                         RemainingTime = TimeSpan.FromSeconds(RemainingTimeSeconds);
 
                         ManipulateTournamnetUIActivness(true, true, true, false, false, false,true);
-                        ManipulateTournamnetUIData("", RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.TicketPrice.ToString() + " $CRACE", "*"+Constants.DiscountPercentage.ToString()+"% off if you hold "+Constants.DiscountForCrace.ToString()+" $crace or more");
+                        ManipulateTournamnetUIData("", RemainingTime.Days.ToString() + ":" + RemainingTime.Hours.ToString() + ":" + RemainingTime.Minutes.ToString() + ":" + RemainingTime.Seconds.ToString(), "*Entry Ticket : " + _data.TicketPrice.ToString() + " $"+Constants.GetCurrencyName(), "*"+Constants.DiscountPercentage.ToString()+"% off if you hold "+Constants.DiscountForCrace.ToString()+" $"+Constants.TokenName+" or more");
                         StartTimer = true;
                         TournamentStartTimer = false;
                     }

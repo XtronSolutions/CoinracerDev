@@ -473,7 +473,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 if(!Constants.FreeMultiplayer)
                     _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
 
-                RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString(), _tokenID);
+                RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
             }
         }
     }
@@ -529,7 +529,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         WinData _data = new WinData();
         _data.Name = PhotonNetwork.LocalPlayer.NickName;
         _data.ID = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
-        _data.TotalBetValue = Constants.SelectedCrace+ Constants.SelectedCrace;
+        _data.TotalBetValue = Constants.SelectedCurrencyAmount+ Constants.SelectedCurrencyAmount;
         _data.RunTime = Constants.GameSeconds.ToString();
         _data.IsTotaled = isTotaled;
 

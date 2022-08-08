@@ -125,9 +125,9 @@ public class RPCCalls : MonoBehaviour
                 _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
 
             Debug.Log("SyncConnectionData to be callled on not master : " + _tokenID);
-            Constants.SelectedCrace = int.Parse(_crace);
+            Constants.SelectedCurrencyAmount = int.Parse(_crace);
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
-            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCrace.ToString(), _tokenID);
+            PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
         }
     }
 
