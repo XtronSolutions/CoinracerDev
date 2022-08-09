@@ -1694,7 +1694,7 @@ public class WalletManager : MonoBehaviour
     {
         if(Constants.ConvertToCCash)
         {
-            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount += Constants.SelectedCurrencyAmount + Constants.SelectedCurrencyAmount;
+            FirebaseManager.Instance.PlayerData.VC_Amount += Constants.SelectedCurrencyAmount + Constants.SelectedCurrencyAmount;
             apiRequestHandler.Instance.updatePlayerData();
             OnEndRaceCalled(true);
 

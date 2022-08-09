@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
+using System.Numerics;
 
 #region SuperClasses
 [System.Serializable]
@@ -36,14 +37,6 @@ public class NFTMehanicsData
     public string OwnerWalletAddress;
     public MechanicsData mechanicsData;
 }
-public class GameMechanics
-{
-    public double VC_Amount;
-    public int CarHealth;
-    public float Tyre_Laps;
-    public float EngineOil_Laps;
-    public float Gas_Laps;
-}
 public class UserData
 {
     public string UserName { get; set; }
@@ -63,7 +56,7 @@ public class UserData
     public bool GPassBought { get; set; }
     public double GTimeSeconds { get; set; }
     public EndDate GTournamentEndDate { get; set; }
-    public GameMechanics Mechanics { get; set; }
+    public double VC_Amount { get; set; }
 }
 
 public class AuthCredentials
@@ -169,8 +162,6 @@ public class FirebaseManager : MonoBehaviour
         PlayerData.GTournamentEndDate.nanoseconds = (double)response.SelectToken("data").SelectToken("GTournamentEndDate").SelectToken("nanoseconds");
         PlayerData.GTournamentEndDate.seconds = (double)response.SelectToken("data").SelectToken("GTournamentEndDate").SelectToken("seconds");
 
-        PlayerData.Mechanics = new GameMechanics();
-        PlayerData.Mechanics.VC_Amount = response.SelectToken("data").SelectToken("Mechanics").SelectToken("VC_Amount") != null ? (double)response.SelectToken("data").SelectToken("Mechanics").SelectToken("VC_Amount") : 0;
         //PlayerData.Mechanics.CarHealth = response.SelectToken("data").SelectToken("Mechanics").SelectToken("CarHealth") != null ? (int)response.SelectToken("data").SelectToken("Mechanics").SelectToken("CarHealth") : 100;
         //PlayerData.Mechanics.Tyre_Laps = response.SelectToken("data").SelectToken("Mechanics").SelectToken("Tyre_Laps") != null ? (float)response.SelectToken("data").SelectToken("Mechanics").SelectToken("Tyre_Laps") : 0;
         //PlayerData.Mechanics.EngineOil_Laps = response.SelectToken("data").SelectToken("Mechanics").SelectToken("EngineOil_Laps") != null ? (float)response.SelectToken("data").SelectToken("Mechanics").SelectToken("EngineOil_Laps") : 0;
@@ -185,7 +176,7 @@ public class FirebaseManager : MonoBehaviour
         Constants.UserName = PlayerData.UserName;
         Constants.FlagSelectedIndex = PlayerData.AvatarID;
         
-        Constants.VirtualCurrencyAmount = PlayerData.Mechanics.VC_Amount;
+        Constants.VirtualCurrencyAmount = PlayerData.VC_Amount;
         //Constants.StoredCarHealth = PlayerData.Mechanics.CarHealth;
 
         if (MainMenuViewController.Instance)
@@ -490,7 +481,7 @@ public class FirebaseManager : MonoBehaviour
             PlayerData.GPassBought = false;
             PlayerData.GTimeSeconds = 0;
             PlayerData.GTournamentEndDate = null;
-            PlayerData.Mechanics = null;
+            PlayerData.VC_Amount = 0;
 
             if(Constants.isUsingFirebaseSDK)
                 AddFireStoreData(PlayerData);

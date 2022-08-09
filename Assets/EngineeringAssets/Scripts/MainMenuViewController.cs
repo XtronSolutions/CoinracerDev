@@ -573,16 +573,16 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.ConvertToCCash)
         {
-            if (FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount >= Constants.TournamentPassPrice)
+            if (FirebaseManager.Instance.PlayerData.VC_Amount >= Constants.TournamentPassPrice)
             {
                 Constants.GATransferAmount = Constants.TournamentPassPrice;
-                FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= Constants.TournamentPassPrice;
+                FirebaseManager.Instance.PlayerData.VC_Amount -= Constants.TournamentPassPrice;
 
                 if (AnalyticsManager.Instance)
                     AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
 
                 Constants.PrintLog("pass bought was success");
-                UpdateVCText(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount.ToString());
+                UpdateVCText(FirebaseManager.Instance.PlayerData.VC_Amount.ToString());
                 OnPassBuy(true);
             }
             else
@@ -611,16 +611,16 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.ConvertToCCash)
         {
-            if (FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount >= Constants.SecondTournamentPassPrice)
+            if (FirebaseManager.Instance.PlayerData.VC_Amount >= Constants.SecondTournamentPassPrice)
             {
                 Constants.GATransferAmount = Constants.SecondTournamentPassPrice;
-                FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= Constants.SecondTournamentPassPrice;
+                FirebaseManager.Instance.PlayerData.VC_Amount -= Constants.SecondTournamentPassPrice;
 
                 if (AnalyticsManager.Instance)
                     AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
 
                 Constants.PrintLog("pass bought was success");
-                UpdateVCText(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount.ToString());
+                UpdateVCText(FirebaseManager.Instance.PlayerData.VC_Amount.ToString());
                 SecondTourOnPassBuy(true);
             }
             else
@@ -864,17 +864,17 @@ public class MainMenuViewController : MonoBehaviour
 
                     if (Constants.ConvertToCCash)
                     {
-                        if (FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount >= TicketPrice)
+                        if (FirebaseManager.Instance.PlayerData.VC_Amount >= TicketPrice)
                         {
                             Constants.GATransferAmount = TicketPrice;
-                            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= TicketPrice;
+                            FirebaseManager.Instance.PlayerData.VC_Amount -= TicketPrice;
                             apiRequestHandler.Instance.updatePlayerData();
 
                             if (AnalyticsManager.Instance)
                                 AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
 
                             Constants.PrintLog("transaction was success for tournament");
-                            UpdateVCText(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount.ToString());
+                            UpdateVCText(FirebaseManager.Instance.PlayerData.VC_Amount.ToString());
                             StartTournament(true);
                             
                         }
@@ -941,17 +941,17 @@ public class MainMenuViewController : MonoBehaviour
 
                     if (Constants.ConvertToCCash)
                     {
-                        if (FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount >= SecondTourTicketPrice)
+                        if (FirebaseManager.Instance.PlayerData.VC_Amount >= SecondTourTicketPrice)
                         {
                             Constants.GATransferAmount = SecondTourTicketPrice;
-                            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= SecondTourTicketPrice;
+                            FirebaseManager.Instance.PlayerData.VC_Amount -= SecondTourTicketPrice;
                             apiRequestHandler.Instance.updatePlayerData();
 
                             if (AnalyticsManager.Instance)
                                 AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
 
                             Constants.PrintLog("transaction was success for tournament");
-                            UpdateVCText(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount.ToString());
+                            UpdateVCText(FirebaseManager.Instance.PlayerData.VC_Amount.ToString());
                             SecondTourStartTournament(true);
 
                         }
@@ -2354,10 +2354,10 @@ public class MainMenuViewController : MonoBehaviour
             {
                 if (PhotonNetwork.IsConnected)
                 {
-                    if(FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount>=Constants.SelectedCurrencyAmount)
+                    if(FirebaseManager.Instance.PlayerData.VC_Amount>=Constants.SelectedCurrencyAmount)
                     {
                         Constants.GATransferAmount = Constants.SelectedCurrencyAmount;
-                        FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= Constants.SelectedCurrencyAmount;
+                        FirebaseManager.Instance.PlayerData.VC_Amount -= Constants.SelectedCurrencyAmount;
                         apiRequestHandler.Instance.updatePlayerData();
 
                         if (AnalyticsManager.Instance)
@@ -2391,7 +2391,7 @@ public class MainMenuViewController : MonoBehaviour
         {
             if (Constants.IsMultiplayer && Constants.CanWithdraw)
             {
-                FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount += Constants.SelectedCurrencyAmount;
+                FirebaseManager.Instance.PlayerData.VC_Amount += Constants.SelectedCurrencyAmount;
                 apiRequestHandler.Instance.updatePlayerData();
                 WalletManager.Instance.OnDepositBackCalled(true);
             }
@@ -2783,8 +2783,8 @@ public class MainMenuViewController : MonoBehaviour
 
     public void BuyVC_StoreUI()
     {
-        FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount += Constants.CCashPurchaseAmount;
-        Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+        FirebaseManager.Instance.PlayerData.VC_Amount += Constants.CCashPurchaseAmount;
+        Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
         apiRequestHandler.Instance.updatePlayerData();
         ShowToast(3f, Constants.VirtualCurrency + " was successfully purchased.", true);
         SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
@@ -2796,11 +2796,11 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost)
         {
-            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost;
+            FirebaseManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost;
             tempNFTData.mechanicsData.Tyre_Laps = 0;
             FirebaseManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
 
-            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
 
             ShowToast(3f, "Tyres were successfully fixed.", true);
@@ -2820,11 +2820,11 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost)
         {
-            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost;
+            FirebaseManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost;
             tempNFTData.mechanicsData.EngineOil_Laps = 0;
             FirebaseManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
 
-            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Engine Oil was successfully filled.", true);
 
@@ -2843,11 +2843,11 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost)
         {
-            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost;
+            FirebaseManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost;
             tempNFTData.mechanicsData.Gas_Laps = 0;
             FirebaseManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
 
-            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Gas was successfully filled.", true);
 
@@ -2867,12 +2867,12 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost)
         {
-            FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount -= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost;
+            FirebaseManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost;
             tempNFTData.mechanicsData.CarHealth = 100;
             Constants.StoredCarHealth = tempNFTData.mechanicsData.CarHealth;
             FirebaseManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
 
-            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.Mechanics.VC_Amount;
+            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Damage were repaired. health is full.", true);
 
