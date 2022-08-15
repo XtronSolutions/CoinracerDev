@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using Newtonsoft.Json;
@@ -84,9 +84,9 @@ public class RPCCalls : MonoBehaviour
                     {
                         RaceManager.Instance.ToggleClaimReward(true);
                         Constants.PushingWins = true;
-                        FirebaseManager.Instance.PlayerData.TotalWins++;
-                        Constants.TotalWins = FirebaseManager.Instance.PlayerData.TotalWins;
-                        FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+                        FirebaseMoralisManager.Instance.PlayerData.TotalWins++;
+                        Constants.TotalWins = FirebaseMoralisManager.Instance.PlayerData.TotalWins;
+                        FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
                     }
                     else
                     {

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,7 +34,7 @@ public class LeaderboardManager : MonoBehaviour
         LeaderBoardUIData.MainScreen.SetActive(true);
         LeaderBoardUIData.LoaderObj.SetActive(true);
 
-        FirebaseManager.Instance.QueryDB("TimeSeconds", "desc", IsSecondTour);
+        FirebaseMoralisManager.Instance.QueryDB("TimeSeconds", "desc", IsSecondTour);
         ToggleCoinracerButton(IsSecondTour);
         ToggleSecondTourButton(!IsSecondTour);
     }
@@ -44,7 +44,7 @@ public class LeaderboardManager : MonoBehaviour
         LeaderBoardUIData.MainScreen.SetActive(true);
         LeaderBoardUIData.LoaderObj.SetActive(true);
 
-        FirebaseManager.Instance.QueryDB("TimeSeconds", "desc",false);
+        FirebaseMoralisManager.Instance.QueryDB("TimeSeconds", "desc",false);
         ToggleCoinracerButton(false);
         ToggleSecondTourButton(true);
     }
@@ -54,7 +54,7 @@ public class LeaderboardManager : MonoBehaviour
         LeaderBoardUIData.MainScreen.SetActive(true);
         LeaderBoardUIData.LoaderObj.SetActive(true);
 
-        FirebaseManager.Instance.QueryDB("TimeSeconds", "desc",true);
+        FirebaseMoralisManager.Instance.QueryDB("TimeSeconds", "desc",true);
         ToggleCoinracerButton(true);
         ToggleSecondTourButton(false);
     }
@@ -93,7 +93,7 @@ public class LeaderboardManager : MonoBehaviour
             GameObject _obj = Instantiate(LeaderBoardUIData.ObjectPrefab, Vector3.zero, Quaternion.identity) as GameObject;
             LeaderboardUI _UIInstance = _obj.GetComponent<LeaderboardUI>();
 
-            //string _time = FirebaseManager.Instance.EncryptDecrypt(_data[i].TimeSeconds);
+            //string _time = FirebaseMoralisManager.Instance.EncryptDecrypt(_data[i].TimeSeconds);
             //float _floatime = float.Parse(_time);
             float Seconds = (float)_data[i].TimeSeconds;
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using DavidJalbert;
@@ -449,8 +449,8 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
         else if (GamePlayUIHandler.Instance && (Constants.IsTournament || Constants.IsSecondTournament))
         {
             GamePlayUIHandler.Instance.ToggleInputScreen_InputFieldUI(true);
-            GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseManager.Instance.PlayerData.WalletAddress);
-            GamePlayUIHandler.Instance.SetInputUsername_InputFieldUI(FirebaseManager.Instance.PlayerData.UserName);
+            GamePlayUIHandler.Instance.SetWallet_InputFieldUI(FirebaseMoralisManager.Instance.PlayerData.WalletAddress);
+            GamePlayUIHandler.Instance.SetInputUsername_InputFieldUI(FirebaseMoralisManager.Instance.PlayerData.UserName);
         }
         else if (GamePlayUIHandler.Instance && Constants.IsPractice)
         {

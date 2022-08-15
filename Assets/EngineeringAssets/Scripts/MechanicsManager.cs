@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -65,7 +65,7 @@ public class MechanicsManager : MonoBehaviour
 
     public void UpdateMechanicsData(int IDIndex,bool updateHealth=true)
     {
-        _NFTData = FirebaseManager.Instance.GetMechanics(IDIndex);
+        _NFTData = FirebaseMoralisManager.Instance.GetMechanics(IDIndex);
 
         if(updateHealth)
             Constants.StoredCarHealth = _NFTData.mechanicsData.CarHealth;
@@ -75,18 +75,18 @@ public class MechanicsManager : MonoBehaviour
 
     public void IncreaseLaps(int IDIndex)
     {
-        _NFTData = FirebaseManager.Instance.GetMechanics(IDIndex);
+        _NFTData = FirebaseMoralisManager.Instance.GetMechanics(IDIndex);
         _NFTData.mechanicsData.Tyre_Laps++;
         _NFTData.mechanicsData.EngineOil_Laps++;
         _NFTData.mechanicsData.Gas_Laps++;
 
-        FirebaseManager.Instance.UpdateMechanics(IDIndex, _NFTData);
+        FirebaseMoralisManager.Instance.UpdateMechanics(IDIndex, _NFTData);
     }
 
     public void UpdateHealth(int IDIndex,int health)
     {
-        _NFTData = FirebaseManager.Instance.GetMechanics(IDIndex);
+        _NFTData = FirebaseMoralisManager.Instance.GetMechanics(IDIndex);
         _NFTData.mechanicsData.CarHealth = health;
-        FirebaseManager.Instance.UpdateMechanics(IDIndex, _NFTData);
+        FirebaseMoralisManager.Instance.UpdateMechanics(IDIndex, _NFTData);
     }
 }

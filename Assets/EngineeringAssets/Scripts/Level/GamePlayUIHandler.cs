@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -101,13 +101,13 @@ public class GamePlayUIHandler : MonoBehaviour
         }
         else
         {
-            if (FirebaseManager.Instance)
+            if (FirebaseMoralisManager.Instance)
             {
                 storedUsername = _username;
-                FirebaseManager.Instance.DocFetched = false;
-                FirebaseManager.Instance.ResultFetched = true;
+                FirebaseMoralisManager.Instance.DocFetched = false;
+                FirebaseMoralisManager.Instance.ResultFetched = true;
                 Constants.PushingTime = true;
-                FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.FetchUserDB(PlayerPrefs.GetString("Account"), ""));
+                FirebaseMoralisManager.Instance.StartCoroutine(FirebaseMoralisManager.Instance.FetchUserDB(PlayerPrefs.GetString("Account"), ""));
             }
 
             ToggleInputScreen_InputFieldUI(false);
@@ -116,25 +116,25 @@ public class GamePlayUIHandler : MonoBehaviour
 
     public void SubmitTime()
     {
-        if (!FirebaseManager.Instance)
+        if (!FirebaseMoralisManager.Instance)
             Debug.LogError("Firebase instance is null");
 
-        FirebaseManager.Instance.PlayerData.UserName = storedUsername;
+        FirebaseMoralisManager.Instance.PlayerData.UserName = storedUsername;
 
-        Debug.Log("Previous Time: " + FirebaseManager.Instance.PlayerData.TimeSeconds.ToString() + " " + "Current Time" + Constants.GameSeconds.ToString()) ;
+        Debug.Log("Previous Time: " + FirebaseMoralisManager.Instance.PlayerData.TimeSeconds.ToString() + " " + "Current Time" + Constants.GameSeconds.ToString()) ;
 
 
         if (Constants.IsTournament)
         {
-            if (FirebaseManager.Instance.PlayerData.TimeSeconds == 0)
+            if (FirebaseMoralisManager.Instance.PlayerData.TimeSeconds == 0)
             {
-                FirebaseManager.Instance.PlayerData.TimeSeconds = Constants.GameSeconds;
-                FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+                FirebaseMoralisManager.Instance.PlayerData.TimeSeconds = Constants.GameSeconds;
+                FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
             }
-            else if (Constants.GameSeconds < FirebaseManager.Instance.PlayerData.TimeSeconds)
+            else if (Constants.GameSeconds < FirebaseMoralisManager.Instance.PlayerData.TimeSeconds)
             {
-                FirebaseManager.Instance.PlayerData.TimeSeconds = Constants.GameSeconds;
-                FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+                FirebaseMoralisManager.Instance.PlayerData.TimeSeconds = Constants.GameSeconds;
+                FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
             }
             else
             {
@@ -144,15 +144,15 @@ public class GamePlayUIHandler : MonoBehaviour
         }
         else if (Constants.IsSecondTournament)
         {
-            if (FirebaseManager.Instance.PlayerData.GTimeSeconds == 0)
+            if (FirebaseMoralisManager.Instance.PlayerData.GTimeSeconds == 0)
             {
-                FirebaseManager.Instance.PlayerData.GTimeSeconds = Constants.GameSeconds;
-                FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+                FirebaseMoralisManager.Instance.PlayerData.GTimeSeconds = Constants.GameSeconds;
+                FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
             }
-            else if (Constants.GameSeconds < FirebaseManager.Instance.PlayerData.GTimeSeconds)
+            else if (Constants.GameSeconds < FirebaseMoralisManager.Instance.PlayerData.GTimeSeconds)
             {
-                FirebaseManager.Instance.PlayerData.GTimeSeconds = Constants.GameSeconds;
-                FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+                FirebaseMoralisManager.Instance.PlayerData.GTimeSeconds = Constants.GameSeconds;
+                FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
             }
             else
             {

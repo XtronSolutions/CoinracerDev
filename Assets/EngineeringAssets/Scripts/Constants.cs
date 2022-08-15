@@ -110,15 +110,17 @@ public static class Constants
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = false;
-    public static bool IsTest = false;
+    public static bool IsTestNet = true;
+    public static bool IsTest = true;
     public static bool IsStagging = true;
-    public static bool DebugAllCars = true;// bool to enable all cars
+    public static bool DebugAllCars = false;// bool to enable all cars
     public static bool IsDebugBuild = false;//apply pvp score 500+/enable force end race on levels// and force bid of 1 crace for pvp
     public static bool UseHashMec = true;//bool to store if contracts use hash mechanism or signature for verification
     public static bool GameMechanics = true;
-    public static bool EarlyBuild = true;
+    public static bool EarlyBuild = false;
     public static string VIPPassword = "hailcracer";
+    public static bool ConvertToCCash = true;
+    public static int CCashToDollar = 1;
 
     public static bool IsSendConfirmation = false;
     public static bool IsResetPassword = false;
@@ -195,10 +197,6 @@ public static class Constants
     public static int CCashPurchaseAmount = 100;
     public static bool CarTotaled = false;
     public static int SelectedCarToken = 0;
-
-    public static bool ConvertToCCash = true;
-    public static int CCashToDollar = 1;
-
 
     async public static void GetCracePrice()
     {

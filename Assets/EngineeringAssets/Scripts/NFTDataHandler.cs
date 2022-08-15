@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -78,7 +78,7 @@ public class NFTDataHandler : MonoBehaviour
     public IEnumerator GetJSONData(int _tokenID,string _URL)
     {
         tokenID = _tokenID;
-        Mechanics = FirebaseManager.Instance.GetMechanics(tokenID);
+        Mechanics = FirebaseMoralisManager.Instance.GetMechanics(tokenID);
 
         if (Constants.DebugAllCars)
         {

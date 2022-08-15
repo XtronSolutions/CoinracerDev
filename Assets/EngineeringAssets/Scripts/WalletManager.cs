@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Runtime.InteropServices;
 using TMPro;
 using System.Numerics;
@@ -340,8 +340,8 @@ public class WalletManager : MonoBehaviour
             SetStorage("Account", Constants.WalletAddress);
 #endif
         Constants.WalletConnected = true;
-        FirebaseManager.Instance.DocFetched = false;
-        FirebaseManager.Instance.ResultFetched = true;
+        FirebaseMoralisManager.Instance.DocFetched = false;
+        FirebaseMoralisManager.Instance.ResultFetched = true;
         Constants.ForceUpdateChiprace = false;
 
         if (!IsGamePlay)
@@ -1125,7 +1125,7 @@ public class WalletManager : MonoBehaviour
 
     public void UpdateOnlyStoredData()
     {
-        string info = FirebaseManager.Instance.GetStalkedNFT();
+        string info = FirebaseMoralisManager.Instance.GetStalkedNFT();
         if (info != "" && string.IsNullOrEmpty(info))
         {
             ChipraceHandler.Instance.nftStalked = JsonConvert.DeserializeObject<StalkedNFT>(info);
@@ -1155,7 +1155,7 @@ public class WalletManager : MonoBehaviour
             CancelInvoke("WaitForAllData");
             try
             {
-                string info = FirebaseManager.Instance.GetStalkedNFT();
+                string info = FirebaseMoralisManager.Instance.GetStalkedNFT();
                 if (info != "" && !string.IsNullOrEmpty(info))
                 {
                     ChipraceHandler.Instance.nftStalked = JsonConvert.DeserializeObject<StalkedNFT>(info);
@@ -1201,7 +1201,7 @@ public class WalletManager : MonoBehaviour
     {
         if (Constants.CheckAllNFT && Constants.LoggedIn)
         {
-            string info = FirebaseManager.Instance.GetStalkedNFT();
+            string info = FirebaseMoralisManager.Instance.GetStalkedNFT();
             if (info != "" && !string.IsNullOrEmpty(info))
             {
                 ChipraceHandler.Instance.nftStalked = JsonConvert.DeserializeObject<StalkedNFT>(info);
@@ -1694,7 +1694,7 @@ public class WalletManager : MonoBehaviour
     {
         if(Constants.ConvertToCCash)
         {
-            FirebaseManager.Instance.PlayerData.VC_Amount += Constants.SelectedCurrencyAmount + Constants.SelectedCurrencyAmount;
+            FirebaseMoralisManager.Instance.PlayerData.VC_Amount += Constants.SelectedCurrencyAmount + Constants.SelectedCurrencyAmount;
             apiRequestHandler.Instance.updatePlayerData();
             OnEndRaceCalled(true);
 

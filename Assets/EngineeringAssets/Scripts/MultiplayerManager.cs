@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -177,10 +177,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         float nameSuffix = Random.Range(1000, 9999);
         string name = "Player_" + nameSuffix.ToString();
 
-        if (FirebaseManager.Instance)
+        if (FirebaseMoralisManager.Instance)
         {
-            if (FirebaseManager.Instance.PlayerData != null && FirebaseManager.Instance.PlayerData.UserName != "")
-                name = FirebaseManager.Instance.PlayerData.UserName;
+            if (FirebaseMoralisManager.Instance.PlayerData != null && FirebaseMoralisManager.Instance.PlayerData.UserName != "")
+                name = FirebaseMoralisManager.Instance.PlayerData.UserName;
         }
 
         PhotonNetwork.LocalPlayer.NickName = name;

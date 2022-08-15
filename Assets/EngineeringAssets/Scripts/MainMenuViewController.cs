@@ -464,7 +464,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void CheckForAutoLogin()
     {
-        if (FirebaseManager.Instance)
+        if (FirebaseMoralisManager.Instance)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
         GetStorageClass(Constants.CredKey,this.gameObject.name,"OnGetCred");
@@ -573,16 +573,16 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.ConvertToCCash)
         {
-            if (FirebaseManager.Instance.PlayerData.VC_Amount >= Constants.TournamentPassPrice)
+            if (FirebaseMoralisManager.Instance.PlayerData.VC_Amount >= Constants.TournamentPassPrice)
             {
                 Constants.GATransferAmount = Constants.TournamentPassPrice;
-                FirebaseManager.Instance.PlayerData.VC_Amount -= Constants.TournamentPassPrice;
+                FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= Constants.TournamentPassPrice;
 
                 if (AnalyticsManager.Instance)
                     AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
 
                 Constants.PrintLog("pass bought was success");
-                UpdateVCText(FirebaseManager.Instance.PlayerData.VC_Amount.ToString());
+                UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount.ToString());
                 OnPassBuy(true);
             }
             else
@@ -611,16 +611,16 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.ConvertToCCash)
         {
-            if (FirebaseManager.Instance.PlayerData.VC_Amount >= Constants.SecondTournamentPassPrice)
+            if (FirebaseMoralisManager.Instance.PlayerData.VC_Amount >= Constants.SecondTournamentPassPrice)
             {
                 Constants.GATransferAmount = Constants.SecondTournamentPassPrice;
-                FirebaseManager.Instance.PlayerData.VC_Amount -= Constants.SecondTournamentPassPrice;
+                FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= Constants.SecondTournamentPassPrice;
 
                 if (AnalyticsManager.Instance)
                     AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
 
                 Constants.PrintLog("pass bought was success");
-                UpdateVCText(FirebaseManager.Instance.PlayerData.VC_Amount.ToString());
+                UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount.ToString());
                 SecondTourOnPassBuy(true);
             }
             else
@@ -654,7 +654,7 @@ public class MainMenuViewController : MonoBehaviour
                 LoadingScreen.SetActive(true);
                 if (WalletManager.Instance)
                 {
-                    if (FirebaseManager.Instance.PlayerData.PassBought == false)
+                    if (FirebaseMoralisManager.Instance.PlayerData.PassBought == false)
                     {
                         BuyPasswithCrace();
                     }
@@ -692,7 +692,7 @@ public class MainMenuViewController : MonoBehaviour
                 LoadingScreen.SetActive(true);
                 if (WalletManager.Instance)
                 {
-                    if (FirebaseManager.Instance.PlayerData.GPassBought == false)
+                    if (FirebaseMoralisManager.Instance.PlayerData.GPassBought == false)
                     {
                         SecondTourBuyPasswithCrace();
                     }
@@ -728,9 +728,9 @@ public class MainMenuViewController : MonoBehaviour
             ShowToast(3f, "You have successfully bought tournament pass for this tournament week.");
             LoadingScreen.SetActive(false);
             BackClickedPassScreen_SelectionUI();
-            FirebaseManager.Instance.PlayerData.PassBought = true;
-            FirebaseManager.Instance.PlayerData.TournamentEndDate = TournamentManager.Instance.DataTournament.EndDate;
-            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            FirebaseMoralisManager.Instance.PlayerData.PassBought = true;
+            FirebaseMoralisManager.Instance.PlayerData.TournamentEndDate = TournamentManager.Instance.DataTournament.EndDate;
+            FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
         }
         else
         {
@@ -747,9 +747,9 @@ public class MainMenuViewController : MonoBehaviour
             LoadingScreen.SetActive(false);
             SecondTourBackClickedPassScreen_SelectionUI();
 
-            FirebaseManager.Instance.PlayerData.GPassBought = true;
-            FirebaseManager.Instance.PlayerData.GTournamentEndDate = TournamentManager.Instance.DataTournament.GEndDate;
-            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            FirebaseMoralisManager.Instance.PlayerData.GPassBought = true;
+            FirebaseMoralisManager.Instance.PlayerData.GTournamentEndDate = TournamentManager.Instance.DataTournament.GEndDate;
+            FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
         }
         else
         {
@@ -767,7 +767,7 @@ public class MainMenuViewController : MonoBehaviour
                 LoadingScreen.SetActive(true);
                 if (WalletManager.Instance)
                 {
-                    if (FirebaseManager.Instance.PlayerData.PassBought)
+                    if (FirebaseMoralisManager.Instance.PlayerData.PassBought)
                     {
                         BackClickedPassScreen_SelectionUI();
                         StartTournament(true);
@@ -807,7 +807,7 @@ public class MainMenuViewController : MonoBehaviour
                 LoadingScreen.SetActive(true);
                 if (WalletManager.Instance)
                 {
-                    if (FirebaseManager.Instance.PlayerData.GPassBought)
+                    if (FirebaseMoralisManager.Instance.PlayerData.GPassBought)
                     {
 
                         SecondTourBackClickedPassScreen_SelectionUI();
@@ -864,17 +864,17 @@ public class MainMenuViewController : MonoBehaviour
 
                     if (Constants.ConvertToCCash)
                     {
-                        if (FirebaseManager.Instance.PlayerData.VC_Amount >= TicketPrice)
+                        if (FirebaseMoralisManager.Instance.PlayerData.VC_Amount >= TicketPrice)
                         {
                             Constants.GATransferAmount = TicketPrice;
-                            FirebaseManager.Instance.PlayerData.VC_Amount -= TicketPrice;
+                            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= TicketPrice;
                             apiRequestHandler.Instance.updatePlayerData();
 
                             if (AnalyticsManager.Instance)
                                 AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
 
                             Constants.PrintLog("transaction was success for tournament");
-                            UpdateVCText(FirebaseManager.Instance.PlayerData.VC_Amount.ToString());
+                            UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount.ToString());
                             StartTournament(true);
                             
                         }
@@ -941,17 +941,17 @@ public class MainMenuViewController : MonoBehaviour
 
                     if (Constants.ConvertToCCash)
                     {
-                        if (FirebaseManager.Instance.PlayerData.VC_Amount >= SecondTourTicketPrice)
+                        if (FirebaseMoralisManager.Instance.PlayerData.VC_Amount >= SecondTourTicketPrice)
                         {
                             Constants.GATransferAmount = SecondTourTicketPrice;
-                            FirebaseManager.Instance.PlayerData.VC_Amount -= SecondTourTicketPrice;
+                            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= SecondTourTicketPrice;
                             apiRequestHandler.Instance.updatePlayerData();
 
                             if (AnalyticsManager.Instance)
                                 AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
 
                             Constants.PrintLog("transaction was success for tournament");
-                            UpdateVCText(FirebaseManager.Instance.PlayerData.VC_Amount.ToString());
+                            UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount.ToString());
                             SecondTourStartTournament(true);
 
                         }
@@ -1021,8 +1021,8 @@ public class MainMenuViewController : MonoBehaviour
 
         if (Constants.LoggedIn)
         {
-            FirebaseManager.Instance.PlayerData.AvatarID = Constants.FlagSelectedIndex;
-            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            FirebaseMoralisManager.Instance.PlayerData.AvatarID = Constants.FlagSelectedIndex;
+            FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
         }
     }
     #endregion
@@ -1039,8 +1039,8 @@ public class MainMenuViewController : MonoBehaviour
         ResetRegisterFields();
         TournamentMiniScreen.SetActive(true);
 
-        if (FirebaseManager.Instance)
-            FirebaseManager.Instance.LogoutUser();
+        if (FirebaseMoralisManager.Instance)
+            FirebaseMoralisManager.Instance.LogoutUser();
     }
 
     public void OnGetCred(string info)
@@ -1073,16 +1073,16 @@ public class MainMenuViewController : MonoBehaviour
             if (!Constants.LoggedIn)
             {
                 LoadingScreen.SetActive(true);
-                FirebaseManager.Instance.Credentails = JsonConvert.DeserializeObject<AuthCredentials>(info);
+                FirebaseMoralisManager.Instance.Credentails = JsonConvert.DeserializeObject<AuthCredentials>(info);
 
                 if (!Constants.WalletChanged)
                 {
                     if (Constants.isUsingFirebaseSDK)
-                        FirebaseManager.Instance.LoginUser(FirebaseManager.Instance.Credentails.Email, FirebaseManager.Instance.Credentails.Password, FirebaseManager.Instance.Credentails.UserName);
+                        FirebaseMoralisManager.Instance.LoginUser(FirebaseMoralisManager.Instance.Credentails.Email, FirebaseMoralisManager.Instance.Credentails.Password, FirebaseMoralisManager.Instance.Credentails.UserName);
                     else
                     {
-                        apiRequestHandler.Instance.signInWithEmail(FirebaseManager.Instance.Credentails.Email,
-                            FirebaseManager.Instance.Credentails.Password);
+                        apiRequestHandler.Instance.signInWithEmail(FirebaseMoralisManager.Instance.Credentails.Email,
+                            FirebaseMoralisManager.Instance.Credentails.Password);
                     }
                 }
                 else
@@ -1091,8 +1091,8 @@ public class MainMenuViewController : MonoBehaviour
                     ShowToast(3f, "Previous connected wallet was changed, auto login will not work, please login again.");
                     LoadingScreen.SetActive(false);
 
-                    if (FirebaseManager.Instance)
-                        FirebaseManager.Instance.ResetStorage();
+                    if (FirebaseMoralisManager.Instance)
+                        FirebaseMoralisManager.Instance.ResetStorage();
                 }
             }
         }
@@ -1122,7 +1122,7 @@ public class MainMenuViewController : MonoBehaviour
         else
         {
             LoadingScreen.SetActive(true);
-            FirebaseManager.Instance.CheckEmailForAuth(Constants.SavedEmail, Constants.SavedPass, Constants.SavedUserName);
+            FirebaseMoralisManager.Instance.CheckEmailForAuth(Constants.SavedEmail, Constants.SavedPass, Constants.SavedUserName);
         }
     }
 
@@ -1360,7 +1360,7 @@ public class MainMenuViewController : MonoBehaviour
         LoadingScreen.SetActive(true);
         Constants.RegisterSubmit = true;
         if (Constants.isUsingFirebaseSDK)
-            FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.CheckWalletDB(PlayerPrefs.GetString("Account")));
+            FirebaseMoralisManager.Instance.StartCoroutine(FirebaseMoralisManager.Instance.CheckWalletDB(PlayerPrefs.GetString("Account")));
         else
         {
             apiRequestHandler.Instance.signUpWithEmail(email, pass, userName);
@@ -1377,11 +1377,11 @@ public class MainMenuViewController : MonoBehaviour
     {
         Constants.LoggedIn = true;
         //saving cred into browser local strorage
-        if (FirebaseManager.Instance)
+        if (FirebaseMoralisManager.Instance)
         {
-            FirebaseManager.Instance.Credentails.WalletAddress = WalletManager.Instance.GetAccount();
-            string _json = JsonConvert.SerializeObject(FirebaseManager.Instance.Credentails);
-            FirebaseManager.Instance.SetLocalStorage(Constants.CredKey, _json);
+            FirebaseMoralisManager.Instance.Credentails.WalletAddress = WalletManager.Instance.GetAccount();
+            string _json = JsonConvert.SerializeObject(FirebaseMoralisManager.Instance.Credentails);
+            FirebaseMoralisManager.Instance.SetLocalStorage(Constants.CredKey, _json);
         }
 
         ChangeUserNameText(Constants.UserName);
@@ -1392,9 +1392,9 @@ public class MainMenuViewController : MonoBehaviour
         MenuScreen.SetActive(true);
 
         if (!_newUser)
-            FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.FetchUserDB(PlayerPrefs.GetString("Account"), ""));
+            FirebaseMoralisManager.Instance.StartCoroutine(FirebaseMoralisManager.Instance.FetchUserDB(PlayerPrefs.GetString("Account"), ""));
         else
-            FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.CheckCreateUserDB(PlayerPrefs.GetString("Account"), ""));
+            FirebaseMoralisManager.Instance.StartCoroutine(FirebaseMoralisManager.Instance.CheckCreateUserDB(PlayerPrefs.GetString("Account"), ""));
     }
 
     public void OnEmailChanged_Login(string _val)
@@ -1443,7 +1443,7 @@ public class MainMenuViewController : MonoBehaviour
         SavedUserName = userName;
 
         LoadingScreen.SetActive(true);
-        FirebaseManager.Instance.LoginUser(SavedEmail, SavedPass, SavedUserName);
+        FirebaseMoralisManager.Instance.LoginUser(SavedEmail, SavedPass, SavedUserName);
 
     }
 
@@ -1897,20 +1897,20 @@ public class MainMenuViewController : MonoBehaviour
         if (IsPractice)
         {
             PushingTries = true;
-            FirebaseManager.Instance.PlayerData.NumberOfTriesPractice++;
-            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            FirebaseMoralisManager.Instance.PlayerData.NumberOfTriesPractice++;
+            FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
         }
         else if (IsTournament)
         {
             PushingTries = true;
-            FirebaseManager.Instance.PlayerData.NumberOfTries++;
-            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            FirebaseMoralisManager.Instance.PlayerData.NumberOfTries++;
+            FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
         } 
         else if (IsSecondTournament)
         {
             PushingTries = true;
-            FirebaseManager.Instance.PlayerData.GNumberOfTries++;
-            FirebaseManager.Instance.UpdatedFireStoreData(FirebaseManager.Instance.PlayerData);
+            FirebaseMoralisManager.Instance.PlayerData.GNumberOfTries++;
+            FirebaseMoralisManager.Instance.UpdatedFireStoreData(FirebaseMoralisManager.Instance.PlayerData);
         }
 #endif
         SelectedCar = _selecteableCars[_currentSelectedCarIndex].carSettings;
@@ -2200,7 +2200,7 @@ public class MainMenuViewController : MonoBehaviour
         }
         else
         {
-            FirebaseManager.Instance.SendPasswordResetEmail(UIForgetPassword.EmailInput.text);
+            FirebaseMoralisManager.Instance.SendPasswordResetEmail(UIForgetPassword.EmailInput.text);
         }
     }
 
@@ -2222,7 +2222,7 @@ public class MainMenuViewController : MonoBehaviour
         }
         else
         {
-            FirebaseManager.Instance.ResendVerificationEmail();
+            FirebaseMoralisManager.Instance.ResendVerificationEmail();
         }
     }
     #endregion
@@ -2253,8 +2253,8 @@ public class MainMenuViewController : MonoBehaviour
         Constants.SoundSliderValue = UISetting.SoundSlider.value;
         Constants.MusicSliderValue = UISetting.MusicSlider.value;
 
-        FirebaseManager.Instance.SetLocalStorage(Constants.SoundKey, Constants.SoundSliderValue.ToString());
-        FirebaseManager.Instance.SetLocalStorage(Constants.MusicKey, Constants.MusicSliderValue.ToString());
+        FirebaseMoralisManager.Instance.SetLocalStorage(Constants.SoundKey, Constants.SoundSliderValue.ToString());
+        FirebaseMoralisManager.Instance.SetLocalStorage(Constants.MusicKey, Constants.MusicSliderValue.ToString());
     }
 
     #endregion
@@ -2354,10 +2354,10 @@ public class MainMenuViewController : MonoBehaviour
             {
                 if (PhotonNetwork.IsConnected)
                 {
-                    if(FirebaseManager.Instance.PlayerData.VC_Amount>=Constants.SelectedCurrencyAmount)
+                    if(FirebaseMoralisManager.Instance.PlayerData.VC_Amount>=Constants.SelectedCurrencyAmount)
                     {
                         Constants.GATransferAmount = Constants.SelectedCurrencyAmount;
-                        FirebaseManager.Instance.PlayerData.VC_Amount -= Constants.SelectedCurrencyAmount;
+                        FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= Constants.SelectedCurrencyAmount;
                         apiRequestHandler.Instance.updatePlayerData();
 
                         if (AnalyticsManager.Instance)
@@ -2391,7 +2391,7 @@ public class MainMenuViewController : MonoBehaviour
         {
             if (Constants.IsMultiplayer && Constants.CanWithdraw)
             {
-                FirebaseManager.Instance.PlayerData.VC_Amount += Constants.SelectedCurrencyAmount;
+                FirebaseMoralisManager.Instance.PlayerData.VC_Amount += Constants.SelectedCurrencyAmount;
                 apiRequestHandler.Instance.updatePlayerData();
                 WalletManager.Instance.OnDepositBackCalled(true);
             }
@@ -2783,8 +2783,8 @@ public class MainMenuViewController : MonoBehaviour
 
     public void BuyVC_StoreUI()
     {
-        FirebaseManager.Instance.PlayerData.VC_Amount += Constants.CCashPurchaseAmount;
-        Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
+        FirebaseMoralisManager.Instance.PlayerData.VC_Amount += Constants.CCashPurchaseAmount;
+        Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
         apiRequestHandler.Instance.updatePlayerData();
         ShowToast(3f, Constants.VirtualCurrency + " was successfully purchased.", true);
         SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
@@ -2796,11 +2796,11 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost)
         {
-            FirebaseManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost;
+            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost;
             tempNFTData.mechanicsData.Tyre_Laps = 0;
-            FirebaseManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
+            FirebaseMoralisManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
 
-            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
+            Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
 
             ShowToast(3f, "Tyres were successfully fixed.", true);
@@ -2820,11 +2820,11 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost)
         {
-            FirebaseManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost;
+            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost;
             tempNFTData.mechanicsData.EngineOil_Laps = 0;
-            FirebaseManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
+            FirebaseMoralisManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
 
-            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
+            Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Engine Oil was successfully filled.", true);
 
@@ -2843,11 +2843,11 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost)
         {
-            FirebaseManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost;
+            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost;
             tempNFTData.mechanicsData.Gas_Laps = 0;
-            FirebaseManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
+            FirebaseMoralisManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
 
-            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
+            Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Gas was successfully filled.", true);
 
@@ -2867,12 +2867,12 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost)
         {
-            FirebaseManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost;
+            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost;
             tempNFTData.mechanicsData.CarHealth = 100;
             Constants.StoredCarHealth = tempNFTData.mechanicsData.CarHealth;
-            FirebaseManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
+            FirebaseMoralisManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
 
-            Constants.VirtualCurrencyAmount = FirebaseManager.Instance.PlayerData.VC_Amount;
+            Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
             apiRequestHandler.Instance.updatePlayerData();
             ShowToast(3f, "Damage were repaired. health is full.", true);
 

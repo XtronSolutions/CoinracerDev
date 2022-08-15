@@ -4,8 +4,31 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 #region SuperClasses
+[System.Serializable]
+public class MoralisNFTArrayRequest
+{
+    public string[] tokenId;
+    public string uID;
+}
+
+[System.Serializable]
+public class MoralisNFTArrayResponse
+{
+    public List<Result> moralisNFTData = new List<Result>();
+}
+
+[System.Serializable]
+public class Result
+{
+    public string tokenId;
+    public string ownerWallet;
+    public string name;
+    public string mechanics;
+}
+
 public class SignatureResponse
 {
     public string signature { get; set; }
@@ -49,6 +72,9 @@ public class LeaderboardPayload
 
 public class apiRequestHandler : MonoBehaviour
 {
+    public static apiRequestHandler Instance;
+
+    #region Firebase datamembers
     //Staging : https://us-central1-coinracer-stagging.cloudfunctions.net/
     //Production : https://us-central1-coinracer-alpha-tournaments.cloudfunctions.net/
 
@@ -67,12 +93,31 @@ public class apiRequestHandler : MonoBehaviour
     private  string signupBOUserURL ;
     private  string updateUserBoURL;
     private  string leaderboardBOURL ;
-    public static apiRequestHandler Instance;
+    #endregion
 
+    #region Moralis datamembers
+    private string m_BaseURL = "https://v7f3czkmtmmf.usemoralis.com:2053/server/functions/";
+    private string m_AppID = "?_ApplicationId=8QhdEDdOy6fgMp0Bu6bUXmCU91VSvF1SDJOXbZAQ";
+    private string m_GetNFTDataFunc = "getNFTDetails";
+    private string m_GetNFTArrayDataFunc = "getNFTsDetails";
+    private string m_UpdateNFTDataFunc = "updateNFTData";
+    private string m_uID = "";
+    #endregion
+
+    private void OnEnable()
+    {
+        //StartCoroutine(ProcessNFTDataRequest("5063"));
+
+       string[] str_arr = new string[3]{ "5063", "5106", "20011" };
+       StartCoroutine(ProcessNFTDataArrayRequest(str_arr));
+    }
+
+    #region Firebase
     public void onClick()
     {
         apiRequestHandler.Instance.getLoginDetails("naeQzZ6LI0P5MAz4wNsVoozA93p2");
     }
+
     public void Start()
     {
         if (!Instance)
@@ -104,19 +149,20 @@ public class apiRequestHandler : MonoBehaviour
 
     public void updatePlayerData()
     {
-        StartCoroutine(processTokenRequest(FirebaseManager.Instance.Credentails.Email,
-            FirebaseManager.Instance.Credentails.Password, true));
+        StartCoroutine(processTokenRequest(FirebaseMoralisManager.Instance.Credentails.Email,
+            FirebaseMoralisManager.Instance.Credentails.Password, true));
     }
 
     public void signInWithEmail(string _email,string _pwd)
     {
         StartCoroutine(processTokenRequest(_email, _pwd,false));
     }
+
     public void signUpWithEmail(string _email,string _pwd,string _username)
     {
-        FirebaseManager.Instance.Credentails.Email = _email;
-        FirebaseManager.Instance.Credentails.Password = _pwd;
-        FirebaseManager.Instance.Credentails.UserName = _username;
+        FirebaseMoralisManager.Instance.Credentails.Email = _email;
+        FirebaseMoralisManager.Instance.Credentails.Password = _pwd;
+        FirebaseMoralisManager.Instance.Credentails.UserName = _username;
         StartCoroutine(processSignUpRequest(_email,_pwd,_username));
     }
 
@@ -124,6 +170,7 @@ public class apiRequestHandler : MonoBehaviour
     {
        // StartCoroutine(processRequest(_token, "loginDetails"));
     }
+
     private IEnumerator processSignUpRequest(string _email, string _pwd, string _username)
     {
         WWWForm form = new WWWForm();
@@ -143,8 +190,8 @@ public class apiRequestHandler : MonoBehaviour
             JToken token = JObject.Parse(request.downloadHandler.text);
             string tID = (string)token.SelectToken("idToken");
 
-            FirebaseManager.Instance.Credentails.Email = _email;
-            FirebaseManager.Instance.Credentails.Password = _pwd;
+            FirebaseMoralisManager.Instance.Credentails.Email = _email;
+            FirebaseMoralisManager.Instance.Credentails.Password = _pwd;
 
             StartCoroutine(signupBORequest(_email, _username, _pwd, tID));
         }
@@ -218,7 +265,6 @@ public class apiRequestHandler : MonoBehaviour
     {
         string _token = Constants.ResendTokenID;
         StartCoroutine(sendVerificationLink(_token,true));
-       
     }
 
     private IEnumerator sendVerificationLink(string _tokenId, bool resendAgain = false)
@@ -237,7 +283,7 @@ public class apiRequestHandler : MonoBehaviour
         {
             if (resendAgain)
             {
-                FirebaseManager.Instance.ResendEmailSent("");
+                FirebaseMoralisManager.Instance.ResendEmailSent("");
             }
             else
             {
@@ -290,8 +336,8 @@ public class apiRequestHandler : MonoBehaviour
 
     private IEnumerator processUpdateRequest(string _tID)
     {
-        FirebaseManager.Instance.updatePlayerDataPayload();
-        string req = JsonConvert.SerializeObject(FirebaseManager.Instance.PlayerDataPayload);
+        FirebaseMoralisManager.Instance.updatePlayerDataPayload();
+        string req = JsonConvert.SerializeObject(FirebaseMoralisManager.Instance.PlayerDataPayload);
         using UnityWebRequest request = UnityWebRequest.Put(BaseURL+ "GUpdateUserBO", req);//GUpdateUserBO//UpdateUserBO
         request.SetRequestHeader("Content-Type", "application/json");
         string _reqToken = "Bearer " + _tID;
@@ -307,7 +353,7 @@ public class apiRequestHandler : MonoBehaviour
         {
             JToken res = JObject.Parse(request.downloadHandler.text);
             if (request.result == UnityWebRequest.Result.Success)
-                FirebaseManager.Instance.OnDocUpdate("");
+                FirebaseMoralisManager.Instance.OnDocUpdate("");
             else if ((string) res.SelectToken("message") == "No User Found.")
                 MainMenuViewController.Instance.SomethingWentWrong();
             else if ((string) res.SelectToken("message") == "Unauthorized")
@@ -346,12 +392,12 @@ public class apiRequestHandler : MonoBehaviour
             JToken res = JObject.Parse(request.downloadHandler.text);
             if (request.result == UnityWebRequest.Result.Success)
             {
-                FirebaseManager.Instance.SetPlayerData(request.downloadHandler.text);
+                FirebaseMoralisManager.Instance.SetPlayerData(request.downloadHandler.text);
             }
             else if ((string) res.SelectToken("message") == "Email is not verified")
             {
                 Constants.ResendTokenID = _token;
-                FirebaseManager.Instance.showVerificationScreen();
+                FirebaseMoralisManager.Instance.showVerificationScreen();
             }
             else if ((string) res.SelectToken("message") == "No User Found.")
             {
@@ -378,8 +424,8 @@ public class apiRequestHandler : MonoBehaviour
 
     public void getLeaderboard(bool IsSecondTour)
     {
-        StartCoroutine(processLeaderboardToken(FirebaseManager.Instance.Credentails.Email,
-            FirebaseManager.Instance.Credentails.Password, IsSecondTour));
+        StartCoroutine(processLeaderboardToken(FirebaseMoralisManager.Instance.Credentails.Email,
+            FirebaseMoralisManager.Instance.Credentails.Password, IsSecondTour));
     }
 
     private IEnumerator processLeaderboardToken(string _email, string _password, bool IsSecondTour)
@@ -443,7 +489,7 @@ public class apiRequestHandler : MonoBehaviour
         else
         {
             if (request.result == UnityWebRequest.Result.Success)
-                FirebaseManager.Instance.OnQueryUpdate(request.downloadHandler.text, IsSecondTour);
+                FirebaseMoralisManager.Instance.OnQueryUpdate(request.downloadHandler.text, IsSecondTour);
             else
                 MainMenuViewController.Instance.SomethingWentWrongMessage();
         }   
@@ -466,15 +512,14 @@ public class apiRequestHandler : MonoBehaviour
         if (request.result == UnityWebRequest.Result.ConnectionError)
             MainMenuViewController.Instance.SomethingWentWrong();
         else if(request.result == UnityWebRequest.Result.Success)
-            FirebaseManager.Instance.OnPassEmailSent("");
+            FirebaseMoralisManager.Instance.OnPassEmailSent("");
         else
-            FirebaseManager.Instance.OnPassEmailSentError("");
+            FirebaseMoralisManager.Instance.OnPassEmailSentError("");
     }
-
 
     async public Task<string> GetSignature(string _pid, string _winner, string _score)
     {
-        string _token = await processSignatureToken(FirebaseManager.Instance.Credentails.Email, FirebaseManager.Instance.Credentails.Password);
+        string _token = await processSignatureToken(FirebaseMoralisManager.Instance.Credentails.Email, FirebaseMoralisManager.Instance.Credentails.Password);
         if (!string.IsNullOrEmpty(_token))
         {
             string signature = await processSignatureRequest(_token, _pid, _winner, _score);
@@ -553,4 +598,73 @@ public class apiRequestHandler : MonoBehaviour
             }
         }
     }
+    #endregion
+
+    #region Moralis
+    private IEnumerator ProcessNFTDataRequest(string _token)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("tokenId", _token);
+        form.AddField("uID", m_uID);
+        using UnityWebRequest request = UnityWebRequest.Post(m_BaseURL + m_GetNFTDataFunc+ m_AppID, form);
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+        }
+        else if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log(request.downloadHandler.text);
+        }
+        else
+        {
+            Debug.LogError(request.downloadHandler.text);
+        }
+    }
+
+    private IEnumerator ProcessNFTDataArrayRequest(string[] _token)
+    {
+        MoralisNFTArrayRequest _dataNew = new MoralisNFTArrayRequest();
+        _dataNew.tokenId = _token;
+        _dataNew.uID = m_uID;
+
+        string reqNew = JsonConvert.SerializeObject(_dataNew);
+        byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
+
+
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_GetNFTArrayDataFunc + m_AppID, "POST");
+        request.uploadHandler = new UploadHandlerRaw(rawBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+        }
+        else
+        {
+            Debug.Log(request.downloadHandler.text);
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                MoralisNFTArrayResponse _data = new MoralisNFTArrayResponse();
+                _data= JsonConvert.DeserializeObject<MoralisNFTArrayResponse>(request.downloadHandler.text);
+
+                for (int i = 0; i < _data.moralisNFTData.Count; i++)
+                {
+                    Debug.Log(_data.moralisNFTData[i].tokenId);
+                }
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+            }
+        }
+
+    }
+
+    #endregion
 }

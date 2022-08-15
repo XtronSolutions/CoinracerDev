@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
@@ -118,7 +118,7 @@ public class ChipraceHandler : MonoBehaviour
         }
         else
         {
-            //string info = FirebaseManager.Instance.GetStalkedNFT();
+            //string info = FirebaseMoralisManager.Instance.GetStalkedNFT();
             //nftStalked = JsonConvert.DeserializeObject<StalkedNFT>(info);
         }
     }
@@ -141,7 +141,7 @@ public class ChipraceHandler : MonoBehaviour
         if (Constants.UseChipraceLocalDB)
             SetLocalStorage(Constants.NFTKey, _json);
         else
-            FirebaseManager.Instance.SetStalkedNFT(_json);
+            FirebaseMoralisManager.Instance.SetStalkedNFT(_json);
     }
 
     public void RemoveAndSetChipraceData(int _data, string _name)
@@ -159,7 +159,7 @@ public class ChipraceHandler : MonoBehaviour
         if (Constants.UseChipraceLocalDB)
             SetLocalStorage(Constants.NFTKey, _json);
         else
-            FirebaseManager.Instance.SetStalkedNFT(_json);
+            FirebaseMoralisManager.Instance.SetStalkedNFT(_json);
     }
 
     public void SetLocalStorage(string key, string data)
