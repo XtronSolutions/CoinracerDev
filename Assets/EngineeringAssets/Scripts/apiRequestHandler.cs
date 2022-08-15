@@ -15,6 +15,16 @@ public class MoralisNFTArrayRequest
 }
 
 [System.Serializable]
+public class MoralisUpdateRequest
+{
+    public string tokenId { get; set; }
+    public string name { get; set; }
+    public string mechanics { get; set; }
+    public string uID { get; set; }
+}
+
+
+[System.Serializable]
 public class MoralisNFTData
 {
     public string tokenId { get; set; }
@@ -662,18 +672,18 @@ public class apiRequestHandler : MonoBehaviour
 
     }
 
-    async public Task<string> ProcessNFTUpdateDataRequest(string _tokenid,string _name,string _mechanics)
+    async public Task<bool> ProcessNFTUpdateDataRequest(string _tokenid,string _name,string _mechanics)
     {
-        MoralisNFTData _dataNEW = new MoralisNFTData();
+        MoralisUpdateRequest _dataNEW = new MoralisUpdateRequest();
         _dataNEW.tokenId = _tokenid;
-        //_dataNEW.uid = m_uID;
+        _dataNEW.name = _name;
+        _dataNEW.mechanics = _mechanics;
+        _dataNEW.uID = m_uID;
 
-        string reqNew = "";
-        //string reqNew = JsonConvert.SerializeObject(_dataNew);
+        string reqNew = JsonConvert.SerializeObject(_dataNEW);
         byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
 
-
-        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_GetNFTArrayDataFunc + m_AppID, "POST");
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_UpdateNFTDataFunc + m_AppID, "POST");
         request.uploadHandler = new UploadHandlerRaw(rawBody);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
@@ -683,20 +693,18 @@ public class apiRequestHandler : MonoBehaviour
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();
-            return "";
+            return false;
         }
         else
         {
-            Debug.Log(request.downloadHandler.text);
-
             if (request.result == UnityWebRequest.Result.Success)
             {
-                return request.downloadHandler.text;
+                return true;
             }
             else
             {
                 MainMenuViewController.Instance.SomethingWentWrongMessage();
-                return "";
+                return false;
             }
         }
 
