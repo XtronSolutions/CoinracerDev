@@ -10,25 +10,24 @@ using System.Collections.Generic;
 [System.Serializable]
 public class MoralisNFTArrayRequest
 {
-    public string[] tokenId;
-    public string uID;
+    public List<string> tokenId { get; set; }
+    public string uID { get; set; }
+}
+
+[System.Serializable]
+public class MoralisNFTData
+{
+    public string tokenId { get; set; }
+    public string ownerWallet { get; set; }
+    public string name { get; set; }
+    public string mechanics { get; set; }
 }
 
 [System.Serializable]
 public class MoralisNFTArrayResponse
 {
-    public List<Result> moralisNFTData = new List<Result>();
+    public List<MoralisNFTData> result { get; set; }
 }
-
-[System.Serializable]
-public class Result
-{
-    public string tokenId;
-    public string ownerWallet;
-    public string name;
-    public string mechanics;
-}
-
 public class SignatureResponse
 {
     public string signature { get; set; }
@@ -108,8 +107,8 @@ public class apiRequestHandler : MonoBehaviour
     {
         //StartCoroutine(ProcessNFTDataRequest("5063"));
 
-       string[] str_arr = new string[3]{ "5063", "5106", "20011" };
-       StartCoroutine(ProcessNFTDataArrayRequest(str_arr));
+      //string[] str_arr = new string[3]{ "5063", "5106", "20011" };
+       //StartCoroutine(ProcessNFTDataArrayRequest(str_arr));
     }
 
     #region Firebase
@@ -624,7 +623,7 @@ public class apiRequestHandler : MonoBehaviour
         }
     }
 
-    private IEnumerator ProcessNFTDataArrayRequest(string[] _token)
+    async public Task<string> ProcessNFTDataArrayRequest(List<string> _token)
     {
         MoralisNFTArrayRequest _dataNew = new MoralisNFTArrayRequest();
         _dataNew.tokenId = _token;
@@ -639,28 +638,65 @@ public class apiRequestHandler : MonoBehaviour
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
 
-        yield return request.SendWebRequest();
+        await request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
         }
         else
         {
             Debug.Log(request.downloadHandler.text);
+
             if (request.result == UnityWebRequest.Result.Success)
             {
-                MoralisNFTArrayResponse _data = new MoralisNFTArrayResponse();
-                _data= JsonConvert.DeserializeObject<MoralisNFTArrayResponse>(request.downloadHandler.text);
-
-                for (int i = 0; i < _data.moralisNFTData.Count; i++)
-                {
-                    Debug.Log(_data.moralisNFTData[i].tokenId);
-                }
+                return request.downloadHandler.text;
             }
             else
             {
                 MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
+
+    }
+
+    async public Task<string> ProcessNFTUpdateDataRequest(string _tokenid,string _name,string _mechanics)
+    {
+        MoralisNFTData _dataNEW = new MoralisNFTData();
+        _dataNEW.tokenId = _tokenid;
+        //_dataNEW.uid = m_uID;
+
+        string reqNew = "";
+        //string reqNew = JsonConvert.SerializeObject(_dataNew);
+        byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
+
+
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_GetNFTArrayDataFunc + m_AppID, "POST");
+        request.uploadHandler = new UploadHandlerRaw(rawBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        await request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            Debug.Log(request.downloadHandler.text);
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
             }
         }
 

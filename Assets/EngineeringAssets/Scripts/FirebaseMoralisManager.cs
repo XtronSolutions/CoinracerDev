@@ -73,7 +73,7 @@ public class updateDataPayload
     public UserData data { get; set; }
 }
 #endregion
-public class FirebaseManager : MonoBehaviour
+public class FirebaseMoralisManager : MonoBehaviour
 {
     #region DataMembers
     [DllImport("__Internal")]
@@ -86,7 +86,7 @@ public class FirebaseManager : MonoBehaviour
 
 
     public UserData[] PlayerDataArray;
-    public static FirebaseManager Instance;
+    public static FirebaseMoralisManager Instance;
     public Dictionary<int, NFTMehanicsData> NFTMehanics = new Dictionary<int, NFTMehanicsData>();
 
     [HideInInspector]
@@ -100,6 +100,8 @@ public class FirebaseManager : MonoBehaviour
     bool DataFetchError = false;
     bool FetchUserData = false;
     bool UserDataFetched = false;
+
+    private List<string> TokenPayload = new List<string>();
     #endregion
 
     #region StartFunctionality
@@ -251,7 +253,7 @@ public class FirebaseManager : MonoBehaviour
         if(MainMenuViewController.Instance)
         {
             UID = info;
-            FirebaseManager.Instance.StartCoroutine(FirebaseManager.Instance.CheckCreateUserDB(PlayerPrefs.GetString("Account"), ""));
+            StartCoroutine(CheckCreateUserDB(PlayerPrefs.GetString("Account"), ""));
             SendVerEmail();
             MainMenuViewController.Instance.ShowToast(4f, "Verification link sent to entered email address, please check inbox (or spam) and click on link to verify then login.");
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
@@ -699,19 +701,20 @@ public class FirebaseManager : MonoBehaviour
         string _json = JsonConvert.SerializeObject(NFTMehanics);
         StoreNFTLocally(_json);
     }
-    public void GetNFTData()
+    async public void GetNFTData()
     {
+        Constants.GetMoralisData = false;
         NFTMehanics.Clear();
+        NFTMehanicsData _data = new NFTMehanicsData();
+        _data.OwnerWalletAddress = "testone";
+        _data.mechanicsData = new MechanicsData("Bolt", 100, 0, 0, 0);
+        NFTMehanics.Add(0, _data);
+
         //this is function that will be used to populate data from moralis
         if (Constants.DebugAllCars)
         {
             if (GetNFTLocally() == "")
             {
-                NFTMehanicsData _data = new NFTMehanicsData();
-                _data.OwnerWalletAddress = "testone";
-                _data.mechanicsData = new MechanicsData("Bolt", 100, 0, 0, 0);
-                NFTMehanics.Add(0, _data);
-
                 for (int i = 0; i < NFTGameplayManager.Instance.DataNFTModel.Count; i++)
                 {
                     NFTMehanicsData _newData = new NFTMehanicsData();
@@ -732,17 +735,62 @@ public class FirebaseManager : MonoBehaviour
             else
             {
                 Debug.Log("NFT DATA Retrieved");
-                //PlayerPrefs.DeleteKey("NFTLocalData");
-
-                //NFTMehanics.Clear();
                 NFTMehanics = JsonConvert.DeserializeObject<Dictionary<int, NFTMehanicsData>>(GetNFTLocally());
+            }
+        }
+        else
+        {
+            if (Constants.CheckAllNFT)
+            {
+                TokenPayload.Clear();
+                for (int i = 0; i < Constants.TokenNFT.Count; i++)
+                {
+                    for (int j = 0; j < Constants.TokenNFT[i].ID.Count; j++)
+                        TokenPayload.Add(Constants.TokenNFT[i].ID[j].ToString());
+                }
 
-                //foreach (var item in NFTMehanics)
-                //{
-                //    Debug.Log(item.Key);
-                //    Debug.Log(item.Value.mechanicsData.CarName);
-                //}
+                string _response = await apiRequestHandler.Instance.ProcessNFTDataArrayRequest(TokenPayload);
 
+                if (_response != "" && !string.IsNullOrEmpty(_response))
+                {
+                    MoralisNFTArrayResponse _dataNEW = new MoralisNFTArrayResponse();
+                    _dataNEW = JsonConvert.DeserializeObject<MoralisNFTArrayResponse>(_response);
+
+                    for (int i = 0; i < _dataNEW.result.Count; i++)
+                    {
+                        NFTMehanicsData _newData = new NFTMehanicsData();
+                        _newData.OwnerWalletAddress = _dataNEW.result[i].ownerWallet;
+
+                        int _carHealth = 100;
+                        float _carTyreLaps = 0;
+                        float _carOilLaps = 0;
+                        float _carGasLaps = 0;
+
+                        if (!string.IsNullOrEmpty(_dataNEW.result[i].mechanics))
+                        {
+                            JToken Jresponse = JObject.Parse(_dataNEW.result[i].mechanics);
+
+                            _carHealth = Jresponse.SelectToken("CarHealth") != null ? (int)Jresponse.SelectToken("CarHealth") : 100;
+                            _carTyreLaps = Jresponse.SelectToken("Tyre_Laps") != null ? (float)Jresponse.SelectToken("Tyre_Laps") : 0;
+                            _carOilLaps = Jresponse.SelectToken("EngineOil_Laps") != null ? (float)Jresponse.SelectToken("EngineOil_Laps") : 0;
+                            _carGasLaps = Jresponse.SelectToken("Gas_Laps") != null ? (float)Jresponse.SelectToken("Gas_Laps") : 0;
+                        }
+
+                        _newData.mechanicsData = new MechanicsData(_dataNEW.result[i].name, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps);
+                        NFTMehanics.Add(int.Parse(_dataNEW.result[i].tokenId), _newData);
+                    }
+
+                    Constants.GetMoralisData = true;
+                }
+                else
+                {
+                    Debug.LogError("Empty data received");
+                    Constants.GetMoralisData = true;
+                }
+            }
+            else
+            {
+                Invoke(nameof(GetNFTData), 0.5f);
             }
         }
     }

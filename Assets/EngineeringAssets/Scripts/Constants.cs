@@ -197,6 +197,7 @@ public static class Constants
     public static int CCashPurchaseAmount = 100;
     public static bool CarTotaled = false;
     public static int SelectedCarToken = 0;
+    public static bool GetMoralisData = false;
 
     async public static void GetCracePrice()
     {

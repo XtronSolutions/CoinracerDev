@@ -27,7 +27,7 @@ public class NFTGameplayManager : MonoBehaviour
     }
     public void InstantiateNFT()
     {
-        if (Constants.CheckAllNFT)
+        if (Constants.CheckAllNFT && Constants.GetMoralisData)
         {
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             prefabCounter = 0;
