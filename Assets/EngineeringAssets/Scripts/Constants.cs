@@ -301,6 +301,7 @@ public static class Constants
         }
         CheckAllNFT = false;
         StoredCarNames.Clear();
+
     }
 
     public static string GetCurrencyName()

@@ -21,35 +21,6 @@ public class MemberUI
 }
 
 [Serializable]
-public class StoreUI
-{
-    public GameObject MainScreen;
-    public Button StoreButton;
-    public TextMeshProUGUI CCashTxt;
-
-    public Button BuyVCButton;
-    public TextMeshProUGUI BuyVC_Txt;
-
-    public Button FixTyresButton;
-    public TextMeshProUGUI FixTyres_Txt;
-
-    public Button FillOilButton;
-    public TextMeshProUGUI FillOil_Txt;
-
-    public Button FillGasButton;
-    public TextMeshProUGUI FillGas_Txt;
-
-    public Button RepairDamageButton;
-    public TextMeshProUGUI RepairDamage_Text;
-
-    public GameObject ConsumablesObject;
-
-    public Button BackButton;
-    public TextMeshProUGUI CarNameText;
-}
-
-
-[Serializable]
 public class SecondTournamentUI
 {
     public GameObject MainScreen;
@@ -352,7 +323,6 @@ public class MainMenuViewController : MonoBehaviour
     public MultiplayerSelectionUI UIMultiplayerSelection;
     public CraceApprovalUI UICraceApproval;
     public TokenCarSelectionUI UITokenCarSelection;
-    public StoreUI UIStore;
     public MemberUI UIMember;
     public GameObject MultiplayerPrefab;
 
@@ -449,7 +419,6 @@ public class MainMenuViewController : MonoBehaviour
         SubscribeEvents_ConnectionUI();
         SubscribeEvents_MultiplayerSelection();
         SubscribeButton_CraceUI();
-        ButtonListeners_StoreUI();
 
         if (Constants.EarlyBuild)
             UIMember.MainScreen.SetActive(true);
@@ -1384,6 +1353,7 @@ public class MainMenuViewController : MonoBehaviour
             FirebaseMoralisManager.Instance.SetLocalStorage(Constants.CredKey, _json);
         }
 
+        FirebaseMoralisManager.Instance.GetNFTData();
         ChangeUserNameText(Constants.UserName);
         UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
         LoadingScreen.SetActive(false);
@@ -1954,7 +1924,8 @@ public class MainMenuViewController : MonoBehaviour
     public void BackButton_Garage()
     {
         ToggleScreen_Garage(false);
-        NFTGameplayManager.Instance.RemoveSavedPrefabs();
+        //NFTGameplayManager.Instance.RemoveSavedPrefabs();
+        GarageHandler.Instance.DeleteData();
     }
 
     public void GarageButton_Garage()
@@ -1966,7 +1937,7 @@ public class MainMenuViewController : MonoBehaviour
         if (Constants.DebugAllCars)
         {
             ToggleScreen_Garage(true);
-            NFTGameplayManager.Instance.InstantiateNFT();
+            NFTGameplayManager.Instance.ProcessNFT();
 
             return;
         }
@@ -1988,7 +1959,7 @@ public class MainMenuViewController : MonoBehaviour
                 }
                 else
                 {
-                    NFTGameplayManager.Instance.InstantiateNFT();
+                    NFTGameplayManager.Instance.ProcessNFT();
                 }
             }
             else
@@ -2708,183 +2679,6 @@ public class MainMenuViewController : MonoBehaviour
     public void CancelApprove_CraceUI()
     {
         ToogleScreen_CraceUI(false);
-    }
-    #endregion
-
-    #region StoreUI/Functionality
-
-    private NFTMehanicsData tempNFTData;
-    private int tempNFTID = 0;
-    public void ToggleMainScreen_StoreUI(bool state)
-    {
-        UIStore.MainScreen.SetActive(state);
-    }
-
-    public void SetCCashText_StoreUI(string txt)
-    {
-        UIStore.CCashTxt.text = txt;
-    }
-
-    public void UpdateCarName_StoreUI(string _name)
-    {
-        UIStore.CarNameText.text = _name;
-    }
-    public void ButtonListeners_StoreUI()
-    {
-        UIStore.StoreButton.onClick.AddListener(EnableStore_StoreUI);
-        UIStore.BackButton.onClick.AddListener(DisableStore_StoreUI);
-        UIStore.FixTyresButton.onClick.AddListener(FixTyre_StoreUI);
-        UIStore.BuyVCButton.onClick.AddListener(BuyVC_StoreUI);
-        UIStore.FillGasButton.onClick.AddListener(FillGas_StoreUI);
-        UIStore.FillOilButton.onClick.AddListener(FillEngineOil_StoreUI);
-        UIStore.RepairDamageButton.onClick.AddListener(RepairDamage_StoreUI);
-    }
-
-    public void EnableStore_StoreUI()
-    {
-        ToggleMainScreen_StoreUI(true);
-        UIStore.ConsumablesObject.SetActive(false);
-        UIStore.BuyVCButton.gameObject.SetActive(true);
-        SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-        UpdateBUYVCText_StoreUI(Constants.CCashPurchaseAmount.ToString());
-    }
-
-    public void EnableConsumables_StoreUI(NFTMehanicsData _mainData,int NFTID)
-    {
-        tempNFTData = _mainData;
-        tempNFTID = NFTID;
-        Constants.StoredCarHealth = _mainData.mechanicsData.CarHealth;
-        UpdateCarName_StoreUI(tempNFTData.mechanicsData.CarName);
-        ToggleMainScreen_StoreUI(true);
-        UIStore.ConsumablesObject.SetActive(true);
-        UIStore.BuyVCButton.gameObject.SetActive(false);
-        SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-        UpdateConsumableText_StoreUI();
-    }
-
-
-    public void DisableStore_StoreUI()
-    {
-        ToggleMainScreen_StoreUI(false);
-    }
-
-    public void UpdateBUYVCText_StoreUI(string VC_Txt)
-    {
-        UIStore.BuyVC_Txt.text = "*" + VC_Txt + " " + Constants.VirtualCurrency + " will be added in single transaction";
-    }
-    public void UpdateConsumableText_StoreUI()
-    {
-        MechanicsManager.Instance.UpdateConsumables(tempNFTData);
-        UIStore.FixTyres_Txt.text = "*Remaining playable laps : " + MechanicsManager.Instance.GetRemainingTyreLaps()+ " laps" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost+" "+ Constants.VirtualCurrency;
-        UIStore.FillOil_Txt.text = "*Remaining playable laps : " + MechanicsManager.Instance.GetRemainingOilLaps() + " laps" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost + " " + Constants.VirtualCurrency;
-        UIStore.FillGas_Txt.text = "*Remaining playable laps : " + MechanicsManager.Instance.GetRemainingGasLaps() + " laps" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.Gas.VC_Cost + " " + Constants.VirtualCurrency;
-        UIStore.RepairDamage_Text.text = "*Health : " + Constants.StoredCarHealth + " %" + "\n" + "*Repair Cost : " + MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost + " " + Constants.VirtualCurrency;
-    }
-
-    public void BuyVC_StoreUI()
-    {
-        FirebaseMoralisManager.Instance.PlayerData.VC_Amount += Constants.CCashPurchaseAmount;
-        Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
-        apiRequestHandler.Instance.updatePlayerData();
-        ShowToast(3f, Constants.VirtualCurrency + " was successfully purchased.", true);
-        SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-        UpdateBUYVCText_StoreUI(Constants.CCashPurchaseAmount.ToString());
-        UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
-    }
-
-    public void FixTyre_StoreUI()
-    {
-        if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost)
-        {
-            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.Tyres.VC_Cost;
-            tempNFTData.mechanicsData.Tyre_Laps = 0;
-            FirebaseMoralisManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
-
-            Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
-            apiRequestHandler.Instance.updatePlayerData();
-
-            ShowToast(3f, "Tyres were successfully fixed.", true);
-
-            SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-            UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
-            UpdateConsumableText_StoreUI();
-            //UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
-        }
-        else
-        {
-            ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency+" , buy more.", false);
-        }
-    }
-
-    public void FillEngineOil_StoreUI()
-    {
-        if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost)
-        {
-            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.EngineOil.VC_Cost;
-            tempNFTData.mechanicsData.EngineOil_Laps = 0;
-            FirebaseMoralisManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
-
-            Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
-            apiRequestHandler.Instance.updatePlayerData();
-            ShowToast(3f, "Engine Oil was successfully filled.", true);
-
-            SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-            UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
-            UpdateConsumableText_StoreUI();
-            //UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
-        }
-        else
-        {
-            ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
-        }
-    }
-
-    public void FillGas_StoreUI()
-    {
-        if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost)
-        {
-            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.Gas.VC_Cost;
-            tempNFTData.mechanicsData.Gas_Laps = 0;
-            FirebaseMoralisManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
-
-            Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
-            apiRequestHandler.Instance.updatePlayerData();
-            ShowToast(3f, "Gas was successfully filled.", true);
-
-            SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-            UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
-            UpdateConsumableText_StoreUI();
-
-            // UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
-        }
-        else
-        {
-            ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
-        }
-    }
-
-    public void RepairDamage_StoreUI()
-    {
-        if (Constants.VirtualCurrencyAmount >= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost)
-        {
-            FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= MechanicsManager.Instance._consumableSettings.DamageRepair.VC_Cost;
-            tempNFTData.mechanicsData.CarHealth = 100;
-            Constants.StoredCarHealth = tempNFTData.mechanicsData.CarHealth;
-            FirebaseMoralisManager.Instance.UpdateMechanics(tempNFTID, tempNFTData);
-
-            Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
-            apiRequestHandler.Instance.updatePlayerData();
-            ShowToast(3f, "Damage were repaired. health is full.", true);
-
-            SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
-            UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
-            UpdateConsumableText_StoreUI();
-            //UpdateTexts_StoreUI(Constants.CCashPurchaseAmount.ToString());
-        }
-        else
-        {
-            ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
-        }
     }
     #endregion
 

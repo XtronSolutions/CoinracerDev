@@ -110,7 +110,7 @@ public class FirebaseMoralisManager : MonoBehaviour
 
     private void Awake()
     {
-        GetNFTData();
+        //GetNFTData();
     }
     void Start()
     {
@@ -121,6 +121,9 @@ public class FirebaseMoralisManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
+        }else
+        {
+            Destroy(this.gameObject);
         }
 
         //AuthenticateFirebase();

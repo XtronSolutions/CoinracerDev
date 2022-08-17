@@ -529,11 +529,11 @@ public void ConvertTimeAndDisplay(Boolean _winner ,double _sec)
     public void OpenMainMenu()
     {
         if (MultiplayerManager.Instance)
-        {
             MultiplayerManager.Instance.DisconnectPhoton();
-        }
+
         Constants.ResetData();
-        SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
+        FirebaseMoralisManager.Instance.RestartGame();
+        //SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
         Time.timeScale = 1;
     }
     

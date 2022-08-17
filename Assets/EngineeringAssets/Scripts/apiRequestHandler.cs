@@ -134,6 +134,10 @@ public class apiRequestHandler : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+        else
+        {
+            Destroy(this.gameObject);
+        }
 
         if (Constants.IsStagging)
         {

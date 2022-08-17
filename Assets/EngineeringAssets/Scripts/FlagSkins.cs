@@ -14,6 +14,10 @@ public class FlagSkins : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     public Sprite FlagSpriteWithIndex(int Index)

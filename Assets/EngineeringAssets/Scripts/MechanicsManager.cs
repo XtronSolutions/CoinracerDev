@@ -40,6 +40,10 @@ public class MechanicsManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     public void UpdateConsumables(NFTMehanicsData _data)

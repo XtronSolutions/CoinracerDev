@@ -954,10 +954,14 @@ public class WalletManager : MonoBehaviour
         }
         else
         {
-            if(isDebugAllCars)
+            if (isDebugAllCars)
+            {
                 Constants.CheckAllNFT = true;
+            }
             else
+            {
                 markFetchCompleted(_contractIndex);
+            }
         }
     }
 
@@ -1007,7 +1011,9 @@ public class WalletManager : MonoBehaviour
     {
         Constants.nftDataFetched[_index] = true;
         if (checkAllNftData())
-            Constants.CheckAllNFT = true;    
+        {
+            Constants.CheckAllNFT = true;
+        }
     }
 
     //this function will be used to check if the nft data of all NFT contracts has been fetched
