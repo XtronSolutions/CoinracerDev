@@ -8,6 +8,22 @@ using System.Collections.Generic;
 
 #region SuperClasses
 [System.Serializable]
+public class StoreResult
+{
+    public int Id { get; set; }
+    public string name { get; set; }
+    public string mechanics { get; set; }
+    public string metadata { get; set; }
+}
+
+[System.Serializable]
+public class MoralisStoreResponse
+{
+    public List<StoreResult> result { get; set; }
+}
+
+
+[System.Serializable]
 public class MoralisNFTArrayRequest
 {
     public List<string> tokenId { get; set; }
@@ -110,24 +126,11 @@ public class apiRequestHandler : MonoBehaviour
     private string m_GetNFTDataFunc = "getNFTDetails";
     private string m_GetNFTArrayDataFunc = "getNFTsDetails";
     private string m_UpdateNFTDataFunc = "updateNFTData";
+    private string m_GetAllStoreDetails = "getAllNFTSMetaData";
     private string m_uID = "";
     #endregion
 
-    private void OnEnable()
-    {
-        //StartCoroutine(ProcessNFTDataRequest("5063"));
-
-      //string[] str_arr = new string[3]{ "5063", "5106", "20011" };
-       //StartCoroutine(ProcessNFTDataArrayRequest(str_arr));
-    }
-
-    #region Firebase
-    public void onClick()
-    {
-        apiRequestHandler.Instance.getLoginDetails("naeQzZ6LI0P5MAz4wNsVoozA93p2");
-    }
-
-    public void Start()
+    private void Awake()
     {
         if (!Instance)
         {
@@ -138,7 +141,25 @@ public class apiRequestHandler : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+    }
+    private void OnEnable()
+    {
+        //StartCoroutine(ProcessNFTDataRequest("5063"));
 
+        //string[] str_arr = new string[3]{ "5063", "5106", "20011" };
+        //StartCoroutine(ProcessNFTDataArrayRequest(str_arr));
+        Instance = this;
+        //ProcessAllStoreRequest();
+    }
+
+    #region Firebase
+    public void onClick()
+    {
+        apiRequestHandler.Instance.getLoginDetails("naeQzZ6LI0P5MAz4wNsVoozA93p2");
+    }
+
+    public void Start()
+    {
         if (Constants.IsStagging)
         {
             BaseURL = "https://us-central1-coinracer-stagging.cloudfunctions.net/";
@@ -711,7 +732,34 @@ public class apiRequestHandler : MonoBehaviour
                 return false;
             }
         }
+    }
 
+    async public Task<string> ProcessAllStoreRequest()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("uID", m_uID);
+        using UnityWebRequest request = UnityWebRequest.Post(m_BaseURL + m_GetAllStoreDetails + m_AppID, form);
+
+        await request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                //Debug.Log(request.downloadHandler.text);
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
     }
 
     #endregion

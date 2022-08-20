@@ -89,6 +89,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     public UserData[] PlayerDataArray;
     public static FirebaseMoralisManager Instance;
     public Dictionary<int, NFTMehanicsData> NFTMehanics = new Dictionary<int, NFTMehanicsData>();
+    public Dictionary<int, List<StatSettings>> CarDealer = new Dictionary<int, List<StatSettings>>();
 
     [HideInInspector]
     public AuthCredentials Credentails;
@@ -129,7 +130,10 @@ public class FirebaseMoralisManager : MonoBehaviour
         //AuthenticateFirebase();
         if (Constants.isUsingFirebaseSDK)
             OnAuthChanged();
+
+        GetAssignStoreData();
     }
+
     public void updatePlayerDataPayload()
     {
         PlayerDataPayload = new updateDataPayload();
@@ -820,6 +824,76 @@ public class FirebaseMoralisManager : MonoBehaviour
                 Invoke(nameof(GetNFTData), 0.5f);
             }
         }
+    }
+    #endregion
+
+    #region Moralis
+    async public void GetAssignStoreData()
+    {
+        CarDealer.Clear();
+        string _data = await apiRequestHandler.Instance.ProcessAllStoreRequest();
+
+        if(!string.IsNullOrEmpty(_data))
+        {
+            MoralisStoreResponse _storeData = JsonConvert.DeserializeObject<MoralisStoreResponse>(_data);
+            for (int i = 0; i < _storeData.result.Count; i++)
+            {
+                for (int j = 0; j < NFTGameplayManager.Instance.DataNFTModel.Count; j++)
+                {
+                    if(_storeData.result[i].Id== NFTGameplayManager.Instance.DataNFTModel[j].MetaID)
+                    {
+                        JToken Dresponse = JObject.Parse(_storeData.result[i].mechanics);
+                        //Debug.Log(Dresponse.SelectToken("Stats"));
+                        StatSettings _stats = ScriptableObject.CreateInstance<StatSettings>();
+                        _stats.CarStats = new BaseStats();
+                        _stats.name = _storeData.result[i].name;
+
+                        _stats.CarStats.Name = Dresponse.SelectToken("Stats").SelectToken("Name") != null ? (string)Dresponse.SelectToken("Stats").SelectToken("Name") : NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.Name;
+                        _stats.CarStats.Acceleration= Dresponse.SelectToken("Stats").SelectToken("Acceleration") != null ? (double)Dresponse.SelectToken("Stats").SelectToken("Acceleration") : NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.Acceleration;
+                        _stats.CarStats.TopSpeed = Dresponse.SelectToken("Stats").SelectToken("TopSpeed") != null ? (double)Dresponse.SelectToken("Stats").SelectToken("TopSpeed") : NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.TopSpeed;
+                        _stats.CarStats.Cornering = Dresponse.SelectToken("Stats").SelectToken("Cornering") != null ? (double)Dresponse.SelectToken("Stats").SelectToken("Cornering") : NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.Cornering;
+                        _stats.CarStats.HP = Dresponse.SelectToken("Stats").SelectToken("HP") != null ? (double)Dresponse.SelectToken("Stats").SelectToken("HP") : NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.HP;
+                        _stats.CarStats.Price = Dresponse.SelectToken("Stats").SelectToken("Price") != null ? (int)Dresponse.SelectToken("Stats").SelectToken("Price") : NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.Price;
+                        
+                        int Tier= Dresponse.SelectToken("Stats").SelectToken("Tier") != null ? (int)Dresponse.SelectToken("Stats").SelectToken("Tier") : (int)NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.Tier;
+                        _stats.CarStats.Tier = (CarTier) Tier;
+
+                        int Type = Dresponse.SelectToken("Stats").SelectToken("Type") != null ? (int)Dresponse.SelectToken("Stats").SelectToken("Type") : (int)NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.Type;
+                        _stats.CarStats.Type = (CarType)Type;
+
+                        _stats.CarStats.Settings = MechanicsManager.Instance._consumableSettings;
+
+                        //Debug.Log("Tier : " + Tier + " CAR : " + _stats.CarStats.Name);
+                        SetDealerDic(Tier, _stats);
+                        NFTGameplayManager.Instance.DataNFTModel[j].settings = _stats;
+                        break;                    }
+                }
+            }
+
+            logDic();
+        }
+    }
+
+    public void SetDealerDic(int _key,StatSettings _settings)
+    {    
+        if (CarDealer.ContainsKey(_key))
+        {
+            List<StatSettings> _temp= CarDealer[_key];
+            _temp.Add(_settings);
+            CarDealer[_key] = _temp;
+        }
+        else
+        {
+            List<StatSettings> _temp = new List<StatSettings>();
+            _temp.Add(_settings);
+            CarDealer.Add(_key, _temp);
+        }
+    }
+
+    public void logDic()
+    {
+        string _json = JsonConvert.SerializeObject(CarDealer);
+        Debug.Log(_json);
     }
     #endregion
 }

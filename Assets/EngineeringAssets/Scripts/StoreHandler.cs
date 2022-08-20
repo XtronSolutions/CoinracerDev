@@ -5,6 +5,71 @@ using System;
 using UnityEngine.UI;
 using TMPro;
 
+public enum DealerScreenState
+{
+    MAINSTORE=1,
+    ATM=2,
+    BuyCar=3,
+    CARTIER=4,
+    CARTYPE=5
+}
+
+[Serializable]
+public class DealerStatsUI
+{
+    public TextMeshProUGUI Title;
+    public TextMeshProUGUI Percentage;
+    public Slider slider;
+}
+
+[Serializable]
+public class DealerCar
+{
+    public GameObject MainScreen;
+    public GameObject DealerScreen;
+    public GameObject ConsumablesScreen;
+    public GameObject BottomContainer_ATM;
+    public GameObject BottomContainer_CarTier;
+    public GameObject BottomContainer_CarType;
+    public GameObject TopContainer_CarType;
+    public GameObject CarSelectionContainer;
+    public GameObject CarSelection3DContainer;
+
+    public GameObject MainBG;
+    public GameObject SecondaryBG;
+
+    public Button ATMButton;
+    public Button BuyCarButton;
+
+    public Button TopTierButton;
+    public Button MediumTierButton;
+    public Button LowTierButton;
+
+    public Button AllCarsButton;
+    public Button DestructionDerbyNutton;
+    public Button RacetrackButton;
+    public Button RallyButton;
+
+    public DealerStatsUI AccelerationUI;
+    public DealerStatsUI TopSpeedUI;
+    public DealerStatsUI CorneringUI;
+    public DealerStatsUI HPUI;
+
+    public TextMeshProUGUI CarNameText;
+    public Button NextButton;
+    public Button PrevButton;
+    public Button BackButton;
+
+    public Transform MiddleCar;
+    public Transform LeftCar;
+    public Transform RightCar;
+
+    public Animator MiddleCarAnimator;
+    public GameObject MiddleCarLoader;
+    public GameObject LeftCarLoader;
+    public GameObject RightCarLoader;
+    public CarSelection CarBolt;
+}
 public enum FixType
 {
     Tires =0,
@@ -49,6 +114,9 @@ public class StoreHandler : MonoBehaviour
 {
     public static StoreHandler Instance;
     public StoreUI UIStore;
+    public DealerCar CarDealer;
+    private DealerScreenState _state;
+    private CarTier _tierSelected;
 
     private FixType _fixType;
 
@@ -56,6 +124,7 @@ public class StoreHandler : MonoBehaviour
     {
         Instance = this;
         ButtonListeners_StoreUI();
+        DealerButtonListeners();
     }
 
     #region StoreUI/Functionality
@@ -79,9 +148,9 @@ public class StoreHandler : MonoBehaviour
     public void ButtonListeners_StoreUI()
     {
         UIStore.StoreButton.onClick.AddListener(EnableStore_StoreUI);
-        UIStore.BackButton.onClick.AddListener(DisableStore_StoreUI);
+        //UIStore.BackButton.onClick.AddListener(DisableStore_StoreUI);
         UIStore.FixTires.PayButton.onClick.AddListener(FixTyre_StoreUI);
-        UIStore.BuyVC.PayButton.onClick.AddListener(BuyVC_StoreUI);
+        //UIStore.BuyVC.PayButton.onClick.AddListener(BuyVC_StoreUI);
         UIStore.FillGas.PayButton.onClick.AddListener(FillGas_StoreUI);
         UIStore.FillOil.PayButton.onClick.AddListener(FillEngineOil_StoreUI);
         UIStore.FixDamage.PayButton.onClick.AddListener(RepairDamage_StoreUI);
@@ -94,7 +163,15 @@ public class StoreHandler : MonoBehaviour
     {
         ToggleMainScreen_StoreUI(true);
         UIStore.ConsumablesObject.SetActive(false);
-        UIStore.BuyVC.PayButton.gameObject.SetActive(true);
+        //UIStore.BuyVC.PayButton.gameObject.SetActive(true);
+
+        ToggleDealer(true, false);
+        ToggleBG_Dealer(true, false);
+        ToggleBottomContainer_ATM(true);
+        ToggleBottomContainer_CarTier(false);
+        ToggleBottomContainer_CarType(false);
+        _state = DealerScreenState.MAINSTORE;
+
         SetCCashText_StoreUI(Constants.VirtualCurrencyAmount.ToString());
         UpdateBUYVCText_StoreUI(Constants.CCashPurchaseAmount.ToString());
     }
@@ -278,6 +355,133 @@ public class StoreHandler : MonoBehaviour
     public void OnCancelClicked()
     {
         UIStore.DialogueConfirmation.MainScreen.SetActive(false);
+    }
+    #endregion
+
+    #region Dealer
+    public void ToggleBG_Dealer(bool stat1, bool stat2)
+    {
+        CarDealer.MainBG.SetActive(stat1);
+        CarDealer.SecondaryBG.SetActive(stat2);
+    }
+
+    public void ToggleBottomContainer_ATM(bool state)
+    {
+        CarDealer.BottomContainer_ATM.SetActive(state);
+    }
+
+    public void ToggleBottomContainer_CarTier(bool state)
+    {
+        CarDealer.BottomContainer_CarTier.SetActive(state);
+    }
+
+    public void ToggleBottomContainer_CarType(bool state)
+    {
+        CarDealer.BottomContainer_CarType.SetActive(state);
+    }
+
+    public void ToggleTopContainer_CarType(bool state)
+    {
+        CarDealer.TopContainer_CarType.SetActive(state);
+    }
+
+    public void TogglerCarSelection(bool state)
+    {
+        CarDealer.CarSelectionContainer.SetActive(state);
+    }
+
+    public void TogglerCarSelection3D(bool state)
+    {
+        CarDealer.CarSelection3DContainer.SetActive(state);
+    }
+
+    public void ToggleDealer(bool stat1, bool stat2)
+    {
+        CarDealer.DealerScreen.SetActive(stat1);
+        CarDealer.ConsumablesScreen.SetActive(stat2);
+    }
+
+    public void DealerButtonListeners()
+    {
+        //CarDealer.ATMButton.onClick.AddListener(EnableStore_StoreUI);
+        CarDealer.BuyCarButton.onClick.AddListener(OnBuyCarClicked_Dealer);
+        CarDealer.BackButton.onClick.AddListener(OnBackButtonClicked_Dealer);
+        CarDealer.TopTierButton.onClick.AddListener(OnTopTierClicked_Dealer);
+        CarDealer.MediumTierButton.onClick.AddListener(OnMedTierClicked_Dealer);
+        CarDealer.LowTierButton.onClick.AddListener(OnLowTierClicked_Dealer);
+    }
+
+    public void OnBackButtonClicked_Dealer()
+    {
+        MainMenuViewController.Instance.PlayButtonDownAudioClip();
+        switch (_state)
+        {
+            case DealerScreenState.MAINSTORE:
+                DisableStore_StoreUI();
+                break;
+            case DealerScreenState.ATM:
+               
+                break;
+            case DealerScreenState.BuyCar:
+                ToggleBottomContainer_ATM(true);
+                ToggleBottomContainer_CarTier(false);
+                _state = DealerScreenState.MAINSTORE;
+                break;
+            case DealerScreenState.CARTIER:
+                ToggleBottomContainer_CarTier(true);
+                ToggleBottomContainer_CarType(false);
+                ToggleTopContainer_CarType(false);
+                TogglerCarSelection(false);
+                TogglerCarSelection3D(false);
+                _state = DealerScreenState.BuyCar;
+                break;
+            case DealerScreenState.CARTYPE:
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void OnBuyCarClicked_Dealer()
+    {
+        MainMenuViewController.Instance.PlayButtonDownAudioClip();
+        _state = DealerScreenState.BuyCar;
+
+        ToggleBottomContainer_ATM(false);
+        ToggleBottomContainer_CarTier(true);
+    }
+
+    public void OnTopTierClicked_Dealer()
+    {
+        MainMenuViewController.Instance.PlayButtonDownAudioClip();
+        _state = DealerScreenState.CARTIER;
+        _tierSelected = CarTier.Top;
+        ShowCarDeals();
+
+
+    }
+    public void OnMedTierClicked_Dealer()
+    {
+        MainMenuViewController.Instance.PlayButtonDownAudioClip();
+        _state = DealerScreenState.CARTIER;
+        _tierSelected = CarTier.Medium;
+        ShowCarDeals();
+    }
+    public void OnLowTierClicked_Dealer()
+    {
+        MainMenuViewController.Instance.PlayButtonDownAudioClip();
+        _state = DealerScreenState.CARTIER;
+        _tierSelected = CarTier.Low;
+        ShowCarDeals();
+    }
+
+    public void ShowCarDeals()
+    {
+        ToggleBottomContainer_CarTier(false);
+        ToggleBottomContainer_CarType(true);
+        ToggleTopContainer_CarType(true);
+        TogglerCarSelection(true);
+        TogglerCarSelection3D(true);
     }
     #endregion
 }
