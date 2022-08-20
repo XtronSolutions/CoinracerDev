@@ -5,13 +5,17 @@ using System;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 
+
+
 [Serializable]
 public class NFTModelData
 {
     public string name;
+    public int MetaID;
     public string description;
     public string metaDataURL;
     public CarSelection CarSelection;
+    public StatSettings settings;
     public Sprite[] AnimationSequence;
 }
 public class NFTGameplayManager : MonoBehaviour
