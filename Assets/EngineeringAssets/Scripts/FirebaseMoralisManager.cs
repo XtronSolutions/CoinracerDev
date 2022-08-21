@@ -847,7 +847,7 @@ public class FirebaseMoralisManager : MonoBehaviour
                         StatSettings _stats = ScriptableObject.CreateInstance<StatSettings>();
                         _stats.CarStats = new BaseStats();
                         _stats.name = _storeData.result[i].name;
-
+                        _stats.CarStats.ID = _storeData.result[i].Id;
                         _stats.CarStats.Name = Dresponse.SelectToken("Stats").SelectToken("Name") != null ? (string)Dresponse.SelectToken("Stats").SelectToken("Name") : NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.Name;
                         _stats.CarStats.Acceleration= Dresponse.SelectToken("Stats").SelectToken("Acceleration") != null ? (double)Dresponse.SelectToken("Stats").SelectToken("Acceleration") : NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.Acceleration;
                         _stats.CarStats.TopSpeed = Dresponse.SelectToken("Stats").SelectToken("TopSpeed") != null ? (double)Dresponse.SelectToken("Stats").SelectToken("TopSpeed") : NFTGameplayManager.Instance.DataNFTModel[j].settings.CarStats.TopSpeed;
@@ -888,6 +888,11 @@ public class FirebaseMoralisManager : MonoBehaviour
             _temp.Add(_settings);
             CarDealer.Add(_key, _temp);
         }
+    }
+
+    public Dictionary<int,List<StatSettings>> GetDealerDic()
+    {
+        return CarDealer;
     }
 
     public void logDic()

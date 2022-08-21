@@ -345,6 +345,13 @@ public class MainMenuViewController : MonoBehaviour
        "^(?(\")(\".+?(?<!\\\\)\"@)|(([0-9a-z]((\\.(?!\\.))|[-!#\\$%&'\\*\\+/=\\?\\^`{}|~\\w])*)(?<=[0-9a-z])@))(?([)([(\\d{1,3}.){3}\\d{1,3}])|(([0-9a-z][-0-9a-z]*[0-9a-z]*.)+[a-z0-9][-a-z0-9]{0,22}[a-z0-9]))$";
 
     private const string MatchEmailPattern = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
+    
+    private List<CarSelection> SelectedCars = new List<CarSelection>();
+    int carIndex = 0;
+    int nextCarIndex = 0;
+    int PrevCarIndex = 0;
+    GameObject _generatedPrefab;
+
     #endregion
 
     #region StartFunctionality
@@ -2693,6 +2700,140 @@ public class MainMenuViewController : MonoBehaviour
             UIMember.MainScreen.SetActive(false);
         else
             ShowToast(3f, "Entered password is wrong!",false);
+    }
+    #endregion
+
+    #region StoreGarage
+    public void AddSelected(CarSelection _car)
+    {
+        SelectedCars.Add(_car);
+    }
+
+    public List<CarSelection> GetSelectedCar()
+    {
+        return SelectedCars;
+    }
+
+    public void ResetSelectedCarStore()
+    {
+        for (int i = 0; i < SelectedCars.Count; i++)
+            Destroy(SelectedCars[i].gameObject);
+
+        carIndex = 0;
+        nextCarIndex = 0;
+        PrevCarIndex = 0;
+        SelectedCars.Clear();
+    }
+
+    public void AssignStoreGarageData(GameObject _car, int _tokenID, string _carname, StatSettings _settings,Transform _parent,bool _setMechanics, bool _setStats)
+    {
+        _generatedPrefab = Instantiate(_car, Vector3.zero, Quaternion.identity) as GameObject;
+        _generatedPrefab.transform.SetParent(_parent);
+        _generatedPrefab.transform.localScale = new Vector3(1, 1, 1);
+        var NFTDataHandlerRef = _generatedPrefab.AddComponent(typeof(NFTDataHandler)) as NFTDataHandler;
+        NFTDataHandlerRef.SetTokenID(_tokenID);
+        NFTDataHandlerRef.SetCarName(_carname);
+
+        if(_setMechanics)
+            NFTDataHandlerRef.SetMechanics();
+
+        if(_setStats)
+        NFTDataHandlerRef.SetStatsSettings(_settings);
+
+        AddSelected(_generatedPrefab.GetComponent<CarSelection>());
+    }
+
+    public void AssignStoreGarageCars(Transform _middleParent, Transform _leftParent, Transform _rightParent,Transform _mainParent, TextMeshProUGUI _name, TextMeshProUGUI _id, bool _assignID, bool _showStats)
+    {
+        for (int i = 0; i < SelectedCars.Count; i++)
+        {
+            if (carIndex == i)
+            {
+                nextCarIndex = carIndex + 1;
+                PrevCarIndex = carIndex - 1;
+
+                AssignMiddleCar(SelectedCars[i].gameObject, _middleParent, _assignID, _showStats, _name, _id);
+
+                if (PrevCarIndex >= 0)
+                    AssignLeftCar(SelectedCars[i - 1].gameObject, _leftParent);
+
+                if (nextCarIndex < SelectedCars.Count)
+                    AssignRightCar(SelectedCars[i + 1].gameObject, _rightParent);
+            }
+            else if (nextCarIndex != i && PrevCarIndex != i)
+            {
+                PlaceCarBack(SelectedCars[i].gameObject, _mainParent);
+            }
+        }
+    }
+
+    public void PlaceCarBack(GameObject _car,Transform _parent)
+    {
+        _car.transform.SetParent(_parent);
+        _car.transform.GetChild(0).gameObject.SetActive(false);
+    }
+
+    public void AssignMiddleCar(GameObject _car, Transform _parent, bool _assignID,bool _showStats,TextMeshProUGUI _name, TextMeshProUGUI _id)
+    {
+        _car.transform.SetParent(_parent);
+        ResetCarTransform(_car);
+        _car.transform.GetChild(0).gameObject.SetActive(true);
+
+        var _ref = _car.GetComponent<NFTDataHandler>();
+        _name.text = _ref.CarName;
+
+        if (_assignID)
+            _id.text = _ref.tokenID.ToString();
+
+        if(_showStats)
+            StoreHandler.Instance.UpdateCarStats(SelectedCars[carIndex].GetComponent<NFTDataHandler>()._settings);
+    }
+
+    public void AssignLeftCar(GameObject _car, Transform _parent)
+    {
+        _car.transform.SetParent(_parent);
+        ResetCarTransform(_car);
+        _car.transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+    public void AssignRightCar(GameObject _tempcar, Transform _parent)
+    {
+        //Debug.Log("Right : "+ _tempcar.gameObject.name);
+        _tempcar.transform.SetParent(_parent);
+        ResetCarTransform(_tempcar);
+        _tempcar.transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+    public void ResetCarTransform(GameObject _car)
+    {
+        _car.transform.localPosition = new Vector3(0, 0, 0);
+        _car.transform.localEulerAngles = new Vector3(0, 0, 0);
+        _car.transform.localScale = new Vector3(1, 1, 1);
+    }
+
+    public void OnNextButtonClicked()
+    {
+        if (carIndex + 1 < SelectedCars.Count)
+        {
+            carIndex++;
+            nextCarIndex = carIndex + 1;
+            PrevCarIndex = carIndex - 1;
+        }
+    }
+
+    public void OnPrevButtonClicked()
+    {
+        if (carIndex - 1 >= 0)
+        {
+            carIndex--;
+            nextCarIndex = carIndex + 1;
+            PrevCarIndex = carIndex - 1;
+        }
+    }
+
+    public void OnRepairButtonCLicked()
+    {
+        SelectedCars[carIndex].GetComponent<NFTDataHandler>().AccessConsumables();
     }
     #endregion
 }

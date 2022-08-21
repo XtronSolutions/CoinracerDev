@@ -9,6 +9,7 @@ public enum CarTier
 
 public enum CarType
 {
+    AllCar=-1,
     DestructionDerby = 0,
     RaceTrack = 1,
     Rally = 2
@@ -17,6 +18,7 @@ public enum CarType
 [System.Serializable]
 public class BaseStats
 {
+    public int ID;
     public string Name;
     public double Acceleration;
     public double TopSpeed;

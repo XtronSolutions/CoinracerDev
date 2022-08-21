@@ -20,6 +20,7 @@ public class NFTDataHandler : MonoBehaviour
     public int tokenID = 0;
     public string CarName;
     public NFTMehanicsData Mechanics =new NFTMehanicsData();
+    public StatSettings _settings;
 
   
     public void AccessConsumables()
@@ -28,6 +29,10 @@ public class NFTDataHandler : MonoBehaviour
         Debug.Log(Mechanics.mechanicsData.CarName);
     }
 
+    public void SetStatsSettings(StatSettings _sett)
+    {
+        _settings = _sett;
+    }
     public void SetTokenID(int _id)
     {
         tokenID = _id;

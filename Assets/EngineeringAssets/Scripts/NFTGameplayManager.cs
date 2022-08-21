@@ -104,29 +104,15 @@ public class NFTGameplayManager : MonoBehaviour
         for (int i = 0; i < DataNFTModel.Count; i++)
         {
             if (_data.ToLower() == DataNFTModel[i].name.ToLower())
-            {
-                AssignNFTData(DataNFTModel[i].CarSelection.gameObject, _tokenID, DataNFTModel[i].name);
-            }
+                MainMenuViewController.Instance.AssignStoreGarageData(DataNFTModel[i].CarSelection.gameObject, _tokenID, DataNFTModel[i].name, null, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, true, false);
         }
 
-        if (GarageHandler.Instance.GetSelectedCars().Count - 1 == Constants.NFTBought.Length)
+        if (MainMenuViewController.Instance.GetSelectedCar().Count - 1 == Constants.NFTBought.Length)
         {
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             GarageHandler.Instance.ToggleLoaders(false, false, false);
-            GarageHandler.Instance.AssignAllCars();
+            MainMenuViewController.Instance.AssignStoreGarageCars(GarageHandler.Instance.ComponentGarage.MiddleCar, GarageHandler.Instance.ComponentGarage.LeftCar, GarageHandler.Instance.ComponentGarage.RightCar, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, GarageHandler.Instance.ComponentGarage.CarName_Text, GarageHandler.Instance.ComponentGarage.CarID_Text, true,false);
         }
-    }
-
-    public void AssignNFTData(GameObject _car,int _tokenID,string _carname)
-    {
-        rowPrefab = Instantiate(_car, Vector3.zero, Quaternion.identity) as GameObject;
-        rowPrefab.transform.SetParent(GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform);
-        rowPrefab.transform.localScale = new Vector3(1, 1, 1);
-        var NFTDataHandlerRef = rowPrefab.AddComponent(typeof(NFTDataHandler)) as NFTDataHandler;
-        NFTDataHandlerRef.SetTokenID(_tokenID);
-        NFTDataHandlerRef.SetCarName(_carname);
-        NFTDataHandlerRef.SetMechanics();
-        GarageHandler.Instance.SelectedCar_Add(rowPrefab.GetComponent<CarSelection>());
     }
 
     public void RemoveSavedPrefabs()
