@@ -240,8 +240,6 @@ public class StoreHandler : MonoBehaviour
 
     public void UpdateSlider_StoreUI(float start, float end, Slider _slid,bool _isHP)
     {
-        float per = (start / end) * 100;
-
         if (_isHP)
         {
             if (end > Constants.MaxCarHealth)
@@ -250,6 +248,7 @@ public class StoreHandler : MonoBehaviour
                 _slid.maxValue = Constants.MaxCarHealth;
         }
 
+        float per = (start / end) * _slid.maxValue;
         _slid.value = per;
     }
 
@@ -451,7 +450,6 @@ public class StoreHandler : MonoBehaviour
 
     public void UpdateMainConsumablesStats(NFTMehanicsData _data,StatSettings _settings)
     {
-        Debug.Log(_settings.CarStats.HP);
         MechanicsManager.Instance.UpdateConsumables(_data);
         Constants.StoredCarHealth = _data.mechanicsData.CarHealth;
         Constants.MaxStoredCarHealth = (int)_settings.CarStats.HP;
@@ -499,7 +497,7 @@ public class StoreHandler : MonoBehaviour
     }
     public void DealerButtonListeners()
     {
-        //CarDealer.ATMButton.onClick.AddListener(EnableStore_StoreUI);
+        CarDealer.ATMButton.onClick.AddListener(BuyVC_StoreUI);
         CarDealer.BuySpecificCarButton.onClick.AddListener(OnBuySpecificCarButtonClicked);
         CarDealer.BuyCarButton.onClick.AddListener(OnBuyCarClicked_Dealer);
         CarDealer.BackButton.onClick.AddListener(OnBackButtonClicked_Dealer);
@@ -741,8 +739,16 @@ public class StoreHandler : MonoBehaviour
     }
     public void OnBuySpecificCarButtonClicked()
     {
-        NFTDataHandler _data= MainMenuViewController.Instance.GetSelectedCarByIndex().GetComponent<NFTDataHandler>();
+        NFTDataHandler _data = MainMenuViewController.Instance.GetSelectedCarByIndex().GetComponent<NFTDataHandler>();
+
+        if (Constants.VirtualCurrencyAmount < _data._settings.CarStats.Price)
+        {
+            MainMenuViewController.Instance.ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
+            return;
+        }
+
         FirebaseMoralisManager.Instance.BuyCar(_data._settings.CarStats.ID.ToString(),Constants.WalletAddress);
+        MainMenuViewController.Instance.ShowToast(4f, "Car was successfully purchased, you can view it in garage", true);
     }
 
     #endregion

@@ -36,6 +36,7 @@ public class NFTMehanicsData
 {
     public string PlayerName;
     public string OwnerWalletAddress;
+    public string MetaData;
     public MechanicsData mechanicsData;
 }
 public class UserData
@@ -690,6 +691,17 @@ public class FirebaseMoralisManager : MonoBehaviour
     {
         return NFTMehanics[key];
     }
+
+    public void SetMechanics(int key, NFTMehanicsData _data)
+    {
+        if (!NFTMehanics.ContainsKey(key))
+        {
+            NFTMehanics.Add(key, _data);
+        }else
+        {
+            Debug.LogError("key already existed");
+        }
+    }
     public void UpdateMechanics(int key, NFTMehanicsData _data)
     {
         if (key == 0)
@@ -715,7 +727,7 @@ public class FirebaseMoralisManager : MonoBehaviour
         else
         {
             string _json = JsonConvert.SerializeObject(_data.mechanicsData);
-            bool isDone = await apiRequestHandler.Instance.ProcessNFTUpdateDataRequest(key.ToString(), _data.PlayerName, _json);
+            bool isDone = await apiRequestHandler.Instance.ProcessNFTUpdateDataRequest(key.ToString(), _data.mechanicsData.CarName, _json);
 
             if (isDone)
                 Debug.Log("updated successfully");
@@ -778,51 +790,55 @@ public class FirebaseMoralisManager : MonoBehaviour
                 }
 
                 string _response = await apiRequestHandler.Instance.ProcessNFTDataArrayRequest(TokenPayload);
-
-                if (_response != "" && !string.IsNullOrEmpty(_response))
-                {
-                    MoralisNFTArrayResponse _dataNEW = new MoralisNFTArrayResponse();
-                    _dataNEW = JsonConvert.DeserializeObject<MoralisNFTArrayResponse>(_response);
-
-                    for (int i = 0; i < _dataNEW.result.Count; i++)
-                    {
-                        NFTMehanicsData _newData = new NFTMehanicsData();
-                        _newData.OwnerWalletAddress = _dataNEW.result[i].ownerWallet;
-                        _newData.PlayerName = PlayerData.UserName;
-
-                        string _carName = TokenName[int.Parse(_dataNEW.result[i].tokenId)];
-                        int _carHealth = 100;
-                        float _carTyreLaps = 0;
-                        float _carOilLaps = 0;
-                        float _carGasLaps = 0;
-
-                        if (!string.IsNullOrEmpty(_dataNEW.result[i].mechanics))
-                        {
-                            JToken Jresponse = JObject.Parse(_dataNEW.result[i].mechanics);
-
-                            //_carName = Jresponse.SelectToken("CarName") != null ? (string)Jresponse.SelectToken("CarName") : "";
-                            _carHealth = Jresponse.SelectToken("CarHealth") != null ? (int)Jresponse.SelectToken("CarHealth") : 100;
-                            _carTyreLaps = Jresponse.SelectToken("Tyre_Laps") != null ? (float)Jresponse.SelectToken("Tyre_Laps") : 0;
-                            _carOilLaps = Jresponse.SelectToken("EngineOil_Laps") != null ? (float)Jresponse.SelectToken("EngineOil_Laps") : 0;
-                            _carGasLaps = Jresponse.SelectToken("Gas_Laps") != null ? (float)Jresponse.SelectToken("Gas_Laps") : 0;
-                        }
-
-                        _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps);
-                        NFTMehanics.Add(int.Parse(_dataNEW.result[i].tokenId), _newData);
-                    }
-
-                    Constants.GetMoralisData = true;
-                }
-                else
-                {
-                    Debug.LogError("Empty data received");
-                    Constants.GetMoralisData = true;
-                }
+                UpdateCarPurchasedData(_response);
             }
             else
             {
                 Invoke(nameof(GetNFTData), 0.5f);
             }
+        }
+    }
+
+    public void UpdateCarPurchasedData(string _response)
+    {
+        if (_response != "" && !string.IsNullOrEmpty(_response))
+        {
+            MoralisNFTArrayResponse _dataNEW = new MoralisNFTArrayResponse();
+            _dataNEW = JsonConvert.DeserializeObject<MoralisNFTArrayResponse>(_response);
+
+            for (int i = 0; i < _dataNEW.result.Count; i++)
+            {
+                NFTMehanicsData _newData = new NFTMehanicsData();
+                _newData.OwnerWalletAddress = _dataNEW.result[i].ownerWallet;
+                _newData.PlayerName = PlayerData.UserName;
+
+                string _carName = _dataNEW.result[i].name;
+                int _carHealth = Constants.MaxCarHealth;
+                float _carTyreLaps = 0;
+                float _carOilLaps = 0;
+                float _carGasLaps = 0;
+
+                if (!string.IsNullOrEmpty(_dataNEW.result[i].mechanics))
+                {
+                    JToken Jresponse = JObject.Parse(_dataNEW.result[i].mechanics);
+
+                    _carHealth = Jresponse.SelectToken("CarHealth") != null ? (int)Jresponse.SelectToken("CarHealth") : Constants.MaxCarHealth;
+                    _carTyreLaps = Jresponse.SelectToken("Tyre_Laps") != null ? (float)Jresponse.SelectToken("Tyre_Laps") : 0;
+                    _carOilLaps = Jresponse.SelectToken("EngineOil_Laps") != null ? (float)Jresponse.SelectToken("EngineOil_Laps") : 0;
+                    _carGasLaps = Jresponse.SelectToken("Gas_Laps") != null ? (float)Jresponse.SelectToken("Gas_Laps") : 0;
+                }
+
+                _newData.MetaData = _dataNEW.result[i].metadata;
+                _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps);
+                NFTMehanics.Add(int.Parse(_dataNEW.result[i].tokenId), _newData);
+            }
+
+            Constants.GetMoralisData = true;
+        }
+        else
+        {
+            Debug.LogError("Empty data received");
+            Constants.GetMoralisData = true;
         }
     }
     #endregion
@@ -877,6 +893,10 @@ public class FirebaseMoralisManager : MonoBehaviour
     async public void BuyCar(string _metaID, string _owneraddress)
     {
         string _data = await apiRequestHandler.Instance.ProcessBuyCarRequest(_metaID,_owneraddress);
+        if(!string.IsNullOrEmpty(_data))
+            UpdateCarPurchasedData(_data);
+        else
+            Debug.LogError("Empty data received after purchase");
     }
     public void SetDealerDic(int _key,StatSettings _settings)
     {    

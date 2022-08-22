@@ -46,6 +46,7 @@ public class MoralisUpdateRequest
     public string name { get; set; }
     public string mechanics { get; set; }
     public string uID { get; set; }
+
 }
 
 
@@ -56,6 +57,7 @@ public class MoralisNFTData
     public string ownerWallet { get; set; }
     public string name { get; set; }
     public string mechanics { get; set; }
+    public string metadata { get; set; }
 }
 
 [System.Serializable]
@@ -705,7 +707,34 @@ public class apiRequestHandler : MonoBehaviour
                 return "";
             }
         }
+    }
 
+    async public Task<string> ProcessAllMyNFTRequest(string _address)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("uID", _address);
+        using UnityWebRequest request = UnityWebRequest.Post(m_BaseURL + m_GetAllMyNFTFunc + m_AppID, form);
+
+        await request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                //Debug.Log(request.downloadHandler.text);
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
     }
 
     async public Task<bool> ProcessNFTUpdateDataRequest(string _tokenid,string _name,string _mechanics)

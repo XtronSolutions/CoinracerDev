@@ -120,6 +120,7 @@ public static class Constants
     public static bool EarlyBuild = false;
     public static string VIPPassword = "hailcracer";
     public static bool ConvertToCCash = true;
+    public static bool LinkNFTMoralis = true;
     public static int CCashToDollar = 1;
 
     public static bool IsSendConfirmation = false;
@@ -195,7 +196,7 @@ public static class Constants
     public static int MaxStoredCarHealth = 100;
     public static int StoredCarHealth = 100;
     public static double VirtualCurrencyAmount = 0;
-    public static int CCashPurchaseAmount = 100;
+    public static int CCashPurchaseAmount = 1000;
     public static bool CarTotaled = false;
     public static int SelectedCarToken = 0;
     public static bool GetMoralisData = false;

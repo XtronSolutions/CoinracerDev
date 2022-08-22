@@ -1927,7 +1927,8 @@ public class MainMenuViewController : MonoBehaviour
     {
         UIGarage.MainScreen.SetActive(_state);
 
-        if(_state) StoreHandler.Instance.SetCCashText_Garage(Constants.VirtualCurrencyAmount.ToString());
+        if (_state)
+            StoreHandler.Instance.SetCCashText_Garage(Constants.VirtualCurrencyAmount.ToString());
     }
 
     public void BackButton_Garage()
@@ -1955,6 +1956,7 @@ public class MainMenuViewController : MonoBehaviour
         {
             if (Constants.CheckAllNFT)
             {
+                LoadingScreen.SetActive(true);
                 ToggleScreen_Garage(true);
 
                 int storedNFTS = 0;

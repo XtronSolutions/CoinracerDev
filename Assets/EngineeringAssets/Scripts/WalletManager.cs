@@ -359,7 +359,13 @@ public class WalletManager : MonoBehaviour
             MainUI.ConnectBtn.SetActive(false); //disable connect button
             MainUI.ConnectedBtn.SetActive(true);// enable connected button
             PrintWalletAddress(); // print wallet address on connected button
-            InvokeRepeating("getNftsData", 0.1f, 10f); //keep getting NFT data after few seconds delay
+
+            //if (!Constants.LinkNFTMoralis)
+                InvokeRepeating("getNftsData", 0.1f, 10f); //keep getting NFT data after few seconds delay
+            //else
+                //getNftsDataMoralis();
+                //InvokeRepeating("getNftsDataMoralis", 0.1f, 10f); 
+
         }
         else
         {
@@ -788,7 +794,20 @@ public class WalletManager : MonoBehaviour
         for (int i = 0; i < NFTContracts.Length; i++)
             checkNFTsBalance(i);
     }
-    
+
+    async public void getNftsDataMoralis()
+    {
+        if (Constants.DebugAllCars)
+        {
+            EnableAllCars();
+            CancelInvoke("getNftsDataMoralis");
+            return;
+        }
+
+        for (int i = 0; i < NFTContracts.Length; i++)
+            checkNFTsBalance(i);
+    }
+
     //this function will get the total number of tokens owned by this user and is also responsible for calling the function that will get their respective
     // ids
     //@param {integer}, index of the contract that this function is traversing
