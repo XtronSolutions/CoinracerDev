@@ -28,6 +28,7 @@ public class NFTGameplayManager : MonoBehaviour
     private int rowCounter = 0;
     private GameObject rowPrefab;
     private IPFSdata dataIPFS;
+    private StatSettings _statSettings;
 
     private void OnEnable()
     {
@@ -104,14 +105,19 @@ public class NFTGameplayManager : MonoBehaviour
         for (int i = 0; i < DataNFTModel.Count; i++)
         {
             if (_data.ToLower() == DataNFTModel[i].name.ToLower())
-                MainMenuViewController.Instance.AssignStoreGarageData(DataNFTModel[i].CarSelection.gameObject, _tokenID, DataNFTModel[i].name, null, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, true, false);
+            {
+                _statSettings = StoreHandler.Instance.GetDealerDicIndex(DataNFTModel[i].MetaID);
+                if (_statSettings == null) _statSettings = DataNFTModel[i].settings;
+
+                MainMenuViewController.Instance.AssignStoreGarageData(DataNFTModel[i].CarSelection.gameObject, _tokenID, DataNFTModel[i].name, _statSettings, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, true, true);
+            }
         }
 
         if (MainMenuViewController.Instance.GetSelectedCar().Count - 1 == Constants.NFTBought.Length)
         {
             MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             GarageHandler.Instance.ToggleLoaders(false, false, false);
-            MainMenuViewController.Instance.AssignStoreGarageCars(GarageHandler.Instance.ComponentGarage.MiddleCar, GarageHandler.Instance.ComponentGarage.LeftCar, GarageHandler.Instance.ComponentGarage.RightCar, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, GarageHandler.Instance.ComponentGarage.CarName_Text, GarageHandler.Instance.ComponentGarage.CarID_Text, true,false);
+            MainMenuViewController.Instance.AssignStoreGarageCars(GarageHandler.Instance.ComponentGarage.MiddleCar, GarageHandler.Instance.ComponentGarage.LeftCar, GarageHandler.Instance.ComponentGarage.RightCar, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, GarageHandler.Instance.ComponentGarage.CarName_Text, GarageHandler.Instance.ComponentGarage.CarID_Text, true,false,true);
         }
     }
 

@@ -16,6 +16,15 @@ public class StoreResult
     public string metadata { get; set; }
 }
 
+
+[System.Serializable]
+public class MoralisBuyCarRequest
+{
+    public string Id { get; set; }
+    public string ownerWalletAddress { get; set; }
+    public string uID { get; set; }
+}
+
 [System.Serializable]
 public class MoralisStoreResponse
 {
@@ -127,6 +136,8 @@ public class apiRequestHandler : MonoBehaviour
     private string m_GetNFTArrayDataFunc = "getNFTsDetails";
     private string m_UpdateNFTDataFunc = "updateNFTData";
     private string m_GetAllStoreDetails = "getAllNFTSMetaData";
+    private string m_BuyCarFunc = "buyGameNFT";
+    private string m_GetAllMyNFTFunc = "getAllMyNFTsData";
     private string m_uID = "";
     #endregion
 
@@ -752,6 +763,43 @@ public class apiRequestHandler : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 //Debug.Log(request.downloadHandler.text);
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
+    }
+
+    async public Task<string> ProcessBuyCarRequest(string _metaID, string _owneraddress)
+    {
+        MoralisBuyCarRequest _dataNEW = new MoralisBuyCarRequest();
+        _dataNEW.Id = _metaID;
+        _dataNEW.ownerWalletAddress = _owneraddress;
+        _dataNEW.uID = m_uID;
+
+        string reqNew = JsonConvert.SerializeObject(_dataNEW);
+        byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
+
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_BuyCarFunc + m_AppID, "POST");
+        request.uploadHandler = new UploadHandlerRaw(rawBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        await request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log(request.downloadHandler.text);
                 return request.downloadHandler.text;
             }
             else

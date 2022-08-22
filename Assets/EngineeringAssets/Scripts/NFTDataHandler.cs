@@ -26,7 +26,6 @@ public class NFTDataHandler : MonoBehaviour
     public void AccessConsumables()
     {
         StoreHandler.Instance.EnableConsumables_StoreUI(Mechanics,tokenID);
-        Debug.Log(Mechanics.mechanicsData.CarName);
     }
 
     public void SetStatsSettings(StatSettings _sett)

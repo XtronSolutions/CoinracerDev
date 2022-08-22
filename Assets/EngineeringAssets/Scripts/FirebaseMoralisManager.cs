@@ -874,6 +874,10 @@ public class FirebaseMoralisManager : MonoBehaviour
         }
     }
 
+    async public void BuyCar(string _metaID, string _owneraddress)
+    {
+        string _data = await apiRequestHandler.Instance.ProcessBuyCarRequest(_metaID,_owneraddress);
+    }
     public void SetDealerDic(int _key,StatSettings _settings)
     {    
         if (CarDealer.ContainsKey(_key))

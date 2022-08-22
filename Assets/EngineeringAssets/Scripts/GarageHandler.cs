@@ -81,20 +81,23 @@ public class GarageHandler : MonoBehaviour
     public void ResetSelectedCar()
     {
         MainMenuViewController.Instance.ResetSelectedCarStore();
-        MainMenuViewController.Instance.AssignStoreGarageData(ComponentGarage.CarBolt.gameObject, 0, "Bolt", null, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, true, false);
+
+        StatSettings _stats = ScriptableObject.CreateInstance<StatSettings>();
+        _stats.CarStats = new BaseStats();
+        MainMenuViewController.Instance.AssignStoreGarageData(ComponentGarage.CarBolt.gameObject, 0, "Bolt", _stats, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, true, true);
     }
 
 
     public void NextCar()
     {
         MainMenuViewController.Instance.OnNextButtonClicked();
-        MainMenuViewController.Instance.AssignStoreGarageCars(ComponentGarage.MiddleCar, ComponentGarage.LeftCar, ComponentGarage.RightCar, ComponentGarage.CarSelectionContainer.transform, ComponentGarage.CarName_Text, ComponentGarage.CarID_Text, true,false);
+        MainMenuViewController.Instance.AssignStoreGarageCars(ComponentGarage.MiddleCar, ComponentGarage.LeftCar, ComponentGarage.RightCar, ComponentGarage.CarSelectionContainer.transform, ComponentGarage.CarName_Text, ComponentGarage.CarID_Text, true,false, true);
     }
 
     public void PrevCar()
     {
         MainMenuViewController.Instance.OnPrevButtonClicked();
-        MainMenuViewController.Instance.AssignStoreGarageCars(ComponentGarage.MiddleCar, ComponentGarage.LeftCar, ComponentGarage.RightCar, ComponentGarage.CarSelectionContainer.transform, ComponentGarage.CarName_Text, ComponentGarage.CarID_Text, true,false);
+        MainMenuViewController.Instance.AssignStoreGarageCars(ComponentGarage.MiddleCar, ComponentGarage.LeftCar, ComponentGarage.RightCar, ComponentGarage.CarSelectionContainer.transform, ComponentGarage.CarName_Text, ComponentGarage.CarID_Text, true,false, true);
     }
 
     public void DeleteData()

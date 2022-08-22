@@ -1926,6 +1926,8 @@ public class MainMenuViewController : MonoBehaviour
     public void ToggleScreen_Garage(bool _state)
     {
         UIGarage.MainScreen.SetActive(_state);
+
+        if(_state) StoreHandler.Instance.SetCCashText_Garage(Constants.VirtualCurrencyAmount.ToString());
     }
 
     public void BackButton_Garage()
@@ -2714,6 +2716,11 @@ public class MainMenuViewController : MonoBehaviour
         return SelectedCars;
     }
 
+    public CarSelection GetSelectedCarByIndex()
+    {
+        return SelectedCars[carIndex];
+    }
+
     public void ResetSelectedCarStore()
     {
         for (int i = 0; i < SelectedCars.Count; i++)
@@ -2743,7 +2750,7 @@ public class MainMenuViewController : MonoBehaviour
         AddSelected(_generatedPrefab.GetComponent<CarSelection>());
     }
 
-    public void AssignStoreGarageCars(Transform _middleParent, Transform _leftParent, Transform _rightParent,Transform _mainParent, TextMeshProUGUI _name, TextMeshProUGUI _id, bool _assignID, bool _showStats)
+    public void AssignStoreGarageCars(Transform _middleParent, Transform _leftParent, Transform _rightParent,Transform _mainParent, TextMeshProUGUI _name, TextMeshProUGUI _id, bool _assignID, bool _showStats, bool _showConsumables)
     {
         for (int i = 0; i < SelectedCars.Count; i++)
         {
@@ -2752,7 +2759,7 @@ public class MainMenuViewController : MonoBehaviour
                 nextCarIndex = carIndex + 1;
                 PrevCarIndex = carIndex - 1;
 
-                AssignMiddleCar(SelectedCars[i].gameObject, _middleParent, _assignID, _showStats, _name, _id);
+                AssignMiddleCar(SelectedCars[i].gameObject, _middleParent, _assignID, _showStats,_showConsumables, _name, _id);
 
                 if (PrevCarIndex >= 0)
                     AssignLeftCar(SelectedCars[i - 1].gameObject, _leftParent);
@@ -2773,7 +2780,7 @@ public class MainMenuViewController : MonoBehaviour
         _car.transform.GetChild(0).gameObject.SetActive(false);
     }
 
-    public void AssignMiddleCar(GameObject _car, Transform _parent, bool _assignID,bool _showStats,TextMeshProUGUI _name, TextMeshProUGUI _id)
+    public void AssignMiddleCar(GameObject _car, Transform _parent, bool _assignID,bool _showStats,bool _showConsumables,TextMeshProUGUI _name, TextMeshProUGUI _id)
     {
         _car.transform.SetParent(_parent);
         ResetCarTransform(_car);
@@ -2787,6 +2794,9 @@ public class MainMenuViewController : MonoBehaviour
 
         if(_showStats)
             StoreHandler.Instance.UpdateCarStats(SelectedCars[carIndex].GetComponent<NFTDataHandler>()._settings);
+
+        if (_showConsumables)
+            StoreHandler.Instance.UpdateMainConsumablesStats(SelectedCars[carIndex].GetComponent<NFTDataHandler>().Mechanics, SelectedCars[carIndex].GetComponent<NFTDataHandler>()._settings);
     }
 
     public void AssignLeftCar(GameObject _car, Transform _parent)

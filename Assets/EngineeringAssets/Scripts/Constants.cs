@@ -192,6 +192,7 @@ public static class Constants
 
     public static double GATransferAmount = 0;
     public static int MaxCarHealth = 100;
+    public static int MaxStoredCarHealth = 100;
     public static int StoredCarHealth = 100;
     public static double VirtualCurrencyAmount = 0;
     public static int CCashPurchaseAmount = 100;

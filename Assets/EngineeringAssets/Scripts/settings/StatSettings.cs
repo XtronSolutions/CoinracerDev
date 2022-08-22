@@ -29,6 +29,20 @@ public class BaseStats
     public CarType Type;
 
     public ConsumableSettings Settings;
+
+    public BaseStats()
+    {
+        this.ID = 0;
+        this.Name = "XYZ";
+        this.Acceleration = 100;
+        this.TopSpeed = 100;
+        this.Cornering = 100;
+        this.HP = 100;
+        this.Price = 0;
+        this.Tier = CarTier.Top;
+        this.Type = CarType.AllCar;
+        this.Settings = null ;
+    }
 }
 
 [CreateAssetMenu(fileName = "Stats", menuName = "Game Mechanics/Create stats settings", order = 2)]
