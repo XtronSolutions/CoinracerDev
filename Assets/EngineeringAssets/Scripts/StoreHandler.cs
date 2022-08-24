@@ -747,6 +747,9 @@ public class StoreHandler : MonoBehaviour
             return;
         }
 
+        FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= _data._settings.CarStats.Price;
+        Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
+        apiRequestHandler.Instance.updatePlayerData();
         FirebaseMoralisManager.Instance.BuyCar(_data._settings.CarStats.ID.ToString(),Constants.WalletAddress);
         MainMenuViewController.Instance.ShowToast(4f, "Car was successfully purchased, you can view it in garage", true);
     }
