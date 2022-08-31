@@ -558,7 +558,7 @@ public class MainMenuViewController : MonoBehaviour
                     AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
 
                 Constants.PrintLog("pass bought was success");
-                UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount.ToString());
+                UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount);
                 OnPassBuy(true);
             }
             else
@@ -596,7 +596,7 @@ public class MainMenuViewController : MonoBehaviour
                     AnalyticsManager.Instance.TournamentPassEvent(Constants.GATransferAmount);
 
                 Constants.PrintLog("pass bought was success");
-                UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount.ToString());
+                UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount);
                 SecondTourOnPassBuy(true);
             }
             else
@@ -850,7 +850,7 @@ public class MainMenuViewController : MonoBehaviour
                                 AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
 
                             Constants.PrintLog("transaction was success for tournament");
-                            UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount.ToString());
+                            UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount);
                             StartTournament(true);
                             
                         }
@@ -927,7 +927,7 @@ public class MainMenuViewController : MonoBehaviour
                                 AnalyticsManager.Instance.TournamentTicketEvent(Constants.GATransferAmount);
 
                             Constants.PrintLog("transaction was success for tournament");
-                            UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount.ToString());
+                            UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount);
                             SecondTourStartTournament(true);
 
                         }
@@ -1005,9 +1005,9 @@ public class MainMenuViewController : MonoBehaviour
 
     #region MISC
 
-    public void UpdateVCText(string txt)
+    public void UpdateVCText(double txt)
     {
-        CCashText.text = txt;
+        CCashText.text = txt.ToString("F1");
     }
     public void SignOutUser()
     {
@@ -1362,7 +1362,7 @@ public class MainMenuViewController : MonoBehaviour
 
         FirebaseMoralisManager.Instance.GetNFTData();
         ChangeUserNameText(Constants.UserName);
-        UpdateVCText(Constants.VirtualCurrencyAmount.ToString());
+        UpdateVCText(Constants.VirtualCurrencyAmount);
         LoadingScreen.SetActive(false);
         DisableRegisterLogin();
         TournamentMiniScreen.SetActive(false);

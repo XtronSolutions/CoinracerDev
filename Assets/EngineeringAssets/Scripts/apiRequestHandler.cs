@@ -18,12 +18,31 @@ public class StoreResult
 
 
 [System.Serializable]
-public class MoralisBuyCarRequest
+public class
+    MoralisBuyCarRequest
 {
     public string Id { get; set; }
     public string ownerWalletAddress { get; set; }
     public string uID { get; set; }
 }
+
+[System.Serializable]
+public class MoralisPurchaseRequest
+{
+    public string id { get; set; }
+    public string uID { get; set; }
+    public string myNftID { get; set; }
+    public string nlp { get; set; }
+}
+
+[System.Serializable]
+public class
+    MoralisConsumablesRequest
+{
+    public string id { get; set; }
+    public string uID { get; set; }
+}
+
 
 [System.Serializable]
 public class MoralisStoreResponse
@@ -140,6 +159,8 @@ public class apiRequestHandler : MonoBehaviour
     private string m_GetAllStoreDetails = "getAllNFTSMetaData";
     private string m_BuyCarFunc = "buyGameNFT";
     private string m_GetAllMyNFTFunc = "getAllMyNFTsData";
+    private string m_PurchaseCarServerFunc = "purchaseCar";
+    private string m_PurchaseConsumablesFunc = "consumablePurchases";
     private string m_uID = "";
     #endregion
 
@@ -813,6 +834,80 @@ public class apiRequestHandler : MonoBehaviour
         byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
 
         UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_BuyCarFunc + m_AppID, "POST");
+        request.uploadHandler = new UploadHandlerRaw(rawBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        await request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log(request.downloadHandler.text);
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
+    }
+
+    async public Task<string> ProcessPurchaseCarServerRequest(string _metaID, string _owneraddress)
+    {
+        MoralisPurchaseRequest _dataNEW = new MoralisPurchaseRequest();
+        _dataNEW.id = _metaID;
+        _dataNEW.uID = _owneraddress;
+
+        string reqNew = JsonConvert.SerializeObject(_dataNEW);
+        byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
+
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_PurchaseCarServerFunc + m_AppID, "POST");
+        request.uploadHandler = new UploadHandlerRaw(rawBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        await request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log(request.downloadHandler.text);
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
+    }
+
+    async public Task<string> ProcessPurchaseConsumableRequest(string _metaID, string _owneraddress,string nlp,string nftID)
+    {
+        MoralisPurchaseRequest _dataNEW = new MoralisPurchaseRequest();
+        _dataNEW.id = _metaID;
+        _dataNEW.uID = _owneraddress;
+        _dataNEW.nlp = nlp;
+        _dataNEW.myNftID = nftID;
+
+        string reqNew = JsonConvert.SerializeObject(_dataNEW);
+        byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
+
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_PurchaseConsumablesFunc + m_AppID, "POST");
         request.uploadHandler = new UploadHandlerRaw(rawBody);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");

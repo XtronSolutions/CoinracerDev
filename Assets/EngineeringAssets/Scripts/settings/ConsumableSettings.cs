@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class ConsumableData
 {
+    public int ID;
     public float LapLimit;
     public float VC_Cost;
 }

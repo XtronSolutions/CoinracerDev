@@ -13,14 +13,18 @@ MonoBehaviour:
   m_Name: Consumable
   m_EditorClassIdentifier: 
   DamageRepair:
+    ID: 3
     LapLimit: 0
     VC_Cost: 10
   Tyres:
+    ID: 0
     LapLimit: 5
     VC_Cost: 9
   EngineOil:
+    ID: 1
     LapLimit: 10
     VC_Cost: 13
   Gas:
+    ID: 2
     LapLimit: 7.5
     VC_Cost: 11

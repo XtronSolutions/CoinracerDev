@@ -139,35 +139,42 @@ public class NFTGameplayManager : MonoBehaviour
                     {
                         if (_dataNEW.result[i].name.ToLower() == DataNFTModel[k].name.ToLower())
                         {
-                            _statSettings = StoreHandler.Instance.GetDealerDicIndex(DataNFTModel[k].MetaID);
-                            if (_statSettings == null) _statSettings = DataNFTModel[k].settings;
-
-                            Debug.Log("founed, adding: " + _dataNEW.result[i].name);
-
-                            NFTMehanicsData _newData = new NFTMehanicsData();
-                            _newData.OwnerWalletAddress = _dataNEW.result[i].ownerWallet;
-
-                            string _carName = _dataNEW.result[i].name;
-                            int _carHealth = Constants.MaxCarHealth;
-                            float _carTyreLaps = 0;
-                            float _carOilLaps = 0;
-                            float _carGasLaps = 0;
-
-                            if (!string.IsNullOrEmpty(_dataNEW.result[i].mechanics))
+                            if (Constants.StoredCarNames.Contains(_dataNEW.result[i].name))
                             {
-                                JToken Jresponse = JObject.Parse(_dataNEW.result[i].mechanics);
-
-                                _carHealth = Jresponse.SelectToken("CarHealth") != null ? (int)Jresponse.SelectToken("CarHealth") : Constants.MaxCarHealth;
-                                _carTyreLaps = Jresponse.SelectToken("Tyre_Laps") != null ? (float)Jresponse.SelectToken("Tyre_Laps") : 0;
-                                _carOilLaps = Jresponse.SelectToken("EngineOil_Laps") != null ? (float)Jresponse.SelectToken("EngineOil_Laps") : 0;
-                                _carGasLaps = Jresponse.SelectToken("Gas_Laps") != null ? (float)Jresponse.SelectToken("Gas_Laps") : 0;
+                                Debug.Log("car already added from wallet, skipping....");
                             }
+                            else
+                            {
+                                _statSettings = StoreHandler.Instance.GetDealerDicIndex(DataNFTModel[k].MetaID);
+                                if (_statSettings == null) _statSettings = DataNFTModel[k].settings;
 
-                            _newData.MetaData = _dataNEW.result[i].metadata;
-                            _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps);
-                            FirebaseMoralisManager.Instance.SetMechanics(int.Parse(_dataNEW.result[i].tokenId), _newData);
+                                Debug.Log("founed, adding: " + _dataNEW.result[i].name);
 
-                            MainMenuViewController.Instance.AssignStoreGarageData(DataNFTModel[k].CarSelection.gameObject, int.Parse(_dataNEW.result[i].tokenId), DataNFTModel[k].name, _statSettings, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, true, true);
+                                NFTMehanicsData _newData = new NFTMehanicsData();
+                                _newData.OwnerWalletAddress = _dataNEW.result[i].ownerWallet;
+
+                                string _carName = _dataNEW.result[i].name;
+                                int _carHealth = Constants.MaxCarHealth;
+                                float _carTyreLaps = 0;
+                                float _carOilLaps = 0;
+                                float _carGasLaps = 0;
+
+                                if (!string.IsNullOrEmpty(_dataNEW.result[i].mechanics))
+                                {
+                                    JToken Jresponse = JObject.Parse(_dataNEW.result[i].mechanics);
+
+                                    _carHealth = Jresponse.SelectToken("CarHealth") != null ? (int)Jresponse.SelectToken("CarHealth") : Constants.MaxCarHealth;
+                                    _carTyreLaps = Jresponse.SelectToken("Tyre_Laps") != null ? (float)Jresponse.SelectToken("Tyre_Laps") : 0;
+                                    _carOilLaps = Jresponse.SelectToken("EngineOil_Laps") != null ? (float)Jresponse.SelectToken("EngineOil_Laps") : 0;
+                                    _carGasLaps = Jresponse.SelectToken("Gas_Laps") != null ? (float)Jresponse.SelectToken("Gas_Laps") : 0;
+                                }
+
+                                _newData.MetaData = _dataNEW.result[i].metadata;
+                                _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps);
+                                FirebaseMoralisManager.Instance.SetMechanics(int.Parse(_dataNEW.result[i].tokenId), _newData);
+
+                                MainMenuViewController.Instance.AssignStoreGarageData(DataNFTModel[k].CarSelection.gameObject, int.Parse(_dataNEW.result[i].tokenId), DataNFTModel[k].name, _statSettings, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, true, true);
+                            }
                         }
                     }
                 }

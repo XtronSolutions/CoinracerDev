@@ -702,7 +702,7 @@ public class FirebaseMoralisManager : MonoBehaviour
             Debug.LogError("key already existed");
         }
     }
-    public void UpdateMechanics(int key, NFTMehanicsData _data)
+    public void UpdateMechanics(int key, NFTMehanicsData _data,bool _pushData=true)
     {
         if (key == 0)
             return;
@@ -710,6 +710,8 @@ public class FirebaseMoralisManager : MonoBehaviour
         if (NFTMehanics.ContainsKey(key))
         {
             NFTMehanics[key] = _data;
+
+            if(_pushData || Constants.DebugAllCars)
             SaveNFTData(key, _data);
         }
         else
@@ -892,12 +894,22 @@ public class FirebaseMoralisManager : MonoBehaviour
 
     async public void BuyCar(string _metaID, string _owneraddress)
     {
-        string _data = await apiRequestHandler.Instance.ProcessBuyCarRequest(_metaID,_owneraddress);
-        if(!string.IsNullOrEmpty(_data))
-            UpdateCarPurchasedData(_data);
+        //string _data = await apiRequestHandler.Instance.ProcessBuyCarRequest(_metaID,_owneraddress);
+        string _data = await apiRequestHandler.Instance.ProcessPurchaseCarServerRequest(_metaID, _owneraddress);
+
+        if (!string.IsNullOrEmpty(_data))
+        {
+            if(_data.Contains("Successfully Purchased"))
+                MainMenuViewController.Instance.ShowToast(4f, "Car was successfully purchased, you can view it in garage", true);
+            else
+                MainMenuViewController.Instance.ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
+
+            //MainMenuViewController.Instance.ShowToast(3f, _data, true);
+        }
         else
             Debug.LogError("Empty data received after purchase");
     }
+
     public void SetDealerDic(int _key,StatSettings _settings)
     {    
         if (CarDealer.ContainsKey(_key))
