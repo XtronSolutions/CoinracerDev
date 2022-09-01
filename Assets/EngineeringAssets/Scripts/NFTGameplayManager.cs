@@ -123,7 +123,7 @@ public class NFTGameplayManager : MonoBehaviour
     async public void InstantiateBoughtFromMoralis()
     {
         string _response = await apiRequestHandler.Instance.ProcessAllMyNFTRequest(Constants.WalletAddress);
-        Debug.Log(_response);
+        //Debug.Log(_response);
         if (!string.IsNullOrEmpty(_response))
         {
             MoralisNFTArrayResponse _dataNEW = new MoralisNFTArrayResponse();
@@ -132,7 +132,7 @@ public class NFTGameplayManager : MonoBehaviour
 
             for (int i = 0; i < _dataNEW.result.Count; i++)
             {
-                Debug.Log("searching for : " + _dataNEW.result[i].name);
+                //Debug.Log("searching for : " + _dataNEW.result[i].name);
                 if(!string.IsNullOrEmpty(_dataNEW.result[i].name))
                 {
                     for (int k = 0; k < DataNFTModel.Count; k++)
@@ -141,14 +141,14 @@ public class NFTGameplayManager : MonoBehaviour
                         {
                             if (Constants.StoredCarNames.Contains(_dataNEW.result[i].name))
                             {
-                                Debug.Log("car already added from wallet, skipping....");
+                                //Debug.Log("car already added from wallet, skipping....");
                             }
                             else
                             {
                                 _statSettings = StoreHandler.Instance.GetDealerDicIndex(DataNFTModel[k].MetaID);
                                 if (_statSettings == null) _statSettings = DataNFTModel[k].settings;
 
-                                Debug.Log("founed, adding: " + _dataNEW.result[i].name);
+                                //Debug.Log("founed, adding: " + _dataNEW.result[i].name);
 
                                 NFTMehanicsData _newData = new NFTMehanicsData();
                                 _newData.OwnerWalletAddress = _dataNEW.result[i].ownerWallet;

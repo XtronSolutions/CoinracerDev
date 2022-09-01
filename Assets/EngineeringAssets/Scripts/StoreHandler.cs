@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using TMPro;
+using Newtonsoft.Json.Linq;
 
 public enum DealerScreenState
 {
@@ -374,7 +375,6 @@ public class StoreHandler : MonoBehaviour
         NFTDataHandler _dataIntance = MainMenuViewController.Instance.GetSelectedCarByIndex().gameObject.GetComponent<NFTDataHandler>();
         _dataIntance.Mechanics = tempNFTData;
         UpdateMainConsumablesStats(_dataIntance.Mechanics, _dataIntance._settings);
-        Constants.VirtualCurrencyAmount -= actualCost;
         SetCCashText_StoreUI(Constants.VirtualCurrencyAmount);
         MainMenuViewController.Instance.UpdateVCText(Constants.VirtualCurrencyAmount);
         UpdateConsumableText_StoreUI();
@@ -393,10 +393,27 @@ public class StoreHandler : MonoBehaviour
 
                 MainMenuViewController.Instance.LoadingScreen.SetActive(true);
                 responseData = await apiRequestHandler.Instance.ProcessPurchaseConsumableRequest(MechanicsManager.Instance._consumableSettings.Tyres.ID.ToString(), Constants.WalletAddress, DiffValue.ToString(), tempNFTID.ToString());
-                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-                tempNFTData.mechanicsData.Tyre_Laps = 0;
-                MainMenuViewController.Instance.ShowToast(2f, "Tires were successfully fixed.", true);
-                UpdateDataUponPurchase();
+
+                if (!string.IsNullOrEmpty(responseData))
+                {
+                    JToken token = JObject.Parse(responseData);
+
+                    Constants.VirtualCurrencyAmount = (float)token.SelectToken("VC_amount");
+                    tempNFTData.mechanicsData.Tyre_Laps = (float)token.SelectToken("mechanics").SelectToken("Tyre_Laps");
+
+                    Debug.LogError(Constants.VirtualCurrencyAmount + " " + tempNFTData.mechanicsData.Tyre_Laps);
+
+                    //Constants.VirtualCurrencyAmount = token.SelectToken("VC_amount") != null ? (float)token.SelectToken("VC_amount") : Constants.VirtualCurrencyAmount - actualCost;
+                    //tempNFTData.mechanicsData.Tyre_Laps = token.SelectToken("mechanics").SelectToken("Tyre_Laps") != null ? (float)token.SelectToken("mechanics").SelectToken("Tyre_Laps") : 0;
+
+                    MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                    MainMenuViewController.Instance.ShowToast(2f, "Tires were successfully fixed.", true);
+                    UpdateDataUponPurchase();
+                }else
+                {
+                    MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                    MainMenuViewController.Instance.ShowToast(2f, "Something went wrong, please try again later.", false);
+                }
 
                 break;
             case FixType.Oil:
@@ -502,7 +519,7 @@ public class StoreHandler : MonoBehaviour
     }
     public void DealerButtonListeners()
     {
-        CarDealer.ATMButton.onClick.AddListener(BuyVC_StoreUI);
+        //CarDealer.ATMButton.onClick.AddListener(BuyVC_StoreUI);
         CarDealer.BuySpecificCarButton.onClick.AddListener(OnBuySpecificCarButtonClicked);
         CarDealer.BuyCarButton.onClick.AddListener(OnBuyCarClicked_Dealer);
         CarDealer.BackButton.onClick.AddListener(OnBackButtonClicked_Dealer);

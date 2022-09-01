@@ -940,7 +940,7 @@ public class WalletManager : MonoBehaviour
                 }
             }
 
-            Debug.Log(response);
+            //Debug.Log(response);
             if (!Constants.gifLinks.Contains(response))
             {
                 metaDataURL[_index].Add(response);
@@ -1200,14 +1200,14 @@ public class WalletManager : MonoBehaviour
           
             Constants.CheckAllNFT = true;
 
-            for (int i = 0; i < Constants.TokenNFT.Count; i++)
-            {
-                Debug.Log(Constants.TokenNFT[i].Name);
-                for (int j = 0; j < Constants.TokenNFT[i].ID.Count; j++)
-                {
-                    Debug.Log(Constants.TokenNFT[i].ID[j]);
-                }
-            }
+            //for (int i = 0; i < Constants.TokenNFT.Count; i++)
+            //{
+            //    Debug.Log(Constants.TokenNFT[i].Name);
+            //    for (int j = 0; j < Constants.TokenNFT[i].ID.Count; j++)
+            //    {
+            //        Debug.Log(Constants.TokenNFT[i].ID[j]);
+            //    }
+            //}
             Constants.ChipraceDataChecked = false;
 
             if(Constants.ForceUpdateChiprace)

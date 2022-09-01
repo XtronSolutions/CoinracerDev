@@ -21,18 +21,19 @@ public class StoreResult
 public class
     MoralisBuyCarRequest
 {
-    public string Id { get; set; }
+    public string id { get; set; }
     public string ownerWalletAddress { get; set; }
     public string uID { get; set; }
 }
 
 [System.Serializable]
-public class MoralisPurchaseRequest
+public class MoralisConsumablePurchaseRequest
 {
     public string id { get; set; }
     public string uID { get; set; }
     public string myNftID { get; set; }
     public string nlp { get; set; }
+    public string ownerWalletAddress { get; set; }
 }
 
 [System.Serializable]
@@ -716,7 +717,7 @@ public class apiRequestHandler : MonoBehaviour
         }
         else
         {
-            Debug.Log(request.downloadHandler.text);
+            Debug.Log("data against token ids : "+request.downloadHandler.text);
 
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -775,6 +776,7 @@ public class apiRequestHandler : MonoBehaviour
         request.SetRequestHeader("Content-Type", "application/json");
 
         await request.SendWebRequest();
+         Debug.Log(request.downloadHandler.text);
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
@@ -826,7 +828,7 @@ public class apiRequestHandler : MonoBehaviour
     async public Task<string> ProcessBuyCarRequest(string _metaID, string _owneraddress)
     {
         MoralisBuyCarRequest _dataNEW = new MoralisBuyCarRequest();
-        _dataNEW.Id = _metaID;
+        _dataNEW.id = _metaID;
         _dataNEW.ownerWalletAddress = _owneraddress;
         _dataNEW.uID = m_uID;
 
@@ -862,9 +864,10 @@ public class apiRequestHandler : MonoBehaviour
 
     async public Task<string> ProcessPurchaseCarServerRequest(string _metaID, string _owneraddress)
     {
-        MoralisPurchaseRequest _dataNEW = new MoralisPurchaseRequest();
+        MoralisBuyCarRequest _dataNEW = new MoralisBuyCarRequest();
         _dataNEW.id = _metaID;
-        _dataNEW.uID = _owneraddress;
+        _dataNEW.uID = m_uID ;
+        _dataNEW.ownerWalletAddress = _owneraddress;
 
         string reqNew = JsonConvert.SerializeObject(_dataNEW);
         byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
@@ -875,6 +878,7 @@ public class apiRequestHandler : MonoBehaviour
         request.SetRequestHeader("Content-Type", "application/json");
 
         await request.SendWebRequest();
+        Debug.Log(request.downloadHandler.text);
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
@@ -898,13 +902,15 @@ public class apiRequestHandler : MonoBehaviour
 
     async public Task<string> ProcessPurchaseConsumableRequest(string _metaID, string _owneraddress,string nlp,string nftID)
     {
-        MoralisPurchaseRequest _dataNEW = new MoralisPurchaseRequest();
+        MoralisConsumablePurchaseRequest _dataNEW = new MoralisConsumablePurchaseRequest();
         _dataNEW.id = _metaID;
-        _dataNEW.uID = _owneraddress;
+        _dataNEW.ownerWalletAddress = _owneraddress;
         _dataNEW.nlp = nlp;
         _dataNEW.myNftID = nftID;
+        _dataNEW.uID = m_uID;
 
         string reqNew = JsonConvert.SerializeObject(_dataNEW);
+        Debug.LogError(reqNew);
         byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
 
         UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_PurchaseConsumablesFunc + m_AppID, "POST");
@@ -914,6 +920,7 @@ public class apiRequestHandler : MonoBehaviour
 
         await request.SendWebRequest();
 
+        Debug.Log(request.downloadHandler.text);
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();

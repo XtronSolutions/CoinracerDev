@@ -501,7 +501,7 @@ public class TournamentManager : MonoBehaviour
         }
         else
         {
-            Debug.Log(request.downloadHandler.text);
+            //Constants.PrintLog("Tournament response : " + request.downloadHandler.text);
             JToken token = JObject.Parse(request.downloadHandler.text);
             
             if ((string) token.SelectToken("message") == "No User Found.")

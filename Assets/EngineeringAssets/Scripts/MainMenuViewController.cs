@@ -2040,7 +2040,7 @@ public class MainMenuViewController : MonoBehaviour
         //    return;
         //}
 
-        if (Constants.CheckAllNFT)
+        if (Constants.CheckAllNFT && Constants.GetMoralisData)
         {
             int storedNFTS = 0;
 
@@ -2063,7 +2063,7 @@ public class MainMenuViewController : MonoBehaviour
                     UpdateSelectedCarVisual(_currentSelectedCarIndex);
                 }
             }
-            else if (Constants.StoredCarNames.Count != 0)
+            else if (Constants.StoredCarNames.Count != 0 || Constants.StoredCarNamesMoralis.Count!=0)
             {
                 DeactivateCars();
                 _selecteableCars.Clear();
@@ -2081,6 +2081,18 @@ public class MainMenuViewController : MonoBehaviour
                     for (int j = 0; j < _allCars.Count; j++)
                     {
                         if (Constants.StoredCarNames[i].ToLower() == _allCars[j].CarName.ToLower())
+                        {
+                            _selecteableCars.Add(_allCars[j].CarDetail);
+                            break;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < Constants.StoredCarNamesMoralis.Count; i++)
+                {
+                    for (int j = 0; j < _allCars.Count; j++)
+                    {
+                        if (Constants.StoredCarNamesMoralis[i].ToLower() == _allCars[j].CarName.ToLower())
                         {
                             _selecteableCars.Add(_allCars[j].CarDetail);
                             break;

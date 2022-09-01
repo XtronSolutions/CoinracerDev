@@ -106,6 +106,7 @@ public static class Constants
     };
     public static bool CheckAllNFT = false;
     public static List<string> StoredCarNames = new List<string>();
+    public static List<string> StoredCarNamesMoralis = new List<string>();
     public static bool PushingTries = false;
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
