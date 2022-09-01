@@ -163,9 +163,9 @@ public class StoreHandler : MonoBehaviour
         UIStore.CCashTxt.text = txt.ToString("F1");
     }
 
-    public void SetCCashText_Garage(string txt)
+    public void SetCCashText_Garage(double txt)
     {
-        UIStore.CCashGarage_Text.text = txt;
+        UIStore.CCashGarage_Text.text = txt.ToString("F1");
     }
 
     public void UpdateCarName_StoreUI(string _name)
@@ -200,7 +200,7 @@ public class StoreHandler : MonoBehaviour
         _state = DealerScreenState.MAINSTORE;
 
         SetCCashText_StoreUI(Constants.VirtualCurrencyAmount);
-        SetCCashText_Garage(Constants.VirtualCurrencyAmount.ToString());
+        SetCCashText_Garage(Constants.VirtualCurrencyAmount);
         UpdateBUYVCText_StoreUI(Constants.CCashPurchaseAmount.ToString());
     }
 
@@ -376,9 +376,56 @@ public class StoreHandler : MonoBehaviour
         _dataIntance.Mechanics = tempNFTData;
         UpdateMainConsumablesStats(_dataIntance.Mechanics, _dataIntance._settings);
         SetCCashText_StoreUI(Constants.VirtualCurrencyAmount);
+        SetCCashText_Garage(Constants.VirtualCurrencyAmount);
         MainMenuViewController.Instance.UpdateVCText(Constants.VirtualCurrencyAmount);
         UpdateConsumableText_StoreUI();
         UIStore.DialogueConfirmation.MainScreen.SetActive(false);
+    }
+
+    public void OnProcessPurchase(string _dataresponse,string tokenString,string toastText, int defaultVal)
+    {
+        if (!string.IsNullOrEmpty(_dataresponse))
+        {
+
+            JToken token = JObject.Parse(_dataresponse);
+
+            string msg = token.SelectToken("result").SelectToken("message") != null ? (string)token.SelectToken("result").SelectToken("message") : "";
+
+            if (msg.Contains("Successfully updated"))
+            {
+                Constants.VirtualCurrencyAmount = (float)token.SelectToken("result").SelectToken("VC_amount");
+
+                switch (_fixType)
+                {
+                    case FixType.Tires:
+                        tempNFTData.mechanicsData.Tyre_Laps = token.SelectToken("result").SelectToken("mechanics").SelectToken(tokenString) != null ? (float)token.SelectToken("result").SelectToken("mechanics").SelectToken(tokenString) : defaultVal;
+                        break;
+                    case FixType.Oil:
+                        tempNFTData.mechanicsData.EngineOil_Laps = token.SelectToken("result").SelectToken("mechanics").SelectToken(tokenString) != null ? (float)token.SelectToken("result").SelectToken("mechanics").SelectToken(tokenString) : defaultVal;
+                        break;
+                    case FixType.Gas:
+                        tempNFTData.mechanicsData.Gas_Laps = token.SelectToken("result").SelectToken("mechanics").SelectToken(tokenString) != null ? (float)token.SelectToken("result").SelectToken("mechanics").SelectToken(tokenString) : defaultVal;
+                        break;
+                    case FixType.Damage:
+                        tempNFTData.mechanicsData.CarHealth = token.SelectToken("result").SelectToken("mechanics").SelectToken(tokenString) != null ? (int)token.SelectToken("result").SelectToken("mechanics").SelectToken(tokenString) : defaultVal;
+                        break;
+                }
+
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(2f, toastText, true);
+                UpdateDataUponPurchase();
+            }
+            else
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(2f, "Something went wrong, please try again later.", false);
+            }
+        }
+        else
+        {
+            MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+            MainMenuViewController.Instance.ShowToast(2f, "Something went wrong, please try again later.", false);
+        }
     }
     async public void OnPurchaseClicked()
     {
@@ -393,27 +440,7 @@ public class StoreHandler : MonoBehaviour
 
                 MainMenuViewController.Instance.LoadingScreen.SetActive(true);
                 responseData = await apiRequestHandler.Instance.ProcessPurchaseConsumableRequest(MechanicsManager.Instance._consumableSettings.Tyres.ID.ToString(), Constants.WalletAddress, DiffValue.ToString(), tempNFTID.ToString());
-
-                if (!string.IsNullOrEmpty(responseData))
-                {
-                    JToken token = JObject.Parse(responseData);
-
-                    Constants.VirtualCurrencyAmount = (float)token.SelectToken("VC_amount");
-                    tempNFTData.mechanicsData.Tyre_Laps = (float)token.SelectToken("mechanics").SelectToken("Tyre_Laps");
-
-                    Debug.LogError(Constants.VirtualCurrencyAmount + " " + tempNFTData.mechanicsData.Tyre_Laps);
-
-                    //Constants.VirtualCurrencyAmount = token.SelectToken("VC_amount") != null ? (float)token.SelectToken("VC_amount") : Constants.VirtualCurrencyAmount - actualCost;
-                    //tempNFTData.mechanicsData.Tyre_Laps = token.SelectToken("mechanics").SelectToken("Tyre_Laps") != null ? (float)token.SelectToken("mechanics").SelectToken("Tyre_Laps") : 0;
-
-                    MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-                    MainMenuViewController.Instance.ShowToast(2f, "Tires were successfully fixed.", true);
-                    UpdateDataUponPurchase();
-                }else
-                {
-                    MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-                    MainMenuViewController.Instance.ShowToast(2f, "Something went wrong, please try again later.", false);
-                }
+                OnProcessPurchase(responseData,"Tyre_Laps", "Tires were successfully fixed.", 0);
 
                 break;
             case FixType.Oil:
@@ -425,10 +452,7 @@ public class StoreHandler : MonoBehaviour
 
                 MainMenuViewController.Instance.LoadingScreen.SetActive(true);
                 responseData = await apiRequestHandler.Instance.ProcessPurchaseConsumableRequest(MechanicsManager.Instance._consumableSettings.EngineOil.ID.ToString(), Constants.WalletAddress, DiffValue.ToString(), tempNFTID.ToString());
-                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-                tempNFTData.mechanicsData.EngineOil_Laps = 0;
-                MainMenuViewController.Instance.ShowToast(3f, "Engine Oil was successfully filled.", true);
-                UpdateDataUponPurchase();
+                OnProcessPurchase(responseData,"EngineOil_Laps", "Engine Oil was successfully filled.", 0);
 
                 break;
             case FixType.Gas:
@@ -440,10 +464,7 @@ public class StoreHandler : MonoBehaviour
 
                 MainMenuViewController.Instance.LoadingScreen.SetActive(true);
                 responseData = await apiRequestHandler.Instance.ProcessPurchaseConsumableRequest(MechanicsManager.Instance._consumableSettings.Gas.ID.ToString(), Constants.WalletAddress, DiffValue.ToString(), tempNFTID.ToString());
-                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-                tempNFTData.mechanicsData.Gas_Laps = 0;
-                MainMenuViewController.Instance.ShowToast(3f, "Gas was successfully filled.", true);
-                UpdateDataUponPurchase();
+                OnProcessPurchase(responseData,"Gas_Laps", "Gas was successfully filled.", 0);
 
                 break;
             case FixType.Damage:
@@ -455,12 +476,8 @@ public class StoreHandler : MonoBehaviour
 
                 MainMenuViewController.Instance.LoadingScreen.SetActive(true);
                 responseData = await apiRequestHandler.Instance.ProcessPurchaseConsumableRequest(MechanicsManager.Instance._consumableSettings.DamageRepair.ID.ToString(), Constants.WalletAddress, DiffValue.ToString(), tempNFTID.ToString());
-                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                OnProcessPurchase(responseData,"CarHealth", "Damage were repaired, car health is now full.", Constants.MaxCarHealth);
 
-                NFTDataHandler _dataIntance = MainMenuViewController.Instance.GetSelectedCarByIndex().gameObject.GetComponent<NFTDataHandler>();
-                tempNFTData.mechanicsData.CarHealth =(int)_dataIntance._settings.CarStats.HP;
-                MainMenuViewController.Instance.ShowToast(3f, "Damage were repaired, car health is now full.", true);
-                UpdateDataUponPurchase();
                 break;
         }
     }
@@ -566,7 +583,7 @@ public class StoreHandler : MonoBehaviour
             case DealerScreenState.CARTYPE:
                 break;
             case DealerScreenState.CONSUMABLES:
-                SetCCashText_Garage(Constants.VirtualCurrencyAmount.ToString());
+                SetCCashText_Garage(Constants.VirtualCurrencyAmount);
                 ToggleMainScreen_StoreUI(false);
                 UIStore.ConsumablesObject.SetActive(false);
                 break;
@@ -769,10 +786,6 @@ public class StoreHandler : MonoBehaviour
             return;
         }
 
-        //FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= _data._settings.CarStats.Price;
-        //Constants.VirtualCurrencyAmount = FirebaseMoralisManager.Instance.PlayerData.VC_Amount;
-        //apiRequestHandler.Instance.updatePlayerData();
-        Debug.Log("calling buy car");
         FirebaseMoralisManager.Instance.BuyCar(_data._settings.CarStats.ID.ToString(),Constants.WalletAddress);
     }
 

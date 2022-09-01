@@ -729,7 +729,7 @@ public class FirebaseMoralisManager : MonoBehaviour
         else
         {
             string _json = JsonConvert.SerializeObject(_data.mechanicsData);
-            bool isDone = await apiRequestHandler.Instance.ProcessNFTUpdateDataRequest(key.ToString(), _data.mechanicsData.CarName, _json);
+            bool isDone = await apiRequestHandler.Instance.ProcessNFTUpdateDataRequest(key.ToString(), _data.mechanicsData.CarName, _json,_data.MetaData);
 
             if (isDone)
                 Debug.Log("updated successfully");
@@ -891,6 +891,12 @@ public class FirebaseMoralisManager : MonoBehaviour
     #region Moralis
     async public void GetAssignStoreData()
     {
+        if(!Constants.GetSecKey)
+        {
+            Invoke(nameof(GetAssignStoreData), 0.5f);
+            return;
+        }
+
         CarDealer.Clear();
         string _data = await apiRequestHandler.Instance.ProcessAllStoreRequest();
 
@@ -937,28 +943,68 @@ public class FirebaseMoralisManager : MonoBehaviour
 
     async public void BuyCar(string _metaID, string _owneraddress)
     {
-        //string _data = await apiRequestHandler.Instance.ProcessBuyCarRequest(_metaID,_owneraddress);
+        MainMenuViewController.Instance.LoadingScreen.SetActive(true);
         string _data = await apiRequestHandler.Instance.ProcessPurchaseCarServerRequest(_metaID, _owneraddress);
 
         if (!string.IsNullOrEmpty(_data))
         {
             JToken token = JObject.Parse(_data);
 
-            Constants.VirtualCurrencyAmount = (float)token.SelectToken("data");
-            Debug.LogError(Constants.VirtualCurrencyAmount);
+            string msg = token.SelectToken("result").SelectToken("message") != null ? (string)token.SelectToken("result").SelectToken("message") : "";
 
-            MainMenuViewController.Instance.ShowToast(4f, "Car was successfully purchased, you can view it in garage", true);
-            //AddMoralisCarInfo();
+            if (msg.Contains("Successfully Purchased"))
+            {
+                Constants.VirtualCurrencyAmount = (float)token.SelectToken("result").SelectToken("VC_amount");
+                string _CarName = (string)token.SelectToken("result").SelectToken("name");
+                int _tokenId = (int)token.SelectToken("result").SelectToken("tokenId");
 
-            //if (_data.Contains("Successfully Purchased"))
-            //    MainMenuViewController.Instance.ShowToast(4f, "Car was successfully purchased, you can view it in garage", true);
-            //else
-            //    MainMenuViewController.Instance.ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
+                StoreHandler.Instance.SetCCashText_StoreUI(Constants.VirtualCurrencyAmount); 
+                StoreHandler.Instance.SetCCashText_Garage(Constants.VirtualCurrencyAmount);
+                MainMenuViewController.Instance.UpdateVCText(Constants.VirtualCurrencyAmount);
 
-            //MainMenuViewController.Instance.ShowToast(3f, _data, true);
+                AddMoralisCarInfo(_CarName, _tokenId.ToString());
+
+                List<string> _tokens = new List<string>();
+                _tokens.Add(_tokenId.ToString());
+                string _response = await apiRequestHandler.Instance.ProcessNFTDataArrayRequest(_tokens);
+                UpdateCarPurchasedData(_response);
+
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(4f, "Car was successfully purchased, you can view it in garage", true);
+            }
+            else
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                MainMenuViewController.Instance.ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
+            }
         }
         else
             Debug.LogError("Empty data received after purchase");
+    }
+
+    public void SetNewBoughtCarMechanics(string _car,int _tokenid,string _mechanics, JToken _response)
+    {
+        NFTMehanicsData _newData = new NFTMehanicsData();
+        _newData.OwnerWalletAddress = Constants.WalletAddress;
+
+        string _carName = _car;
+        int _carHealth = Constants.MaxCarHealth;
+        float _carTyreLaps = 0;
+        float _carOilLaps = 0;
+        float _carGasLaps = 0;
+
+        if (!string.IsNullOrEmpty(_mechanics))
+        {
+            _carHealth = _response.SelectToken("result").SelectToken("mechanics").SelectToken("CarHealth") != null ? (int)_response.SelectToken("result").SelectToken("mechanics").SelectToken("CarHealth") : Constants.MaxCarHealth;
+            Debug.LogError(_carHealth);
+            _carTyreLaps = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Tyre_Laps") != null ? (float)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Tyre_Laps") : 0;
+            _carOilLaps = _response.SelectToken("result").SelectToken("mechanics").SelectToken("EngineOil_Laps") != null ? (float)_response.SelectToken("result").SelectToken("mechanics").SelectToken("EngineOil_Laps") : 0;
+            _carGasLaps = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Gas_Laps") != null ? (float)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Gas_Laps") : 0;
+        }
+
+        _newData.MetaData = "";
+        _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps);
+        SetMechanics(_tokenid, _newData);
     }
 
     public void SetDealerDic(int _key,StatSettings _settings)

@@ -13,6 +13,7 @@ public static class Constants
     public static string TokenName = "CRACER";
     public static string APP_VERSION = "Alpha 2.0";
     public static string WalletAccoutKey = "Account";
+    public static string SecureKey = "flcpe";
     public static string NameCurrency = "USD";
     public static string SoundKey = "Sound";
     public static string MusicKey = "Music";
@@ -22,6 +23,7 @@ public static class Constants
     public static bool IsPractice = false;
     public static bool IsTournament = false;
     public static bool TournamentActive = false;
+    public static bool GetSecKey = false;
 
     public static bool EnableSecondTournament = false;
     public static bool IsSecondTournament = false;

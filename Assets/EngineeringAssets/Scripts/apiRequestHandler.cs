@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 #region SuperClasses
 [System.Serializable]
@@ -66,7 +67,8 @@ public class MoralisUpdateRequest
     public string name { get; set; }
     public string mechanics { get; set; }
     public string uID { get; set; }
-
+    public string metadata { get; set; }
+    public string ownerWalletAddress { get; set; }
 }
 
 
@@ -128,6 +130,10 @@ public class LeaderboardPayload
 
 public class apiRequestHandler : MonoBehaviour
 {
+#if UNITY_WEBGL
+    [DllImport("__Internal")]
+    private static extern string GetStorage(string key, string ObjectName, string callback);
+#endif
     public static apiRequestHandler Instance;
 
     #region Firebase datamembers
@@ -184,6 +190,14 @@ public class apiRequestHandler : MonoBehaviour
         //string[] str_arr = new string[3]{ "5063", "5106", "20011" };
         //StartCoroutine(ProcessNFTDataArrayRequest(str_arr));
         Instance = this;
+
+        if (Constants.IsTest)
+        {
+            m_uID = "";
+            Constants.GetSecKey = true;
+        }
+
+        //GetSecureKey();
         //ProcessAllStoreRequest();
     }
 
@@ -670,8 +684,30 @@ public class apiRequestHandler : MonoBehaviour
     #endregion
 
     #region Moralis
-    private IEnumerator ProcessNFTDataRequest(string _token)
+    public void GetSecureKey()
     {
+#if UNITY_WEBGL
+        GetStorage(Constants.SecureKey, this.gameObject.name, "OnGetSec");
+#endif
+    }
+
+    public void OnGetSec(string info)
+    {
+        if (info != "null" && info != "" && info != null && info != string.Empty)
+        {
+            m_uID = info;
+            Debug.Log("received : " + m_uID);
+            Constants.GetSecKey = true;
+        }
+        else
+        {
+            m_uID = "";
+            Debug.Log("key was null, getting again....");
+            GetSecureKey();
+        }
+    }
+    private IEnumerator ProcessNFTDataRequest(string _token)
+    {            
         WWWForm form = new WWWForm();
         form.AddField("tokenId", _token);
         form.AddField("uID", m_uID);
@@ -759,13 +795,15 @@ public class apiRequestHandler : MonoBehaviour
         }
     }
 
-    async public Task<bool> ProcessNFTUpdateDataRequest(string _tokenid,string _name,string _mechanics)
+    async public Task<bool> ProcessNFTUpdateDataRequest(string _tokenid,string _name,string _mechanics,string _meta)
     {
         MoralisUpdateRequest _dataNEW = new MoralisUpdateRequest();
         _dataNEW.tokenId = _tokenid;
         _dataNEW.name = _name;
         _dataNEW.mechanics = _mechanics;
         _dataNEW.uID = m_uID;
+        _dataNEW.ownerWalletAddress = Constants.WalletAddress;
+        _dataNEW.metadata = _meta;
 
         string reqNew = JsonConvert.SerializeObject(_dataNEW);
         byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
@@ -878,7 +916,6 @@ public class apiRequestHandler : MonoBehaviour
         request.SetRequestHeader("Content-Type", "application/json");
 
         await request.SendWebRequest();
-        Debug.Log(request.downloadHandler.text);
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {

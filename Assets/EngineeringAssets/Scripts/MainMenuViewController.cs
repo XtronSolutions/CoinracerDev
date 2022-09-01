@@ -1928,7 +1928,7 @@ public class MainMenuViewController : MonoBehaviour
         UIGarage.MainScreen.SetActive(_state);
 
         if (_state)
-            StoreHandler.Instance.SetCCashText_Garage(Constants.VirtualCurrencyAmount.ToString());
+            StoreHandler.Instance.SetCCashText_Garage(Constants.VirtualCurrencyAmount);
     }
 
     public void BackButton_Garage()
