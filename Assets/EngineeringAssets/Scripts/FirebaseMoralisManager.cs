@@ -13,6 +13,19 @@ using System.Numerics;
 
 #region SuperClasses
 [System.Serializable]
+public class Stats
+{
+    public string Name { get; set; }
+    public double Acceleration { get; set; }
+    public double TopSpeed { get; set; }
+    public double Cornering { get; set; }
+    public double HP { get; set; }
+    public int Price { get; set; }
+    public int Tier { get; set; }
+    public int Type { get; set; }
+}
+
+[System.Serializable]
 public class MechanicsData
 {
     public string CarName;
@@ -20,14 +33,16 @@ public class MechanicsData
     public float Tyre_Laps;
     public float EngineOil_Laps;
     public float Gas_Laps;
+    public Stats Stats { get; set; }
 
-    public MechanicsData(string _carName,int carHealth,float tyre_Laps,float engineOil_Laps,float gas_Laps)
+    public MechanicsData(string _carName,int carHealth,float tyre_Laps,float engineOil_Laps,float gas_Laps, Stats _stats)
     {
         this.CarName = _carName;
         this.CarHealth = carHealth;
         this.Tyre_Laps = tyre_Laps;
         this.EngineOil_Laps = engineOil_Laps;
         this.Gas_Laps = gas_Laps;
+        this.Stats = _stats;
     }
 }
 
@@ -106,6 +121,20 @@ public class FirebaseMoralisManager : MonoBehaviour
 
     private List<string> TokenPayload = new List<string>();
     private Dictionary<int, string> TokenName = new Dictionary<int, string>();
+
+    string _carName = "";
+    string _carNameStats = "";
+    int _carHealth = 0;
+    float _carTyreLaps = 0;
+    float _carOilLaps = 0;
+    float _carGasLaps = 0;
+    double _acceleration = 0;
+    double _topSpeed = 0;
+    double _cornering = 0;
+    double _hp = 0;
+    int _price = 0;
+    int _tier = 0;
+    int _type = 0;
     #endregion
 
     #region StartFunctionality
@@ -744,7 +773,18 @@ public class FirebaseMoralisManager : MonoBehaviour
         NFTMehanicsData _data = new NFTMehanicsData();
         _data.OwnerWalletAddress = "testone";
         _data.PlayerName = "rider";
-        _data.mechanicsData = new MechanicsData("Bolt", 100, 0, 0, 0);
+
+        Stats _settings = new Stats();
+        _settings.Name = "Bolt";
+        _settings.Acceleration = 100;
+        _settings.TopSpeed = 100;
+        _settings.Cornering = 100;
+        _settings.HP = 100;
+        _settings.Price = 0;
+        _settings.Tier = 0;
+        _settings.Type = 1;
+
+        _data.mechanicsData = new MechanicsData("Bolt", 100, 0, 0, 0, _settings);
         NFTMehanics.Add(0, _data);
 
         //this is function that will be used to populate data from moralis
@@ -757,7 +797,18 @@ public class FirebaseMoralisManager : MonoBehaviour
                     NFTMehanicsData _newData = new NFTMehanicsData();
                     _newData.OwnerWalletAddress = "testone";
                     _data.PlayerName = PlayerData.UserName;
-                    _newData.mechanicsData = new MechanicsData(NFTGameplayManager.Instance.DataNFTModel[i].name, 100, 0, 0, 0);
+
+                    Stats _Statsettings = new Stats();
+                    _Statsettings.Name = NFTGameplayManager.Instance.DataNFTModel[i].name;
+                    _Statsettings.Acceleration = NFTGameplayManager.Instance.DataNFTModel[i].settings.CarStats.Acceleration;
+                    _Statsettings.TopSpeed = NFTGameplayManager.Instance.DataNFTModel[i].settings.CarStats.TopSpeed;
+                    _Statsettings.Cornering = NFTGameplayManager.Instance.DataNFTModel[i].settings.CarStats.Cornering;
+                    _Statsettings.HP = NFTGameplayManager.Instance.DataNFTModel[i].settings.CarStats.HP;
+                    _Statsettings.Price = NFTGameplayManager.Instance.DataNFTModel[i].settings.CarStats.Price;
+                    _Statsettings.Tier =(int)NFTGameplayManager.Instance.DataNFTModel[i].settings.CarStats.Tier;
+                    _Statsettings.Type = (int)NFTGameplayManager.Instance.DataNFTModel[i].settings.CarStats.Type;
+
+                    _newData.mechanicsData = new MechanicsData(NFTGameplayManager.Instance.DataNFTModel[i].name, 100, 0, 0, 0, _Statsettings);
                     NFTMehanics.Add(i + 1, _newData);
                 }
 
@@ -857,11 +908,19 @@ public class FirebaseMoralisManager : MonoBehaviour
                 _newData.OwnerWalletAddress = _dataNEW.result[i].ownerWallet;
                 _newData.PlayerName = PlayerData.UserName;
 
-                string _carName = _dataNEW.result[i].name;
-                int _carHealth = Constants.MaxCarHealth;
-                float _carTyreLaps = 0;
-                float _carOilLaps = 0;
-                float _carGasLaps = 0;
+                 _carName = _dataNEW.result[i].name;
+                 _carNameStats = "";
+                 _carHealth = Constants.MaxCarHealth;
+                 _carTyreLaps = 0;
+                 _carOilLaps = 0;
+                 _carGasLaps = 0;
+                 _acceleration = 0;
+                 _topSpeed = 0;
+                 _cornering = 0;
+                 _hp = 0;
+                 _price = 0;
+                 _tier = 0;
+                 _type = 0;
 
                 if (!string.IsNullOrEmpty(_dataNEW.result[i].mechanics))
                 {
@@ -871,10 +930,29 @@ public class FirebaseMoralisManager : MonoBehaviour
                     _carTyreLaps = Jresponse.SelectToken("Tyre_Laps") != null ? (float)Jresponse.SelectToken("Tyre_Laps") : 0;
                     _carOilLaps = Jresponse.SelectToken("EngineOil_Laps") != null ? (float)Jresponse.SelectToken("EngineOil_Laps") : 0;
                     _carGasLaps = Jresponse.SelectToken("Gas_Laps") != null ? (float)Jresponse.SelectToken("Gas_Laps") : 0;
+                    _carNameStats = Jresponse.SelectToken("Stats").SelectToken("Name") != null ? (string)Jresponse.SelectToken("Stats").SelectToken("Name") : _carName;
+                    _acceleration = Jresponse.SelectToken("Stats").SelectToken("Acceleration") != null ? (double)Jresponse.SelectToken("Stats").SelectToken("Acceleration") : 100;
+                    _topSpeed = Jresponse.SelectToken("Stats").SelectToken("TopSpeed") != null ? (double)Jresponse.SelectToken("Stats").SelectToken("TopSpeed") : 100;
+                    _cornering = Jresponse.SelectToken("Stats").SelectToken("Cornering") != null ? (double)Jresponse.SelectToken("Stats").SelectToken("Cornering") : 100;
+                    _hp = Jresponse.SelectToken("Stats").SelectToken("HP") != null ? (double)Jresponse.SelectToken("Stats").SelectToken("HP") : Constants.MaxCarHealth;
+                    _price = Jresponse.SelectToken("Stats").SelectToken("Price") != null ? (int)Jresponse.SelectToken("Stats").SelectToken("Price") : 250;
+                    _tier = Jresponse.SelectToken("Stats").SelectToken("Tier") != null ? (int)Jresponse.SelectToken("Stats").SelectToken("Tier") : 2;
+                    _type = Jresponse.SelectToken("Stats").SelectToken("Type") != null ? (int)Jresponse.SelectToken("Stats").SelectToken("Type") : 0;
                 }
 
                 _newData.MetaData = _dataNEW.result[i].metadata;
-                _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps);
+
+                Stats _MoralisStatsettings = new Stats();
+                _MoralisStatsettings.Name = _carNameStats;
+                _MoralisStatsettings.Acceleration = _acceleration;
+                _MoralisStatsettings.TopSpeed = _topSpeed;
+                _MoralisStatsettings.Cornering = _cornering;
+                _MoralisStatsettings.HP = _hp;
+                _MoralisStatsettings.Price = _price;
+                _MoralisStatsettings.Tier = _tier;
+                _MoralisStatsettings.Type = _type;
+
+                _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps, _MoralisStatsettings);
                 NFTMehanics.Add(int.Parse(_dataNEW.result[i].tokenId), _newData);
             }
 
@@ -975,7 +1053,7 @@ public class FirebaseMoralisManager : MonoBehaviour
             else
             {
                 MainMenuViewController.Instance.LoadingScreen.SetActive(false);
-                MainMenuViewController.Instance.ShowToast(3f, "You do not have enough " + Constants.VirtualCurrency + " , buy more.", false);
+                MainMenuViewController.Instance.ShowToast(3f, "Something went wrong, please try again later.", false);
             }
         }
         else
@@ -987,23 +1065,50 @@ public class FirebaseMoralisManager : MonoBehaviour
         NFTMehanicsData _newData = new NFTMehanicsData();
         _newData.OwnerWalletAddress = Constants.WalletAddress;
 
-        string _carName = _car;
-        int _carHealth = Constants.MaxCarHealth;
-        float _carTyreLaps = 0;
-        float _carOilLaps = 0;
-        float _carGasLaps = 0;
+         _carName = _car;
+         _carHealth = Constants.MaxCarHealth;
+         _carTyreLaps = 0;
+         _carOilLaps = 0;
+         _carGasLaps = 0;
+         _carNameStats = "";
+         _acceleration = 0;
+         _topSpeed = 0;
+         _cornering = 0;
+         _hp = 0;
+         _price = 0;
+         _tier = 0;
+         _type = 0;
 
         if (!string.IsNullOrEmpty(_mechanics))
         {
             _carHealth = _response.SelectToken("result").SelectToken("mechanics").SelectToken("CarHealth") != null ? (int)_response.SelectToken("result").SelectToken("mechanics").SelectToken("CarHealth") : Constants.MaxCarHealth;
-            Debug.LogError(_carHealth);
             _carTyreLaps = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Tyre_Laps") != null ? (float)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Tyre_Laps") : 0;
             _carOilLaps = _response.SelectToken("result").SelectToken("mechanics").SelectToken("EngineOil_Laps") != null ? (float)_response.SelectToken("result").SelectToken("mechanics").SelectToken("EngineOil_Laps") : 0;
             _carGasLaps = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Gas_Laps") != null ? (float)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Gas_Laps") : 0;
+
+            _carNameStats = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Name") != null ? (string)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Name") : _carName;
+            _acceleration = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Acceleration") != null ? (double)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Acceleration") : 100;
+            _topSpeed = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("TopSpeed") != null ? (double)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("TopSpeed") : 100;
+            _cornering = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Cornering") != null ? (double)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Cornering") : 100;
+            _hp = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("HP") != null ? (double)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("HP") : Constants.MaxCarHealth;
+            _price = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Price") != null ? (int)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Price") : 250;
+            _tier = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Tier") != null ? (int)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Tier") : 2;
+            _type = _response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Type") != null ? (int)_response.SelectToken("result").SelectToken("mechanics").SelectToken("Stats").SelectToken("Type") : 0;
+
         }
 
+        Stats _MoralisStatsettings = new Stats();
+        _MoralisStatsettings.Name = _carNameStats;
+        _MoralisStatsettings.Acceleration = _acceleration;
+        _MoralisStatsettings.TopSpeed = _topSpeed;
+        _MoralisStatsettings.Cornering = _cornering;
+        _MoralisStatsettings.HP = _hp;
+        _MoralisStatsettings.Price = _price;
+        _MoralisStatsettings.Tier = _tier;
+        _MoralisStatsettings.Type = _type;
+
         _newData.MetaData = "";
-        _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps);
+        _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps, _MoralisStatsettings);
         SetMechanics(_tokenid, _newData);
     }
 

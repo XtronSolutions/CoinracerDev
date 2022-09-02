@@ -193,7 +193,7 @@ public class apiRequestHandler : MonoBehaviour
 
         if (Constants.IsTest)
         {
-            m_uID = "";
+            m_uID = "ncnG7qYCEZezFYlKdBHrdiV9";
             Constants.GetSecKey = true;
         }
 
@@ -695,7 +695,8 @@ public class apiRequestHandler : MonoBehaviour
     {
         if (info != "null" && info != "" && info != null && info != string.Empty)
         {
-            m_uID = info;
+            string[] mainID = info.Split('"');
+            m_uID = mainID[1];
             Debug.Log("received : " + m_uID);
             Constants.GetSecKey = true;
         }
@@ -703,7 +704,7 @@ public class apiRequestHandler : MonoBehaviour
         {
             m_uID = "";
             Debug.Log("key was null, getting again....");
-            GetSecureKey();
+            Invoke("GetSecureKey", 0.5f);
         }
     }
     private IEnumerator ProcessNFTDataRequest(string _token)

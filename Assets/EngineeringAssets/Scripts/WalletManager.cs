@@ -165,8 +165,8 @@ public class WalletManager : MonoBehaviour
     #region Testing/Debug
     public void LoginOneTest()
     {
-        Constants.WalletAddress = "0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10";
-        SetAcount("0x5ae0d51FA54C70d731a4d5940Aef216F3fCbEd10");
+        Constants.WalletAddress = "0x5ae0d51fa54c70d731a4d5940aef216f3fcbed10";
+        SetAcount("0x5ae0d51fa54c70d731a4d5940aef216f3fcbed10");
         InvokeRepeating("getNftsData", 0.1f, 10f);
 
         if (Constants.IsStagging)

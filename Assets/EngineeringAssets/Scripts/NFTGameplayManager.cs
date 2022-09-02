@@ -158,6 +158,14 @@ public class NFTGameplayManager : MonoBehaviour
                                 float _carTyreLaps = 0;
                                 float _carOilLaps = 0;
                                 float _carGasLaps = 0;
+                                string _carNameStats = "";
+                                double _acceleration = 0;
+                                double _topSpeed = 0;
+                                double _cornering = 0;
+                                double _hp = 0;
+                                int _price = 0;
+                                int _tier = 0;
+                                int _type = 0;
 
                                 if (!string.IsNullOrEmpty(_dataNEW.result[i].mechanics))
                                 {
@@ -167,10 +175,29 @@ public class NFTGameplayManager : MonoBehaviour
                                     _carTyreLaps = Jresponse.SelectToken("Tyre_Laps") != null ? (float)Jresponse.SelectToken("Tyre_Laps") : 0;
                                     _carOilLaps = Jresponse.SelectToken("EngineOil_Laps") != null ? (float)Jresponse.SelectToken("EngineOil_Laps") : 0;
                                     _carGasLaps = Jresponse.SelectToken("Gas_Laps") != null ? (float)Jresponse.SelectToken("Gas_Laps") : 0;
+
+                                    _carNameStats = Jresponse.SelectToken("Stats").SelectToken("Name") != null ? (string)Jresponse.SelectToken("Stats").SelectToken("Name") : _carName;
+                                    _acceleration = Jresponse.SelectToken("Stats").SelectToken("Acceleration") != null ? (double)Jresponse.SelectToken("Stats").SelectToken("Acceleration") : 100;
+                                    _topSpeed = Jresponse.SelectToken("Stats").SelectToken("TopSpeed") != null ? (double)Jresponse.SelectToken("Stats").SelectToken("TopSpeed") : 100;
+                                    _cornering = Jresponse.SelectToken("Stats").SelectToken("Cornering") != null ? (double)Jresponse.SelectToken("Stats").SelectToken("Cornering") : 100;
+                                    _hp = Jresponse.SelectToken("Stats").SelectToken("HP") != null ? (double)Jresponse.SelectToken("Stats").SelectToken("HP") : Constants.MaxCarHealth;
+                                    _price = Jresponse.SelectToken("Stats").SelectToken("Price") != null ? (int)Jresponse.SelectToken("Stats").SelectToken("Price") : 250;
+                                    _tier = Jresponse.SelectToken("Stats").SelectToken("Tier") != null ? (int)Jresponse.SelectToken("Stats").SelectToken("Tier") : 2;
+                                    _type = Jresponse.SelectToken("Stats").SelectToken("Type") != null ? (int)Jresponse.SelectToken("Stats").SelectToken("Type") : 0;
                                 }
 
+                                Stats _MoralisStatsettings = new Stats();
+                                _MoralisStatsettings.Name = _carNameStats;
+                                _MoralisStatsettings.Acceleration = _acceleration;
+                                _MoralisStatsettings.TopSpeed = _topSpeed;
+                                _MoralisStatsettings.Cornering = _cornering;
+                                _MoralisStatsettings.HP = _hp;
+                                _MoralisStatsettings.Price = _price;
+                                _MoralisStatsettings.Tier = _tier;
+                                _MoralisStatsettings.Type = _type;
+
                                 _newData.MetaData = _dataNEW.result[i].metadata;
-                                _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps);
+                                _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps, _MoralisStatsettings);
                                 FirebaseMoralisManager.Instance.SetMechanics(int.Parse(_dataNEW.result[i].tokenId), _newData);
 
                                 MainMenuViewController.Instance.AssignStoreGarageData(DataNFTModel[k].CarSelection.gameObject, int.Parse(_dataNEW.result[i].tokenId), DataNFTModel[k].name, _statSettings, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, true, true);
