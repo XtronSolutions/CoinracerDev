@@ -158,8 +158,8 @@ public class apiRequestHandler : MonoBehaviour
     #endregion
 
     #region Moralis datamembers
-    private string m_BaseURL = "https://v7f3czkmtmmf.usemoralis.com:2053/server/functions/";
-    private string m_AppID = "?_ApplicationId=8QhdEDdOy6fgMp0Bu6bUXmCU91VSvF1SDJOXbZAQ";
+    private string m_BaseURL = "https://a5bpvdxkckbp.usemoralis.com:2053/server/functions/";
+    private string m_AppID = "?_ApplicationId=pKuKK6HrgqyanNOQy4dygy0JdHEvQ8h5HFUAdN9v";
     private string m_GetNFTDataFunc = "getNFTDetails";
     private string m_GetNFTArrayDataFunc = "getNFTsDetails";
     private string m_UpdateNFTDataFunc = "updateNFTData";
@@ -185,20 +185,20 @@ public class apiRequestHandler : MonoBehaviour
     }
     private void OnEnable()
     {
-        //StartCoroutine(ProcessNFTDataRequest("5063"));
-
-        //string[] str_arr = new string[3]{ "5063", "5106", "20011" };
-        //StartCoroutine(ProcessNFTDataArrayRequest(str_arr));
         Instance = this;
+
+        if (Constants.IsTestNet)
+        {
+            m_BaseURL = "https://v7f3czkmtmmf.usemoralis.com:2053/server/functions/";
+            m_AppID = "?_ApplicationId=8QhdEDdOy6fgMp0Bu6bUXmCU91VSvF1SDJOXbZAQ";
+        }
 
         if (Constants.IsTest)
         {
-            m_uID = "ncnG7qYCEZezFYlKdBHrdiV9";
+            m_uID = "XTzIA8WVsHvFEAMFv1hSEHr0";
             Constants.GetSecKey = true;
         }
 
-        //GetSecureKey();
-        //ProcessAllStoreRequest();
     }
 
     #region Firebase
@@ -321,7 +321,7 @@ public class apiRequestHandler : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
-            //Debug.Log(request.error);
+            Constants.PrintError(request.error);
         }
         else
         {
@@ -391,7 +391,7 @@ public class apiRequestHandler : MonoBehaviour
         using UnityWebRequest request = UnityWebRequest.Post(firebaseLoginUrl+firebaseApiKey,form);
         
         yield return request.SendWebRequest();
-
+        Constants.PrintLog("bearer token response : " + request.downloadHandler.text);
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();
@@ -468,7 +468,7 @@ public class apiRequestHandler : MonoBehaviour
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();
-            Debug.Log(request.error);
+            Constants.PrintLog(request.error);
         }
         else
         {
@@ -567,7 +567,7 @@ public class apiRequestHandler : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
-            Debug.Log(request.error);
+            Constants.PrintLog(request.error);
         }
         else
         {
@@ -653,8 +653,7 @@ public class apiRequestHandler : MonoBehaviour
 
     async public Task<string> processSignatureRequest(string _tID,string _pid,string _winner,string _score)
     {
-        string _mainURL = BaseURL + "getSignature"+ "?params="+ _pid+"," + _winner + ","+ _score;
-        Debug.Log(_mainURL);  
+        string _mainURL = BaseURL + "getSignature"+ "?params="+ _pid+"," + _winner + ","+ _score; 
 
         using UnityWebRequest request = UnityWebRequest.Get(_mainURL);
         request.SetRequestHeader("Content-Type", "application/json");
@@ -665,7 +664,7 @@ public class apiRequestHandler : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
-            Debug.Log(request.error);
+            Constants.PrintLog(request.error);
             return "";
         }
         else
@@ -690,20 +689,19 @@ public class apiRequestHandler : MonoBehaviour
         GetStorage(Constants.SecureKey, this.gameObject.name, "OnGetSec");
 #endif
     }
-
     public void OnGetSec(string info)
     {
         if (info != "null" && info != "" && info != null && info != string.Empty)
         {
             string[] mainID = info.Split('"');
             m_uID = mainID[1];
-            Debug.Log("received : " + m_uID);
+            Constants.PrintLog("Received secure id : " + m_uID);
             Constants.GetSecKey = true;
         }
         else
         {
             m_uID = "";
-            Debug.Log("key was null, getting again....");
+            Constants.PrintLog("Key was null, getting again.....");
             Invoke("GetSecureKey", 0.5f);
         }
     }
@@ -722,14 +720,13 @@ public class apiRequestHandler : MonoBehaviour
         }
         else if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log(request.downloadHandler.text);
+            Constants.PrintLog(request.downloadHandler.text);
         }
         else
         {
-            Debug.LogError(request.downloadHandler.text);
+            Constants.PrintError(request.downloadHandler.text);
         }
     }
-
     async public Task<string> ProcessNFTDataArrayRequest(List<string> _token)
     {
         MoralisNFTArrayRequest _dataNew = new MoralisNFTArrayRequest();
@@ -746,6 +743,7 @@ public class apiRequestHandler : MonoBehaviour
         request.SetRequestHeader("Content-Type", "application/json");
 
         await request.SendWebRequest();
+        Constants.PrintLog("Get NFT details against token ids response : " + request.downloadHandler.text);
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
@@ -754,8 +752,6 @@ public class apiRequestHandler : MonoBehaviour
         }
         else
         {
-            Debug.Log("data against token ids : "+request.downloadHandler.text);
-
             if (request.result == UnityWebRequest.Result.Success)
             {
                 return request.downloadHandler.text;
@@ -767,14 +763,15 @@ public class apiRequestHandler : MonoBehaviour
             }
         }
     }
-
     async public Task<string> ProcessAllMyNFTRequest(string _address)
     {
         WWWForm form = new WWWForm();
-        form.AddField("uID", _address);
+        form.AddField("uID", m_uID);
+        form.AddField("ownerWalletAddress", _address);
         using UnityWebRequest request = UnityWebRequest.Post(m_BaseURL + m_GetAllMyNFTFunc + m_AppID, form);
 
         await request.SendWebRequest();
+        Constants.PrintLog("Get NFT details against address response : " + request.downloadHandler.text);
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
@@ -785,7 +782,6 @@ public class apiRequestHandler : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                //Debug.Log(request.downloadHandler.text);
                 return request.downloadHandler.text;
             }
             else
@@ -795,7 +791,6 @@ public class apiRequestHandler : MonoBehaviour
             }
         }
     }
-
     async public Task<bool> ProcessNFTUpdateDataRequest(string _tokenid,string _name,string _mechanics,string _meta)
     {
         MoralisUpdateRequest _dataNEW = new MoralisUpdateRequest();
@@ -815,7 +810,7 @@ public class apiRequestHandler : MonoBehaviour
         request.SetRequestHeader("Content-Type", "application/json");
 
         await request.SendWebRequest();
-         Debug.Log(request.downloadHandler.text);
+        Constants.PrintLog("NFT data update response : " + request.downloadHandler.text);
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
@@ -835,7 +830,6 @@ public class apiRequestHandler : MonoBehaviour
             }
         }
     }
-
     async public Task<string> ProcessAllStoreRequest()
     {
         WWWForm form = new WWWForm();
@@ -843,7 +837,7 @@ public class apiRequestHandler : MonoBehaviour
         using UnityWebRequest request = UnityWebRequest.Post(m_BaseURL + m_GetAllStoreDetails + m_AppID, form);
 
         await request.SendWebRequest();
-
+        Constants.PrintLog("Get All NFT store details response : " + request.downloadHandler.text);
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();
@@ -853,7 +847,6 @@ public class apiRequestHandler : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                //Debug.Log(request.downloadHandler.text);
                 return request.downloadHandler.text;
             }
             else
@@ -863,7 +856,6 @@ public class apiRequestHandler : MonoBehaviour
             }
         }
     }
-
     async public Task<string> ProcessBuyCarRequest(string _metaID, string _owneraddress)
     {
         MoralisBuyCarRequest _dataNEW = new MoralisBuyCarRequest();
@@ -890,7 +882,6 @@ public class apiRequestHandler : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log(request.downloadHandler.text);
                 return request.downloadHandler.text;
             }
             else
@@ -900,7 +891,6 @@ public class apiRequestHandler : MonoBehaviour
             }
         }
     }
-
     async public Task<string> ProcessPurchaseCarServerRequest(string _metaID, string _owneraddress)
     {
         MoralisBuyCarRequest _dataNEW = new MoralisBuyCarRequest();
@@ -917,6 +907,7 @@ public class apiRequestHandler : MonoBehaviour
         request.SetRequestHeader("Content-Type", "application/json");
 
         await request.SendWebRequest();
+        Constants.PrintLog("Purchase car response : " + request.downloadHandler.text);
 
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
@@ -927,7 +918,6 @@ public class apiRequestHandler : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log(request.downloadHandler.text);
                 return request.downloadHandler.text;
             }
             else
@@ -937,7 +927,6 @@ public class apiRequestHandler : MonoBehaviour
             }
         }
     }
-
     async public Task<string> ProcessPurchaseConsumableRequest(string _metaID, string _owneraddress,string nlp,string nftID)
     {
         MoralisConsumablePurchaseRequest _dataNEW = new MoralisConsumablePurchaseRequest();
@@ -948,7 +937,7 @@ public class apiRequestHandler : MonoBehaviour
         _dataNEW.uID = m_uID;
 
         string reqNew = JsonConvert.SerializeObject(_dataNEW);
-        Debug.LogError(reqNew);
+        Constants.PrintLog("consumables request : "+reqNew);
         byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
 
         UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_PurchaseConsumablesFunc + m_AppID, "POST");
@@ -958,7 +947,7 @@ public class apiRequestHandler : MonoBehaviour
 
         await request.SendWebRequest();
 
-        Debug.Log(request.downloadHandler.text);
+        Constants.PrintLog("Purchase consumables response : " + request.downloadHandler.text);
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();
@@ -968,7 +957,6 @@ public class apiRequestHandler : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log(request.downloadHandler.text);
                 return request.downloadHandler.text;
             }
             else

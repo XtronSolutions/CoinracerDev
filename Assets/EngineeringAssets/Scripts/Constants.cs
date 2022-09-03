@@ -11,7 +11,7 @@ public static class Constants
 {
     public static string VirtualCurrency = "CCASH";
     public static string TokenName = "CRACER";
-    public static string APP_VERSION = "Alpha 2.0";
+    public static string APP_VERSION = "Beta 1.0";
     public static string WalletAccoutKey = "Account";
     public static string SecureKey = "flcpe";
     public static string NameCurrency = "USD";
@@ -113,9 +113,9 @@ public static class Constants
     public static bool PushingWins = false;
     public static bool WalletChanged = false;
 
-    public static bool IsTestNet = true;
+    public static bool IsTestNet = false;
     public static bool IsTest = false;
-    public static bool IsStagging = true;
+    public static bool IsStagging = false;
     public static bool DebugAllCars = false;// bool to enable all cars
     public static bool IsDebugBuild = false;//apply pvp score 500+/enable force end race on levels// and force bid of 1 crace for pvp
     public static bool UseHashMec = true;//bool to store if contracts use hash mechanism or signature for verification
@@ -251,7 +251,7 @@ public static class Constants
 
     public static void PrintLog(string Txt)
     {
-        Debug.Log(Txt);
+        //Debug.Log(Txt);
     }
 
     public static void PrintError(string Txt)

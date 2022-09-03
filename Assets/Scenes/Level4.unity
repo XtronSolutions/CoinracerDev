@@ -17283,6 +17283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ForYAxis: 0
+  ForXAxis: 0
   speed: 350
 --- !u!114 &1415122323
 MonoBehaviour:
@@ -20447,7 +20448,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2062156fb589c894ba701b9ecebe27d2, type: 2}
+  - {fileID: 2100000, guid: 7a7eac125d2fa064b84a5be7dabbe660, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -23141,7 +23142,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e1d656684a0405943802384212e48440, type: 2}
+  - {fileID: 2100000, guid: 7a7eac125d2fa064b84a5be7dabbe660, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -24017,6 +24018,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ForYAxis: 0
+  ForXAxis: 0
   speed: 350
 --- !u!114 &2146277902
 MonoBehaviour:

@@ -87,7 +87,7 @@ public class DamageHandler : MonoBehaviour
         if (UIHealth.Instance)
             UIHealth.Instance.UpdateHealth(CarHealthStored);
         else
-            Debug.LogError("UIHealth instance is null");
+            Constants.PrintError("UIHealth instance is null");
     }
 
     void OnDisable()
@@ -137,7 +137,7 @@ public class DamageHandler : MonoBehaviour
                     {
                         StartCoroutine(InitiateCoolDown());
 
-                        Debug.Log("Damage Collider hit: " + obj.name + " with damage :" + ColliderDamage[StoredIndex].ImpactInfo.DamageInfo[i].HealthDeduction.ToString() + " at speed : " + TinyCarController.carSpeed.ToString());
+                        Constants.PrintLog("Damage Collider hit: " + obj.name + " with damage :" + ColliderDamage[StoredIndex].ImpactInfo.DamageInfo[i].HealthDeduction.ToString() + " at speed : " + TinyCarController.carSpeed.ToString());
                         CarHealthStored -= (int)ColliderDamage[StoredIndex].ImpactInfo.DamageInfo[i].HealthDeduction;
 
                         if (CarHealthStored <= 0)
@@ -156,7 +156,7 @@ public class DamageHandler : MonoBehaviour
                         if (UIHealth.Instance)
                             UIHealth.Instance.UpdateHealth(CarHealthStored);
                         else
-                            Debug.LogError("UIHealth instance is null");
+                            Constants.PrintError("UIHealth instance is null");
 
                         ApplySpeedFactor(CarHealthStored);
 

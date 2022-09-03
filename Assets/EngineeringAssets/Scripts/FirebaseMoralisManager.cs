@@ -175,7 +175,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     public void SetPlayerData(string _response)
     {
         JToken response = JObject.Parse(_response);
-        //Debug.Log(response);
+        Constants.PrintLog("UserBo response : " + _response);
         PlayerData = new UserData();
         PlayerData.Email = (string)response.SelectToken("data").SelectToken("Email");
         PlayerData.UserName = (string)response.SelectToken("data").SelectToken("UserName");
@@ -208,11 +208,11 @@ public class FirebaseMoralisManager : MonoBehaviour
         //PlayerData.Mechanics.EngineOil_Laps = response.SelectToken("data").SelectToken("Mechanics").SelectToken("EngineOil_Laps") != null ? (float)response.SelectToken("data").SelectToken("Mechanics").SelectToken("EngineOil_Laps") : 0;
         //PlayerData.Mechanics.Gas_Laps = response.SelectToken("data").SelectToken("Mechanics").SelectToken("Gas_Laps") != null ? (float)response.SelectToken("data").SelectToken("Mechanics").SelectToken("Gas_Laps") : 0;
 
-        //Debug.Log(PlayerData.Mechanics.VC_Amount);
-        //Debug.Log(PlayerData.Mechanics.CarHealth);
-        //Debug.Log(PlayerData.Mechanics.Tyre_Laps);
-        //Debug.Log(PlayerData.Mechanics.EngineOil_Laps);
-        //Debug.Log(PlayerData.Mechanics.Gas_Laps);
+        //Constants.PrintLog(PlayerData.Mechanics.VC_Amount);
+        //Constants.PrintLog(PlayerData.Mechanics.CarHealth);
+        //Constants.PrintLog(PlayerData.Mechanics.Tyre_Laps);
+        //Constants.PrintLog(PlayerData.Mechanics.EngineOil_Laps);
+        //Constants.PrintLog(PlayerData.Mechanics.Gas_Laps);
 
         Constants.UserName = PlayerData.UserName;
         Constants.FlagSelectedIndex = PlayerData.AvatarID;
@@ -255,11 +255,11 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void OnAuthSuccess(string info)
     {
-        //Debug.Log(info);        
+        Constants.PrintLog(info);        
     }
     public void OnAuthError(string error)
     {
-        Debug.LogError(error);
+        Constants.PrintError(error);
     }
     public void CheckEmailForAuth(string _email, string _pass, string _username)
     {
@@ -280,7 +280,7 @@ public class FirebaseMoralisManager : MonoBehaviour
             CreateNewUser(Constants.SavedEmail, Constants.SavedPass);
         } else
         {
-            Debug.LogError("Email check error : " + error);
+            Constants.PrintError("Email check error : " + error);
         }
     }
     public void CreateNewUser(string _email, string _pass)
@@ -299,7 +299,7 @@ public class FirebaseMoralisManager : MonoBehaviour
             Invoke("CallWithDelay", 3f);
         } else
         {
-            Debug.LogError("MMVC is null for OnCreateUser");
+            Constants.PrintError("MMVC is null for OnCreateUser");
         }
     }
     public void CallWithDelay()
@@ -308,7 +308,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void OnCreateUserError(string error)
     {
-        Debug.LogError("Create user error : " + error);
+        Constants.PrintError("Create user error : " + error);
     }
     public void LoginUser(string _email, string _pass, string _username)
     {
@@ -346,7 +346,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void OnLoginUserError(string error)
     {
-        Debug.LogError("Login User error: " + error);
+        Constants.PrintError("Login User error: " + error);
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.SomethingWentWrong();
     }
@@ -371,11 +371,11 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void OnSignOut(string info)
     {
-        //Debug.Log(info);
+        Constants.PrintLog(info);
     }
     public void OnSignOutError(string info)
     {
-        Debug.LogError("Logout User error : " + info);
+        Constants.PrintError("Logout User error : " + info);
     }
     public void OnAuthChanged()
     {
@@ -391,7 +391,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     public void OnAuthChangedError(string info)
     {
         UID = "";
-        Debug.LogError("Auth change error : " + info);
+        Constants.PrintError("Auth change error : " + info);
     }
     public void AddFireStoreData(UserData _data)
     {
@@ -400,11 +400,11 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void OnAddData(string info)
     {
-        // Debug.Log("Data successfully added on firestore");
+        Constants.PrintLog("Data successfully added on firestore");
     }
     public void OnAddDataError(string error)
     {
-        Debug.LogError("firestore data add error: " + error);
+        Constants.PrintError("firestore data add error: " + error);
     }
     public void GetFireStoreData(string _collectionID, string _docID)
     {
@@ -422,11 +422,11 @@ public class FirebaseMoralisManager : MonoBehaviour
             DocFetched = false;
             ResultFetched = true;
             FetchUserData = true;
-            Debug.LogError("doc was fetched but is null");
+            Constants.PrintError("doc was fetched but is null");
         }
         else
         {
-            Debug.Log("doc was fetched successfully from firestore");
+            Constants.PrintLog("doc was fetched successfully from firestore");
             DataFetchError = false;
             PlayerData = JsonConvert.DeserializeObject<UserData>(info);
             UserDataFetched = true;
@@ -442,7 +442,7 @@ public class FirebaseMoralisManager : MonoBehaviour
         DocFetched = false;
         ResultFetched = true;
         FetchUserData = true;
-        Debug.Log("Doc fetching error : " + error);
+        Constants.PrintLog("Doc fetching error : " + error);
     }
     public IEnumerator FetchUserDB(string _walletID, string _username)
     {
@@ -476,7 +476,7 @@ public class FirebaseMoralisManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("something went wrong with user data fetching, trying again");
+            Constants.PrintError("something went wrong with user data fetching, trying again");
             StartCoroutine(FetchUserDB(PlayerPrefs.GetString("Account"), ""));
             yield return null;
         }
@@ -546,7 +546,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void OnEmailSentError(string info)
     {
-        Debug.LogError("Sending Verfication email error: " + info);
+        Constants.PrintError("Sending Verfication email error: " + info);
         //Invoke("SendVerEmail", 1f);
     }
     public IEnumerator CheckWalletDB(string _walletID)
@@ -563,7 +563,7 @@ public class FirebaseMoralisManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("MMVC is null for CheckWalletDB");
+            Constants.PrintError("MMVC is null for CheckWalletDB");
         }
     }
     public void UpdatedFireStoreData(UserData _data)
@@ -598,7 +598,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void OnDocUpdateError(string error)
     {
-        Debug.LogError("Doc update error : " + error);
+        Constants.PrintError("Doc update error : " + error);
     }
     public void QueryDB(string _field, string _type, bool IsSecondTour)
     {
@@ -621,7 +621,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void OnQueryUpdateError(string error)
     {
-        Debug.LogError("Leaderboard query error : " + error);
+        Constants.PrintError("Leaderboard query error : " + error);
     }
     public string EncryptDecrypt(string textToEncrypt)
     {
@@ -654,7 +654,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void OnPassEmailSentError(string info)
     {
-        Debug.LogError("Password resent sending error : " + info);
+        Constants.PrintError("Password resent sending error : " + info);
         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
         MainMenuViewController.Instance.BackClicked_PasswordReset();
         MainMenuViewController.Instance.ShowToast(4f, "Something went wrong while sending password reset link, please try again later.");
@@ -687,7 +687,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     }
     public void ResendEmailSentError(string info)
     {
-        Debug.LogError("Resend verification email error : " + info);
+        Constants.PrintError("Resend verification email error : " + info);
         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
         MainMenuViewController.Instance.DisableResendScreen();
         MainMenuViewController.Instance.ShowToast(4f, "Something went wrong while sending confirmation link, please try again later.");
@@ -728,7 +728,7 @@ public class FirebaseMoralisManager : MonoBehaviour
             NFTMehanics.Add(key, _data);
         } else
         {
-            Debug.LogError("key already existed");
+            Constants.PrintLog("key already existed");
         }
     }
     public void UpdateMechanics(int key, NFTMehanicsData _data, bool _pushData = true)
@@ -745,7 +745,7 @@ public class FirebaseMoralisManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("NO data for NDT was updated as key dpes not exist");
+            Constants.PrintLog("NO data for NDT was updated as key dpes not exist");
         }
     }
     async public void SaveNFTData(int key = 0, NFTMehanicsData _data = null)
@@ -761,9 +761,9 @@ public class FirebaseMoralisManager : MonoBehaviour
             bool isDone = await apiRequestHandler.Instance.ProcessNFTUpdateDataRequest(key.ToString(), _data.mechanicsData.CarName, _json,_data.MetaData);
 
             if (isDone)
-                Debug.Log("updated successfully");
+                Constants.PrintLog("updated successfully");
             else
-                Debug.Log("updating failed");
+                Constants.PrintLog("updating failed");
         }
     }
     async public void GetNFTData()
@@ -813,17 +813,17 @@ public class FirebaseMoralisManager : MonoBehaviour
                 }
 
                 SaveNFTData();
-                Debug.Log("NFT DATA STORED");
+                Constants.PrintLog("NFT DATA STORED");
 
                 foreach (var item in NFTMehanics)
                 {
-                    Debug.Log(item.Key);
-                    Debug.Log(item.Value.mechanicsData.CarName);
+                    Constants.PrintLog(item.Key.ToString());
+                    Constants.PrintLog(item.Value.mechanicsData.CarName);
                 }
             }
             else
             {
-                Debug.Log("NFT DATA Retrieved");
+                Constants.PrintLog("NFT DATA Retrieved");
                 NFTMehanics = JsonConvert.DeserializeObject<Dictionary<int, NFTMehanicsData>>(GetNFTLocally());
             }
         }
@@ -874,7 +874,7 @@ public class FirebaseMoralisManager : MonoBehaviour
                         {
                             if (Constants.StoredCarNames.Contains(_dataNEW.result[i].name))
                             {
-                                //Debug.Log("car already added from wallet, skipping....");
+                                Constants.PrintLog("sotring data offchain car already added from wallet, skipping....");
                             }
                             else
                             {
@@ -960,7 +960,7 @@ public class FirebaseMoralisManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Empty data received");
+            Constants.PrintError("Empty data received");
             Constants.GetMoralisData = true;
         }
     }
@@ -988,7 +988,6 @@ public class FirebaseMoralisManager : MonoBehaviour
                     if(_storeData.result[i].Id== NFTGameplayManager.Instance.DataNFTModel[j].MetaID)
                     {
                         JToken Dresponse = JObject.Parse(_storeData.result[i].mechanics);
-                        //Debug.Log(Dresponse.SelectToken("Stats"));
                         StatSettings _stats = ScriptableObject.CreateInstance<StatSettings>();
                         _stats.CarStats = new BaseStats();
                         _stats.name = _storeData.result[i].name;
@@ -1008,7 +1007,6 @@ public class FirebaseMoralisManager : MonoBehaviour
 
                         _stats.CarStats.Settings = MechanicsManager.Instance._consumableSettings;
 
-                        //Debug.Log("Tier : " + Tier + " CAR : " + _stats.CarStats.Name);
                         SetDealerDic(Tier, _stats);
                         NFTGameplayManager.Instance.DataNFTModel[j].settings = _stats;
                         break;                    }
@@ -1057,7 +1055,7 @@ public class FirebaseMoralisManager : MonoBehaviour
             }
         }
         else
-            Debug.LogError("Empty data received after purchase");
+            Constants.PrintError("Empty data received after purchase");
     }
 
     public void SetNewBoughtCarMechanics(string _car,int _tokenid,string _mechanics, JToken _response)
@@ -1136,7 +1134,7 @@ public class FirebaseMoralisManager : MonoBehaviour
     public void logDic()
     {
         string _json = JsonConvert.SerializeObject(CarDealer);
-        //Debug.Log(_json);
+        Constants.PrintLog(_json);
     }
     #endregion
 }

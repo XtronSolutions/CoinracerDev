@@ -1469,7 +1469,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public bool CheckMechanics()
     {
-        Debug.Log("Selected Car : " + TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex]);
+        Constants.PrintLog("Selected Car : " + TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex]);
         SelectedCarToken = TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];
         MechanicsManager.Instance.UpdateMechanicsData(SelectedCarToken);
 
@@ -2368,7 +2368,7 @@ public class MainMenuViewController : MonoBehaviour
                     }
                 }else
                 {
-                    Debug.LogError("Photon is not connected");
+                    Constants.PrintError("Photon is not connected");
                 }
             }
         }
@@ -2822,7 +2822,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void AssignRightCar(GameObject _tempcar, Transform _parent)
     {
-        //Debug.Log("Right : "+ _tempcar.gameObject.name);
+        Constants.PrintLog("Right : "+ _tempcar.gameObject.name);
         _tempcar.transform.SetParent(_parent);
         ResetCarTransform(_tempcar);
         _tempcar.transform.GetChild(0).gameObject.SetActive(true);

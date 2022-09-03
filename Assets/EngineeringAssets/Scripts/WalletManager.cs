@@ -313,7 +313,7 @@ public class WalletManager : MonoBehaviour
     /// </summary>
     async private void OnConnected()
     {
-        Debug.Log("Connected to wallet");
+        Constants.PrintLog("wallet connected!");
         Constants.GetSecKey = false;
         apiRequestHandler.Instance.GetSecureKey();
         CancelInvoke();
@@ -747,7 +747,6 @@ public class WalletManager : MonoBehaviour
     async public void BEP721BalanceOf()
     {
         //mainbalanceOfNFT = await ERC721.BalanceOf(chain, network, contractNFT, account);
-        //Debug.Log("mainbalanceOfNFT: " + mainbalanceOfNFT);
     }
 
     /// <summary>
@@ -771,13 +770,12 @@ public class WalletManager : MonoBehaviour
             metaDataURL[0].Add(NFTGameplayManager.Instance.DataNFTModel[f].name);
         }
 
-        //for (int i = 0; i < NFTTokens[0].Count; i++)
-        //{
-        //    Debug.Log(NFTTokens[0][i]);
-        //}
+        for (int i = 0; i < NFTTokens[0].Count; i++)
+        {
+            Constants.PrintLog("NFT : "+ NFTTokens[0][i]);
+        }
 
         Constants.TokenNFT.Clear();
-
         StartCoroutine(getNftsMetaData(metaDataURL[0], NFTTokens[0], 0, 0));
     }
 
@@ -823,7 +821,7 @@ public class WalletManager : MonoBehaviour
 
         if(res.Contains("Returned error: internal error"))
         {
-            Debug.Log("Returned error: internal error");
+            Debug.LogError("Returned error: internal error");
             if (MainMenuViewController.Instance)
             {
                 MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
@@ -875,11 +873,13 @@ public class WalletManager : MonoBehaviour
                 
             Constants.NFTChanged[_index] = true;
             Constants.NFTStored[_index] = Constants.NFTBought[_index];
+
+            Constants.PrintLog("Contract : "+ _index+" has NFT count : "+ totalNfts);
             getTokenIds(totalNfts, _index);
         }
         else
         {
-            //Debug.Log("No new NFT bought or changed");
+            Constants.PrintLog("No new NFT bought or changed");
         }
     }
 
@@ -926,6 +926,8 @@ public class WalletManager : MonoBehaviour
         List<string> links = new List<string>();
         foreach(int token in tokens)
         {
+            Constants.PrintLog("Getting URL for token : " + token.ToString());
+
             string methodNFT = "tokenURI";// smart contract method to call
             string[] obj = { token.ToString() };
             string argsNFT = JsonConvert.SerializeObject(obj);
@@ -942,7 +944,7 @@ public class WalletManager : MonoBehaviour
                 }
             }
 
-            Debug.Log(response);
+            Constants.PrintLog("IPFS : " + token.ToString());
             if (!Constants.gifLinks.Contains(response))
             {
                 metaDataURL[_index].Add(response);
@@ -1017,6 +1019,7 @@ public class WalletManager : MonoBehaviour
                         break;
                     case UnityWebRequest.Result.Success:
                         IPFSdata dataIPFS = JsonConvert.DeserializeObject<IPFSdata>(webRequest.downloadHandler.text);
+                        Constants.PrintLog("IPFS meta resolved for car : " + dataIPFS.name);
                         AssignNFTMetaData(dataIPFS.name, Ipfs, _tokens, _contractIndex, _entryIndex, Constants.DebugAllCars);
                         break;
                 }
@@ -1070,7 +1073,6 @@ public class WalletManager : MonoBehaviour
 
     async public void forceUpdateNFTByContract(int _index)
     {
-        //Debug.Log("In forceUpdateNFTByContract index " + _index);
         string methodNFT = "balanceOf";// smart contract method to call
         string[] obj = { account };
         string argsNFT = JsonConvert.SerializeObject(obj);
@@ -1202,13 +1204,11 @@ public class WalletManager : MonoBehaviour
           
             Constants.CheckAllNFT = true;
 
+            Constants.PrintLog("All Data was fetched!");
             for (int i = 0; i < Constants.TokenNFT.Count; i++)
             {
-                Debug.Log(Constants.TokenNFT[i].Name);
                 for (int j = 0; j < Constants.TokenNFT[i].ID.Count; j++)
-                {
-                    Debug.Log(Constants.TokenNFT[i].ID[j]);
-                }
+                    Constants.PrintLog("Name : " + Constants.TokenNFT[i].Name+" ID: "+ Constants.TokenNFT[i].ID[j]);
             }
             Constants.ChipraceDataChecked = false;
 
@@ -1709,7 +1709,6 @@ public class WalletManager : MonoBehaviour
 
         string testAbi = "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_pid\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_winner\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"_hash\",\"type\":\"bytes32\"}],\"name\":\"checkHash\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true}]";
         string response = await EVM.Call(chain, network, "0x3249E9b661F0787E78B4c82784e2A92e3CFBee07", testAbi, methodCrace, argsCSP);
-       // Debug.Log(response);
 
     }
 
@@ -1960,7 +1959,7 @@ public class WalletManager : MonoBehaviour
 
         if (response.Contains("Returned error: internal error"))
         {
-            Debug.Log("Returned error: internal error");
+            Debug.LogError("Returned error: internal error");
             if (MainMenuViewController.Instance)
             {
                 MainMenuViewController.Instance.ShowToast(3f, "Something went wrong please refresh page and try again.");
@@ -2044,7 +2043,7 @@ public class WalletManager : MonoBehaviour
 
                 if (response.Contains("Returned error: internal error"))
                 {
-                    Constants.PrintLog("Returned error: internal error");
+                    Constants.PrintError("Returned error: internal error");
                     if (MainMenuViewController.Instance)
                     {
                         MainMenuViewController.Instance.LoadingScreen.SetActive(false);
@@ -2183,7 +2182,6 @@ public class WalletManager : MonoBehaviour
                     }
                 }
 
-                Debug.LogError(response);
                 if (response != "")
                 {
                     StoredHash = response;
@@ -2232,7 +2230,6 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-           // Debug.Log(response);
             if (response.Contains(ChipraceContract) || response.Contains(mutantChipraceContract))
                 return true;
             else
@@ -2779,9 +2776,6 @@ public class WalletManager : MonoBehaviour
                 return;
             }
         }
-
-       // if (response != "")
-           // Debug.Log("Pool id for car type is : " + response);
     }
     public async Task<string> getRemainingTime(string _tokenId)
     {
@@ -2811,7 +2805,6 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-            //Debug.Log("Remaining time for token id #" + _tokenId + " is " + response);
             return response;
         }
         else
@@ -2847,8 +2840,6 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-            //
-            //Debug.Log("IsUpgradable token id #" + _tokenId + " is " + response);
             if (response.ToLower() == "true")
                 return true;
             else
@@ -2887,7 +2878,6 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-            //Debug.Log("Running chiprace for token id #" + _tokenId + " is " + response);
             if (response.ToLower() == "true")
                 return true;
             else
@@ -2926,7 +2916,6 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-            //Debug.Log("Level for token id #" + _tokenId + " is " + response);
             return int.Parse(response);
         }
         else
@@ -2962,7 +2951,6 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-           // Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
             var _data = JObject.Parse(response);
             int _score = int.Parse(_data["score"].ToString());
             return _score;
@@ -3001,7 +2989,6 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-            //Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
             //{ "0":"0","1":"1645135926","2":"0","3":"0","4":false,"5":false,"level":"0","remainningTime":"1645135926","score":"0","rewards":"0","canUpgrade":false,"isEnter":false}
             TotalNFTData _tokenData = new TotalNFTData();
             var _data = JObject.Parse(response);
@@ -3054,7 +3041,6 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-            //Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
 
             TotalNFTData _tokenData = new TotalNFTData();
             var _data = JObject.Parse(response);
@@ -3101,10 +3087,8 @@ public class WalletManager : MonoBehaviour
 
         if (response != "")
         {
-           // Debug.Log("TokenInfo for token id #" + _tokenId + " is " + response);
             //var _data = JObject.Parse(response);
             //double _score = double.Parse(_data["score"].ToString());
-            //Debug.Log(_score);
         }
     }
 
