@@ -1015,6 +1015,11 @@ public class MainMenuViewController : MonoBehaviour
         ResetRegisterFields();
         TournamentMiniScreen.SetActive(true);
 
+
+        Constants.StoredCarNames.Clear();
+        Constants.ResetData();
+        WalletManager.Instance.ResetData();
+
         if (FirebaseMoralisManager.Instance)
             FirebaseMoralisManager.Instance.LogoutUser();
     }
@@ -1963,15 +1968,17 @@ public class MainMenuViewController : MonoBehaviour
                 for (int i = 0; i < Constants.NFTStored.Length; i++)
                     storedNFTS += Constants.NFTStored[i];
 
-                if (storedNFTS == 0)
-                {
-                    LoadingScreen.SetActive(false);
-                    ShowToast(3f, "No NFT was purchased, please purchase one.");
-                }
-                else
-                {
-                    NFTGameplayManager.Instance.ProcessNFT();
-                }
+
+                NFTGameplayManager.Instance.ProcessNFT();
+                //if (storedNFTS == 0)
+                //{
+                //    LoadingScreen.SetActive(false);
+                //    ShowToast(3f, "No NFT was purchased, please purchase one.");
+                //}
+                //else
+                //{
+                //    NFTGameplayManager.Instance.ProcessNFT();
+                //}
             }
             else
             {

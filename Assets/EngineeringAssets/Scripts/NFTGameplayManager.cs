@@ -37,9 +37,6 @@ public class NFTGameplayManager : MonoBehaviour
     {
         if (Constants.CheckAllNFT && (Constants.GetMoralisData || Constants.DebugAllCars))
         {
-
-           
-            //MainMenuViewController.Instance.LoadingScreen.SetActive(false);
             GarageHandler.Instance.ResetSelectedCar();
 
             prefabCounter = 0;
@@ -56,6 +53,13 @@ public class NFTGameplayManager : MonoBehaviour
                 {
                     StartCoroutine(GetJSONData(WalletManager.Instance.NFTTokens[i][j], WalletManager.Instance.metaDataURL[i][j]));
                 }
+            }
+
+            if(totalNFTS==0)
+            {
+                MainMenuViewController.Instance.LoadingScreen.SetActive(false);
+                GarageHandler.Instance.ToggleLoaders(false, false, false);
+                MainMenuViewController.Instance.AssignStoreGarageCars(GarageHandler.Instance.ComponentGarage.MiddleCar, GarageHandler.Instance.ComponentGarage.LeftCar, GarageHandler.Instance.ComponentGarage.RightCar, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, GarageHandler.Instance.ComponentGarage.CarName_Text, GarageHandler.Instance.ComponentGarage.CarID_Text, true, false, true);
             }
         }
         else
@@ -98,6 +102,7 @@ public class NFTGameplayManager : MonoBehaviour
         }
     }
 
+    int BoughtCounter = 0;
     async public void InstantiateAndSetData(string _data,int _tokenID)
     {
         if (!Constants.StoredCarNames.Contains(_data))
@@ -114,7 +119,15 @@ public class NFTGameplayManager : MonoBehaviour
             }
         }
 
-        if (MainMenuViewController.Instance.GetSelectedCar().Count - 1 == Constants.NFTBought.Length)
+        BoughtCounter = 0;
+
+        for (int i = 0; i < Constants.NFTBought.Length; i++)
+        {
+            BoughtCounter += Constants.NFTBought[i];
+        }
+
+        Constants.PrintLog("Selected cars count : " + (MainMenuViewController.Instance.GetSelectedCar().Count-1).ToString() + " and NFT Bought Count : " + BoughtCounter);
+        if (MainMenuViewController.Instance.GetSelectedCar().Count - 1 == BoughtCounter)
         {
             InstantiateBoughtFromMoralis();
         }
@@ -123,7 +136,7 @@ public class NFTGameplayManager : MonoBehaviour
     async public void InstantiateBoughtFromMoralis()
     {
         string _response = await apiRequestHandler.Instance.ProcessAllMyNFTRequest(Constants.WalletAddress);
-        //Debug.Log(_response);
+        Constants.PrintLog(_response);
         if (!string.IsNullOrEmpty(_response))
         {
             MoralisNFTArrayResponse _dataNEW = new MoralisNFTArrayResponse();
@@ -132,7 +145,7 @@ public class NFTGameplayManager : MonoBehaviour
 
             for (int i = 0; i < _dataNEW.result.Count; i++)
             {
-                //Debug.Log("searching for : " + _dataNEW.result[i].name);
+                Constants.PrintLog("searching for : " + _dataNEW.result[i].name);
                 if(!string.IsNullOrEmpty(_dataNEW.result[i].name))
                 {
                     for (int k = 0; k < DataNFTModel.Count; k++)
@@ -141,14 +154,14 @@ public class NFTGameplayManager : MonoBehaviour
                         {
                             if (Constants.StoredCarNames.Contains(_dataNEW.result[i].name))
                             {
-                                //Debug.Log("car already added from wallet, skipping....");
+                                Constants.PrintLog("car already added from wallet, skipping....");
                             }
                             else
                             {
                                 _statSettings = StoreHandler.Instance.GetDealerDicIndex(DataNFTModel[k].MetaID);
                                 if (_statSettings == null) _statSettings = DataNFTModel[k].settings;
 
-                                //Debug.Log("founed, adding: " + _dataNEW.result[i].name);
+                                Constants.PrintLog("founed, adding: " + _dataNEW.result[i].name);
 
                                 NFTMehanicsData _newData = new NFTMehanicsData();
                                 _newData.OwnerWalletAddress = _dataNEW.result[i].ownerWallet;

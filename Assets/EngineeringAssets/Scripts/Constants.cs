@@ -251,7 +251,8 @@ public static class Constants
 
     public static void PrintLog(string Txt)
     {
-        //Debug.Log(Txt);
+        if(IsTest)
+            Debug.Log(Txt);
     }
 
     public static void PrintError(string Txt)
