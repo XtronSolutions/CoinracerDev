@@ -196,9 +196,12 @@ namespace DavidJalbert
             sphereCollider.hideFlags = HideFlags.None;
 
             body.mass = bodyMass * (adjustToScale ? cubicScale : 1);
+            
             body.drag = 0;
-            body.angularDrag = 0;
-            body.constraints = RigidbodyConstraints.FreezeRotation;
+            body.angularDrag = 6;
+            body.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            //body.constraints = RigidbodyConstraints.FreezeRotationZ;
+
             // body.useGravity = false;
             // body.isKinematic = false;
             body.interpolation = RigidbodyInterpolation.Extrapolate;

@@ -82,11 +82,17 @@ namespace DavidJalbert
                     Rigidbody r = carController.gameObject.GetComponent<Rigidbody>();
                     if (!carController.PHView.IsMine)
                     {
-                        r.constraints= RigidbodyConstraints.FreezeAll;
-                    }else
+                        r.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                        r.drag = 6;
+                        //r.constraints = RigidbodyConstraints.None;
+                        //r.constraints = RigidbodyConstraints.FreezeRotation;
+                        //r.constraints= RigidbodyConstraints.FreezeAll;
+                    }
+                    else
                     {
-                        r.constraints = RigidbodyConstraints.None;
-                        r.constraints = RigidbodyConstraints.FreezeRotation;
+                        r.drag = 0;
+                        //r.constraints = RigidbodyConstraints.None;
+                        //r.constraints = RigidbodyConstraints.FreezeRotation;
                     }
                 }
             }
@@ -233,7 +239,7 @@ namespace DavidJalbert
 
         private void LateUpdate()
         {
-            vehicleContainer.position = carController.getBodyPosition();
+            //vehicleContainer.position = carController.getBodyPosition();
 
             //if(carController.IsMultiplayer)
             //{

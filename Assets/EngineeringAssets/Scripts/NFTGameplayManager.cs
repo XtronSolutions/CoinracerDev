@@ -35,6 +35,9 @@ public class NFTGameplayManager : MonoBehaviour
     }
     public void ProcessNFT()
     {
+        if (Constants.DebugAllCars)
+            Constants.GetMoralisData = true;
+
         if (Constants.CheckAllNFT && (Constants.GetMoralisData || Constants.DebugAllCars))
         {
             GarageHandler.Instance.ResetSelectedCar();

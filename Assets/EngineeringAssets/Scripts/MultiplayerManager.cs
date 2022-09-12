@@ -170,6 +170,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void ConnectionMaster()
     {
+        Debug.LogError(PhotonNetwork.SerializationRate);
         UpdateConnectionText("Connected to master...");
         Constants.PrintLog("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
         PhotonNetwork.AutomaticallySyncScene = true;

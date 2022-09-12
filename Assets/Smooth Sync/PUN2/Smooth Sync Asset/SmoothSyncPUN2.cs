@@ -51,7 +51,15 @@ namespace Smooth
         /// 
         /// Measured in seconds.
         /// </remarks>
+        /// 
         public float interpolationBackTime = .12f;
+
+        /// <summary>Reference of player rigidbody</summary>
+        /// <remarks>
+        /// nothing.
+        /// </remarks>
+        /// 
+        public Rigidbody PlayerRBRef;
 
         /// <summary>
         /// Extrapolation type. 
@@ -64,6 +72,10 @@ namespace Smooth
         /// Unlimited - Allow extrapolation forever. 
         /// Must be syncing velocity in order to utilize extrapolation.
         /// </remarks>
+
+        public bool EnableNetworkDetach=false;
+        public float NetworkDetachRate = 0.5f;
+        [HideInInspector] public bool AddDelayForPhysics = false;
         public enum ExtrapolationMode
         {
             None, Limited, Unlimited
@@ -366,6 +378,8 @@ namespace Smooth
         {
             Update, FixedUpdate
         }
+
+
         /// <summary>Where the object's Transform is updated on non-owners.</summary>
         /// <remarks>
         /// Update will have smoother results but FixedUpdate might be better for physics.
@@ -485,12 +499,12 @@ namespace Smooth
         /// Used via stopEasing() to 'teleport' a synced object without unwanted easing.
         /// Useful for things like spawning and snapping
         /// </summary>
-        bool dontEaseRotation= false;
+        bool dontEaseRotation = false;
         /// <summary>
         /// Used via stopEasing() to 'teleport' a synced object without unwanted easing.
         /// Useful for things like spawning and snapping
         /// </summary>
-        bool dontEaseScale= false;
+        bool dontEaseScale = false;
 
         /// <summary>
         /// Used to setup initial _ownerTime
@@ -604,6 +618,7 @@ namespace Smooth
         /// <summary> Used to check if we should be sending a "JustStartedMoving" State. If we are teleporting, don't send one. </summary>
         Quaternion latestTeleportedFromRotation;
 
+
         #endregion Runtime data
 
         #region Unity methods
@@ -611,6 +626,7 @@ namespace Smooth
         /// <summary>Cache references to components.</summary>
         public void Awake()
         {
+            AddDelayForPhysics = false;
             // Uses a state buffer of at least 30 for ease of use, or a buffer size in relation 
             // to the send rate and how far back in time we want to be. Doubled buffer as estimation for forced State sends.
             int calculatedStateBufferSize = ((int)(PhotonNetwork.SerializationRate * interpolationBackTime) + 1) * 2;
@@ -642,7 +658,10 @@ namespace Smooth
             // Unity guarantees same order in GetComponents<>() so indexes are already synced across the network.
             else
             {
-                realObjectToSync = this.gameObject;
+                if (!PlayerRBRef)
+                    realObjectToSync = this.gameObject;
+                else
+                    realObjectToSync = PlayerRBRef.gameObject;
 
                 int indexToGive = 0;
                 childObjectSmoothSyncs = GetComponents<SmoothSyncPUN2>();
@@ -707,6 +726,7 @@ namespace Smooth
             }
         }
 
+
         void SmoothSyncUpdate()
         {
             localTime += Time.deltaTime;
@@ -723,11 +743,37 @@ namespace Smooth
             // Set the interpolated / extrapolated Transforms and Rigidbodies of non-owned objects.
             if (!photonView.IsMine)
             {
-                adjustOwnerTime();
-                applyInterpolationOrExtrapolation();
+                //adjustOwnerTime();
+                //applyInterpolationOrExtrapolation();
+
+                if (EnableNetworkDetach == true)
+                {
+                    if (AddDelayForPhysics == false)
+                    {
+                        //Debug.Log("aplying valyes");
+                        adjustOwnerTime();
+                        applyInterpolationOrExtrapolation();
+                    }
+                }else
+                {
+                    adjustOwnerTime();
+                    applyInterpolationOrExtrapolation();
+                }
             }
         }
-        
+
+        public void EnableSync()
+        {
+            if (EnableNetworkDetach == true)
+            {
+                CancelInvoke(nameof(DelayEnableSync));
+                Invoke(nameof(DelayEnableSync), NetworkDetachRate);
+            }
+        }
+        public void DelayEnableSync()
+        {
+            AddDelayForPhysics = false;
+        }
         /// <summary>Automatically sends teleport message for this object OnEnable(). Also add scene loaded event handler.</summary>
         public override void OnEnable()
         {

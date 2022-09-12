@@ -1153,7 +1153,6 @@ namespace Photon.Pun
 
             SetupLogging();
 
-
             NetworkingClient.LoadBalancingPeer.TransportProtocol = appSettings.Protocol;
             NetworkingClient.ExpectedProtocol = null;
             NetworkingClient.EnableProtocolFallback = appSettings.EnableProtocolFallback;

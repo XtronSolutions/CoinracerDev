@@ -22,6 +22,9 @@ namespace Smooth
             GUIContent contentInterpolationBackTime = new GUIContent("Interpolation Back Time", "How much time in the past non-owned objects should be. This is so if you hit a latency spike, you still have a buffer of the interpolationBackTime of known States before you start extrapolating into the unknown. Increasing will make interpolation more likely to be used, decreasing will make extrapolation more likely to be used. Keep above 1/SendRate to attempt to always interpolate. In seconds.");
             EditorGUILayout.PropertyField(serializedObject.FindProperty("interpolationBackTime"), contentInterpolationBackTime);
 
+            GUIContent PlayerRBRef = new GUIContent("Player RigidBody", "Rigidbody Reference");
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("PlayerRBRef"), PlayerRBRef);
+
             GUIContent contentTimeCorrectionSpeed = new GUIContent("Time Correction Speed", "The estimated owner time will shift by at most this amount per second. Lower values will be smoother but may take time to adjust to larger jumps in latency. Keep this lower than ~.5 unless you are having serious latency issues.");
             EditorGUILayout.PropertyField(serializedObject.FindProperty("timeCorrectionSpeed"), contentTimeCorrectionSpeed);
             GUIContent contentPositionLerpSpeed = new GUIContent("Position Easing Speed", "How fast to ease to the new position on non-owned objects. 0 is never, 1 is instant.");
@@ -136,6 +139,13 @@ namespace Smooth
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("useLocalTransformOnly"), contentUseLocalTransformOnly);
                 GUIContent contentAutomaticallyResetTime = new GUIContent("Automatically Reset Time", "Enable automatic local time reset to avoid float precision issues in long running games.\n\nWhen enabled localTime will be reset approximately every hour to prevent it from growing too large and introducing float precision issues that can cause jittering and other syncing issues in long running games. This costs an extra byte per network update, so don't enable this if you don't need it. When enabled localTime is also reset on each Scene load.");
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("automaticallyResetTime"), contentAutomaticallyResetTime);
+
+
+                GUIContent EnableNetworkDetach = new GUIContent("Enable Network Detach", "Toggle condition where mirror will detach network sync for few seconds so local physics could simulate before next sync.");
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("EnableNetworkDetach"), EnableNetworkDetach);
+
+                GUIContent NetworkDetachRate = new GUIContent("Network Detach Rate", "Rate of network detach in seconds.");
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("NetworkDetachRate"), NetworkDetachRate);
             }
 
             serializedObject.ApplyModifiedProperties();

@@ -44,13 +44,13 @@ public class SyncData : MonoBehaviourPun, IPunObservable
         PHView = GetComponent<PhotonView>();
         // r.isKinematic = !PHView.IsMine;
 
-        //PhotonNetwork.SerializationRate = 10;
-        //PhotonNetwork.SendRate = 10;
+        PhotonNetwork.SerializationRate = 15;
+        PhotonNetwork.SendRate = 15;
 
         for (int i = 0; i < localScripts.Length; i++)
         {
-            if (localScripts[i].TryGetComponent(out SphereCollider sphere))
-                sphere.enabled = photonView.IsMine;
+            //if (localScripts[i].TryGetComponent(out SphereCollider sphere))
+                //sphere.enabled = photonView.IsMine;
 
             localScripts[i].enabled = photonView.IsMine;
         }

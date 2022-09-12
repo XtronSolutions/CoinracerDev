@@ -2047,7 +2047,7 @@ public class MainMenuViewController : MonoBehaviour
         //    return;
         //}
 
-        if (Constants.CheckAllNFT && Constants.GetMoralisData)
+        if (Constants.CheckAllNFT && (Constants.GetMoralisData || Constants.DebugAllCars))
         {
             int storedNFTS = 0;
 
