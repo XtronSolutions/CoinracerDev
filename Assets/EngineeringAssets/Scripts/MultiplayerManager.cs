@@ -245,8 +245,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (Constants.FreeMultiplayer)
             Constants.SelectedWage = 0;
 
+        int _level = Constants.SelectedLevel;
+
+        if (Constants.IsDestructionDerby)
+            _level = 6;
+
         roomOptions.CustomRoomPropertiesForLobby =new string [3]{ Constants.MAP_PROP_KEY,Constants.WAGE_PROP_KEY,Constants.MODE_PROP_KEY };
-        roomOptions.CustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, Constants.SelectedLevel }, { Constants.WAGE_PROP_KEY, Constants.SelectedWage }, { Constants.MODE_PROP_KEY, Constants.FreeMultiplayer } };
+        roomOptions.CustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, _level }, { Constants.WAGE_PROP_KEY, Constants.SelectedWage }, { Constants.MODE_PROP_KEY, Constants.FreeMultiplayer } };
 
         PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
     }
@@ -256,7 +261,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (Constants.FreeMultiplayer)
             wageAmount = 0;
 
-        Hashtable expectedCustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, mapCode }, { Constants.WAGE_PROP_KEY, wageAmount }, { Constants.MODE_PROP_KEY, Constants.FreeMultiplayer } };
+
+        int _level = mapCode;
+
+        if (Constants.IsDestructionDerby)
+            _level = 6;
+
+
+        Hashtable expectedCustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, _level }, { Constants.WAGE_PROP_KEY, wageAmount }, { Constants.MODE_PROP_KEY, Constants.FreeMultiplayer } };
         PhotonNetwork.JoinRandomRoom(expectedCustomRoomProperties, expectedMaxPlayers);
     }
 

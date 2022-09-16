@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using DavidJalbert;
+using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.IO;
@@ -2314,5 +2315,10 @@ namespace Smooth
         #endregion
 
         #endregion Networking
+
+        private void OnDestroy()
+        {
+            Destroy(this.transform.GetComponentInParent<TinyCarVisuals>().gameObject);
+        }
     }
 }

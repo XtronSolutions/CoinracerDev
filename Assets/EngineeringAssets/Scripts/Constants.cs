@@ -115,9 +115,9 @@ public static class Constants
     public static bool WalletChanged = false;
 
     public static bool IsTestNet = true;
-    public static bool IsTest = true;
+    public static bool IsTest = false;
     public static bool IsStagging = true;
-    public static bool DebugAllCars = true;// bool to enable all cars
+    public static bool DebugAllCars = false;// bool to enable all cars
     public static bool IsDebugBuild = false;//apply pvp score 500+/enable force end race on levels// and force bid of 1 crace for pvp
     public static bool UseHashMec = true;//bool to store if contracts use hash mechanism or signature for verification
     public static bool GameMechanics = true;
