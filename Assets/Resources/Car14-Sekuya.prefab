@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6971099245143268615}
   - component: {fileID: 3449589378302340396}
   - component: {fileID: 6343642631222538623}
+  - component: {fileID: 8980161072533329606}
   m_Layer: 0
   m_Name: 0_Side01
   m_TagString: DamageCol
@@ -126,6 +127,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8980161072533329606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69363550397287917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 7400236362021818526}
 --- !u!1 &1261044098555944120
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,6 +236,7 @@ GameObject:
   - component: {fileID: 8409138568400022119}
   - component: {fileID: 7128347589975306667}
   - component: {fileID: 7041182472838350436}
+  - component: {fileID: 299742300341376429}
   m_Layer: 0
   m_Name: 2_Front
   m_TagString: DamageCol
@@ -334,6 +349,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &299742300341376429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1452032195533429505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 7400236362021818526}
 --- !u!1 &1695704860308845054
 GameObject:
   m_ObjectHideFlags: 0
@@ -465,7 +493,6 @@ GameObject:
   - component: {fileID: 2311677074565319305}
   - component: {fileID: 7136609661057491298}
   - component: {fileID: 7400236362021818526}
-  - component: {fileID: 7900369831909115046}
   - component: {fileID: 6934093936264076427}
   m_Layer: 13
   m_Name: MultiplayerObject
@@ -509,7 +536,6 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 7136609661057491298}
   - {fileID: 7400236362021818526}
-  - {fileID: 7900369831909115046}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -550,6 +576,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interpolationBackTime: 0.15
+  PlayerRBRef: {fileID: 7644685520503631953}
+  EnableNetworkDetach: 1
+  NetworkDetachRate: 0.8
+  NetworkDetachRateStatic: 0.1
+  AddDelayForPhysics: 0
   extrapolationMode: 1
   useExtrapolationTimeLimit: 1
   extrapolationTimeLimit: 5
@@ -572,38 +603,21 @@ MonoBehaviour:
   snapTimeThreshold: 0.3
   syncPosition: 0
   syncRotation: 0
-  syncScale: 0
+  syncScale: 7
   syncVelocity: 0
   syncAngularVelocity: 0
-  isPositionCompressed: 0
-  isRotationCompressed: 0
+  isPositionCompressed: 1
+  isRotationCompressed: 1
   isScaleCompressed: 0
-  isVelocityCompressed: 0
-  isAngularVelocityCompressed: 0
+  isVelocityCompressed: 1
+  isAngularVelocityCompressed: 1
   automaticallyResetTime: 1
-  whenToUpdateTransform: 0
+  whenToUpdateTransform: 1
   childObjectToSync: {fileID: 0}
-  setVelocityInsteadOfPositionOnNonOwners: 0
+  setVelocityInsteadOfPositionOnNonOwners: 1
   useLocalTransformOnly: 0
   maxPositionDifferenceForVelocitySyncing: 10
   receivedStatesCounter: 0
---- !u!114 &7900369831909115046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2443984636624301060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Body: {fileID: 7644685520503631953}
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
 --- !u!114 &6934093936264076427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,7 +632,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FollowObject: {fileID: 2276176773849366090}
   TargetObject: {fileID: 5361260418591071694}
-  Offset: {x: 0, y: 0.62, z: -0.06}
+  Offset: {x: 0, y: 0.62, z: 0}
 --- !u!1 &2610598229924773476
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,6 +647,7 @@ GameObject:
   - component: {fileID: 475595778020440256}
   - component: {fileID: 6027310129979242189}
   - component: {fileID: 6623119488165297360}
+  - component: {fileID: 3111780928661442228}
   m_Layer: 0
   m_Name: 1_Side02
   m_TagString: DamageCol
@@ -745,6 +760,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3111780928661442228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2610598229924773476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 7400236362021818526}
 --- !u!1 &3549794383547704098
 GameObject:
   m_ObjectHideFlags: 0
@@ -5645,6 +5673,7 @@ GameObject:
   - component: {fileID: 1818822732286618301}
   - component: {fileID: 454100326751274650}
   - component: {fileID: 3108016372845997879}
+  - component: {fileID: 7628512336605007596}
   m_Layer: 0
   m_Name: 3_back
   m_TagString: DamageCol
@@ -5757,6 +5786,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7628512336605007596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4145472939981267742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 7400236362021818526}
 --- !u!1 &4916860506069172140
 GameObject:
   m_ObjectHideFlags: 0
@@ -10918,7 +10960,7 @@ GameObject:
   - component: {fileID: 8818506892814118312}
   m_Layer: 12
   m_Name: Collider
-  m_TagString: Untagged
+  m_TagString: PlayerCar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10931,7 +10973,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7219863498565412616}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.2449999, z: -0.06}
+  m_LocalPosition: {x: 0, y: -1.2449999, z: 0}
   m_LocalScale: {x: 2.01875, y: 0.80859375, z: 4.24125}
   m_Children: []
   m_Father: {fileID: 7644685520503631952}
@@ -10949,7 +10991,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.9148071, y: 1.4353116, z: 1.0028934}
-  m_Center: {x: 0.01966004, y: -0.21765588, z: -0.07134709}
+  m_Center: {x: 0.01966004, y: -0.21765588, z: 0}
 --- !u!1 &7274405701773322792
 GameObject:
   m_ObjectHideFlags: 0
@@ -16074,11 +16116,11 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 10
   m_Drag: 0
-  m_AngularDrag: 0
+  m_AngularDrag: 6
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 2
-  m_Constraints: 112
+  m_Constraints: 80
   m_CollisionDetection: 2
 --- !u!135 &7644685520503631954
 SphereCollider:
@@ -16183,7 +16225,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   forwardFriction: 15
   lateralFriction: 55
-  IsMultiplayer: 1
+  IsMultiplayer: 0
   PHView: {fileID: 2311677074565319305}
   debugCollider: 0
   DebugColliderObject: {fileID: 5994939956794064052}
@@ -16390,8 +16432,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7644685520659444901}
-  - component: {fileID: 6231906880476065012}
-  - component: {fileID: 4482270594945273325}
+  - component: {fileID: 1401866807976970515}
   m_Layer: 0
   m_Name: Visuals
   m_TagString: Untagged
@@ -16423,7 +16464,7 @@ Transform:
   m_Father: {fileID: 7644685520093282574}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6231906880476065012
+--- !u!114 &1401866807976970515
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -16432,70 +16473,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7644685520659444902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Script: {fileID: 11500000, guid: 102b6e643ba164e4cad75c28b310f9c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 4482270594945273325}
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
---- !u!114 &4482270594945273325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7644685520659444902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8069ffa6ab7df7340ad5ce0c3da47526, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interpolationBackTime: 0.15
-  extrapolationMode: 1
-  useExtrapolationTimeLimit: 1
-  extrapolationTimeLimit: 5
-  useExtrapolationDistanceLimit: 0
-  extrapolationDistanceLimit: 20
-  sendPositionThreshold: 0
-  sendRotationThreshold: 0
-  sendScaleThreshold: 0
-  sendVelocityThreshold: 0
-  sendAngularVelocityThreshold: 0
-  receivedPositionThreshold: 0
-  receivedRotationThreshold: 0
-  snapPositionThreshold: 0
-  snapRotationThreshold: 0
-  snapScaleThreshold: 0
-  positionLerpSpeed: 0.85
-  rotationLerpSpeed: 0.85
-  scaleLerpSpeed: 0.85
-  timeCorrectionSpeed: 0.1
-  snapTimeThreshold: 0.3
-  syncPosition: 0
-  syncRotation: 0
-  syncScale: 0
-  syncVelocity: 7
-  syncAngularVelocity: 7
-  isPositionCompressed: 0
-  isRotationCompressed: 0
-  isScaleCompressed: 0
-  isVelocityCompressed: 0
-  isAngularVelocityCompressed: 0
-  automaticallyResetTime: 1
-  whenToUpdateTransform: 0
-  childObjectToSync: {fileID: 0}
-  setVelocityInsteadOfPositionOnNonOwners: 0
-  useLocalTransformOnly: 0
-  maxPositionDifferenceForVelocitySyncing: 10
-  receivedStatesCounter: 0
+  Visual: {fileID: 7644685520659444902}
+  Car: {fileID: 7644685520503631953}
 --- !u!1 &7644685520696674278
 GameObject:
   m_ObjectHideFlags: 0
@@ -31636,6 +31618,7 @@ GameObject:
   - component: {fileID: 5757615151768647836}
   - component: {fileID: 8578618232448187704}
   - component: {fileID: 5661357580327921839}
+  - component: {fileID: 3989484218811230585}
   m_Layer: 0
   m_Name: 4_Top
   m_TagString: DamageCol
@@ -31748,6 +31731,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3989484218811230585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9221840844838147280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 7400236362021818526}
 --- !u!1001 &4749077708687864879
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31861,11 +31857,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1fc7079c8209c17449320a435f4dc460, type: 3}
---- !u!224 &1259663688553969613 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5806024411448820706, guid: 1fc7079c8209c17449320a435f4dc460, type: 3}
-  m_PrefabInstance: {fileID: 4749077708687864879}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1259663688553969610 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5806024411448820709, guid: 1fc7079c8209c17449320a435f4dc460, type: 3}
@@ -31877,6 +31868,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5b6a6b26d585e42ad920ba9424eab2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &1259663688553969613 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5806024411448820706, guid: 1fc7079c8209c17449320a435f4dc460, type: 3}
+  m_PrefabInstance: {fileID: 4749077708687864879}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5035130255551197852
 PrefabInstance:
   m_ObjectHideFlags: 0

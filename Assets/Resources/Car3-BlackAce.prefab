@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4385399637298511652}
   - component: {fileID: 2513523618468538960}
   - component: {fileID: 3554069867742292583}
+  - component: {fileID: 7726699915668730654}
   m_Layer: 0
   m_Name: 1_Side02
   m_TagString: DamageCol
@@ -126,6 +127,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7726699915668730654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651593073664894432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 3595621545899651230}
 --- !u!1 &1536904735260574154
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,7 +152,6 @@ GameObject:
   - component: {fileID: 7882013997189683027}
   - component: {fileID: 4608424445104769817}
   - component: {fileID: 3595621545899651230}
-  - component: {fileID: 4806134927227790220}
   - component: {fileID: 1788252258843669616}
   m_Layer: 13
   m_Name: MultiplayerObject
@@ -182,7 +195,6 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 4608424445104769817}
   - {fileID: 3595621545899651230}
-  - {fileID: 4806134927227790220}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -223,6 +235,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interpolationBackTime: 0.15
+  PlayerRBRef: {fileID: 7644685520503631953}
+  EnableNetworkDetach: 1
+  NetworkDetachRate: 0.8
+  NetworkDetachRateStatic: 0.1
+  AddDelayForPhysics: 0
   extrapolationMode: 1
   useExtrapolationTimeLimit: 1
   extrapolationTimeLimit: 5
@@ -245,38 +262,21 @@ MonoBehaviour:
   snapTimeThreshold: 0.3
   syncPosition: 0
   syncRotation: 0
-  syncScale: 0
+  syncScale: 7
   syncVelocity: 0
   syncAngularVelocity: 0
-  isPositionCompressed: 0
-  isRotationCompressed: 0
+  isPositionCompressed: 1
+  isRotationCompressed: 1
   isScaleCompressed: 0
-  isVelocityCompressed: 0
-  isAngularVelocityCompressed: 0
+  isVelocityCompressed: 1
+  isAngularVelocityCompressed: 1
   automaticallyResetTime: 1
-  whenToUpdateTransform: 0
+  whenToUpdateTransform: 1
   childObjectToSync: {fileID: 0}
-  setVelocityInsteadOfPositionOnNonOwners: 0
+  setVelocityInsteadOfPositionOnNonOwners: 1
   useLocalTransformOnly: 0
   maxPositionDifferenceForVelocitySyncing: 10
   receivedStatesCounter: 0
---- !u!114 &4806134927227790220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1536904735260574154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Body: {fileID: 7644685520503631953}
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
 --- !u!114 &1788252258843669616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,6 +425,7 @@ GameObject:
   - component: {fileID: 6791786253293505656}
   - component: {fileID: 6545710179118990354}
   - component: {fileID: 8733053116117588440}
+  - component: {fileID: 1746756559175551119}
   m_Layer: 0
   m_Name: 3_back
   m_TagString: DamageCol
@@ -537,6 +538,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1746756559175551119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3509904344736432517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 3595621545899651230}
 --- !u!1 &3549794383547704098
 GameObject:
   m_ObjectHideFlags: 0
@@ -10435,6 +10449,7 @@ GameObject:
   - component: {fileID: 6132737971823782390}
   - component: {fileID: 5717009131237820395}
   - component: {fileID: 5074981382350385423}
+  - component: {fileID: 3753285200923021840}
   m_Layer: 0
   m_Name: 2_Front
   m_TagString: DamageCol
@@ -10547,6 +10562,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3753285200923021840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322172998449731301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 3595621545899651230}
 --- !u!1 &5438657566501779301
 GameObject:
   m_ObjectHideFlags: 0
@@ -10592,6 +10620,7 @@ GameObject:
   - component: {fileID: 5483908381441265246}
   - component: {fileID: 7637766949733734451}
   - component: {fileID: 7355820884265740413}
+  - component: {fileID: 7056950929892152758}
   m_Layer: 0
   m_Name: 0_Side01
   m_TagString: DamageCol
@@ -10704,6 +10733,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7056950929892152758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5521271660696182365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 3595621545899651230}
 --- !u!1 &6485695945681855499
 GameObject:
   m_ObjectHideFlags: 0
@@ -10716,7 +10758,7 @@ GameObject:
   - component: {fileID: 8468100603632857253}
   m_Layer: 12
   m_Name: Collider
-  m_TagString: Untagged
+  m_TagString: PlayerCar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10747,7 +10789,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1.4455788, z: 0.96838135}
-  m_Center: {x: 0, y: 0.1740073, z: -0.020587306}
+  m_Center: {x: 0, y: 0.1740073, z: 0}
 --- !u!1 &6657435857015349168
 GameObject:
   m_ObjectHideFlags: 0
@@ -16217,11 +16259,11 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 10
   m_Drag: 0
-  m_AngularDrag: 0
+  m_AngularDrag: 6
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 2
-  m_Constraints: 112
+  m_Constraints: 80
   m_CollisionDetection: 2
 --- !u!135 &7644685520503631954
 SphereCollider:
@@ -16326,7 +16368,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   forwardFriction: 15
   lateralFriction: 55
-  IsMultiplayer: 1
+  IsMultiplayer: 0
   PHView: {fileID: 7882013997189683027}
   debugCollider: 0
   DebugColliderObject: {fileID: 3503429834107559325}
@@ -16533,8 +16575,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7644685520659444901}
-  - component: {fileID: 6019458232712755167}
-  - component: {fileID: 1098295896165366849}
+  - component: {fileID: 7986922540520189701}
   m_Layer: 0
   m_Name: Visuals
   m_TagString: Untagged
@@ -16566,7 +16607,7 @@ Transform:
   m_Father: {fileID: 7644685520093282574}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6019458232712755167
+--- !u!114 &7986922540520189701
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -16575,70 +16616,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7644685520659444902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Script: {fileID: 11500000, guid: 102b6e643ba164e4cad75c28b310f9c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 1098295896165366849}
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
---- !u!114 &1098295896165366849
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7644685520659444902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8069ffa6ab7df7340ad5ce0c3da47526, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interpolationBackTime: 0.15
-  extrapolationMode: 1
-  useExtrapolationTimeLimit: 1
-  extrapolationTimeLimit: 5
-  useExtrapolationDistanceLimit: 0
-  extrapolationDistanceLimit: 20
-  sendPositionThreshold: 0
-  sendRotationThreshold: 0
-  sendScaleThreshold: 0
-  sendVelocityThreshold: 0
-  sendAngularVelocityThreshold: 0
-  receivedPositionThreshold: 0
-  receivedRotationThreshold: 0
-  snapPositionThreshold: 0
-  snapRotationThreshold: 0
-  snapScaleThreshold: 0
-  positionLerpSpeed: 0.85
-  rotationLerpSpeed: 0.85
-  scaleLerpSpeed: 0.85
-  timeCorrectionSpeed: 0.1
-  snapTimeThreshold: 0.3
-  syncPosition: 0
-  syncRotation: 0
-  syncScale: 0
-  syncVelocity: 7
-  syncAngularVelocity: 7
-  isPositionCompressed: 0
-  isRotationCompressed: 0
-  isScaleCompressed: 0
-  isVelocityCompressed: 0
-  isAngularVelocityCompressed: 0
-  automaticallyResetTime: 1
-  whenToUpdateTransform: 0
-  childObjectToSync: {fileID: 0}
-  setVelocityInsteadOfPositionOnNonOwners: 0
-  useLocalTransformOnly: 0
-  maxPositionDifferenceForVelocitySyncing: 10
-  receivedStatesCounter: 0
+  Visual: {fileID: 7644685520659444902}
+  Car: {fileID: 7644685520503631953}
 --- !u!1 &7644685520696674278
 GameObject:
   m_ObjectHideFlags: 0
@@ -26808,6 +26790,7 @@ GameObject:
   - component: {fileID: 7439146788235160785}
   - component: {fileID: 8693772260083173773}
   - component: {fileID: 1626058467364898216}
+  - component: {fileID: 8964019818807589574}
   m_Layer: 0
   m_Name: 4_Top
   m_TagString: DamageCol
@@ -26920,6 +26903,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e36f8d3cec7e19b4b9ef46f297ac4183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8964019818807589574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8376362580211835042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ee9864d5370cb42918d494a3f1d741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncInstance: {fileID: 3595621545899651230}
 --- !u!1 &9098186850025519616
 GameObject:
   m_ObjectHideFlags: 0

@@ -200,7 +200,7 @@ namespace DavidJalbert
             body.drag = 0;
             body.angularDrag = 6;
             body.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-            //body.constraints = RigidbodyConstraints.FreezeRotationZ;
+            //body.constraints = RigidbodyConstraints.FreezeRotation;
 
             // body.useGravity = false;
             // body.isKinematic = false;

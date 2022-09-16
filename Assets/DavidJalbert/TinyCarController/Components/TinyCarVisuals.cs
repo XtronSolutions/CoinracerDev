@@ -92,7 +92,7 @@ namespace DavidJalbert
                     {
                         r.drag = 0;
                         //r.constraints = RigidbodyConstraints.None;
-                        //r.constraints = RigidbodyConstraints.FreezeRotation;
+                       //r.constraints = RigidbodyConstraints.FreezeRotation;
                     }
                 }
             }

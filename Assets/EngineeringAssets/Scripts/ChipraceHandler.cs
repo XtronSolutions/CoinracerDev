@@ -171,7 +171,7 @@ public class ChipraceHandler : MonoBehaviour
 
     public void SubscribeButtonEvent()
     {
-        UIChiprace.ChipraceButton.onClick.AddListener(PopulateChipraceData);
+       //UIChiprace.ChipraceButton.onClick.AddListener(PopulateChipraceData);
         UIChiprace.BackButton.onClick.AddListener(BackButtonClicked);
     }
 

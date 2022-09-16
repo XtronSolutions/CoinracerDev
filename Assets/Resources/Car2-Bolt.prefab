@@ -183,7 +183,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1.5008907, z: 0.95771897}
-  m_Center: {x: 0, y: 0.04495176, z: 0.033891913}
+  m_Center: {x: 0, y: 0.04495176, z: 0}
 --- !u!1 &1055823944306960936
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,10 +573,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8069ffa6ab7df7340ad5ce0c3da47526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interpolationBackTime: 0.15
+  interpolationBackTime: 0.1
   PlayerRBRef: {fileID: 7644685520503631953}
   EnableNetworkDetach: 1
-  NetworkDetachRate: 0.15
+  DetachNetworkRate: 0.4
+  NetworkDetachRateStatic: 0.1
   AddDelayForPhysics: 1
   extrapolationMode: 1
   useExtrapolationTimeLimit: 1
@@ -593,9 +594,9 @@ MonoBehaviour:
   snapPositionThreshold: 0
   snapRotationThreshold: 0
   snapScaleThreshold: 0
-  positionLerpSpeed: 0.75
-  rotationLerpSpeed: 0.75
-  scaleLerpSpeed: 0.75
+  positionLerpSpeed: 0.85
+  rotationLerpSpeed: 0.85
+  scaleLerpSpeed: 0.85
   timeCorrectionSpeed: 0.1
   snapTimeThreshold: 0.3
   syncPosition: 0
@@ -16087,7 +16088,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   forwardFriction: 15
   lateralFriction: 55
-  IsMultiplayer: 0
+  IsMultiplayer: 1
   PHView: {fileID: 4641786503206457674}
   debugCollider: 0
   DebugColliderObject: {fileID: 4351247305594395745}

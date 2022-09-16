@@ -285,6 +285,7 @@ public class MainMenuViewController : MonoBehaviour
     [SerializeField] private Button _nextMapButton = null;
     [SerializeField] private Button _prevMapButton = null;
     [SerializeField] private Button _logoutButton = null;
+    [SerializeField] private Button _destructionDerbyButton = null;
     [SerializeField] private List<CarSelection> _selecteableCars = new List<CarSelection>();
     [SerializeField] private List<AllCarSelection> _allCars = new List<AllCarSelection>();
     [SerializeField] private TextMeshProUGUI _versionText = null;
@@ -426,6 +427,7 @@ public class MainMenuViewController : MonoBehaviour
         SubscribeEvents_ConnectionUI();
         SubscribeEvents_MultiplayerSelection();
         SubscribeButton_CraceUI();
+        AddButtonListeners_DD();
 
         if (Constants.EarlyBuild)
             UIMember.MainScreen.SetActive(true);
@@ -1463,7 +1465,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void AddLevels(bool isSelective = false, int Index = 0)
     {
-        for (int q = 0; q < _allLevelsSettings.Count; q++)
+        for (int q = 0; q < _allLevelsSettings.Count-1; q++)
         {
             if (isSelective)
                 _levelsSettings.Add(_allLevelsSettings[Index]);
@@ -1499,7 +1501,14 @@ public class MainMenuViewController : MonoBehaviour
 
         #region mapLogic
         _levelsSettings.Clear();
-        if (IsMultiplayer)
+        if(IsDestructionDerby)
+        {
+            if (AnalyticsManager.Instance)
+                AnalyticsManager.Instance.StoredProgression.Mode = "Destruction Derby";
+
+            _levelsSettings.Add(_allLevelsSettings[5]);
+        }
+        else if (IsMultiplayer)
         {
             if (TournamentManager.Instance)
             {
@@ -1513,7 +1522,6 @@ public class MainMenuViewController : MonoBehaviour
                     AddLevels();
                 }
             }
-
         }
         else
         {
@@ -1588,6 +1596,7 @@ public class MainMenuViewController : MonoBehaviour
             IsTournament = false;
             IsSecondTournament = false;
             IsPractice = true;
+            IsDestructionDerby = false;
             CheckBoughtCars();
             GameModeSelectionObject.SetActive(false);
             CarSelectionObject.SetActive(true);
@@ -1791,6 +1800,7 @@ public class MainMenuViewController : MonoBehaviour
             IsSecondTournament = false;
             CheckBoughtCars();
             IsPractice = false;
+            IsDestructionDerby = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
@@ -1807,6 +1817,7 @@ public class MainMenuViewController : MonoBehaviour
             IsSecondTournament = false;
             CheckBoughtCars();
             IsPractice = false;
+            IsDestructionDerby = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
 
@@ -1830,6 +1841,7 @@ public class MainMenuViewController : MonoBehaviour
             IsSecondTournament = true;
             CheckBoughtCars();
             IsPractice = false;
+            IsDestructionDerby = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
             GameModeSelectionObject.SetActive(false);
@@ -1846,6 +1858,7 @@ public class MainMenuViewController : MonoBehaviour
             LoadingScreen.SetActive(true);
             CheckBoughtCars();
             IsPractice = false;
+            IsDestructionDerby = false;
             IsMultiplayer = false;
             Constants.EarnMultiplayer = false;
 
@@ -1876,7 +1889,7 @@ public class MainMenuViewController : MonoBehaviour
         }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-        if (IsPractice)
+        if (IsPractice || IsDestructionDerby)
         {
             PushingTries = true;
             FirebaseMoralisManager.Instance.PlayerData.NumberOfTriesPractice++;
@@ -2865,6 +2878,44 @@ public class MainMenuViewController : MonoBehaviour
     public void OnRepairButtonCLicked()
     {
         SelectedCars[carIndex].GetComponent<NFTDataHandler>().AccessConsumables();
+    }
+    #endregion
+
+    #region Destruction Derby
+
+    public void AddButtonListeners_DD()
+    {
+        _destructionDerbyButton.onClick.AddListener(StartDerby_DD);
+    }
+
+    public void StartDerby_DD()
+    {
+        if (Constants.IsTest)
+            WalletConnected = true;
+
+
+        if (WalletConnected)
+        {
+            IsTournament = false;
+            IsSecondTournament = false;
+            IsPractice = false;
+            IsDestructionDerby = true;
+            IsMultiplayer = true;
+            Constants.EarnMultiplayer = false;
+            Constants.FreeMultiplayer = true;
+
+            LoadingScreen.SetActive(true);
+            CheckBoughtCars();
+            GameModeSelectionObject.SetActive(false);
+            CarSelectionObject.SetActive(true);
+            CarSelection3dObject.SetActive(true);
+            MapSelection.SetActive(false);
+        }
+        else
+        {
+            LoadingScreen.SetActive(false);
+            ShowToast(3f, "Please connect your wallet first.");
+        }
     }
     #endregion
 }

@@ -144,8 +144,13 @@ namespace Smooth
                 GUIContent EnableNetworkDetach = new GUIContent("Enable Network Detach", "Toggle condition where mirror will detach network sync for few seconds so local physics could simulate before next sync.");
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("EnableNetworkDetach"), EnableNetworkDetach);
 
-                GUIContent NetworkDetachRate = new GUIContent("Network Detach Rate", "Rate of network detach in seconds.");
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("NetworkDetachRate"), NetworkDetachRate);
+                GUIContent DetachNetworkRate = new GUIContent("Network Detach Rate", "Rate of network detach in seconds.");
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("DetachNetworkRate"), DetachNetworkRate);
+
+                GUIContent NetworkDetachRateStatic = new GUIContent("Network Detach Rate Fallback", "Fallback Rate of network detach in seconds.");
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("NetworkDetachRateStatic"), NetworkDetachRateStatic);
+
+                
             }
 
             serializedObject.ApplyModifiedProperties();

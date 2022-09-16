@@ -170,7 +170,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void ConnectionMaster()
     {
-        Debug.LogError(PhotonNetwork.SerializationRate);
+        PhotonNetwork.SerializationRate = 15;
+        PhotonNetwork.SendRate = 40;
+        //Debug.LogError(PhotonNetwork.SerializationRate);
         UpdateConnectionText("Connected to master...");
         Constants.PrintLog("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -491,7 +493,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
-            if (TournamentManager.Instance.DataTournament.IsSingleMap)
+            if(Constants.IsDestructionDerby)
+                PhotonNetwork.LoadLevel(6);
+            else if (TournamentManager.Instance.DataTournament.IsSingleMap)
                 PhotonNetwork.LoadLevel(Constants.SelectedSingleLevel);
             else
                 PhotonNetwork.LoadLevel(MainMenuViewController.Instance.getSelectedLevel() + 1);

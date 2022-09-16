@@ -74,7 +74,8 @@ namespace Smooth
         /// </remarks>
 
         public bool EnableNetworkDetach=false;
-        public float NetworkDetachRate = 0.5f;
+        public float DetachNetworkRate = 0.3f;
+        public float NetworkDetachRateStatic = 0.1f;
         [HideInInspector] public bool AddDelayForPhysics = false;
         public enum ExtrapolationMode
         {
@@ -767,7 +768,16 @@ namespace Smooth
             if (EnableNetworkDetach == true)
             {
                 CancelInvoke(nameof(DelayEnableSync));
-                Invoke(nameof(DelayEnableSync), NetworkDetachRate);
+                Invoke(nameof(DelayEnableSync), DetachNetworkRate);
+            }
+        }
+
+        public void EnableSyncStatic()
+        {
+            if (EnableNetworkDetach == true)
+            {
+                CancelInvoke(nameof(DelayEnableSync));
+                Invoke(nameof(DelayEnableSync), NetworkDetachRateStatic);
             }
         }
         public void DelayEnableSync()
