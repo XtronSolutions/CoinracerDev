@@ -105,6 +105,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
             Instance = this;//initializing static instance of this class
 
+        RegionManager.Instance.ResetRegions();
+
         if (Settings.AutoConnect)//auto connect to server if true
                 ConnectToPhotonServer();
     }
@@ -140,6 +142,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsConnected)
         {
+            Debug.LogError("Photon already connected");
             PhotonNetwork.GotPingResult = false;
 
             Constants.RegionChanged = false;
@@ -161,6 +164,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
             if (MainMenuViewController.Instance)
                 MainMenuViewController.Instance.StartCoroutine(MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI());
+
+            if(RegionManager.Instance)
+                RegionManager.Instance.StartCoroutine(RegionManager.Instance.ShowPingedRegionList_ConnectionUI());
 
             Constants.PrintLog("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
             PhotonNetwork.ConnectUsingSettings();
@@ -201,7 +207,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         CancelInvoke("UpdateOnlineStatus");
         UpdateOnlineStatus();
-        JoinRoomRandom(Constants.SelectedLevel, Constants.SelectedWage, Settings.MaxPlayers);
+        
+        //JoinRoomRandom(Constants.SelectedLevel, Constants.SelectedWage, Settings.MaxPlayers);
 
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : " + PhotonNetwork.CloudRegion);

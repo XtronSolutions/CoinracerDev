@@ -29,7 +29,7 @@ public class SetManualRegion : MonoBehaviour
             {
                 if (MainMenuViewController.Instance)
                 {
-                    MainMenuViewController.Instance.ChangeConnectionText_ConnectionUI("connecting...");
+                    MainMenuViewController.Instance.ChangeConnectionText_ConnectionUI("Connecting...");
                     MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : n/a");
                 }
 
@@ -55,16 +55,5 @@ public class SetManualRegion : MonoBehaviour
     {
         RegionDropDown.interactable = true;
         MultiplayerManager.Instance.ConnectToPhotonServer();
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
