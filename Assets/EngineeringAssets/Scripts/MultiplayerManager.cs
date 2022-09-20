@@ -168,9 +168,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             if(RegionManager.Instance)
                 RegionManager.Instance.StartCoroutine(RegionManager.Instance.ShowPingedRegionList_ConnectionUI());
 
-            Constants.PrintLog("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
+            Constants.PrintLog("PhotonNetwork.ConnectUsingSettings().");
             PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = Settings.Version.ToString();
+            //PhotonNetwork.GameVersion = Settings.Version.ToString();
         }
     }
 
@@ -193,11 +193,17 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.LocalPlayer.NickName = name;
-
+        
         if (PhotonNetwork.InLobby)
-            LobbyConnection();
+        LobbyConnection();
         else
-            PhotonNetwork.JoinLobby();
+        PhotonNetwork.JoinLobby();
+    }
+
+    public void DebugCounts()
+    {
+        Debug.Log("mastercount: " + PhotonNetwork.CountOfPlayersOnMaster + " , players in room : " + PhotonNetwork.CountOfPlayersInRooms);
+        Invoke("DebugCounts", 1f);
     }
 
     public void LobbyConnection()
@@ -208,7 +214,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         CancelInvoke("UpdateOnlineStatus");
         UpdateOnlineStatus();
         
-        //JoinRoomRandom(Constants.SelectedLevel, Constants.SelectedWage, Settings.MaxPlayers);
+        JoinRoomRandom(Constants.SelectedLevel, Constants.SelectedWage, Settings.MaxPlayers);
 
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : " + PhotonNetwork.CloudRegion);
@@ -341,6 +347,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region PunCallbacks
+
+    //public override void Onsta()
+    //{
+    //    ConnectionMaster();
+    //}
     public override void OnConnectedToMaster()
     {
         ConnectionMaster();

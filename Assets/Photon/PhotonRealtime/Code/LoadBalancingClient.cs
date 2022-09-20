@@ -354,7 +354,7 @@ namespace Photon.Realtime
         public bool IsUsingNameServer { get; set; }
 
         /// <summary>Name Server Host Name for Photon Cloud. Without port and without any prefix.</summary>
-        public string NameServerHost = "ns.photonengine.io";
+        public string NameServerHost = "ns.photonengine.io";//ns.exitgames.com//
 
         /// <summary>Name Server Address for Photon Cloud (based on current protocol). You can use the default values and usually won't have to set this value.</summary>
         public string NameServerAddress { get { return this.GetNameServerAddress(); } }
@@ -985,6 +985,7 @@ namespace Photon.Realtime
 
             this.CheckConnectSetupWebGl();
 
+            Debug.LogError(this.MasterServerAddress);
             if (this.LoadBalancingPeer.Connect(this.MasterServerAddress, this.ProxyServerAddress, this.AppId, this.TokenForInit))
             {
                 this.DisconnectedCause = DisconnectCause.None;
@@ -1005,6 +1006,7 @@ namespace Photon.Realtime
         /// <returns>If the workflow was started or failed right away.</returns>
         public bool ConnectToNameServer()
         {
+           
             if (this.LoadBalancingPeer.PeerState != PeerStateValue.Disconnected)
             {
                 this.DebugReturn(DebugLevel.WARNING, "ConnectToNameServer() failed. Can only connect while in state 'Disconnected'. Current state: " + this.LoadBalancingPeer.PeerState);
@@ -1027,8 +1029,11 @@ namespace Photon.Realtime
                 this.LoadBalancingPeer.TransportProtocol = ConnectionProtocol.WebSocketSecure;
             }
 
+            Debug.Log("connecting to nameserver" + this.NameServerAddress);
+
             if (this.LoadBalancingPeer.Connect(this.NameServerAddress, this.ProxyServerAddress, "NameServer", this.TokenForInit))
             {
+                Debug.Log("could connect to cloud region...");
                 this.DisconnectedCause = DisconnectCause.None;
                 this.connectToBestRegion = false;
                 this.State = ClientState.ConnectingToNameServer;
@@ -2705,6 +2710,11 @@ namespace Photon.Realtime
 
                             // on the NameServer, authenticate returns the MasterServer address for a region and we hop off to there
                             this.MasterServerAddress = operationResponse[ParameterCode.Address] as string;
+                            Debug.Log("received master address (can be changed customly: " + this.MasterServerAddress);
+
+                           // if (this.MasterServerAddress == "ws://5C41DFF7F36BC37011BD8F000BF90B38.exitgames.com:443/Master")
+                            //this.MasterServerAddress = "ws://5C41DFF7F36BC37011BD8F000BF90B38.exitgames.com:9090";
+
                             if (this.ServerPortOverrides.MasterServerPort != 0)
                             {
                                 //Debug.LogWarning("Incoming MasterServer Address: "+this.MasterServerAddress);
