@@ -985,7 +985,7 @@ namespace Photon.Realtime
 
             this.CheckConnectSetupWebGl();
 
-            Debug.LogError(this.MasterServerAddress);
+           //Debug.LogError(this.MasterServerAddress);
             if (this.LoadBalancingPeer.Connect(this.MasterServerAddress, this.ProxyServerAddress, this.AppId, this.TokenForInit))
             {
                 this.DisconnectedCause = DisconnectCause.None;

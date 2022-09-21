@@ -18,35 +18,84 @@ public class RegionResponse
 public class RegionManager : MonoBehaviour
 {
     public static RegionManager Instance;
+    public SetManualRegion _RegionRef;
     public Dropdown RegionMainList;
     bool RegionPinged = false;
     Dictionary<string, string> RegionNames = new Dictionary<string, string>();
-    Dictionary<string, RegionResponse> RegionData = new Dictionary<string, RegionResponse>();
     List<RegionResponse> myDeserializedClass = new List<RegionResponse>();
-    string[] StoredRegions;
-    string[] StoredPings;
     private string GetURL = "http://64.227.31.248:8008/";
     string ExampleResponse = "[{\"code\":\"eu\",\"address\":\"ws://GCAMS146.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"us\",\"address\":\"ws://5BFA7B2F847F6354744DE369F8496DF0.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"usw\",\"address\":\"ws://F943322039644213464E42C7AFB865A2.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"cae\",\"address\":\"ws://1E4C943035393DBEB337C36E0F8A2A09.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"asia\",\"address\":\"ws://5C41DFF7F36BC37011BD8F000BF90B38.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"jp\",\"address\":\"ws://AZJP005000001.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"au\",\"address\":\"ws://9BD5E99DD999F2851DBEC9F768E9BA23.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"sa\",\"address\":\"ws://GCSP004.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"in\",\"address\":\"ws://20C070ADE8D6F680D898A4EF4D626B57.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"ru\",\"address\":\"ws://GCMOS015.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"rue\",\"address\":\"ws://4746102D4930B4FA9C57B103E8D1EE91.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"kr\",\"address\":\"ws://AZKR003000000.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"za\",\"address\":\"ws://B33E312B471BD9630E44738C09976E08.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"tr\",\"address\":\"ws://GCIST001.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0}]";
+    Dictionary<string, RegionResponse> _tempRegionData = new Dictionary<string, RegionResponse>();
 
-    private void Awake()
+    int playerCount;
+    string[] dropdownCaptionSplit;
+    string dropdownOptionTxt;
+    string[] dropdownOptionSplit;
+    private void Start()
     {
         Instance = this;
+        //UpdateReference();
+        ResetRegions();
         AddRegionNames();
-        Constants.PingAPIFetched = false;
-        InvokeRepeating(nameof(GetAllRegiosnData), 0.2f, 5f);
+
+        if (!PhotonNetwork.IsConnected)
+        {
+            PopulateRegionData(ExampleResponse);
+            StartCoroutine(ShowPingedRegionList_ConnectionUI());
+        }else
+        {
+            Constants.PingAPIFetched = true;
+            PhotonNetwork.GotPingResult = true;
+            UpdatePingList(Constants.StoredRegions, Constants.StoredPings);
+        }
+
+        InvokeRepeating(nameof(GetAllRegiosnData), 0.3f, 5f);
+
+        for (int i = 0; i < Constants.StoredRegions.Count; i++)
+        {
+            Debug.Log(Constants.StoredRegions[i]);
+        }
+
+    }
+
+    public bool UpdateReference()
+    {
+        if(SetManualRegion.Instance)
+        {
+            _RegionRef = SetManualRegion.Instance;
+            RegionMainList = _RegionRef.gameObject.GetComponent<Dropdown>();
+            return true;
+        }
+        else
+        {
+            Debug.Log("Dropdownref was lost, checking...");
+            Invoke(nameof(UpdateReference), 0.2f);
+            return false;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        Instance = null;
     }
 
     public void PopulateRegionData(string _response)
     {
-        RegionData.Clear();
+        Debug.Log(_response);
+        _tempRegionData.Clear();
         myDeserializedClass = JsonConvert.DeserializeObject<List<RegionResponse>>(_response);
 
         for (int i = 0; i < myDeserializedClass.Count; i++)
-        {
-            RegionData.Add(myDeserializedClass[i].code, myDeserializedClass[i]);
-        }
+            _tempRegionData.Add(myDeserializedClass[i].code, myDeserializedClass[i]);
 
-        Constants.PingAPIFetched = true;
+        Constants.RegionData = _tempRegionData;
+        
+        //if (!PhotonNetwork.GotPingResult && PhotonNetwork.InLobby)
+            //PhotonNetwork.GotPingResult = true;
+
+        Debug.Log("PingAPIFetched: " + Constants.PingAPIFetched);
+        if (PhotonNetwork.IsConnected)
+             UpdateDropDownValues(RegionMainList);
     }
 
     public void AddRegionNames()
@@ -70,68 +119,61 @@ public class RegionManager : MonoBehaviour
     }
     public void ResetRegions()
     {
-        //ChangeConnectionText_ConnectionUI("connecting...");
-        //ChangeRegionText_ConnectionUI("Selected Region : n/a");
-        //ToggleScreen_ConnectionUI(false);
-
         RegionPinged = false;
         RegionMainList.interactable = false;
         RegionMainList.options.Clear();
         RegionMainList.options.Add(new Dropdown.OptionData() { text = "Connecting..." });
         RegionMainList.value = 0;
-        Constants.RegionChanged = false;
-        PhotonNetwork.SelectedRegion = "";
     }
-
     public IEnumerator ShowPingedRegionList_ConnectionUI()
     {
-        yield return new WaitUntil(() => (PhotonNetwork.GotPingResult && Constants.PingAPIFetched));
+        Debug.Log("Got ping result "+ PhotonNetwork.GotPingResult);
+        yield return new WaitUntil(() => (PhotonNetwork.GotPingResult));
 
-        StoredRegions = PhotonNetwork.pingedRegions;
-        StoredPings = PhotonNetwork.pingedRegionPings;
+        Constants.StoredRegions.Clear();
+        Constants.StoredPings.Clear();
 
-        UpdatePingList(StoredRegions, StoredPings);
+        for (int q = 0; q < PhotonNetwork.pingedRegions.Length; q++)
+            Constants.StoredRegions.Add(PhotonNetwork.pingedRegions[q]);
+
+        for (int p = 0; p < PhotonNetwork.pingedRegionPings.Length; p++)
+            Constants.StoredPings.Add(PhotonNetwork.pingedRegionPings[p]);
+
+        UpdatePingList(Constants.StoredRegions, Constants.StoredPings);
         PhotonNetwork.GotPingResult = false;
-        Constants.PingAPIFetched = false;
     }
 
-    public IEnumerator UpdateRegionList_Connection()
-    {
-        yield return new WaitUntil(() => (Constants.PingAPIFetched));
-
-        StoredRegions = PhotonNetwork.pingedRegions;
-        StoredPings = PhotonNetwork.pingedRegionPings;
-
-        UpdatePingList(StoredRegions, StoredPings);
-        Constants.PingAPIFetched = false;
-    }
-
-    public void UpdatePingList(string[] regions, string[] pings)
+    public void UpdatePingList(List<string> regions, List<string> pings)
     {
         if (!RegionPinged)
         {
             RegionPinged = true;
             var dropdown = RegionMainList;
-            SetManualRegion _RegionRef = this.gameObject.GetComponent<SetManualRegion>();
             UpdateRegionsData(dropdown, _RegionRef);
+        }else
+        {
+            Constants.PrintError("RegionPinged is false");
         }
     }
 
     public void UpdateRegionsData(Dropdown dropdown, SetManualRegion _RegionRef)
     {
+        _RegionRef.SetRegionDone(false);
+        RegionMainList.interactable = false;
         dropdown.options.Clear();
         List<string> _regions = new List<string>();
-        if (StoredPings.Length > 0)
+        if (Constants.StoredPings.Count > 0)
         {
-            int minimumPing = int.Parse(StoredPings[0]);
+            int minimumPing = int.Parse(Constants.StoredPings[0]);
             int currentPing;
-            dropdown.value = 1;
-            for (int i = 0; i < StoredRegions.Length; i++)
+            //dropdown.value = 1;
+            for (int i = 0; i < Constants.StoredRegions.Count; i++)
             {
-                dropdown.options.Add(new Dropdown.OptionData() { text = RegionNames[StoredRegions[i]] + " " + StoredPings[i] + "ms"+" "+ RegionData[StoredRegions[i]].peerCount+" players" });
-                _regions.Add(StoredRegions[i]);
-                currentPing = int.Parse(StoredPings[i]);
-                if (currentPing < minimumPing)
+                playerCount = Constants.RegionData[Constants.StoredRegions[i]].peerCount + Constants.RegionData[Constants.StoredRegions[i]].masterPeerCount;
+                dropdown.options.Add(new Dropdown.OptionData() { text = RegionNames[Constants.StoredRegions[i]] + "[" + Constants.StoredPings[i] + "ms"+"] "+ playerCount + " player/s" });
+                _regions.Add(Constants.StoredRegions[i]);
+                currentPing = int.Parse(Constants.StoredPings[i]);
+                if (currentPing < minimumPing && Constants.SelectedRegion=="")
                 {
                     minimumPing = currentPing;
                     dropdown.value = i + 1;
@@ -139,25 +181,50 @@ public class RegionManager : MonoBehaviour
             }
 
             _RegionRef.SetRegionString(_regions);
+
+            RegionPinged = false;
+            RegionMainList.interactable = true;
+            Constants.PingAPIFetched = true;
+            _RegionRef.SetRegionDone(true);
         }
         else
         {
-            Debug.LogError("region list is empty");
+            Constants.PrintError("region list is empty");
+        }
+    }
+
+    public void UpdateDropDownValues(Dropdown dropdown)
+    {
+        Constants.SelectedRegionIndex = RegionMainList.value;
+        if (Constants.StoredPings.Count > 0)
+        {
+            Constants.PrintLog("updating values.");
+            for (int i = 0; i < Constants.StoredRegions.Count; i++)
+            {
+                playerCount = Constants.RegionData[Constants.StoredRegions[i]].peerCount + Constants.RegionData[Constants.StoredRegions[i]].masterPeerCount;
+                dropdownOptionTxt= RegionNames[Constants.StoredRegions[i]] + "[" + Constants.StoredPings[i] + "ms" + "] " + playerCount + " player/s";
+                dropdown.options[i].text = dropdownOptionTxt;
+            }
+
+            playerCount = Constants.RegionData[Constants.StoredRegions[dropdown.value]].peerCount + Constants.RegionData[Constants.StoredRegions[dropdown.value]].masterPeerCount;
+            dropdown.captionText.text= RegionNames[Constants.StoredRegions[dropdown.value]] + "[" + Constants.StoredPings[dropdown.value] + "ms" + "] " + playerCount + " player/s";
+        }
+        else
+        {
+            Constants.PrintLog("stored pings in empty");
         }
     }
 
     async public Task<string> GetAllRegiosnData()
     {
-        Constants.PingAPIFetched = false;
         using UnityWebRequest request = UnityWebRequest.Get(GetURL);
 
         await request.SendWebRequest();
-        Constants.PrintLog("Region response : " + request.downloadHandler.text);
+        //Constants.PrintLog("Region response : " + request.downloadHandler.text);
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             PopulateRegionData(ExampleResponse);
             Debug.LogError("region response was not success or empty so adding a default one");
-            //MainMenuViewController.Instance.SomethingWentWrongMessage();
             return "";
         }
         else
@@ -170,7 +237,6 @@ public class RegionManager : MonoBehaviour
             }
             else
             {
-                //MainMenuViewController.Instance.SomethingWentWrongMessage();
                 PopulateRegionData(ExampleResponse);
                 Debug.LogError("region response was not success or empty so adding a default one");
                 return "";

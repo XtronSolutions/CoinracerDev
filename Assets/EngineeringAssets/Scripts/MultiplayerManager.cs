@@ -99,13 +99,17 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-            Constants.GetCracePrice();//get current crace price from coinbase
-            Constants.isMultiplayerGameEnded = false; //reset isMultiplayerGameEnded bool 
-            ActorNumbers.Clear(); //clear list of ActorNumbers
+        Constants.GetCracePrice();//get current crace price from coinbase
+        Constants.isMultiplayerGameEnded = false; //reset isMultiplayerGameEnded bool 
+        ActorNumbers.Clear(); //clear list of ActorNumbers
 
-            Instance = this;//initializing static instance of this class
+        Instance = this;//initializing static instance of this class     
 
-        RegionManager.Instance.ResetRegions();
+        //RegionManager.Instance.ResetRegions();
+
+        Constants.RegionChanged = false;
+        PhotonNetwork.SelectedRegion = "";
+        Constants.SelectedRegion = "";
 
         if (Settings.AutoConnect)//auto connect to server if true
                 ConnectToPhotonServer();
@@ -142,16 +146,22 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsConnected)
         {
-            Debug.LogError("Photon already connected");
-            PhotonNetwork.GotPingResult = false;
+            Debug.Log("Photon already connected");
+            //PhotonNetwork.GotPingResult = false;
 
-            Constants.RegionChanged = false;
-            DisconnectPhoton();
+            //Constants.RegionChanged = false;
+            //DisconnectPhoton();
 
-            Invoke("ConnectToPhotonServer", 2f);
+            //Invoke("ConnectToPhotonServer", 2f);
 
-            if (MainMenuViewController.Instance)
-                MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("", false);
+            //if (MainMenuViewController.Instance)
+                //MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("", false);
+
+            if (PhotonNetwork.InLobby)
+                LobbyConnection(true);
+            else
+                PhotonNetwork.JoinLobby();
+
         }
         else
         {
@@ -162,11 +172,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
             PhotonNetwork.GotPingResult = false;
 
-            if (MainMenuViewController.Instance)
-                MainMenuViewController.Instance.StartCoroutine(MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI());
+            //if (MainMenuViewController.Instance)
+                //MainMenuViewController.Instance.StartCoroutine(MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI());
 
-            if(RegionManager.Instance)
-                RegionManager.Instance.StartCoroutine(RegionManager.Instance.ShowPingedRegionList_ConnectionUI());
+            //if(RegionManager.Instance)
+               // RegionManager.Instance.StartCoroutine(RegionManager.Instance.ShowPingedRegionList_ConnectionUI());
 
             Constants.PrintLog("PhotonNetwork.ConnectUsingSettings().");
             PhotonNetwork.ConnectUsingSettings();
@@ -178,26 +188,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.SerializationRate = 15;
         PhotonNetwork.SendRate = 40;
-        //Debug.LogError(PhotonNetwork.SerializationRate);
         UpdateConnectionText("Connected to master...");
         Constants.PrintLog("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
         PhotonNetwork.AutomaticallySyncScene = true;
 
-        float nameSuffix = Random.Range(1000, 9999);
-        string name = "Player_" + nameSuffix.ToString();
-
-        if (FirebaseMoralisManager.Instance)
-        {
-            if (FirebaseMoralisManager.Instance.PlayerData != null && FirebaseMoralisManager.Instance.PlayerData.UserName != "")
-                name = FirebaseMoralisManager.Instance.PlayerData.UserName;
-        }
-
-        PhotonNetwork.LocalPlayer.NickName = name;
-        
         if (PhotonNetwork.InLobby)
-        LobbyConnection();
+            LobbyConnection();
         else
-        PhotonNetwork.JoinLobby();
+            PhotonNetwork.JoinLobby();
     }
 
     public void DebugCounts()
@@ -206,15 +204,29 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Invoke("DebugCounts", 1f);
     }
 
-    public void LobbyConnection()
+    public void LobbyConnection(bool _joinRoom=false)
     { 
         UpdateConnectionText("Joined Lobby");
         Constants.PrintLog("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
 
         CancelInvoke("UpdateOnlineStatus");
         UpdateOnlineStatus();
-        
-        JoinRoomRandom(Constants.SelectedLevel, Constants.SelectedWage, Settings.MaxPlayers);
+
+        if (_joinRoom)
+        {
+            float nameSuffix = Random.Range(1000, 9999);
+            string name = "Player_" + nameSuffix.ToString();
+
+            if (FirebaseMoralisManager.Instance)
+            {
+                if (FirebaseMoralisManager.Instance.PlayerData != null && FirebaseMoralisManager.Instance.PlayerData.UserName != "")
+                    name = FirebaseMoralisManager.Instance.PlayerData.UserName;
+            }
+
+            PhotonNetwork.LocalPlayer.NickName = name;
+
+            JoinRoomRandom(Constants.SelectedLevel, Constants.SelectedWage, Settings.MaxPlayers);
+        }
 
         if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : " + PhotonNetwork.CloudRegion);
@@ -285,12 +297,19 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinRandomRoom(expectedCustomRoomProperties, expectedMaxPlayers);
     }
 
-    public void DisconnectPhoton()
+    public void DisconnectPhoton(bool _photonDisconnect=false)
     {
         ActorNumbers.Clear();
 
-        if(PhotonNetwork.IsConnected)
-            PhotonNetwork.Disconnect();
+        if (_photonDisconnect)
+        {
+            if (PhotonNetwork.IsConnected)
+                PhotonNetwork.Disconnect();
+        }else
+        {
+            if (PhotonNetwork.InRoom)
+                PhotonNetwork.LeaveRoom();
+        }
     }
 
     public void SetCustomProps(bool IsRoom,string _key, string _temp)

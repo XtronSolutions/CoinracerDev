@@ -205,6 +205,10 @@ public static class Constants
     public static int SelectedCarToken = 0;
     public static bool GetMoralisData = false;
     public static bool PingAPIFetched = false;
+    public static int SelectedRegionIndex = 0;
+    public static List<string> StoredRegions = new List<string>();
+    public static List<string> StoredPings=new List<string>();
+    public static Dictionary<string, RegionResponse> RegionData = new Dictionary<string, RegionResponse>();
 
     async public static void GetCracePrice()
     {

@@ -904,7 +904,7 @@ public class WalletManager : MonoBehaviour
         Constants.StoredCarNames.Clear();
         ClearChipraceData();
         Constants.TokenNFT.Clear();
-        ChipraceHandler.Instance.nftStalked = new StalkedNFT();
+        //ChipraceHandler.Instance.nftStalked = new StalkedNFT();
 
         for (int i = 0; i < Constants.NFTChanged.Length; i++)
         {
@@ -1179,7 +1179,7 @@ public class WalletManager : MonoBehaviour
         Constants.StoredCarNames.Clear();
         ClearChipraceData();
         Constants.TokenNFT.Clear();
-        ChipraceHandler.Instance.nftStalked = new StalkedNFT();
+       // ChipraceHandler.Instance.nftStalked = new StalkedNFT();
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 

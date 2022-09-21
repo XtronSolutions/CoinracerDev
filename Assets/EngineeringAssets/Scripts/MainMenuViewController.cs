@@ -2511,14 +2511,14 @@ public class MainMenuViewController : MonoBehaviour
 
         RegionPinged = false;
 
-        Dropdown RegionList = UIConnection.RegionPingsDropdown.GetComponent<Dropdown>();
-        RegionList.interactable = false;
-        RegionList.options.Clear();
-        RegionList.options.Add(new Dropdown.OptionData() { text = "Select Region" });
-        RegionList.value = 0;
-        Constants.RegionChanged = false;
-        PhotonNetwork.SelectedRegion = "";
-        RegionList.interactable = true;
+        //Dropdown RegionList = UIConnection.RegionPingsDropdown.GetComponent<Dropdown>();
+        //RegionList.interactable = false;
+        //RegionList.options.Clear();
+        //RegionList.options.Add(new Dropdown.OptionData() { text = "Select Region" });
+        //RegionList.value = 0;
+        //Constants.RegionChanged = false;
+        //PhotonNetwork.SelectedRegion = "";
+        //RegionList.interactable = true;
 
         if (MultiplayerManager.Instance)
             MultiplayerManager.Instance.DisconnectPhoton();

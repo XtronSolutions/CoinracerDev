@@ -2528,7 +2528,7 @@ namespace Photon.Pun
                 pingedRegionPings = regionHandler.getPingsList();
             }
 
-            Debug.LogError("setting ping true");
+            //Debug.LogError("setting ping true");
             PhotonNetwork.GotPingResult = true;
             _cachedRegionHandler = regionHandler;
             //PhotonNetwork.BestRegionSummaryInPreferences = regionHandler.SummaryToCache; // can not be called here, as it's not in the main thread
@@ -2572,6 +2572,7 @@ namespace Photon.Pun
                 else
                     SelectedRegion = regionHandler.BestRegion.Code;
 
+                Debug.Log("Photon Network selected region : " + SelectedRegion);
                 PhotonNetwork.NetworkingClient.ConnectToRegionMaster(SelectedRegion);
             }
         }

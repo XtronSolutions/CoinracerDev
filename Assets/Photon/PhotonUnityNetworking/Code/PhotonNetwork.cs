@@ -1130,7 +1130,6 @@ namespace Photon.Pun
                 return false;
             }
 
-            Debug.LogError(PhotonServerSettings.AppSettings.AppVersion);
             return ConnectUsingSettings(PhotonServerSettings.AppSettings, PhotonServerSettings.StartInOfflineMode);
         }
 
@@ -1163,7 +1162,6 @@ namespace Photon.Pun
 
 
             IsMessageQueueRunning = true;
-            Debug.LogError(appSettings.AppIdRealtime);
             NetworkingClient.AppId = appSettings.AppIdRealtime;
             GameVersion = appSettings.AppVersion;
 
@@ -1209,7 +1207,6 @@ namespace Photon.Pun
 
             if (appSettings.IsBestRegion)
             {
-                Debug.LogError("connect to best regionnn");
                 return ConnectToBestCloudServer();
             }
 
@@ -1295,7 +1292,6 @@ namespace Photon.Pun
         /// <returns>If this client is going to connect to cloud server based on ping. Even if true, this does not guarantee a connection but the attempt is being made.</returns>
         public static bool ConnectToBestCloudServer()
         {
-            Debug.LogError("connectinggg to best regikon");
             if (NetworkingClient.LoadBalancingPeer.PeerState != PeerStateValue.Disconnected)
             {
                 Debug.LogWarning("ConnectToBestCloudServer() failed. Can only connect while in state 'Disconnected'. Current state: " + NetworkingClient.LoadBalancingPeer.PeerState);
@@ -1333,7 +1329,6 @@ namespace Photon.Pun
         /// </remarks>
         public static bool ConnectToRegion(string region)
         {
-            Debug.LogError("connecting to region");
             if (NetworkingClient.LoadBalancingPeer.PeerState != PeerStateValue.Disconnected && NetworkingClient.Server != ServerConnection.NameServer)
             {
                 Debug.LogWarning("ConnectToRegion() failed. Can only connect while in state 'Disconnected'. Current state: " + NetworkingClient.LoadBalancingPeer.PeerState);
