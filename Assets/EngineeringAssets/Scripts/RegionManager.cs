@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+using UnityEngine.Networking;
 
 public class RegionResponse
 {
@@ -23,14 +25,15 @@ public class RegionManager : MonoBehaviour
     List<RegionResponse> myDeserializedClass = new List<RegionResponse>();
     string[] StoredRegions;
     string[] StoredPings;
+    private string GetURL = "http://64.227.31.248:8008/";
+    string ExampleResponse = "[{\"code\":\"eu\",\"address\":\"ws://GCAMS146.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"us\",\"address\":\"ws://5BFA7B2F847F6354744DE369F8496DF0.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"usw\",\"address\":\"ws://F943322039644213464E42C7AFB865A2.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"cae\",\"address\":\"ws://1E4C943035393DBEB337C36E0F8A2A09.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"asia\",\"address\":\"ws://5C41DFF7F36BC37011BD8F000BF90B38.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"jp\",\"address\":\"ws://AZJP005000001.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"au\",\"address\":\"ws://9BD5E99DD999F2851DBEC9F768E9BA23.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"sa\",\"address\":\"ws://GCSP004.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"in\",\"address\":\"ws://20C070ADE8D6F680D898A4EF4D626B57.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"ru\",\"address\":\"ws://GCMOS015.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"rue\",\"address\":\"ws://4746102D4930B4FA9C57B103E8D1EE91.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"kr\",\"address\":\"ws://AZKR003000000.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"za\",\"address\":\"ws://B33E312B471BD9630E44738C09976E08.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"tr\",\"address\":\"ws://GCIST001.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0}]";
+
     private void Awake()
     {
         Instance = this;
         AddRegionNames();
-
         Constants.PingAPIFetched = false;
-        string JSDON = "[{\"code\":\"eu\",\"address\":\"ws://GCAMS146.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"us\",\"address\":\"ws://5BFA7B2F847F6354744DE369F8496DF0.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"usw\",\"address\":\"ws://F943322039644213464E42C7AFB865A2.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"cae\",\"address\":\"ws://1E4C943035393DBEB337C36E0F8A2A09.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"asia\",\"address\":\"ws://5C41DFF7F36BC37011BD8F000BF90B38.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"jp\",\"address\":\"ws://AZJP005000001.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"au\",\"address\":\"ws://9BD5E99DD999F2851DBEC9F768E9BA23.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"sa\",\"address\":\"ws://GCSP004.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"in\",\"address\":\"ws://20C070ADE8D6F680D898A4EF4D626B57.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"ru\",\"address\":\"ws://GCMOS015.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"rue\",\"address\":\"ws://4746102D4930B4FA9C57B103E8D1EE91.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"kr\",\"address\":\"ws://AZKR003000000.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"za\",\"address\":\"ws://B33E312B471BD9630E44738C09976E08.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0},{\"code\":\"tr\",\"address\":\"ws://GCIST001.exitgames.com:9090\",\"masterPeerCount\":0,\"peerCount\":0,\"gameCount\":0}]";
-        PopulateRegionData(JSDON);
+        InvokeRepeating(nameof(GetAllRegiosnData), 0.2f, 5f);
     }
 
     public void PopulateRegionData(string _response)
@@ -83,8 +86,23 @@ public class RegionManager : MonoBehaviour
     public IEnumerator ShowPingedRegionList_ConnectionUI()
     {
         yield return new WaitUntil(() => (PhotonNetwork.GotPingResult && Constants.PingAPIFetched));
-        UpdatePingList(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
+
+        StoredRegions = PhotonNetwork.pingedRegions;
+        StoredPings = PhotonNetwork.pingedRegionPings;
+
+        UpdatePingList(StoredRegions, StoredPings);
         PhotonNetwork.GotPingResult = false;
+        Constants.PingAPIFetched = false;
+    }
+
+    public IEnumerator UpdateRegionList_Connection()
+    {
+        yield return new WaitUntil(() => (Constants.PingAPIFetched));
+
+        StoredRegions = PhotonNetwork.pingedRegions;
+        StoredPings = PhotonNetwork.pingedRegionPings;
+
+        UpdatePingList(StoredRegions, StoredPings);
         Constants.PingAPIFetched = false;
     }
 
@@ -92,9 +110,6 @@ public class RegionManager : MonoBehaviour
     {
         if (!RegionPinged)
         {
-            StoredRegions = regions;
-            StoredPings = pings;
-
             RegionPinged = true;
             var dropdown = RegionMainList;
             SetManualRegion _RegionRef = this.gameObject.GetComponent<SetManualRegion>();
@@ -128,6 +143,38 @@ public class RegionManager : MonoBehaviour
         else
         {
             Debug.LogError("region list is empty");
+        }
+    }
+
+    async public Task<string> GetAllRegiosnData()
+    {
+        Constants.PingAPIFetched = false;
+        using UnityWebRequest request = UnityWebRequest.Get(GetURL);
+
+        await request.SendWebRequest();
+        Constants.PrintLog("Region response : " + request.downloadHandler.text);
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            PopulateRegionData(ExampleResponse);
+            Debug.LogError("region response was not success or empty so adding a default one");
+            //MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                PopulateRegionData(request.downloadHandler.text);
+                return request.downloadHandler.text;
+
+            }
+            else
+            {
+                //MainMenuViewController.Instance.SomethingWentWrongMessage();
+                PopulateRegionData(ExampleResponse);
+                Debug.LogError("region response was not success or empty so adding a default one");
+                return "";
+            }
         }
     }
 
