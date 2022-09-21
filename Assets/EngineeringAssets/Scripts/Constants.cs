@@ -209,6 +209,9 @@ public static class Constants
     public static List<string> StoredRegions = new List<string>();
     public static List<string> StoredPings=new List<string>();
     public static Dictionary<string, RegionResponse> RegionData = new Dictionary<string, RegionResponse>();
+    public static int HighPing = 150;
+    public static int MediumPing = 100;
+    public static int LowPing = 50;
 
     async public static void GetCracePrice()
     {

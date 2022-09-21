@@ -31,10 +31,11 @@ public class RegionManager : MonoBehaviour
     string[] dropdownCaptionSplit;
     string dropdownOptionTxt;
     string[] dropdownOptionSplit;
+    int tempPing;
+    string storedColor;
     private void Start()
     {
         Instance = this;
-        //UpdateReference();
         ResetRegions();
         AddRegionNames();
 
@@ -59,22 +60,6 @@ public class RegionManager : MonoBehaviour
 
     }
 
-    public bool UpdateReference()
-    {
-        if(SetManualRegion.Instance)
-        {
-            _RegionRef = SetManualRegion.Instance;
-            RegionMainList = _RegionRef.gameObject.GetComponent<Dropdown>();
-            return true;
-        }
-        else
-        {
-            Debug.Log("Dropdownref was lost, checking...");
-            Invoke(nameof(UpdateReference), 0.2f);
-            return false;
-        }
-    }
-
     private void OnDestroy()
     {
         Instance = null;
@@ -82,7 +67,7 @@ public class RegionManager : MonoBehaviour
 
     public void PopulateRegionData(string _response)
     {
-        Debug.Log(_response);
+        //Debug.Log(_response);
         _tempRegionData.Clear();
         myDeserializedClass = JsonConvert.DeserializeObject<List<RegionResponse>>(_response);
 
@@ -91,10 +76,6 @@ public class RegionManager : MonoBehaviour
 
         Constants.RegionData = _tempRegionData;
         
-        //if (!PhotonNetwork.GotPingResult && PhotonNetwork.InLobby)
-            //PhotonNetwork.GotPingResult = true;
-
-        //Debug.Log("PingAPIFetched: " + Constants.PingAPIFetched);
         if (PhotonNetwork.IsConnected)
              UpdateDropDownValues(RegionMainList);
     }
@@ -128,13 +109,12 @@ public class RegionManager : MonoBehaviour
     }
     public IEnumerator ShowPingedRegionList_ConnectionUI()
     {
-        Debug.Log("Got ping result "+ PhotonNetwork.GotPingResult);
+        //Debug.Log("Got ping result "+ PhotonNetwork.GotPingResult);
         yield return new WaitUntil(() => (PhotonNetwork.GotPingResult));
 
         if(PhotonNetwork.pingedRegions.Length!=0)
         {
             Constants.StoredRegions.Clear();
-
             for (int q = 0; q < PhotonNetwork.pingedRegions.Length; q++)
                 Constants.StoredRegions.Add(PhotonNetwork.pingedRegions[q]);
         }
@@ -142,9 +122,7 @@ public class RegionManager : MonoBehaviour
 
         if (PhotonNetwork.pingedRegionPings.Length != 0)
         {
-
             Constants.StoredPings.Clear();
-
             for (int p = 0; p < PhotonNetwork.pingedRegionPings.Length; p++)
                 Constants.StoredPings.Add(PhotonNetwork.pingedRegionPings[p]);
         }
@@ -180,7 +158,9 @@ public class RegionManager : MonoBehaviour
             for (int i = 0; i < Constants.StoredRegions.Count; i++)
             {
                 playerCount = Constants.RegionData[Constants.StoredRegions[i]].peerCount + Constants.RegionData[Constants.StoredRegions[i]].masterPeerCount;
-                dropdown.options.Add(new Dropdown.OptionData() { text = RegionNames[Constants.StoredRegions[i]] + "[" + Constants.StoredPings[i] + "ms"+"] "+ playerCount + " player/s" });
+
+                AssignColor(Constants.StoredPings[i]);
+                dropdown.options.Add(new Dropdown.OptionData() { text = RegionNames[Constants.StoredRegions[i]] + "<color="+ storedColor + ">[" + tempPing + "ms"+ "]</color>  " + playerCount + " player/s" });
                 _regions.Add(Constants.StoredRegions[i]);
                 currentPing = int.Parse(Constants.StoredPings[i]);
                 if (currentPing < minimumPing && Constants.SelectedRegion=="")
@@ -212,18 +192,31 @@ public class RegionManager : MonoBehaviour
             Constants.PrintLog("updating values.");
             for (int i = 0; i < Constants.StoredRegions.Count; i++)
             {
+
+                AssignColor(Constants.StoredPings[i]);
                 playerCount = Constants.RegionData[Constants.StoredRegions[i]].peerCount + Constants.RegionData[Constants.StoredRegions[i]].masterPeerCount;
-                dropdownOptionTxt= RegionNames[Constants.StoredRegions[i]] + "[" + Constants.StoredPings[i] + "ms" + "] " + playerCount + " player/s";
+                dropdownOptionTxt = RegionNames[Constants.StoredRegions[i]] + "<color=" + storedColor + ">[" + tempPing + "ms" + "]</color>  " + playerCount + " player/s";
                 dropdown.options[i].text = dropdownOptionTxt;
             }
 
+            AssignColor(Constants.StoredPings[dropdown.value]);
             playerCount = Constants.RegionData[Constants.StoredRegions[dropdown.value]].peerCount + Constants.RegionData[Constants.StoredRegions[dropdown.value]].masterPeerCount;
-            dropdown.captionText.text= RegionNames[Constants.StoredRegions[dropdown.value]] + "[" + Constants.StoredPings[dropdown.value] + "ms" + "] " + playerCount + " player/s";
+            dropdown.captionText.text= RegionNames[Constants.StoredRegions[dropdown.value]] + "<color=" + storedColor + ">[" + tempPing + "ms" + "]</color>  " + playerCount + " player/s";
         }
         else
         {
             Constants.PrintLog("stored pings in empty");
         }
+    }
+
+    public void AssignColor(string _ping)
+    {
+        storedColor = "green";
+        tempPing = int.Parse(_ping);
+        if (tempPing >= Constants.HighPing)
+            storedColor = "red";
+        else if (tempPing >= Constants.MediumPing && tempPing < Constants.HighPing)
+            storedColor = "orange";
     }
 
     async public Task<string> GetAllRegiosnData()
