@@ -41,10 +41,13 @@ public class RegionManager : MonoBehaviour
 
         if (!PhotonNetwork.IsConnected)
         {
+            Debug.Log("not connected");
             PopulateRegionData(ExampleResponse);
             StartCoroutine(ShowPingedRegionList_ConnectionUI());
+            MultiplayerManager.Instance.ConnectToPhotonServer();
         }else
         {
+            Debug.Log("already connected");
             Constants.PingAPIFetched = true;
             PhotonNetwork.GotPingResult = true;
             UpdatePingList(Constants.StoredRegions, Constants.StoredPings);
@@ -109,10 +112,11 @@ public class RegionManager : MonoBehaviour
     }
     public IEnumerator ShowPingedRegionList_ConnectionUI()
     {
-        //Debug.Log("Got ping result "+ PhotonNetwork.GotPingResult);
+        Debug.Log("Got ping result "+ PhotonNetwork.GotPingResult);
         yield return new WaitUntil(() => (PhotonNetwork.GotPingResult));
+        Debug.Log("Got ping result " + PhotonNetwork.GotPingResult);
 
-        if(PhotonNetwork.pingedRegions.Length!=0)
+        if (PhotonNetwork.pingedRegions.Length!=0)
         {
             Constants.StoredRegions.Clear();
             for (int q = 0; q < PhotonNetwork.pingedRegions.Length; q++)

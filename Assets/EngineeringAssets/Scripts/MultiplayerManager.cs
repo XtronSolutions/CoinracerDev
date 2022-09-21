@@ -87,11 +87,16 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region MultiplayerPhoton
+
+    private void OnEnable()
+    {
+        Instance = this;//initializing static instance of this class
+    }
     void Awake()
     {
         MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
 
-         if (objs.Length > 1)
+        if (objs.Length > 1)
             Destroy(this.gameObject);
 
         DontDestroyOnLoad(this.gameObject);
@@ -103,16 +108,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Constants.isMultiplayerGameEnded = false; //reset isMultiplayerGameEnded bool 
         ActorNumbers.Clear(); //clear list of ActorNumbers
 
-        Instance = this;//initializing static instance of this class     
-
         //RegionManager.Instance.ResetRegions();
 
         Constants.RegionChanged = false;
         PhotonNetwork.SelectedRegion = "";
         Constants.SelectedRegion = "";
 
-        if (Settings.AutoConnect)//auto connect to server if true
-                ConnectToPhotonServer();
+        //if (Settings.AutoConnect)//auto connect to server if true
+                //ConnectToPhotonServer();
     }
 
     public void UpdateConnectionText(string TxT)
