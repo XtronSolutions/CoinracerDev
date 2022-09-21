@@ -47,6 +47,7 @@ public class RegionManager : MonoBehaviour
             Constants.PingAPIFetched = true;
             PhotonNetwork.GotPingResult = true;
             UpdatePingList(Constants.StoredRegions, Constants.StoredPings);
+            RegionMainList.value = Constants.SelectedRegionIndex;
         }
 
         InvokeRepeating(nameof(GetAllRegiosnData), 0.3f, 5f);
@@ -93,7 +94,7 @@ public class RegionManager : MonoBehaviour
         //if (!PhotonNetwork.GotPingResult && PhotonNetwork.InLobby)
             //PhotonNetwork.GotPingResult = true;
 
-        Debug.Log("PingAPIFetched: " + Constants.PingAPIFetched);
+        //Debug.Log("PingAPIFetched: " + Constants.PingAPIFetched);
         if (PhotonNetwork.IsConnected)
              UpdateDropDownValues(RegionMainList);
     }
@@ -130,14 +131,23 @@ public class RegionManager : MonoBehaviour
         Debug.Log("Got ping result "+ PhotonNetwork.GotPingResult);
         yield return new WaitUntil(() => (PhotonNetwork.GotPingResult));
 
-        Constants.StoredRegions.Clear();
-        Constants.StoredPings.Clear();
+        if(PhotonNetwork.pingedRegions.Length!=0)
+        {
+            Constants.StoredRegions.Clear();
 
-        for (int q = 0; q < PhotonNetwork.pingedRegions.Length; q++)
-            Constants.StoredRegions.Add(PhotonNetwork.pingedRegions[q]);
+            for (int q = 0; q < PhotonNetwork.pingedRegions.Length; q++)
+                Constants.StoredRegions.Add(PhotonNetwork.pingedRegions[q]);
+        }
 
-        for (int p = 0; p < PhotonNetwork.pingedRegionPings.Length; p++)
-            Constants.StoredPings.Add(PhotonNetwork.pingedRegionPings[p]);
+
+        if (PhotonNetwork.pingedRegionPings.Length != 0)
+        {
+
+            Constants.StoredPings.Clear();
+
+            for (int p = 0; p < PhotonNetwork.pingedRegionPings.Length; p++)
+                Constants.StoredPings.Add(PhotonNetwork.pingedRegionPings[p]);
+        }
 
         UpdatePingList(Constants.StoredRegions, Constants.StoredPings);
         PhotonNetwork.GotPingResult = false;
@@ -177,6 +187,7 @@ public class RegionManager : MonoBehaviour
                 {
                     minimumPing = currentPing;
                     dropdown.value = i + 1;
+                    Constants.SelectedRegionIndex = dropdown.value;
                 }
             }
 
@@ -195,9 +206,9 @@ public class RegionManager : MonoBehaviour
 
     public void UpdateDropDownValues(Dropdown dropdown)
     {
-        Constants.SelectedRegionIndex = RegionMainList.value;
         if (Constants.StoredPings.Count > 0)
         {
+            Constants.SelectedRegionIndex = RegionMainList.value;
             Constants.PrintLog("updating values.");
             for (int i = 0; i < Constants.StoredRegions.Count; i++)
             {
