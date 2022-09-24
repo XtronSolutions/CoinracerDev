@@ -87,11 +87,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region MultiplayerPhoton
-
-    private void OnEnable()
-    {
-        Instance = this;//initializing static instance of this class
-    }
     void Awake()
     {
         MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
@@ -100,6 +95,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             Destroy(this.gameObject);
 
         DontDestroyOnLoad(this.gameObject);
+
+        Instance = this;//initializing static instance of this class
     }
 
     private void Start()
@@ -108,14 +105,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Constants.isMultiplayerGameEnded = false; //reset isMultiplayerGameEnded bool 
         ActorNumbers.Clear(); //clear list of ActorNumbers
 
-        //RegionManager.Instance.ResetRegions();
-
         Constants.RegionChanged = false;
         PhotonNetwork.SelectedRegion = "";
         Constants.SelectedRegion = "";
 
         //if (Settings.AutoConnect)//auto connect to server if true
-                //ConnectToPhotonServer();
+            //ConnectToPhotonServer();
     }
 
     public void UpdateConnectionText(string TxT)
@@ -140,16 +135,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Constants.OtherPlayerDeposit = false;
         UpdateTransactionData(false, false, "", false, false, true);
 
-        if(MainMenuViewController.Instance)
+        if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ToggleWithdrawButton_ConnectionUI(false);
-          
+
         Constants.CanWithdraw = false;
 
         ActorNumbers.Clear();
 
         if (PhotonNetwork.IsConnected)
         {
-            Debug.Log("Photon already connected");
             //PhotonNetwork.GotPingResult = false;
 
             //Constants.RegionChanged = false;
@@ -158,13 +152,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             //Invoke("ConnectToPhotonServer", 2f);
 
             //if (MainMenuViewController.Instance)
-                //MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("", false);
+            //MainMenuViewController.Instance.UpdateDeposit_ConnectionUI("", false);
+
+            Constants.RoomConnectionInit = true;
 
             if (PhotonNetwork.InLobby)
-                LobbyConnection(true);
+                LobbyConnection();
             else
                 PhotonNetwork.JoinLobby();
-
         }
         else
         {
@@ -175,15 +170,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
             PhotonNetwork.GotPingResult = false;
 
-            //if (MainMenuViewController.Instance)
-                //MainMenuViewController.Instance.StartCoroutine(MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI());
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.StartCoroutine(MainMenuViewController.Instance.ShowPingedRegionList_ConnectionUI());
 
-            //if(RegionManager.Instance)
-               // RegionManager.Instance.StartCoroutine(RegionManager.Instance.ShowPingedRegionList_ConnectionUI());
-
-            Constants.PrintLog("PhotonNetwork.ConnectUsingSettings().");
+            Constants.PrintLog("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
             PhotonNetwork.ConnectUsingSettings();
-            //PhotonNetwork.GameVersion = Settings.Version.ToString();
+            PhotonNetwork.GameVersion = Settings.Version.ToString();
         }
     }
 
@@ -191,9 +183,21 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.SerializationRate = 15;
         PhotonNetwork.SendRate = 40;
+        //Debug.LogError(PhotonNetwork.SerializationRate);
         UpdateConnectionText("Connected to master...");
         Constants.PrintLog("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
         PhotonNetwork.AutomaticallySyncScene = true;
+
+        float nameSuffix = Random.Range(1000, 9999);
+        string name = "Player_" + nameSuffix.ToString();
+
+        if (FirebaseMoralisManager.Instance)
+        {
+            if (FirebaseMoralisManager.Instance.PlayerData != null && FirebaseMoralisManager.Instance.PlayerData.UserName != "")
+                name = FirebaseMoralisManager.Instance.PlayerData.UserName;
+        }
+
+        PhotonNetwork.LocalPlayer.NickName = name;
 
         if (PhotonNetwork.InLobby)
             LobbyConnection();
@@ -201,48 +205,32 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             PhotonNetwork.JoinLobby();
     }
 
-    public void DebugCounts()
+    public void LobbyConnection()
     {
-        Debug.Log("mastercount: " + PhotonNetwork.CountOfPlayersOnMaster + " , players in room : " + PhotonNetwork.CountOfPlayersInRooms);
-        Invoke("DebugCounts", 1f);
-    }
-
-    public void LobbyConnection(bool _joinRoom=false)
-    { 
         UpdateConnectionText("Joined Lobby");
         Constants.PrintLog("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
 
         CancelInvoke("UpdateOnlineStatus");
         UpdateOnlineStatus();
 
-        if (_joinRoom)
+        if (Constants.RoomConnectionInit)
         {
-            float nameSuffix = Random.Range(1000, 9999);
-            string name = "Player_" + nameSuffix.ToString();
-
-            if (FirebaseMoralisManager.Instance)
-            {
-                if (FirebaseMoralisManager.Instance.PlayerData != null && FirebaseMoralisManager.Instance.PlayerData.UserName != "")
-                    name = FirebaseMoralisManager.Instance.PlayerData.UserName;
-            }
-
-            PhotonNetwork.LocalPlayer.NickName = name;
-
+            Constants.RoomConnectionInit = false;
             JoinRoomRandom(Constants.SelectedLevel, Constants.SelectedWage, Settings.MaxPlayers);
         }
 
-        if (MainMenuViewController.Instance)
+            if (MainMenuViewController.Instance)
             MainMenuViewController.Instance.ChangeRegionText_ConnectionUI("Selected Region : " + PhotonNetwork.CloudRegion);
     }
 
     public void UpdateOnlineStatus()
     {
-        if(PhotonNetwork.IsConnected && PhotonNetwork.InLobby)
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InLobby)
         {
             UpdatePlayerCountText(PhotonNetwork.CountOfPlayers.ToString());
             Invoke("UpdateOnlineStatus", 1f);
         }
-    }  
+    }
 
     public void CreateRoom()
     {
@@ -253,7 +241,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             if (WalletManager.Instance)
                 WalletManager.Instance.isExistRoom(roomCode.ToString());
 
-            if (Constants.PIDString=="true")
+            if (Constants.PIDString == "true")
             {
                 Constants.PrintLog("Room id already exists creating new one");
                 Invoke("CreateRoom", 0.5f);
@@ -261,7 +249,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             }
         }
 
-        Constants.StoredPID= roomCode.ToString(); 
+        Constants.StoredPID = roomCode.ToString();
         string roomName = roomCode.ToString();
 
         RoomOptions roomOptions = new RoomOptions();
@@ -278,7 +266,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (Constants.IsDestructionDerby)
             _level = 6;
 
-        roomOptions.CustomRoomPropertiesForLobby =new string [3]{ Constants.MAP_PROP_KEY,Constants.WAGE_PROP_KEY,Constants.MODE_PROP_KEY };
+        roomOptions.CustomRoomPropertiesForLobby = new string[3] { Constants.MAP_PROP_KEY, Constants.WAGE_PROP_KEY, Constants.MODE_PROP_KEY };
         roomOptions.CustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, _level }, { Constants.WAGE_PROP_KEY, Constants.SelectedWage }, { Constants.MODE_PROP_KEY, Constants.FreeMultiplayer } };
 
         PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
@@ -300,7 +288,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinRandomRoom(expectedCustomRoomProperties, expectedMaxPlayers);
     }
 
-    public void DisconnectPhoton(bool _photonDisconnect=false)
+    public void DisconnectPhoton(bool _photonDisconnect = false)
     {
         ActorNumbers.Clear();
 
@@ -308,14 +296,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.IsConnected)
                 PhotonNetwork.Disconnect();
-        }else
+        }
+        else
         {
             if (PhotonNetwork.InRoom)
                 PhotonNetwork.LeaveRoom();
         }
     }
 
-    public void SetCustomProps(bool IsRoom,string _key, string _temp)
+    public void SetCustomProps(bool IsRoom, string _key, string _temp)
     {
         if (PhotonNetwork.IsConnected)
         {
@@ -334,7 +323,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void GetCustomProps(bool IsRoom,string _key)
+    public void GetCustomProps(bool IsRoom, string _key)
     {
         if (PhotonNetwork.IsConnected)
         {
@@ -361,7 +350,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    IEnumerator callPropertiesWithDelay(bool isRoom,string _key,float _sec)
+    IEnumerator callPropertiesWithDelay(bool isRoom, string _key, float _sec)
     {
         yield return new WaitForSeconds(_sec);
         GetCustomProps(isRoom, _key);
@@ -369,11 +358,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region PunCallbacks
-
-    //public override void Onsta()
-    //{
-    //    ConnectionMaster();
-    //}
     public override void OnConnectedToMaster()
     {
         ConnectionMaster();
@@ -390,10 +374,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     }
     public override void OnLeftRoom()
     {
-        Constants.PrintLog("Left Room due to disconnection: "+ !Constants.isMultiplayerGameEnded);
+        Constants.PrintLog("Left Room due to disconnection: " + !Constants.isMultiplayerGameEnded);
 
         //base.OnLeftRoom();
-        if(!Constants.isMultiplayerGameEnded && RaceManager.Instance)
+        if (!Constants.isMultiplayerGameEnded && RaceManager.Instance)
         {
             RaceManager.Instance.showDisconnectScreen();
         }
@@ -419,7 +403,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void UpdateTransactionData(bool _canWithdraw,bool _depositDone, string _context, bool _depostButtonActive, bool _withdrawButtonActive, bool _canDisableTimer)
+    public void UpdateTransactionData(bool _canWithdraw, bool _depositDone, string _context, bool _depostButtonActive, bool _withdrawButtonActive, bool _canDisableTimer)
     {
         if (MainMenuViewController.Instance)
         {
@@ -429,7 +413,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             MainMenuViewController.Instance.UpdateDeposit_ConnectionUI(_context, _depostButtonActive);
             MainMenuViewController.Instance.ToggleWithdrawButton_ConnectionUI(_withdrawButtonActive);
 
-            if(_canDisableTimer)
+            if (_canDisableTimer)
                 MainMenuViewController.Instance.DisableWithDrawTimer_ConnectionUI();
             else
                 MainMenuViewController.Instance.EnableWithDrawTimer_ConnectionUI();
@@ -450,7 +434,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    IEnumerator SetRoomPropWithDelay(CustomPlayerPropData _data, bool isRemoving=false, string ActorID="")
+    IEnumerator SetRoomPropWithDelay(CustomPlayerPropData _data, bool isRemoving = false, string ActorID = "")
     {
         StartCoroutine(callPropertiesWithDelay(true, Constants.RoomDataKey, 0.5f));
         yield return new WaitForSeconds(0.55f);
@@ -506,7 +490,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
-            if(PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient)
             {
                 PhotonNetwork.CurrentRoom.IsOpen = false;
                 PhotonNetwork.CurrentRoom.IsVisible = false;
@@ -525,15 +509,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 }
                 string _tokenID = "0";
 
-                if(!Constants.FreeMultiplayer)
+                if (!Constants.FreeMultiplayer)
                     _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
 
-                RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(),Constants.UserName,Constants.TotalWins.ToString(),Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
+                RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
             }
         }
     }
 
-    public void LoadSceneDelay(float time=3f, bool loadWithoutAsycn=false)
+    public void LoadSceneDelay(float time = 3f, bool loadWithoutAsycn = false)
     {
         if (loadWithoutAsycn)
             MainMenuViewController.Instance.LoadDesiredScene();
@@ -545,7 +529,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
         {
-            if(Constants.IsDestructionDerby)
+            if (Constants.IsDestructionDerby)
                 PhotonNetwork.LoadLevel(6);
             else if (TournamentManager.Instance.DataTournament.IsSingleMap)
                 PhotonNetwork.LoadLevel(Constants.SelectedSingleLevel);
@@ -559,12 +543,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            if(Constants.OtherPlayerDeposit)
+            if (Constants.OtherPlayerDeposit)
                 MainMenuViewController.Instance.LoadDesiredScene();
             else
                 MainMenuViewController.Instance.ToggleBackButton_ConnectionUI(true);
         }
-        }
+    }
 
     public void SuccessDeposit()
     {
@@ -576,22 +560,22 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void CallStartRPC()
     {
-        if(PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
             RPCCalls.Instance.PHView.RPC("StartRace", RpcTarget.AllBufferedViaServer);
         }
     }
-    public void CallEndMultiplayerGameRPC(bool isTotaled=false)
+    public void CallEndMultiplayerGameRPC(bool isTotaled = false)
     {
         WinData _data = new WinData();
         _data.Name = PhotonNetwork.LocalPlayer.NickName;
         _data.ID = PhotonNetwork.LocalPlayer.ActorNumber.ToString();
-        _data.TotalBetValue = Constants.SelectedCurrencyAmount+ Constants.SelectedCurrencyAmount;
+        _data.TotalBetValue = Constants.SelectedCurrencyAmount + Constants.SelectedCurrencyAmount;
         _data.RunTime = Constants.GameSeconds.ToString();
         _data.IsTotaled = isTotaled;
 
         if (!isTotaled)
-            _data.TotalWins = Constants.TotalWins+1;
+            _data.TotalWins = Constants.TotalWins + 1;
 
         _data.FlagIndex = Constants.FlagSelectedIndex;
         _data.WalletAddress = Constants.WalletAddress;
@@ -607,18 +591,18 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         //UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
 
-        if(PhotonNetwork.CurrentRoom.PlayerCount>0 && !Constants.OtherPlayerDeposit)
+        if (PhotonNetwork.CurrentRoom.PlayerCount > 0 && !Constants.OtherPlayerDeposit)
         {
             PhotonNetwork.CurrentRoom.IsOpen = true;
             PhotonNetwork.CurrentRoom.IsVisible = true;
         }
 
         if (MainMenuViewController.Instance)
-            MainMenuViewController.Instance.ToggleSecondDetail(false,"","", 0);
+            MainMenuViewController.Instance.ToggleSecondDetail(false, "", "", 0);
 
         if (!Constants.OtherPlayerDeposit)
             Invoke("CheckLeftPlayer", 0.5f);
-        else if(Constants.OtherPlayerDeposit)
+        else if (Constants.OtherPlayerDeposit)
             RemovePlayer();
 
         Constants.PrintLog("OnPlayerLeftRoom() called by PUN." + otherPlayer.NickName);
@@ -636,7 +620,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void RemovePlayer()
     {
-        if(MainMenuViewController.Instance)
+        if (MainMenuViewController.Instance)
         {
             MainMenuViewController.Instance.ShowToast(3f, "other player has left, please find match again.");
             Invoke("DisconnectDelay", 3f);
@@ -657,5 +641,4 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     #endregion
 
 }
-
 

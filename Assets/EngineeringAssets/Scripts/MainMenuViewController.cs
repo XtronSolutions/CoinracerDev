@@ -2491,10 +2491,16 @@ public class MainMenuViewController : MonoBehaviour
     {
         if (_enable)
         {
-            UIConnection.Detail02.DetailScreen.SetActive(true);
-            UIConnection.VSText.gameObject.SetActive(true);
-            UpdateDetailData(false, _name, _wins, _index);
-            AnimateConnectingDetail_ConnectionUI(UIConnection.Detail02.DetailScreen, false);
+            if (!Constants.IsDestructionDerby)
+            {
+                UIConnection.Detail02.DetailScreen.SetActive(true);
+                UIConnection.VSText.gameObject.SetActive(true);
+                UpdateDetailData(false, _name, _wins, _index);
+                AnimateConnectingDetail_ConnectionUI(UIConnection.Detail02.DetailScreen, false);
+            }else
+            {
+                Debug.Log("player : " + _name + " Joined.");
+            }
         }
         else
         {

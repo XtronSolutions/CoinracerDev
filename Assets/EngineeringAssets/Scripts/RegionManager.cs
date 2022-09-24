@@ -44,7 +44,9 @@ public class RegionManager : MonoBehaviour
             Debug.Log("not connected");
             PopulateRegionData(ExampleResponse);
             StartCoroutine(ShowPingedRegionList_ConnectionUI());
-            MultiplayerManager.Instance.ConnectToPhotonServer();
+
+            if(MultiplayerManager.Instance)
+                MultiplayerManager.Instance.ConnectToPhotonServer();
         }else
         {
             Debug.Log("already connected");

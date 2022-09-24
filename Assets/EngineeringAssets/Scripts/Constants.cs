@@ -150,6 +150,7 @@ public static class Constants
     public static string MAP_PROP_KEY = "map";
     public static string WAGE_PROP_KEY = "wage";
     public static string MODE_PROP_KEY = "mode";
+    public static string ROOM_GameTimer = "Timer";
     public static int SelectedLevel = 0;
     public static int SelectedWage = 0;
     public static int TotalWins = 0;
@@ -212,6 +213,8 @@ public static class Constants
     public static int HighPing = 150;
     public static int MediumPing = 100;
     public static int LowPing = 50;
+    public static int DD_WaitTime = 120; //in seconds (2 mins)
+    public static bool RoomConnectionInit = false;
 
     async public static void GetCracePrice()
     {
