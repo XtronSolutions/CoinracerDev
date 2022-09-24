@@ -30,7 +30,7 @@ public class CarSelectionHandler : MonoBehaviour
             if (PhotonNetwork.IsMasterClient)
                 _index = 1;
 
-            car = PhotonNetwork.Instantiate(settings.CarMultiplayerPrefab.name, _spawnLocation[_index].transform.position,_spawnLocation[_index].transform.rotation) as GameObject;
+            car = PhotonNetwork.Instantiate(settings.CarMultiplayerPrefab.name, _spawnLocation[PhotonNetwork.LocalPlayer.ActorNumber-1].transform.position,_spawnLocation[PhotonNetwork.LocalPlayer.ActorNumber - 1].transform.rotation) as GameObject;
         }else
         {
             car = Instantiate(settings.CarPrefab, _spawnLocation[0].transform.position, _spawnLocation[0].transform.rotation) as GameObject;

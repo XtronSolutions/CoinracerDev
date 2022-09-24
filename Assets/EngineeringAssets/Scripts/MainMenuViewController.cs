@@ -13,6 +13,17 @@ using Photon.Pun;
 
 #region SuperClasses
 
+
+[Serializable]
+public class DDUI
+{
+    public GameObject DetailScreen;
+    public TextMeshProUGUI ConnectedPlayerText;
+    public TextMeshProUGUI DisclaimerText;
+    public TextMeshProUGUI DDTimerText;
+    public Button StartDDraceButton;
+}
+
 [Serializable]
 public class MemberUI
 {
@@ -325,6 +336,7 @@ public class MainMenuViewController : MonoBehaviour
     public CraceApprovalUI UICraceApproval;
     public TokenCarSelectionUI UITokenCarSelection;
     public MemberUI UIMember;
+    public DDUI UIDD;
     public GameObject MultiplayerPrefab;
 
     public GameObject SuccessIcon;
@@ -346,7 +358,7 @@ public class MainMenuViewController : MonoBehaviour
        "^(?(\")(\".+?(?<!\\\\)\"@)|(([0-9a-z]((\\.(?!\\.))|[-!#\\$%&'\\*\\+/=\\?\\^`{}|~\\w])*)(?<=[0-9a-z])@))(?([)([(\\d{1,3}.){3}\\d{1,3}])|(([0-9a-z][-0-9a-z]*[0-9a-z]*.)+[a-z0-9][-a-z0-9]{0,22}[a-z0-9]))$";
 
     private const string MatchEmailPattern = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
-    
+
     private List<CarSelection> SelectedCars = new List<CarSelection>();
     int carIndex = 0;
     int nextCarIndex = 0;
@@ -456,7 +468,7 @@ public class MainMenuViewController : MonoBehaviour
     public void ToggleScreen_SelectionUI(bool _state)
     {
         if (_state)
-            ChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.TournamentPassPrice + " $"+Constants.GetCurrencyName()+". unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + TournamentManager.Instance.DataTournament.TicketPrice + " $" + Constants.GetCurrencyName() +", if you hold " + Constants.DiscountForCrace + " $"+Constants.TokenName+" - " + Constants.DiscountPercentage + "% discount.");
+            ChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.TournamentPassPrice + " $" + Constants.GetCurrencyName() + ". unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + TournamentManager.Instance.DataTournament.TicketPrice + " $" + Constants.GetCurrencyName() + ", if you hold " + Constants.DiscountForCrace + " $" + Constants.TokenName + " - " + Constants.DiscountPercentage + "% discount.");
 
         UISelection.MainScreen.SetActive(_state);
     }
@@ -464,7 +476,7 @@ public class MainMenuViewController : MonoBehaviour
     public void SecondTourToggleScreen_SelectionUI(bool _state)
     {
         if (_state)
-            SecondTourChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.SecondTournamentPassPrice + " $" + Constants.GetCurrencyName() +". unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + TournamentManager.Instance.DataTournament.GTicketPrice + " $" + Constants.GetCurrencyName() +", if you hold " + Constants.DiscountForCrace + " $"+Constants.TokenName+" - " + Constants.DiscountPercentage + "% discount.");
+            SecondTourChangeDisclaimerTexts_SelectionUI("*Price: " + Constants.SecondTournamentPassPrice + " $" + Constants.GetCurrencyName() + ". unlimited attempts in a single tournament.", "*if you have the pass, enter the tournament here.", "*price: " + TournamentManager.Instance.DataTournament.GTicketPrice + " $" + Constants.GetCurrencyName() + ", if you hold " + Constants.DiscountForCrace + " $" + Constants.TokenName + " - " + Constants.DiscountPercentage + "% discount.");
 
         UISecondTourSelection.MainScreen.SetActive(_state);
     }
@@ -854,7 +866,7 @@ public class MainMenuViewController : MonoBehaviour
                             Constants.PrintLog("transaction was success for tournament");
                             UpdateVCText(FirebaseMoralisManager.Instance.PlayerData.VC_Amount);
                             StartTournament(true);
-                            
+
                         }
                         else
                         {
@@ -1465,7 +1477,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void AddLevels(bool isSelective = false, int Index = 0)
     {
-        for (int q = 0; q < _allLevelsSettings.Count-1; q++)
+        for (int q = 0; q < _allLevelsSettings.Count - 1; q++)
         {
             if (isSelective)
                 _levelsSettings.Add(_allLevelsSettings[Index]);
@@ -1501,7 +1513,7 @@ public class MainMenuViewController : MonoBehaviour
 
         #region mapLogic
         _levelsSettings.Clear();
-        if(IsDestructionDerby)
+        if (IsDestructionDerby)
         {
             if (AnalyticsManager.Instance)
                 AnalyticsManager.Instance.StoredProgression.Mode = "Destruction Derby";
@@ -1742,7 +1754,7 @@ public class MainMenuViewController : MonoBehaviour
     public void UpdateToken()
     {
         //if (DebugAllCars)
-            //return;
+        //return;
         try
         {
             UITokenCarSelection.TokenText.text = "#" + Constants.TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];
@@ -1876,7 +1888,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void StartRace()
     {
-        if(Constants.GameMechanics)
+        if (Constants.GameMechanics)
         {
             //if (MechanicsManager.Instance.CheckConsumables() == ConsumableType.Health)
             //{ ShowToast(4f, "Your car health is zero, go to store to repair your car.", false); return; }
@@ -2083,17 +2095,17 @@ public class MainMenuViewController : MonoBehaviour
                     UpdateSelectedCarVisual(_currentSelectedCarIndex);
                 }
             }
-            else if (Constants.StoredCarNames.Count != 0 || Constants.StoredCarNamesMoralis.Count!=0)
+            else if (Constants.StoredCarNames.Count != 0 || Constants.StoredCarNamesMoralis.Count != 0)
             {
                 DeactivateCars();
                 _selecteableCars.Clear();
 
                 //if (!Constants.EarnMultiplayer)
                 //{
-                    if (IsSecondTournament)
-                        _selecteableCars.Add(_allCars[27].CarDetail);
-                    else
-                        _selecteableCars.Add(_allCars[0].CarDetail);
+                if (IsSecondTournament)
+                    _selecteableCars.Add(_allCars[27].CarDetail);
+                else
+                    _selecteableCars.Add(_allCars[0].CarDetail);
                 //}
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
@@ -2368,7 +2380,7 @@ public class MainMenuViewController : MonoBehaviour
             {
                 if (PhotonNetwork.IsConnected)
                 {
-                    if(FirebaseMoralisManager.Instance.PlayerData.VC_Amount>=Constants.SelectedCurrencyAmount)
+                    if (FirebaseMoralisManager.Instance.PlayerData.VC_Amount >= Constants.SelectedCurrencyAmount)
                     {
                         Constants.GATransferAmount = Constants.SelectedCurrencyAmount;
                         FirebaseMoralisManager.Instance.PlayerData.VC_Amount -= Constants.SelectedCurrencyAmount;
@@ -2381,12 +2393,12 @@ public class MainMenuViewController : MonoBehaviour
                             WalletManager.Instance.OnRaceCreateCalled(true);
                         else
                             WalletManager.Instance.OnDepositCalled(true);
-                    }else
+                    } else
                     {
                         LoadingScreen.SetActive(false);
                         ShowToast(3f, "Insufficient $" + Constants.GetCurrencyName() + " value.");
                     }
-                }else
+                } else
                 {
                     Constants.PrintError("Photon is not connected");
                 }
@@ -2497,7 +2509,7 @@ public class MainMenuViewController : MonoBehaviour
                 UIConnection.VSText.gameObject.SetActive(true);
                 UpdateDetailData(false, _name, _wins, _index);
                 AnimateConnectingDetail_ConnectionUI(UIConnection.Detail02.DetailScreen, false);
-            }else
+            } else
             {
                 Debug.Log("player : " + _name + " Joined.");
             }
@@ -2550,9 +2562,9 @@ public class MainMenuViewController : MonoBehaviour
     public IEnumerator ShowPingedRegionList_ConnectionUI()
     {
         yield return null;
-       // yield return new WaitUntil(() => PhotonNetwork.GotPingResult);
-       // UpdatePingList(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
-       // PhotonNetwork.GotPingResult = false;
+        // yield return new WaitUntil(() => PhotonNetwork.GotPingResult);
+        // UpdatePingList(PhotonNetwork.pingedRegions, PhotonNetwork.pingedRegionPings);
+        // PhotonNetwork.GotPingResult = false;
     }
 
     public void UpdatePingList(string[] regions, string[] pings)
@@ -2639,22 +2651,22 @@ public class MainMenuViewController : MonoBehaviour
 
     public void ChangeCracePrice_MultiplayerSelection(string _price)
     {
-        UIMultiplayerSelection.CracePriceText.text = "1 $"+Constants.GetCurrencyName()+" : " + _price + "$";
+        UIMultiplayerSelection.CracePriceText.text = "1 $" + Constants.GetCurrencyName() + " : " + _price + "$";
     }
 
     public void ChangeDisclaimer_MultiplayerSelection()
     {
         Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_1);
-        UIMultiplayerSelection.Disclaimer_5.text = "*price: " + Constants.MultiplayerPrice_1 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $"+Constants.GetCurrencyName()+")";
+        UIMultiplayerSelection.Disclaimer_5.text = "*price: " + Constants.MultiplayerPrice_1 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $" + Constants.GetCurrencyName() + ")";
 
         Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_2);
-        UIMultiplayerSelection.Disclaimer_10.text = "*price: " + Constants.MultiplayerPrice_2 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $"+ Constants.GetCurrencyName()+")";
+        UIMultiplayerSelection.Disclaimer_10.text = "*price: " + Constants.MultiplayerPrice_2 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $" + Constants.GetCurrencyName() + ")";
 
         Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_3);
-        UIMultiplayerSelection.Disclaimer_50.text = "*price: " + Constants.MultiplayerPrice_3 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $"+ Constants.GetCurrencyName()+")";
+        UIMultiplayerSelection.Disclaimer_50.text = "*price: " + Constants.MultiplayerPrice_3 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $" + Constants.GetCurrencyName() + ")";
 
         Constants.ConvertDollarToCrace(Constants.MultiplayerPrice_4);
-        UIMultiplayerSelection.Disclaimer_100.text = "*price: " + Constants.MultiplayerPrice_4 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $"+ Constants.GetCurrencyName()+")";
+        UIMultiplayerSelection.Disclaimer_100.text = "*price: " + Constants.MultiplayerPrice_4 + "$" + " (" + Constants.CalculatedCurrencyAmount.ToString() + " $" + Constants.GetCurrencyName() + ")";
     }
 
     public void EnableSelection_MultiplayerSelection()
@@ -2742,7 +2754,7 @@ public class MainMenuViewController : MonoBehaviour
         if (MemberPass.ToLower() == Constants.VIPPassword.ToLower())
             UIMember.MainScreen.SetActive(false);
         else
-            ShowToast(3f, "Entered password is wrong!",false);
+            ShowToast(3f, "Entered password is wrong!", false);
     }
     #endregion
 
@@ -2773,7 +2785,7 @@ public class MainMenuViewController : MonoBehaviour
         SelectedCars.Clear();
     }
 
-    public void AssignStoreGarageData(GameObject _car, int _tokenID, string _carname, StatSettings _settings,Transform _parent,bool _setMechanics, bool _setStats)
+    public void AssignStoreGarageData(GameObject _car, int _tokenID, string _carname, StatSettings _settings, Transform _parent, bool _setMechanics, bool _setStats)
     {
         _generatedPrefab = Instantiate(_car, Vector3.zero, Quaternion.identity) as GameObject;
         _generatedPrefab.transform.SetParent(_parent);
@@ -2782,16 +2794,16 @@ public class MainMenuViewController : MonoBehaviour
         NFTDataHandlerRef.SetTokenID(_tokenID);
         NFTDataHandlerRef.SetCarName(_carname);
 
-        if(_setMechanics)
+        if (_setMechanics)
             NFTDataHandlerRef.SetMechanics();
 
-        if(_setStats)
-        NFTDataHandlerRef.SetStatsSettings(_settings);
+        if (_setStats)
+            NFTDataHandlerRef.SetStatsSettings(_settings);
 
         AddSelected(_generatedPrefab.GetComponent<CarSelection>());
     }
 
-    public void AssignStoreGarageCars(Transform _middleParent, Transform _leftParent, Transform _rightParent,Transform _mainParent, TextMeshProUGUI _name, TextMeshProUGUI _id, bool _assignID, bool _showStats, bool _showConsumables)
+    public void AssignStoreGarageCars(Transform _middleParent, Transform _leftParent, Transform _rightParent, Transform _mainParent, TextMeshProUGUI _name, TextMeshProUGUI _id, bool _assignID, bool _showStats, bool _showConsumables)
     {
         for (int i = 0; i < SelectedCars.Count; i++)
         {
@@ -2800,7 +2812,7 @@ public class MainMenuViewController : MonoBehaviour
                 nextCarIndex = carIndex + 1;
                 PrevCarIndex = carIndex - 1;
 
-                AssignMiddleCar(SelectedCars[i].gameObject, _middleParent, _assignID, _showStats,_showConsumables, _name, _id);
+                AssignMiddleCar(SelectedCars[i].gameObject, _middleParent, _assignID, _showStats, _showConsumables, _name, _id);
 
                 if (PrevCarIndex >= 0)
                     AssignLeftCar(SelectedCars[i - 1].gameObject, _leftParent);
@@ -2815,13 +2827,13 @@ public class MainMenuViewController : MonoBehaviour
         }
     }
 
-    public void PlaceCarBack(GameObject _car,Transform _parent)
+    public void PlaceCarBack(GameObject _car, Transform _parent)
     {
         _car.transform.SetParent(_parent);
         _car.transform.GetChild(0).gameObject.SetActive(false);
     }
 
-    public void AssignMiddleCar(GameObject _car, Transform _parent, bool _assignID,bool _showStats,bool _showConsumables,TextMeshProUGUI _name, TextMeshProUGUI _id)
+    public void AssignMiddleCar(GameObject _car, Transform _parent, bool _assignID, bool _showStats, bool _showConsumables, TextMeshProUGUI _name, TextMeshProUGUI _id)
     {
         _car.transform.SetParent(_parent);
         ResetCarTransform(_car);
@@ -2833,7 +2845,7 @@ public class MainMenuViewController : MonoBehaviour
         if (_assignID)
             _id.text = _ref.tokenID.ToString();
 
-        if(_showStats)
+        if (_showStats)
             StoreHandler.Instance.UpdateCarStats(SelectedCars[carIndex].GetComponent<NFTDataHandler>()._settings);
 
         if (_showConsumables)
@@ -2849,7 +2861,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void AssignRightCar(GameObject _tempcar, Transform _parent)
     {
-        Constants.PrintLog("Right : "+ _tempcar.gameObject.name);
+        Constants.PrintLog("Right : " + _tempcar.gameObject.name);
         _tempcar.transform.SetParent(_parent);
         ResetCarTransform(_tempcar);
         _tempcar.transform.GetChild(0).gameObject.SetActive(true);
@@ -2922,6 +2934,61 @@ public class MainMenuViewController : MonoBehaviour
         {
             LoadingScreen.SetActive(false);
             ShowToast(3f, "Please connect your wallet first.");
+        }
+    }
+
+    public void ToggleConnectionDetail_DD(bool _state)
+    {
+        UIDD.DetailScreen.SetActive(_state);
+    }
+
+    public void SetPlayerConnectedText_DD(int _players)
+    {
+        UIDD.ConnectedPlayerText.text = (_players-1).ToString();
+    }
+
+    public void ToggleStartRaceButton_DD(bool _state)
+    {
+        UIDD.StartDDraceButton.gameObject.SetActive(_state);
+    }
+
+    public void ToggleStartRaceButtonInteract_DD(bool _state)
+    {
+        UIDD.StartDDraceButton.interactable = _state;
+    }
+
+    public void ToggleDisclaimer_DD(bool _state)
+    {
+        UIDD.DisclaimerText.gameObject.SetActive(_state);
+    }
+
+    public void ToggleDDTimer_DD(bool _state)
+    {
+        UIDD.DDTimerText.gameObject.SetActive(_state);
+    }
+
+    public void SetDDTimerText_DD(string _text)
+    {
+        UIDD.DDTimerText.text = "Game Starts: "+_text;
+    }
+
+    public void ToggleUI_DD(bool _State)
+    {
+        if (_State)
+        {
+            ToggleConnectionDetail_DD(_State);
+            ToggleStartRaceButton_DD(_State);
+            ToggleStartRaceButtonInteract_DD(!_State);
+            ToggleDisclaimer_DD(!_State);
+            ToggleDDTimer_DD(_State);
+        }
+        else
+        {
+            ToggleConnectionDetail_DD(_State);
+            ToggleStartRaceButton_DD(_State);
+            ToggleStartRaceButtonInteract_DD(_State);
+            ToggleDisclaimer_DD(_State);
+            ToggleDDTimer_DD(_State);
         }
     }
     #endregion

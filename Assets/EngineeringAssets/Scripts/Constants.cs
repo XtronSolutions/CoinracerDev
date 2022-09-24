@@ -213,7 +213,7 @@ public static class Constants
     public static int HighPing = 150;
     public static int MediumPing = 100;
     public static int LowPing = 50;
-    public static int DD_WaitTime = 120; //in seconds (2 mins)
+    public static int DD_WaitTime = 30; // 120 in seconds (2 mins)
     public static bool RoomConnectionInit = false;
 
     async public static void GetCracePrice()

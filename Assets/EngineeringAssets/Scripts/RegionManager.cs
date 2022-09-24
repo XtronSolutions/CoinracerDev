@@ -44,9 +44,8 @@ public class RegionManager : MonoBehaviour
             Debug.Log("not connected");
             PopulateRegionData(ExampleResponse);
             StartCoroutine(ShowPingedRegionList_ConnectionUI());
-
-            if(MultiplayerManager.Instance)
-                MultiplayerManager.Instance.ConnectToPhotonServer();
+            Invoke(nameof(ConnectWithDelay), 0.5f);
+           
         }else
         {
             Debug.Log("already connected");
@@ -63,6 +62,12 @@ public class RegionManager : MonoBehaviour
             Debug.Log(Constants.StoredRegions[i]);
         }
 
+    }
+
+    public void ConnectWithDelay()
+    {
+        if (MultiplayerManager.Instance)
+            MultiplayerManager.Instance.ConnectToPhotonServer();
     }
 
     private void OnDestroy()

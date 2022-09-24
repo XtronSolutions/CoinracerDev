@@ -50,6 +50,8 @@ public class PhotonSetting
     public byte Version = 1;
     [Tooltip("Total Number of player in a room.")]
     public byte MaxPlayers;
+    [Tooltip("Total Number of player in a destruction derby.")]
+    public byte MaxDDPlayers;
 }
 
 public class WinData
@@ -213,6 +215,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         CancelInvoke("UpdateOnlineStatus");
         UpdateOnlineStatus();
 
+        if (MainMenuViewController.Instance)
+            MainMenuViewController.Instance.ToggleUI_DD(false);
+
         if (Constants.RoomConnectionInit)
         {
             Constants.RoomConnectionInit = false;
@@ -264,7 +269,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         int _level = Constants.SelectedLevel;
 
         if (Constants.IsDestructionDerby)
+        {
             _level = 6;
+            roomOptions.MaxPlayers = Settings.MaxDDPlayers;
+        }
 
         roomOptions.CustomRoomPropertiesForLobby = new string[3] { Constants.MAP_PROP_KEY, Constants.WAGE_PROP_KEY, Constants.MODE_PROP_KEY };
         roomOptions.CustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, _level }, { Constants.WAGE_PROP_KEY, Constants.SelectedWage }, { Constants.MODE_PROP_KEY, Constants.FreeMultiplayer } };
@@ -281,7 +289,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         int _level = mapCode;
 
         if (Constants.IsDestructionDerby)
+        {
             _level = 6;
+            expectedMaxPlayers = Settings.MaxDDPlayers;
+        }
 
 
         Hashtable expectedCustomRoomProperties = new Hashtable { { Constants.MAP_PROP_KEY, _level }, { Constants.WAGE_PROP_KEY, wageAmount }, { Constants.MODE_PROP_KEY, Constants.FreeMultiplayer } };
@@ -291,6 +302,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public void DisconnectPhoton(bool _photonDisconnect = false)
     {
         ActorNumbers.Clear();
+        startTimer = false;
+        MainMenuViewController.Instance.ToggleUI_DD(false);
 
         if (_photonDisconnect)
         {
@@ -419,17 +432,72 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 MainMenuViewController.Instance.EnableWithDrawTimer_ConnectionUI();
         }
     }
+
+    double startTime;
+    double timerIncrementValue;
+    bool startTimer = false;
+
+    void Update()
+    {
+        if (!startTimer) return;
+
+        timerIncrementValue = PhotonNetwork.Time - startTime;
+        MainMenuViewController.Instance.SetDDTimerText_DD((Constants.DD_WaitTime-timerIncrementValue).ToString("0")+" s");
+        if (timerIncrementValue >= Constants.DD_WaitTime)
+        {
+            startTimer = false;
+            Debug.Log("Timer Completed");
+            MainMenuViewController.Instance.SetDDTimerText_DD("0 s");
+
+            if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
+                ForceStartGame();
+            else
+            {
+                MainMenuViewController.Instance.ShowToast(5f, "No player found online, try again some time later or switch to a different region.", false);
+                MainMenuViewController.Instance.DisableScreen_ConnectionUI();
+            }
+           
+            //Timer Completed
+            //Do What Ever You What to Do Here
+        }
+    }
+  
     public override void OnJoinedRoom()
     {
         UpdateConnectionText("Joined Room");
         Constants.StoredPID = PhotonNetwork.CurrentRoom.Name;
 
-        if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
+        if (MainMenuViewController.Instance && !Constants.IsDestructionDerby)
+            MainMenuViewController.Instance.ToggleUI_DD(false);
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers && !Constants.IsDestructionDerby)
         {
             if (!Constants.FreeMultiplayer)
             {
                 if (!PhotonNetwork.IsMasterClient)
                     UpdateTransactionData(false, false, "waiting for other player to deposit", false, false, true);
+            }
+        }else if(Constants.IsDestructionDerby)
+        {
+            if (MainMenuViewController.Instance)
+            {
+                MainMenuViewController.Instance.ToggleUI_DD(true);
+                MainMenuViewController.Instance.SetPlayerConnectedText_DD(PhotonNetwork.CurrentRoom.PlayerCount);
+            }
+
+
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                var CustomeValue = new ExitGames.Client.Photon.Hashtable();
+                startTime = PhotonNetwork.Time;
+                startTimer = true;
+                CustomeValue.Add(Constants.ROOM_GameTimer, startTime);
+                PhotonNetwork.CurrentRoom.SetCustomProperties(CustomeValue);
+            }
+            else
+            {
+                startTime = double.Parse(PhotonNetwork.CurrentRoom.CustomProperties[Constants.ROOM_GameTimer].ToString());
+                startTimer = true;
             }
         }
     }
@@ -488,7 +556,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
+        byte _count = Settings.MaxPlayers;
+        if (Constants.IsDestructionDerby)
+        {
+            _count = Settings.MaxDDPlayers;
+            MainMenuViewController.Instance.SetPlayerConnectedText_DD(PhotonNetwork.CurrentRoom.PlayerCount);
+        }
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount == _count)
         {
             if (PhotonNetwork.IsMasterClient)
             {
@@ -514,6 +589,34 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
             }
+        }
+    }
+
+    public void ForceStartGame()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+
+            if (!Constants.FreeMultiplayer)
+            {
+                if (Constants.DepositDone)
+                {
+                    RPCCalls.Instance.PHView.RPC("DepositCompleted", RpcTarget.Others);
+                }
+                else
+                {
+                    UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
+                }
+
+            }
+            string _tokenID = "0";
+
+            if (!Constants.FreeMultiplayer)
+                _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
+
+            RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
         }
     }
 
@@ -588,6 +691,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         if (SceneManager.GetActiveScene().name != "MainMenu")
             return;
+
+
+        if(Constants.IsDestructionDerby)
+            MainMenuViewController.Instance.SetPlayerConnectedText_DD(PhotonNetwork.CurrentRoom.PlayerCount);
 
         //UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
 
