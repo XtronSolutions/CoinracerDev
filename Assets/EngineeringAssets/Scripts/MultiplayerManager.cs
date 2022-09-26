@@ -177,7 +177,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
             Constants.PrintLog("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
             PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = Settings.Version.ToString();
+            //PhotonNetwork.GameVersion = Settings.Version.ToString();
         }
     }
 
