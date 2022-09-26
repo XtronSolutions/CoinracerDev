@@ -485,7 +485,7 @@ public class WalletManager : MonoBehaviour
             string response = await Web3GL.SendContract(method, abi, contract, args, value, gasLimit, gasPrice);
 
             //to check if api is down (sometimes chain safe api gives issue)
-            if (response.Contains("Returned error: internal error"))
+            if (response.Contains("Returned error: internal error") && !Constants.IsTest)
             {
                 Constants.PrintError("Returned error: internal error");
                 if (MainMenuViewController.Instance)
@@ -819,7 +819,7 @@ public class WalletManager : MonoBehaviour
         string args = JsonConvert.SerializeObject(obj);
         string res = await EVM.Call(chain, network, NFTContracts[_index], NFTContractsAbi[_index], method, args);
 
-        if (res.Contains("Returned error: internal error"))
+        if (res.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Debug.LogError("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -930,7 +930,7 @@ public class WalletManager : MonoBehaviour
             string response = await EVM.Call(chain, network, NFTContracts[_index], NFTContractsAbi[_index], methodNFT, argsNFT);
             
 
-            if (response.Contains("Returned error: internal error"))
+            if (response.Contains("Returned error: internal error") && !Constants.IsTest)
             {
                 Constants.PrintLog("Returned error: internal error");
                 if (MainMenuViewController.Instance)
@@ -965,7 +965,7 @@ public class WalletManager : MonoBehaviour
             string response = await EVM.Call(chain, network, NFTContracts[_index], NFTContractsAbi[_index], methodNFT, argsNFT);
             PrintOnConsoleEditor(response);
 
-            if (response.Contains("Returned error: internal error"))
+            if (response.Contains("Returned error: internal error") && !Constants.IsTest)
             {
                 Constants.PrintLog("Returned error: internal error");
                 if (MainMenuViewController.Instance)
@@ -1111,7 +1111,7 @@ public class WalletManager : MonoBehaviour
 
         PrintOnConsoleEditor(response);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -1622,7 +1622,7 @@ public class WalletManager : MonoBehaviour
                 Constants.EventRaised = _raiseEvent;
                 string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -1693,7 +1693,7 @@ public class WalletManager : MonoBehaviour
                 Constants.EventRaised = _raiseEvent;
                 string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -1840,7 +1840,7 @@ public class WalletManager : MonoBehaviour
                 Constants.EventRaised = _raiseEvent;
                 string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -1898,7 +1898,7 @@ public class WalletManager : MonoBehaviour
                 Constants.EventRaised = _raiseEvent;
                 string response = await Web3GL.SendContract(methodCSP, abiCSPContract, CSPContract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -1949,7 +1949,7 @@ public class WalletManager : MonoBehaviour
                 Constants.EventRaised = _raiseEvent;
                 string response = await Web3GL.SendContract(methodCrace, abi, contract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -1988,7 +1988,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodCrace, argsCSP);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Debug.LogError("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -2072,7 +2072,7 @@ public class WalletManager : MonoBehaviour
                 Constants.EventRaised = _raiseEvent;
                 string response = await Web3GL.SendContract(methodCrace, abi, contract, argsCSP, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintError("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -2119,7 +2119,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodCrace, argsCSP);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -2202,7 +2202,7 @@ public class WalletManager : MonoBehaviour
                 else
                     response = await Web3GL.SendContract(methodCrace, NFTContractsAbi[0], NFTContracts[0], argsCSP, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -2249,7 +2249,7 @@ public class WalletManager : MonoBehaviour
         else
             response = await EVM.Call(chain, network, NFTContracts[0], NFTContractsAbi[0], methodNFT, argsCSP);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -2433,7 +2433,7 @@ public class WalletManager : MonoBehaviour
                 }
                 string response = await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -2543,7 +2543,7 @@ public class WalletManager : MonoBehaviour
                 Constants.EventRaised = _raiseEvent;
                 string response = await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -2654,7 +2654,7 @@ public class WalletManager : MonoBehaviour
                 Constants.EventRaised = _raiseEvent;
                 string response = await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -2758,7 +2758,7 @@ public class WalletManager : MonoBehaviour
                 Constants.EventRaised = _raiseEvent;
                 string response = await Web3GL.SendContract(methodChiprace, abi, contract, argsChiprace, value, gasLimit, gasPrice, _raiseEvent);
 
-                if (response.Contains("Returned error: internal error"))
+                if (response.Contains("Returned error: internal error") && !Constants.IsTest)
                 {
                     Constants.PrintLog("Returned error: internal error");
                     if (MainMenuViewController.Instance)
@@ -2798,7 +2798,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, ChipraceContract, abiChipraceContract, methodChiprace, argsChiprace);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -2824,7 +2824,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodChiprace, argsChiprace);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -2859,7 +2859,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodChiprace, argsChiprace);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -2897,7 +2897,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodChiprace, argsChiprace);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -2935,7 +2935,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodChiprace, argsChiprace);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -2970,7 +2970,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodChiprace, argsChiprace);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -3008,7 +3008,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodChiprace, argsChiprace);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -3060,7 +3060,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodChiprace, argsChiprace);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)
@@ -3106,7 +3106,7 @@ public class WalletManager : MonoBehaviour
 
         string response = await EVM.Call(chain, network, contract, abi, methodChiprace, argsChiprace);
 
-        if (response.Contains("Returned error: internal error"))
+        if (response.Contains("Returned error: internal error") && !Constants.IsTest)
         {
             Constants.PrintLog("Returned error: internal error");
             if (MainMenuViewController.Instance)

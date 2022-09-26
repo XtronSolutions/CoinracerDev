@@ -428,7 +428,7 @@ namespace UniRx
         [ThreadStatic]
         static object mainThreadToken;
 
-        static MainThreadDispatcher Instance
+        public static MainThreadDispatcher Instance
         {
             get
             {

@@ -201,10 +201,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.LocalPlayer.NickName = name;
 
-        if (PhotonNetwork.InLobby)
-            LobbyConnection();
-        else
-            PhotonNetwork.JoinLobby();
+        //if (PhotonNetwork.InLobby)
+            //LobbyConnection();
+        //else
+            //PhotonNetwork.JoinLobby();
     }
 
     public void LobbyConnection()
@@ -587,6 +587,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 if (!Constants.FreeMultiplayer)
                     _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
 
+                Debug.LogError("calling sync on onplayerenteredroom");
                 RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
             }
         }
@@ -616,12 +617,17 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             if (!Constants.FreeMultiplayer)
                 _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
 
-            RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
+            Debug.LogError("force start game called");
+
+            MultiplayerManager.Instance.LoadSceneDelay();
+
+            //RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
         }
     }
 
     public void LoadSceneDelay(float time = 3f, bool loadWithoutAsycn = false)
     {
+        Debug.LogError("starting scene with delay");
         if (loadWithoutAsycn)
             MainMenuViewController.Instance.LoadDesiredScene();
         else
@@ -630,7 +636,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public IEnumerator LoadAsyncScene()
     {
-        if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers)
+        int _count = Settings.MaxPlayers;
+        if (Constants.IsDestructionDerby)
+            _count = Settings.MaxDDPlayers;
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount == _count || Constants.IsDestructionDerby)
         {
             if (Constants.IsDestructionDerby)
                 PhotonNetwork.LoadLevel(6);

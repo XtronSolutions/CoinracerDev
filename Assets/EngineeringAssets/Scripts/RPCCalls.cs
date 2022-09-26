@@ -110,14 +110,14 @@ public class RPCCalls : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            Constants.OpponentTokenID = _ID;
+            //Constants.OpponentTokenID = _ID;
             MainMenuViewController.Instance.ToggleSecondDetail(true, _name, _wins, int.Parse(_index));
-            if (Constants.FreeMultiplayer)
+            if (Constants.FreeMultiplayer || Constants.IsDestructionDerby)
                 MultiplayerManager.Instance.LoadSceneDelay();
         }
         else
         {
-            Constants.OpponentTokenID = _ID;
+            //Constants.OpponentTokenID = _ID;
 
             string _tokenID = "0";
 

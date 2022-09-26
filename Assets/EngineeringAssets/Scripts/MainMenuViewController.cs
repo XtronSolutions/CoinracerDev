@@ -2944,7 +2944,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SetPlayerConnectedText_DD(int _players)
     {
-        UIDD.ConnectedPlayerText.text = (_players-1).ToString();
+        UIDD.ConnectedPlayerText.text = (_players).ToString();
     }
 
     public void ToggleStartRaceButton_DD(bool _state)
