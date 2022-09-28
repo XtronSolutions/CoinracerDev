@@ -17,11 +17,17 @@ using Photon.Pun;
 [Serializable]
 public class DDUI
 {
-    public GameObject DetailScreen;
-    public TextMeshProUGUI ConnectedPlayerText;
-    public TextMeshProUGUI DisclaimerText;
+    public GameObject MainScreen;
+    public TextMeshProUGUI ContributionText;
     public TextMeshProUGUI DDTimerText;
-    public Button StartDDraceButton;
+    public TextMeshProUGUI DisclaimerText;
+
+    public GameObject PrefabGameObject;
+    public Transform[] Rows;
+
+    public Button BackButton;
+    public Button RaceButton;
+ 
 }
 
 [Serializable]
@@ -364,6 +370,11 @@ public class MainMenuViewController : MonoBehaviour
     int nextCarIndex = 0;
     int PrevCarIndex = 0;
     GameObject _generatedPrefab;
+
+    int prefabCounter = 0;
+    int rowCounter = -1;
+    GameObject playerPrefab;
+    List<GameObject> PlayerList = new List<GameObject>();
 
     #endregion
 
@@ -1927,7 +1938,11 @@ public class MainMenuViewController : MonoBehaviour
             if (MultiplayerManager.Instance)
             {
                 Constants.SelectedLevel = MainMenuViewController.Instance.getSelectedLevel() + 1;
-                MainMenuViewController.Instance.SelectMultiplayer_ConnectionUI();
+
+                if (Constants.IsDestructionDerby)
+                    MultiplayerSelection_DD();
+                else
+                    SelectMultiplayer_ConnectionUI();
             } else
             {
                 Constants.PrintError("MM Instance is null");
@@ -2905,6 +2920,8 @@ public class MainMenuViewController : MonoBehaviour
     public void AddButtonListeners_DD()
     {
         _destructionDerbyButton.onClick.AddListener(StartDerby_DD);
+        UIDD.BackButton.onClick.AddListener(DisableScreen_DD);
+        UIDD.RaceButton.onClick.AddListener(StartRace_DD);
     }
 
     public void StartDerby_DD()
@@ -2937,24 +2954,24 @@ public class MainMenuViewController : MonoBehaviour
         }
     }
 
-    public void ToggleConnectionDetail_DD(bool _state)
+    public void ToggleMainScreen_DD(bool _state)
     {
-        UIDD.DetailScreen.SetActive(_state);
+        UIDD.MainScreen.SetActive(_state);
     }
 
-    public void SetPlayerConnectedText_DD(int _players)
+    public void SetContributionext_DD(int _value)
     {
-        UIDD.ConnectedPlayerText.text = (_players).ToString();
+        UIDD.ContributionText.text = (_value).ToString();
     }
 
     public void ToggleStartRaceButton_DD(bool _state)
     {
-        UIDD.StartDDraceButton.gameObject.SetActive(_state);
+        UIDD.RaceButton.gameObject.SetActive(_state);
     }
 
     public void ToggleStartRaceButtonInteract_DD(bool _state)
     {
-        UIDD.StartDDraceButton.interactable = _state;
+        UIDD.RaceButton.interactable = _state;
     }
 
     public void ToggleDisclaimer_DD(bool _state)
@@ -2969,27 +2986,84 @@ public class MainMenuViewController : MonoBehaviour
 
     public void SetDDTimerText_DD(string _text)
     {
-        UIDD.DDTimerText.text = "Game Starts: "+_text;
+        UIDD.DDTimerText.text = _text;
     }
 
-    public void ToggleUI_DD(bool _State)
+    public void PopulatePlayerData_DD(int _id,string _username, string _carName)
     {
-        if (_State)
+        Debug.Log("creating playerdata");
+        if (prefabCounter % 4 == 0)
+            rowCounter++;
+
+        playerPrefab = Instantiate(UIDD.PrefabGameObject, Vector3.zero, Quaternion.identity) as GameObject;
+        playerPrefab.transform.SetParent(UIDD.Rows[rowCounter].transform);
+        playerPrefab.transform.localScale = new Vector3(1, 1, 1);
+        PlayerList.Add(playerPrefab);
+        prefabCounter++;
+
+        playerPrefab.SetActive(true);
+        PlayerDataDD PlayerDataDDRef = playerPrefab.GetComponent<PlayerDataDD>();
+        PlayerDataDDRef.SetID(_id);
+        PlayerDataDDRef.SetPlayerName(_username);
+    }
+
+    public void RemovePlayerData_DD(int _id)
+    {
+        for (int i = 0; i < PlayerList.Count; i++)
         {
-            ToggleConnectionDetail_DD(_State);
-            ToggleStartRaceButton_DD(_State);
-            ToggleStartRaceButtonInteract_DD(!_State);
-            ToggleDisclaimer_DD(!_State);
-            ToggleDDTimer_DD(_State);
+            if (PlayerList[i].GetComponent<PlayerDataDD>().ID == _id)
+            {
+                Destroy(PlayerList[i]);
+                PlayerList.RemoveAt(i);
+            }
         }
-        else
-        {
-            ToggleConnectionDetail_DD(_State);
-            ToggleStartRaceButton_DD(_State);
-            ToggleStartRaceButtonInteract_DD(_State);
-            ToggleDisclaimer_DD(_State);
-            ToggleDDTimer_DD(_State);
-        }
+    }
+
+    public void ClearData_DD()
+    {
+        for (int i = 0; i < PlayerList.Count; i++)
+            Destroy(PlayerList[i]);
+
+
+        PlayerList.Clear();
+        prefabCounter = 0;
+        rowCounter = -1;
+    }
+
+    public void DisableScreen_DD()
+    {
+        SetDDTimerText_DD("00:00");
+        ToggleDisclaimer_DD(false);
+        ToggleStartRaceButtonInteract_DD(false);
+        ToggleMainScreen_DD(false);
+
+        RegionPinged = false;
+
+        if (MultiplayerManager.Instance)
+            MultiplayerManager.Instance.DisconnectPhoton();
+    }
+
+    public void MultiplayerSelection_DD()
+    {
+        ClearData_DD();
+        Constants.IsMultiplayer = true;
+        ToggleMainScreen_DD(true);
+        SetDDTimerText_DD("00:00");
+
+        ToggleStartRaceButton_DD(true);
+        ToggleDisclaimer_DD(false);
+        ToggleStartRaceButtonInteract_DD(false);
+
+        RegionPinged = false;
+
+        if (MultiplayerManager.Instance)
+            MultiplayerManager.Instance.ConnectToPhotonServer();
+    }
+
+    public void StartRace_DD()
+    {
+        ToggleDisclaimer_DD(true);
+        ToggleStartRaceButtonInteract_DD(false);
     }
     #endregion
 }

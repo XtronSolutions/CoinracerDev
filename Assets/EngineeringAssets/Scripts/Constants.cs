@@ -215,6 +215,7 @@ public static class Constants
     public static int LowPing = 50;
     public static int DD_WaitTime = 30; // 120 in seconds (2 mins)
     public static bool RoomConnectionInit = false;
+    public static int MinDDPlayers = 6;
 
     async public static void GetCracePrice()
     {

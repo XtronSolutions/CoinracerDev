@@ -11,6 +11,7 @@ using UnityEngine.Networking;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using System;
 
 #region SuperClasses
 public class CustomPlayerPropData
@@ -190,7 +191,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Constants.PrintLog("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
         PhotonNetwork.AutomaticallySyncScene = true;
 
-        float nameSuffix = Random.Range(1000, 9999);
+        float nameSuffix = UnityEngine.Random.Range(1000, 9999);
         string name = "Player_" + nameSuffix.ToString();
 
         if (FirebaseMoralisManager.Instance)
@@ -215,9 +216,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         CancelInvoke("UpdateOnlineStatus");
         UpdateOnlineStatus();
 
-        if (MainMenuViewController.Instance)
-            MainMenuViewController.Instance.ToggleUI_DD(false);
-
         if (Constants.RoomConnectionInit)
         {
             Constants.RoomConnectionInit = false;
@@ -239,7 +237,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        var roomCode = Random.Range(10000, 99999);
+        var roomCode = UnityEngine.Random.Range(10000, 99999);
 
         if (!Constants.FreeMultiplayer)
         {
@@ -303,7 +301,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         ActorNumbers.Clear();
         startTimer = false;
-        MainMenuViewController.Instance.ToggleUI_DD(false);
 
         if (_photonDisconnect)
         {
@@ -437,24 +434,33 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     double timerIncrementValue;
     bool startTimer = false;
 
+    double totalSeconds;
+    double timeSpanConversiondMinutes;
+    double timeSpanConversionSeconds;
+
     void Update()
     {
         if (!startTimer) return;
 
         timerIncrementValue = PhotonNetwork.Time - startTime;
-        MainMenuViewController.Instance.SetDDTimerText_DD((Constants.DD_WaitTime-timerIncrementValue).ToString("0")+" s");
+
+        totalSeconds = (Constants.DD_WaitTime - timerIncrementValue);
+        timeSpanConversiondMinutes = TimeSpan.FromSeconds(totalSeconds).Minutes;
+        timeSpanConversionSeconds = TimeSpan.FromSeconds(totalSeconds).Seconds;
+
+        MainMenuViewController.Instance.SetDDTimerText_DD((timeSpanConversiondMinutes.ToString("00") + ":" + timeSpanConversionSeconds.ToString("00")));
         if (timerIncrementValue >= Constants.DD_WaitTime)
         {
             startTimer = false;
             Debug.Log("Timer Completed");
-            MainMenuViewController.Instance.SetDDTimerText_DD("0 s");
+            MainMenuViewController.Instance.SetDDTimerText_DD("00:00");
 
             if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
                 ForceStartGame();
             else
             {
                 MainMenuViewController.Instance.ShowToast(5f, "No player found online, try again some time later or switch to a different region.", false);
-                MainMenuViewController.Instance.DisableScreen_ConnectionUI();
+                MainMenuViewController.Instance.DisableScreen_DD();
             }
            
             //Timer Completed
@@ -467,8 +473,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         UpdateConnectionText("Joined Room");
         Constants.StoredPID = PhotonNetwork.CurrentRoom.Name;
 
-        if (MainMenuViewController.Instance && !Constants.IsDestructionDerby)
-            MainMenuViewController.Instance.ToggleUI_DD(false);
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers && !Constants.IsDestructionDerby)
         {
@@ -479,15 +483,18 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             }
         }else if(Constants.IsDestructionDerby)
         {
-            if (MainMenuViewController.Instance)
+            foreach (var item in PhotonNetwork.CurrentRoom.Players)
             {
-                MainMenuViewController.Instance.ToggleUI_DD(true);
-                MainMenuViewController.Instance.SetPlayerConnectedText_DD(PhotonNetwork.CurrentRoom.PlayerCount);
+                if (MainMenuViewController.Instance)
+                    MainMenuViewController.Instance.PopulatePlayerData_DD(item.Value.ActorNumber, item.Value.NickName, "");
             }
+            
 
+            ToggleDDStartGame();
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
+                Debug.Log("starting timerrr");
                 var CustomeValue = new ExitGames.Client.Photon.Hashtable();
                 startTime = PhotonNetwork.Time;
                 startTimer = true;
@@ -554,13 +561,27 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void ToggleDDStartGame()
+    {
+        if (PhotonNetwork.CurrentRoom.PlayerCount >= Constants.MinDDPlayers)
+            MainMenuViewController.Instance.ToggleStartRaceButtonInteract_DD(true);
+        else
+            MainMenuViewController.Instance.ToggleStartRaceButtonInteract_DD(false);
+    }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         byte _count = Settings.MaxPlayers;
         if (Constants.IsDestructionDerby)
         {
             _count = Settings.MaxDDPlayers;
-            MainMenuViewController.Instance.SetPlayerConnectedText_DD(PhotonNetwork.CurrentRoom.PlayerCount);
+
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.PopulatePlayerData_DD(newPlayer.ActorNumber, newPlayer.NickName, "");
+
+
+            ToggleDDStartGame();
+
+            //MainMenuViewController.Instance.SetPlayerConnectedText_DD(PhotonNetwork.CurrentRoom.PlayerCount);
         }
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == _count)
@@ -587,8 +608,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 if (!Constants.FreeMultiplayer)
                     _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
 
-                Debug.LogError("calling sync on onplayerenteredroom");
-                RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
+                if (Constants.IsDestructionDerby)
+                {
+                    startTimer = false;
+                    MultiplayerManager.Instance.LoadSceneDelay();
+                }
+                else
+                    RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
+
             }
         }
     }
@@ -702,25 +729,35 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (SceneManager.GetActiveScene().name != "MainMenu")
             return;
 
-
-        if(Constants.IsDestructionDerby)
-            MainMenuViewController.Instance.SetPlayerConnectedText_DD(PhotonNetwork.CurrentRoom.PlayerCount);
-
-        //UpdatePlayerCountText("Player Count : " + PhotonNetwork.CurrentRoom.PlayerCount.ToString());
-
-        if (PhotonNetwork.CurrentRoom.PlayerCount > 0 && !Constants.OtherPlayerDeposit)
+        if (Constants.IsDestructionDerby)
         {
-            PhotonNetwork.CurrentRoom.IsOpen = true;
-            PhotonNetwork.CurrentRoom.IsVisible = true;
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.RemovePlayerData_DD(otherPlayer.ActorNumber);
+
+            ToggleDDStartGame();
+
+            if (PhotonNetwork.CurrentRoom.PlayerCount > 0)
+            {
+                PhotonNetwork.CurrentRoom.IsOpen = true;
+                PhotonNetwork.CurrentRoom.IsVisible = true;
+            }
         }
+        else
+        {
+            if (PhotonNetwork.CurrentRoom.PlayerCount > 0 && !Constants.OtherPlayerDeposit)
+            {
+                PhotonNetwork.CurrentRoom.IsOpen = true;
+                PhotonNetwork.CurrentRoom.IsVisible = true;
+            }
 
-        if (MainMenuViewController.Instance)
-            MainMenuViewController.Instance.ToggleSecondDetail(false, "", "", 0);
+            if (MainMenuViewController.Instance)
+                MainMenuViewController.Instance.ToggleSecondDetail(false, "", "", 0);
 
-        if (!Constants.OtherPlayerDeposit)
-            Invoke("CheckLeftPlayer", 0.5f);
-        else if (Constants.OtherPlayerDeposit)
-            RemovePlayer();
+            if (!Constants.OtherPlayerDeposit)
+                Invoke("CheckLeftPlayer", 0.5f);
+            else if (Constants.OtherPlayerDeposit)
+                RemovePlayer();
+        }
 
         Constants.PrintLog("OnPlayerLeftRoom() called by PUN." + otherPlayer.NickName);
     }
