@@ -124,6 +124,13 @@ public class DamageHandler : MonoBehaviour
                 TriggerEnterted = true;
                 StoredIndex = int.Parse(obj.name.Split('_')[0]);
 
+
+                if(Constants.IsDestructionDerby)
+                {
+                    if (CarSpeed < 15)
+                        CarSpeed = 16;
+                }    
+
                 for (int i = 0; i < ColliderDamage[StoredIndex].ImpactInfo.DamageInfo.Count; i++)
                 {
                     StartRange = (int)ColliderDamage[StoredIndex].ImpactInfo.DamageInfo[i].SpeedForDamage;

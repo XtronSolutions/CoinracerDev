@@ -53,9 +53,10 @@ public class RegionManager : MonoBehaviour
             PhotonNetwork.GotPingResult = true;
             UpdatePingList(Constants.StoredRegions, Constants.StoredPings);
             RegionMainList.value = Constants.SelectedRegionIndex;
+            InvokeRepeating(nameof(GetAllRegionsData), 0.3f, 5f);
         }
 
-        InvokeRepeating(nameof(GetAllRegiosnData), 0.3f, 5f);
+        
 
         for (int i = 0; i < Constants.StoredRegions.Count; i++)
         {
@@ -85,6 +86,7 @@ public class RegionManager : MonoBehaviour
             _tempRegionData.Add(myDeserializedClass[i].code, myDeserializedClass[i]);
 
         Constants.RegionData = _tempRegionData;
+        Debug.Log("adding region data");
         
         if (PhotonNetwork.IsConnected)
              UpdateDropDownValues(RegionMainList);
@@ -122,6 +124,8 @@ public class RegionManager : MonoBehaviour
         Debug.Log("Got ping result "+ PhotonNetwork.GotPingResult);
         yield return new WaitUntil(() => (PhotonNetwork.GotPingResult));
         Debug.Log("Got ping result " + PhotonNetwork.GotPingResult);
+
+        InvokeRepeating(nameof(GetAllRegionsData), 0.3f, 5f);
 
         if (PhotonNetwork.pingedRegions.Length!=0)
         {
@@ -236,7 +240,7 @@ public class RegionManager : MonoBehaviour
             storedColor = "orange";
     }
 
-    async public Task<string> GetAllRegiosnData()
+    async public Task<string> GetAllRegionsData()
     {
         using UnityWebRequest request = UnityWebRequest.Get(GetURL);
 

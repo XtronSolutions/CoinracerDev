@@ -16165,6 +16165,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -7240963657584762919, guid: c41c4150e33968b488046d9962b48ab9, type: 3}
   m_PrefabInstance: {fileID: 1694444951}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1694444956 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8408360295357915572, guid: c41c4150e33968b488046d9962b48ab9, type: 3}
+  m_PrefabInstance: {fileID: 1694444951}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1694444957
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694444956}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6858132276048153720, guid: c41c4150e33968b488046d9962b48ab9, type: 3}
 --- !u!1 &1696306918
 GameObject:
   m_ObjectHideFlags: 0
@@ -20294,6 +20313,10 @@ PrefabInstance:
     - target: {fileID: 4394151971819141432, guid: 459ef97eba7b6564a80894e21481738e, type: 3}
       propertyPath: m_Name
       value: ArenaGround_Colider
+      objectReference: {fileID: 0}
+    - target: {fileID: 4394151971819141432, guid: 459ef97eba7b6564a80894e21481738e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 459ef97eba7b6564a80894e21481738e, type: 3}

@@ -375,6 +375,7 @@ public class MainMenuViewController : MonoBehaviour
     int rowCounter = -1;
     GameObject playerPrefab;
     List<GameObject> PlayerList = new List<GameObject>();
+    public List<string> PlayerID_DD = new List<string>();
 
     #endregion
 
@@ -2971,6 +2972,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public void ToggleStartRaceButtonInteract_DD(bool _state)
     {
+        if(!DDStartPushed)
         UIDD.RaceButton.interactable = _state;
     }
 
@@ -3033,9 +3035,15 @@ public class MainMenuViewController : MonoBehaviour
     public void DisableScreen_DD()
     {
         SetDDTimerText_DD("00:00");
+      
+        ToggleMainScreen_DD(false);
+        DDStartPushed = false;
+        ToggleStartRaceButton_DD(true);
         ToggleDisclaimer_DD(false);
         ToggleStartRaceButtonInteract_DD(false);
-        ToggleMainScreen_DD(false);
+
+        Constants.DDGameForceStarted = false;
+        PlayerID_DD.Clear();
 
         RegionPinged = false;
 
@@ -3050,9 +3058,12 @@ public class MainMenuViewController : MonoBehaviour
         ToggleMainScreen_DD(true);
         SetDDTimerText_DD("00:00");
 
+        DDStartPushed = false;
         ToggleStartRaceButton_DD(true);
         ToggleDisclaimer_DD(false);
         ToggleStartRaceButtonInteract_DD(false);
+        Constants.DDGameForceStarted = false;
+        PlayerID_DD.Clear();
 
         RegionPinged = false;
 
@@ -3060,10 +3071,52 @@ public class MainMenuViewController : MonoBehaviour
             MultiplayerManager.Instance.ConnectToPhotonServer();
     }
 
+
+    bool DDStartPushed = false;
     public void StartRace_DD()
     {
         ToggleDisclaimer_DD(true);
         ToggleStartRaceButtonInteract_DD(false);
+        DDStartPushed = true;
+        UpdateRoomForStartDD(PhotonNetwork.LocalPlayer.UserId, true);
     }
+
+ 
+    public void UpdateRoomForStartDD(string _id, bool ToAdd)
+    {
+        string _data = PhotonNetwork.CurrentRoom.CustomProperties[Constants.DD_GameStart] != null ? PhotonNetwork.CurrentRoom.CustomProperties[Constants.DD_GameStart].ToString() : "";
+        if (!string.IsNullOrEmpty(_data))
+            PlayerID_DD = JsonConvert.DeserializeObject<List<string>>(_data);
+
+        if(ToAdd)
+        {
+            if (!PlayerID_DD.Contains(_id))
+                PlayerID_DD.Add(_id);
+        }else
+        {
+            if (PlayerID_DD.Contains(_id))
+                PlayerID_DD.Remove(_id);
+        }
+
+        string _json = JsonConvert.SerializeObject(PlayerID_DD);
+        var CustomeValue = new ExitGames.Client.Photon.Hashtable();
+        CustomeValue.Add(Constants.DD_GameStart, _json);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(CustomeValue);
+    }
+
+    public int GetPlayerListCount_DD()
+    {
+        List<string> _tempData =new List<string>();
+        string _data = "";
+
+        if (PhotonNetwork.InRoom)
+            _data = PhotonNetwork.CurrentRoom.CustomProperties[Constants.DD_GameStart] != null ? PhotonNetwork.CurrentRoom.CustomProperties[Constants.DD_GameStart].ToString() : "";
+
+        if (!string.IsNullOrEmpty(_data))
+            _tempData = JsonConvert.DeserializeObject<List<string>>(_data);
+
+        return _tempData.Count;
+    }
+
     #endregion
 }

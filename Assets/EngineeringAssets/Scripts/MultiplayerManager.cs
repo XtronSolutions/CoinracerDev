@@ -90,20 +90,19 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region MultiplayerPhoton
-    void Awake()
+    private void Awake()
     {
         MultiplayerManager[] objs = GameObject.FindObjectsOfType<MultiplayerManager>();
 
         if (objs.Length > 1)
             Destroy(this.gameObject);
 
-        DontDestroyOnLoad(this.gameObject);
-
-        Instance = this;//initializing static instance of this class
+        DontDestroyOnLoad(this.gameObject);  
     }
 
     private void Start()
     {
+        Instance = this;//initializing static instance of this class
         Constants.GetCracePrice();//get current crace price from coinbase
         Constants.isMultiplayerGameEnded = false; //reset isMultiplayerGameEnded bool 
         ActorNumbers.Clear(); //clear list of ActorNumbers
@@ -456,7 +455,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             MainMenuViewController.Instance.SetDDTimerText_DD("00:00");
 
             if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
-                ForceStartGame();
+                ForceStartGameDD();
             else
             {
                 MainMenuViewController.Instance.ShowToast(5f, "No player found online, try again some time later or switch to a different region.", false);
@@ -611,6 +610,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 if (Constants.IsDestructionDerby)
                 {
                     startTimer = false;
+                    PhotonNetwork.CurrentRoom.IsOpen = false;
+                    PhotonNetwork.CurrentRoom.IsVisible = false;
                     MultiplayerManager.Instance.LoadSceneDelay();
                 }
                 else
@@ -620,10 +621,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void ForceStartGame()
+    public void ForceStartGameDD()
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            startTimer = false;
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
 
@@ -645,16 +647,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
 
             Debug.LogError("force start game called");
-
             MultiplayerManager.Instance.LoadSceneDelay();
-
-            //RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
         }
     }
 
     public void LoadSceneDelay(float time = 3f, bool loadWithoutAsycn = false)
     {
-        Debug.LogError("starting scene with delay");
+        //Debug.LogError("starting scene with delay");
         if (loadWithoutAsycn)
             MainMenuViewController.Instance.LoadDesiredScene();
         else
@@ -735,6 +734,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 MainMenuViewController.Instance.RemovePlayerData_DD(otherPlayer.ActorNumber);
 
             ToggleDDStartGame();
+            MainMenuViewController.Instance.UpdateRoomForStartDD(otherPlayer.UserId, false);
 
             if (PhotonNetwork.CurrentRoom.PlayerCount > 0)
             {
@@ -791,6 +791,19 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         Constants.PrintLog("Master Swithced");
+    }
+
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        int _counter = MainMenuViewController.Instance.GetPlayerListCount_DD();
+
+        if (PhotonNetwork.IsMasterClient && _counter >= Constants.MinDDPlayers && !Constants.DDGameForceStarted)
+        {
+            Constants.DDGameForceStarted = true;
+            startTimer = false;
+            ForceStartGameDD();
+        }
+
     }
     #endregion
 

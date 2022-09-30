@@ -13,12 +13,20 @@ public class TransformConstraint : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        //if (!FollowObject || !TargetObject)
+           // return;
+
+        //TargetObject.SetPositionAndRotation(FollowObject.position + Offset, FollowObject.rotation);
+    }
+
+    private void LateUpdate()
+    {
         if (!FollowObject || !TargetObject)
             return;
 
-        TargetObject.SetPositionAndRotation(FollowObject.position + Offset, FollowObject.rotation);
+        TargetObject.transform.position = FollowObject.transform.position + Offset;
+        TargetObject.transform.rotation = FollowObject.transform.rotation;
     }
-
     private void OnValidate()
     {
         if (Application.isPlaying)

@@ -151,6 +151,7 @@ public static class Constants
     public static string WAGE_PROP_KEY = "wage";
     public static string MODE_PROP_KEY = "mode";
     public static string ROOM_GameTimer = "Timer";
+    public static string DD_GameStart = "DDStart";
     public static int SelectedLevel = 0;
     public static int SelectedWage = 0;
     public static int TotalWins = 0;
@@ -215,7 +216,8 @@ public static class Constants
     public static int LowPing = 50;
     public static int DD_WaitTime = 30; // 120 in seconds (2 mins)
     public static bool RoomConnectionInit = false;
-    public static int MinDDPlayers = 6;
+    public static bool DDGameForceStarted = false;
+    public static int MinDDPlayers = 2;
 
     async public static void GetCracePrice()
     {
