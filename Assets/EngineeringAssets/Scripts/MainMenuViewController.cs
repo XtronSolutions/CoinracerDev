@@ -2095,7 +2095,7 @@ public class MainMenuViewController : MonoBehaviour
             for (int i = 0; i < Constants.NFTStored.Length; i++)
                 storedNFTS += Constants.NFTStored[i];
 
-            if (storedNFTS == 0)
+            if (storedNFTS == 0 && Constants.StoredCarNames.Count == 0 && Constants.StoredCarNamesMoralis.Count==0)
             {
                 DeactivateCars();
                 _selecteableCars.Clear();
@@ -3053,22 +3053,37 @@ public class MainMenuViewController : MonoBehaviour
 
     public void MultiplayerSelection_DD()
     {
-        ClearData_DD();
-        Constants.IsMultiplayer = true;
-        ToggleMainScreen_DD(true);
-        SetDDTimerText_DD("00:00");
+        if (CheckDepositPoolAmount())
+        {
+            ClearData_DD();
+            Constants.IsMultiplayer = true;
+            ToggleMainScreen_DD(true);
+            SetDDTimerText_DD("00:00");
 
-        DDStartPushed = false;
-        ToggleStartRaceButton_DD(true);
-        ToggleDisclaimer_DD(false);
-        ToggleStartRaceButtonInteract_DD(false);
-        Constants.DDGameForceStarted = false;
-        PlayerID_DD.Clear();
+            DDStartPushed = false;
+            ToggleStartRaceButton_DD(true);
+            ToggleDisclaimer_DD(false);
+            ToggleStartRaceButtonInteract_DD(false);
+            Constants.DDGameForceStarted = false;
+            PlayerID_DD.Clear();
 
-        RegionPinged = false;
+            RegionPinged = false;
 
-        if (MultiplayerManager.Instance)
-            MultiplayerManager.Instance.ConnectToPhotonServer();
+            if (MultiplayerManager.Instance)
+                MultiplayerManager.Instance.ConnectToPhotonServer();
+        }else
+        {
+            ShowToast(3f, "Insufficiant " + Constants.GetCurrencyName()+" amount.", false);
+        }
+    }
+
+    public bool CheckDepositPoolAmount()
+    {
+        bool hasAmount = true;
+        if (FirebaseMoralisManager.Instance.PlayerData.VC_Amount < Constants.DDPoolPrice)
+            hasAmount = false;
+
+        return hasAmount;
     }
 
 

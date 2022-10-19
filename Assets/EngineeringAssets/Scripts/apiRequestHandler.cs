@@ -9,6 +9,16 @@ using System.Runtime.InteropServices;
 
 #region SuperClasses
 [System.Serializable]
+public class DDRequest
+{
+    public string betID { get; set; }
+    public string roomID { get; set; }
+    public string playerID { get; set; }
+    public string walletAddress { get; set; }
+    public string carToken { get; set; }
+}
+
+[System.Serializable]
 public class StoreResult
 {
     public int Id { get; set; }
@@ -168,6 +178,7 @@ public class apiRequestHandler : MonoBehaviour
     private string m_GetAllMyNFTFunc = "getAllMyNFTsData";
     private string m_PurchaseCarServerFunc = "purchaseCar";
     private string m_PurchaseConsumablesFunc = "consumablePurchases";
+    private string m_DDGameSetupFunc = "gameSetup";
     private string m_uID = "";
     #endregion
 
@@ -195,7 +206,7 @@ public class apiRequestHandler : MonoBehaviour
 
         if (Constants.IsTest)
         {
-            m_uID = "XTzIA8WVsHvFEAMFv1hSEHr0";
+            m_uID = "LddoSi1kZPg1iEc1TvCHbHK4"; //"LddoSi1kZPg1iEc1TvCHbHK4"; //BgzqK1ra61GZkdXwaqwDb7Er
             Constants.GetSecKey = true;
         }
 
@@ -702,7 +713,7 @@ public class apiRequestHandler : MonoBehaviour
         {
             m_uID = "";
             Constants.PrintLog("Key was null, getting again.....");
-            Invoke("GetSecureKey", 0.5f);
+            Invoke("GetSecureKey", 0.8f);
         }
     }
     private IEnumerator ProcessNFTDataRequest(string _token)
@@ -734,6 +745,8 @@ public class apiRequestHandler : MonoBehaviour
         _dataNew.uID = m_uID;
 
         string reqNew = JsonConvert.SerializeObject(_dataNew);
+        Constants.PrintLog("Get NFT details against token ids request : " + reqNew);
+
         byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
 
 
@@ -948,6 +961,46 @@ public class apiRequestHandler : MonoBehaviour
         await request.SendWebRequest();
 
         Constants.PrintLog("Purchase consumables response : " + request.downloadHandler.text);
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
+    }
+
+    async public Task<string> ProcessGameSetupRequest_DD(string _roomID, string _playerID, string _address, string _token)
+    {
+        DDRequest _dataNEW = new DDRequest();
+        _dataNEW.betID = Constants.DDBetId.ToString();
+        _dataNEW.roomID = _roomID;
+        _dataNEW.playerID = _playerID;
+        _dataNEW.walletAddress = _address;
+        _dataNEW.carToken = _token;
+
+        string reqNew = JsonConvert.SerializeObject(_dataNEW);
+        Constants.PrintLog("DD_game setup request : " + reqNew);
+        byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
+
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_DDGameSetupFunc + m_AppID, "POST");
+        request.uploadHandler = new UploadHandlerRaw(rawBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        await request.SendWebRequest();
+
+        Constants.PrintLog("DD_game setup response : " + request.downloadHandler.text);
         if (request.result == UnityWebRequest.Result.ConnectionError)
         {
             MainMenuViewController.Instance.SomethingWentWrongMessage();

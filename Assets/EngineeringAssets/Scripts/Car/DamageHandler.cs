@@ -180,10 +180,16 @@ public class DamageHandler : MonoBehaviour
         if (GamePlayUIHandler.Instance)
             GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("Car is destroyed, better luck next time.");
            
-        if(Constants.IsMultiplayer)
+        if(Constants.IsMultiplayer && !Constants.IsDestructionDerby)
         {
             Constants.MoveCar = false;
             MultiplayerManager.Instance.CallEndMultiplayerGameRPC(true);
+        }
+
+        if(Constants.IsDestructionDerby)
+        {
+            Constants.MoveCar = false;
+            MultiplayerManager.Instance.UpdatePlayerGameOverStatusDD();
         }
 
         if (AnalyticsManager.Instance)

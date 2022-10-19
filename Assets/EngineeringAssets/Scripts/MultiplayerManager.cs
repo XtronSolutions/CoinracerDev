@@ -14,6 +14,31 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 using System;
 
 #region SuperClasses
+
+public enum StatusType
+{
+    PENDING=0,
+    INPROGRESS=1,
+    COMPLETED=2
+}
+public class CustomPlayerPropDataDD
+{
+    public string name;
+    public string walletAddress;
+    public string PhotonID;
+    public string FirestoreID;
+    public int TotalWins;
+    public int CarToken;
+    public bool GameOverStatus;
+}
+
+public class CustomRoomPropDataDD
+{
+    public string RoomName;
+    public StatusType Status = StatusType.PENDING;
+    public List<CustomPlayerPropDataDD> Roomdata = new List<CustomPlayerPropDataDD>();
+}
+
 public class CustomPlayerPropData
 {
     [Tooltip("name of the player on PUN")]
@@ -87,6 +112,20 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     string _customPlayerPropString = ""; //string to store response of player data from PUN
     string _customRoomPropString = ""; //string to store response of room data from PUN
     private CustomRoomPropData DataRoomPropData; //class instance of CustomRoomPropData
+
+    private CustomRoomPropDataDD DDDataRoomPropData; //class instance of CustomRoomPropDataDD for Destruction Derby
+    private CustomRoomPropDataDD DDDataRoomPropTemp; //reference for properties changes
+    string _customPlayerPropStringDD = "";
+    string _customRoomPropStringDD = "";
+
+
+    double startTime;
+    double timerIncrementValue;
+    bool startTimer = false;
+
+    double totalSeconds;
+    double timeSpanConversiondMinutes;
+    double timeSpanConversionSeconds;
     #endregion
 
     #region MultiplayerPhoton
@@ -190,6 +229,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Constants.PrintLog("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
         PhotonNetwork.AutomaticallySyncScene = true;
 
+        //if (PhotonNetwork.InLobby)
+            //LobbyConnection();
+        //else
+            //PhotonNetwork.JoinLobby();
+    }
+
+    public void LobbyConnection()
+    {
         float nameSuffix = UnityEngine.Random.Range(1000, 9999);
         string name = "Player_" + nameSuffix.ToString();
 
@@ -201,14 +248,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.LocalPlayer.NickName = name;
 
-        //if (PhotonNetwork.InLobby)
-            //LobbyConnection();
-        //else
-            //PhotonNetwork.JoinLobby();
-    }
-
-    public void LobbyConnection()
-    {
         UpdateConnectionText("Joined Lobby");
         Constants.PrintLog("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
 
@@ -391,7 +430,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             RaceManager.Instance.showDisconnectScreen();
         }
     }
-
     public override void OnDisconnected(DisconnectCause cause)
     {
         if (Constants.RegionChanged == true)
@@ -411,7 +449,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             //somethingWentWrongPanel.SetActive(true);
         }
     }
-
     public void UpdateTransactionData(bool _canWithdraw, bool _depositDone, string _context, bool _depostButtonActive, bool _withdrawButtonActive, bool _canDisableTimer)
     {
         if (MainMenuViewController.Instance)
@@ -428,14 +465,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 MainMenuViewController.Instance.EnableWithDrawTimer_ConnectionUI();
         }
     }
-
-    double startTime;
-    double timerIncrementValue;
-    bool startTimer = false;
-
-    double totalSeconds;
-    double timeSpanConversiondMinutes;
-    double timeSpanConversionSeconds;
 
     void Update()
     {
@@ -482,13 +511,28 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             }
         }else if(Constants.IsDestructionDerby)
         {
+            //setting room properties for destruction derby
+            CustomPlayerPropDataDD _playerDatatemp = RoomPropConstructor(
+                FirebaseMoralisManager.Instance.PlayerData.UserName,
+                Constants.WalletAddress,
+                PhotonNetwork.LocalPlayer.UserId,
+                FirebaseMoralisManager.Instance.PlayerData.UID,
+                FirebaseMoralisManager.Instance.PlayerData.TotalWins,
+                Constants.SelectedCarToken,
+                false
+                );
+
+            StartCoroutine(ProcessRoomPropDD(_playerDatatemp, false, ""));
+
+            //Debug.Log(PhotonNetwork.CurrentRoom.Name);
+            //FirebaseMoralisManager.Instance.SetupUpGame_DD(PhotonNetwork.CurrentRoom.Name,FirebaseMoralisManager.Instance.PlayerData.UID,Constants.WalletAddress,Constants.SelectedCarToken.ToString());
+
             foreach (var item in PhotonNetwork.CurrentRoom.Players)
             {
                 if (MainMenuViewController.Instance)
                     MainMenuViewController.Instance.PopulatePlayerData_DD(item.Value.ActorNumber, item.Value.NickName, "");
             }
             
-
             ToggleDDStartGame();
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
@@ -560,13 +604,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void ToggleDDStartGame()
-    {
-        if (PhotonNetwork.CurrentRoom.PlayerCount >= Constants.MinDDPlayers)
-            MainMenuViewController.Instance.ToggleStartRaceButtonInteract_DD(true);
-        else
-            MainMenuViewController.Instance.ToggleStartRaceButtonInteract_DD(false);
-    }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         byte _count = Settings.MaxPlayers;
@@ -579,8 +616,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
 
             ToggleDDStartGame();
-
-            //MainMenuViewController.Instance.SetPlayerConnectedText_DD(PhotonNetwork.CurrentRoom.PlayerCount);
         }
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == _count)
@@ -610,44 +645,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 if (Constants.IsDestructionDerby)
                 {
                     startTimer = false;
-                    PhotonNetwork.CurrentRoom.IsOpen = false;
-                    PhotonNetwork.CurrentRoom.IsVisible = false;
-                    MultiplayerManager.Instance.LoadSceneDelay();
+                    StartDDGame();
                 }
                 else
                     RPCCalls.Instance.PHView.RPC("SyncConnectionData", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber.ToString(), Constants.UserName, Constants.TotalWins.ToString(), Constants.FlagSelectedIndex.ToString(), Constants.SelectedCurrencyAmount.ToString(), _tokenID);
 
             }
-        }
-    }
-
-    public void ForceStartGameDD()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            startTimer = false;
-            PhotonNetwork.CurrentRoom.IsOpen = false;
-            PhotonNetwork.CurrentRoom.IsVisible = false;
-
-            if (!Constants.FreeMultiplayer)
-            {
-                if (Constants.DepositDone)
-                {
-                    RPCCalls.Instance.PHView.RPC("DepositCompleted", RpcTarget.Others);
-                }
-                else
-                {
-                    UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
-                }
-
-            }
-            string _tokenID = "0";
-
-            if (!Constants.FreeMultiplayer)
-                _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
-
-            Debug.LogError("force start game called");
-            MultiplayerManager.Instance.LoadSceneDelay();
         }
     }
 
@@ -802,6 +805,221 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             Constants.DDGameForceStarted = true;
             startTimer = false;
             ForceStartGameDD();
+        }
+
+        if (propertiesThatChanged.ContainsKey(Constants.RoomDataKeyDD))
+        {
+            string _temp = (string)PhotonNetwork.CurrentRoom.CustomProperties[Constants.RoomDataKeyDD];
+            DDDataRoomPropTemp = JsonConvert.DeserializeObject<CustomRoomPropDataDD>(_temp);
+
+            if (DDDataRoomPropTemp.Status == StatusType.PENDING)
+            {
+                Debug.Log("Game has not started yet, no room data would be updated, returning....");
+                return;
+            }else if (DDDataRoomPropTemp.Status == StatusType.INPROGRESS)
+            {
+                Debug.Log("Room properties were updated for destruction derby, checking winner....");
+                DeclareDDWinner(DDDataRoomPropTemp);
+            }
+
+        }
+    }
+    #endregion
+
+    #region Destruction Derby
+    public void ToggleDDStartGame()
+    {
+        if (PhotonNetwork.CurrentRoom.PlayerCount >= Constants.MinDDPlayers)
+            MainMenuViewController.Instance.ToggleStartRaceButtonInteract_DD(true);
+        else
+            MainMenuViewController.Instance.ToggleStartRaceButtonInteract_DD(false);
+    }
+    public void ForceStartGameDD()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startTimer = false;
+            
+            if (!Constants.FreeMultiplayer)
+            {
+                if (Constants.DepositDone)
+                {
+                    RPCCalls.Instance.PHView.RPC("DepositCompleted", RpcTarget.Others);
+                }
+                else
+                {
+                    UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
+                }
+
+            }
+            string _tokenID = "0";
+
+            if (!Constants.FreeMultiplayer)
+                _tokenID = Constants.TokenNFT[Constants._SelectedTokenNameIndex].ID[Constants._SelectedTokenIDIndex].ToString();
+
+            Debug.LogError("force start game called");
+            StartDDGame();
+        }
+    }
+    public void StartDDGame()
+    {
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+
+        //update room status 
+        GetCustomPropsDD(true, Constants.RoomDataKeyDD);
+        DDDataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropDataDD>(_customRoomPropStringDD);
+        DDDataRoomPropData.Status = StatusType.INPROGRESS;
+        string _json = JsonConvert.SerializeObject(DDDataRoomPropData);
+        SetCustomPropsDD(true, Constants.RoomDataKeyDD, _json);
+
+        MultiplayerManager.Instance.LoadSceneDelay();
+    }
+    public CustomPlayerPropDataDD RoomPropConstructor(string _name,string _walletAddress,string pid,string fid, int tWins, int carToken, bool status)
+    {
+        CustomPlayerPropDataDD _playerDataDD = new CustomPlayerPropDataDD();
+        _playerDataDD.name = _name;
+        _playerDataDD.walletAddress = _walletAddress;
+        _playerDataDD.PhotonID = pid;
+        _playerDataDD.FirestoreID = fid;
+        _playerDataDD.TotalWins = tWins;
+        _playerDataDD.CarToken = carToken;
+        _playerDataDD.GameOverStatus = status;
+        return _playerDataDD;
+    }
+    public void SetCustomPropsDD(bool IsRoom, string _key, string _temp)
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            bool isSet = false;
+            Hashtable myCustomProperties = new Hashtable
+        {
+           {_key, _temp}
+        };
+
+            if (IsRoom)
+                isSet = PhotonNetwork.CurrentRoom.SetCustomProperties(myCustomProperties);
+            else
+                isSet = PhotonNetwork.LocalPlayer.SetCustomProperties(myCustomProperties);
+
+            Constants.PrintLog("prop set : " + isSet);
+        }
+    }
+    public void GetCustomPropsDD(bool IsRoom, string _key)
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            string _temp = "";
+
+            if (IsRoom)
+            {
+                if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(_key))
+                    _temp = (string)PhotonNetwork.CurrentRoom.CustomProperties[_key];
+
+                _customRoomPropStringDD = _temp;
+
+                Constants.PrintLog("room data : " + _temp);
+            }
+            else
+            {
+                if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(_key))
+                    _temp = (string)PhotonNetwork.LocalPlayer.CustomProperties[_key];
+
+                _customPlayerPropStringDD = _temp;
+
+                Constants.PrintLog("player data : " + _temp);
+            }
+        }
+    }
+    IEnumerator ProcessRoomPropDD(CustomPlayerPropDataDD _data, bool isRemoving = false, string UserID = "")
+    {
+        yield return new WaitForSeconds(0.5f);
+        GetCustomPropsDD(true,Constants.RoomDataKeyDD);
+        yield return new WaitForSeconds(0.55f);
+
+        if (isRemoving)
+        {
+            if (_customRoomPropStringDD == "")//if there is entry in room
+            {
+                DDDataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropDataDD>(_customRoomPropStringDD);
+
+                foreach (var item in DDDataRoomPropData.Roomdata)
+                {
+                    if (item.PhotonID == UserID)
+                    {
+                        DDDataRoomPropData.Roomdata.Remove(item);
+                        break;
+                    }
+                }
+
+                string _json = JsonConvert.SerializeObject(DDDataRoomPropData);
+                SetCustomPropsDD(true, Constants.RoomDataKeyDD, _json);
+            }
+        }
+        else
+        {
+            if (_customRoomPropStringDD == "")//if there is no entry in room
+            {
+                DDDataRoomPropData = new CustomRoomPropDataDD();
+                DDDataRoomPropData.RoomName = PhotonNetwork.CurrentRoom.Name;
+                DDDataRoomPropData.Status = StatusType.PENDING;
+                DDDataRoomPropData.Roomdata.Add(_data);
+
+                string _json = JsonConvert.SerializeObject(DDDataRoomPropData);
+                SetCustomPropsDD(true, Constants.RoomDataKeyDD, _json);
+            }
+            else
+            {
+                DDDataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropDataDD>(_customRoomPropStringDD);
+                DDDataRoomPropData.Roomdata.Add(_data);
+
+                string _json = JsonConvert.SerializeObject(DDDataRoomPropData);
+                SetCustomPropsDD(true, Constants.RoomDataKeyDD, _json);
+            }
+
+            yield return new WaitForSeconds(1f);
+            GetCustomProps(true, Constants.RoomDataKeyDD);
+        }
+    }
+    public void UpdatePlayerGameOverStatusDD()
+    {
+        GetCustomPropsDD(true, Constants.RoomDataKeyDD);
+        DDDataRoomPropData = JsonConvert.DeserializeObject<CustomRoomPropDataDD>(_customRoomPropStringDD);
+
+        for (int i = 0; i < DDDataRoomPropData.Roomdata.Count; i++)
+        {
+            if (DDDataRoomPropData.Roomdata[i].PhotonID == PhotonNetwork.LocalPlayer.UserId)
+            {
+                DDDataRoomPropData.Roomdata[i].GameOverStatus = true;
+                break;
+            }
+        }
+
+        string _json = JsonConvert.SerializeObject(DDDataRoomPropData);
+        SetCustomPropsDD(true, Constants.RoomDataKeyDD, _json);
+    }
+    public void DeclareDDWinner(CustomRoomPropDataDD _data)
+    {
+        int _winner = 0;
+        string _uid = "";
+        for (int i = 0; i < _data.Roomdata.Count; i++)
+        {
+            if (_data.Roomdata[i].GameOverStatus == false)
+            {
+                _uid = _data.Roomdata[i].PhotonID;
+                _winner++;
+            }
+        }
+
+        if(_winner==1 && _uid==PhotonNetwork.LocalPlayer.UserId)// we have a winner for destruction derby
+        {
+            _data.Status = StatusType.COMPLETED;
+
+            if (GamePlayUIHandler.Instance)
+                GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("You have won the race, reward has been provided.");
+
+            string _json = JsonConvert.SerializeObject(_data);
+            SetCustomPropsDD(true, Constants.RoomDataKeyDD, _json);
         }
 
     }

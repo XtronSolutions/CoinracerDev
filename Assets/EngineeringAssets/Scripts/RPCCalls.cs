@@ -118,7 +118,6 @@ public class RPCCalls : MonoBehaviour
         else
         {
             //Constants.OpponentTokenID = _ID;
-
             string _tokenID = "0";
 
             if (!Constants.FreeMultiplayer)
@@ -145,5 +144,4 @@ public class RPCCalls : MonoBehaviour
             MultiplayerManager.Instance.UpdateTransactionData(false, false, "please deposit the wage amount...", true, false, true);
         }
     }
-
 }

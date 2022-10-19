@@ -58,8 +58,9 @@ public class NFTGameplayManager : MonoBehaviour
                 }
             }
 
-            if(totalNFTS==0)
+            if(totalNFTS==0) //no car exists on chain
             {
+                InstantiateBoughtFromMoralis();
                 MainMenuViewController.Instance.LoadingScreen.SetActive(false);
                 GarageHandler.Instance.ToggleLoaders(false, false, false);
                 MainMenuViewController.Instance.AssignStoreGarageCars(GarageHandler.Instance.ComponentGarage.MiddleCar, GarageHandler.Instance.ComponentGarage.LeftCar, GarageHandler.Instance.ComponentGarage.RightCar, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, GarageHandler.Instance.ComponentGarage.CarName_Text, GarageHandler.Instance.ComponentGarage.CarID_Text, true, false, true);
@@ -139,6 +140,7 @@ public class NFTGameplayManager : MonoBehaviour
     async public void InstantiateBoughtFromMoralis()
     {
         string _response = await apiRequestHandler.Instance.ProcessAllMyNFTRequest(Constants.WalletAddress);
+
         Constants.PrintLog(_response);
         if (!string.IsNullOrEmpty(_response))
         {
@@ -214,7 +216,7 @@ public class NFTGameplayManager : MonoBehaviour
 
                                 _newData.MetaData = _dataNEW.result[i].metadata;
                                 _newData.mechanicsData = new MechanicsData(_carName, _carHealth, _carTyreLaps, _carOilLaps, _carGasLaps, _MoralisStatsettings);
-                                FirebaseMoralisManager.Instance.SetMechanics(int.Parse(_dataNEW.result[i].tokenId), _newData);
+                                FirebaseMoralisManager.Instance.SetMechanics(int.Parse(_dataNEW.result[i].tokenId), _newData,true);
 
                                 MainMenuViewController.Instance.AssignStoreGarageData(DataNFTModel[k].CarSelection.gameObject, int.Parse(_dataNEW.result[i].tokenId), DataNFTModel[k].name, _statSettings, GarageHandler.Instance.ComponentGarage.CarSelectionContainer.transform, true, true);
                             }

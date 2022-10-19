@@ -13,6 +13,7 @@ public static class Constants
     public static string TokenName = "CRACER";
     public static string APP_VERSION = "Beta 1.0";
     public static string WalletAccoutKey = "Account";
+    public static string dappCheckKey = "hjk";
     public static string SecureKey = "flcpe";
     public static string NameCurrency = "USD";
     public static string SoundKey = "Sound";
@@ -117,7 +118,7 @@ public static class Constants
     public static bool IsTestNet = true;
     public static bool IsTest = true;
     public static bool IsStagging = true;
-    public static bool DebugAllCars = true;// bool to enable all cars
+    public static bool DebugAllCars = false;// bool to enable all cars
     public static bool IsDebugBuild = false;//apply pvp score 500+/enable force end race on levels// and force bid of 1 crace for pvp
     public static bool UseHashMec = true;//bool to store if contracts use hash mechanism or signature for verification
     public static bool GameMechanics = true;
@@ -145,6 +146,7 @@ public static class Constants
     public static int CalculatedCurrencyAmount = 0;
     public static string PlayerDataKey = "playerData";
     public static string RoomDataKey = "roomData";
+    public static string RoomDataKeyDD = "roomDataDD";
     public static bool isMultiplayerGameEnded = false;
 
     public static string MAP_PROP_KEY = "map";
@@ -214,10 +216,12 @@ public static class Constants
     public static int HighPing = 150;
     public static int MediumPing = 100;
     public static int LowPing = 50;
-    public static int DD_WaitTime = 30; // 120 in seconds (2 mins)
+    public static int DD_WaitTime = 120; // 120 in seconds (2 mins)
     public static bool RoomConnectionInit = false;
     public static bool DDGameForceStarted = false;
-    public static int MinDDPlayers = 2;
+    public static int MinDDPlayers = 2; //6
+    public static double DDPoolPrice = 15; //amount in CCash
+    public static int DDBetId = 1;
 
     async public static void GetCracePrice()
     {
@@ -266,7 +270,7 @@ public static class Constants
 
     public static void PrintLog(string Txt)
     {
-        if(IsTest)
+        if (IsTest)
             Debug.Log(Txt);
     }
 

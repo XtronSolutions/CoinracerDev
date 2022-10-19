@@ -123,7 +123,7 @@ public class WalletManager : MonoBehaviour
     bool isConnected = false;
     private bool storedCarsCleared = false;
     public bool IsGamePlay = false;
-
+    bool OnConnectedCalled = false;
     private string chain = "binance";//name of the chain
     private string network = "mainnet";//name of the network //mainnet//testnet
 
@@ -186,6 +186,22 @@ public class WalletManager : MonoBehaviour
 
     public void LoginTwoTest()
     {
+        //David's account
+        //Constants.WalletAddress = "0x7B1eC5f8F890acA8e1226D8064E3154835Dcb926";
+        //SetAcount("0x7B1eC5f8F890acA8e1226D8064E3154835Dcb926");
+        //InvokeRepeating("getNftsData", 0.1f, 10f);
+
+        //MainMenuViewController.Instance.OnEmailChanged_Login("david.ryabchikov@gmail.com");
+        //MainMenuViewController.Instance.OnPassChanged_Login("123456");
+        //MainMenuViewController.Instance.SubmitLogin();
+
+        //return;
+
+        //stagging account
+        //Constants.WalletAddress = "0xA7c3E878044180279Ea26cc75645d5021D6E8a8E";
+        //SetAcount("0xA7c3E878044180279Ea26cc75645d5021D6E8a8E");
+
+
         Constants.WalletAddress = "0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db";
         SetAcount("0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db");
         InvokeRepeating("getNftsData", 0.1f, 10f);
@@ -194,6 +210,9 @@ public class WalletManager : MonoBehaviour
         {
             MainMenuViewController.Instance.OnEmailChanged_Login("humzakhalid5@gmail.com");
             MainMenuViewController.Instance.OnPassChanged_Login("12345678");
+
+            //MainMenuViewController.Instance.OnEmailChanged_Login("humzakhalid99@gmail.com");
+            //MainMenuViewController.Instance.OnPassChanged_Login("12345678");
         }
         else
         {
@@ -212,6 +231,7 @@ public class WalletManager : MonoBehaviour
     private void OnEnable()
     {
         Instance = this;
+        OnConnectedCalled = false;
 
         if (!IsGamePlay)
             Constants.WalletConnected = false;
@@ -268,6 +288,40 @@ public class WalletManager : MonoBehaviour
 #endif
     }
 
+    public void CheckDappConnection()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        GetStorage(Constants.dappCheckKey, this.gameObject.name, "OnCheckDapp");
+#endif
+    }
+
+    public void OnCheckDapp(string info)
+    {
+        if (info != "null" && info != "" && info != null && info != string.Empty)
+        {
+            Constants.PrintLog(info);
+            string[] _split = info.Split('"');
+
+            if (_split[1] == "0")
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "First please connect Wallet from dapp.", false);
+            }else
+            {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Web3Connect();
+            OnConnected();
+#else
+                Debug.Log("Cannot call inside editor, has support of webgl build only");
+#endif
+            }
+            //ConnectWallet();
+        }
+        else
+        {
+            Debug.LogError("dapp check string empty");
+        }
+    }
+
     /// <summary>
     /// Callback received when "GetStorage" function is called
     /// </summary>
@@ -291,21 +345,16 @@ public class WalletManager : MonoBehaviour
     {
         account = _acc;
     }
-    #endregion
+#endregion
 
-    #region Wallet Functionality
+#region Wallet Functionality
 
     /// <summary>
     /// Called to connect wallet using web3 libraries (called from connect wallet button and "OnGetAcount" function (if wallet address was stored in local storage))
     /// </summary>
     public void ConnectWallet()
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            Web3Connect();
-            OnConnected();
-#else
-        Debug.Log("Cannot call inside editor, has support of webgl build only");
-#endif
+        CheckDappConnection();
     }
 
     /// <summary>
@@ -313,9 +362,13 @@ public class WalletManager : MonoBehaviour
     /// </summary>
     async private void OnConnected()
     {
-        Constants.PrintLog("wallet connected!");
-        Constants.GetSecKey = false;
-        apiRequestHandler.Instance.GetSecureKey();
+        if (OnConnectedCalled)
+            return;
+
+        if (!OnConnectedCalled)
+            OnConnectedCalled = true;
+
+        SetConnectAccount(""); // reset login message
         CancelInvoke();
         account = ConnectAccount(); //get connected wallet address and store it inside a variable
 
@@ -325,6 +378,10 @@ public class WalletManager : MonoBehaviour
             account = ConnectAccount();
         };
 
+
+        Constants.PrintLog("wallet connected!");
+        Constants.GetSecKey = false;
+        apiRequestHandler.Instance.GetSecureKey();
         //PlayerPrefs.SetString(Constants.WalletAccoutKey, account); //save connected wallet address in a playerpref
         Constants.WalletAddress = account;//store wallet address in a singleton static class as well (for single session)
         string _newAcount = '"' + account.ToLower() + '"';
@@ -374,6 +431,8 @@ public class WalletManager : MonoBehaviour
             isConnected = true;
             EndRace(Constants.StoredPID);
         }
+
+        OnConnectedCalled = false;
 
         //GetHashEncoded();
     }
@@ -738,9 +797,9 @@ public class WalletManager : MonoBehaviour
 
         return _havebalance;
     }
-    #endregion
+#endregion
 
-    #region NFT Functionality
+#region NFT Functionality
     /// <summary>
     /// Call to get balance of specific BEP721/ERC721 nft contract
     /// </summary>
@@ -1368,9 +1427,9 @@ public class WalletManager : MonoBehaviour
             }
         }
     }
-    #endregion
+#endregion
 
-    #region CSP Contract
+#region CSP Contract
     /// <summary>
     /// call deposit for multiplayer, if player is room creator CreateRace would be called, if player is roon joiner, Deposit would be called
     /// </summary>
@@ -2341,9 +2400,9 @@ public class WalletManager : MonoBehaviour
         Constants.PIDString = response;
     }
 
-    #endregion
+#endregion
 
-    #region Chiprace Contract
+#region Chiprace Contract
 
     public void DelayLoading()
     {
@@ -3143,7 +3202,7 @@ public class WalletManager : MonoBehaviour
         return _havebalance;
     }
 
-    #endregion
+#endregion
     public void PrintOnConsoleEditor(string _con)
     {
 #if UNITY_EDITOR

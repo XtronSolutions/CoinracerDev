@@ -199,6 +199,7 @@ namespace DavidJalbert
             
             body.drag = 0;
             body.angularDrag = 6;
+            //body.constraints = RigidbodyConstraints.FreezeRotationZ;
             body.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             //body.constraints = RigidbodyConstraints.FreezeRotation;
 
@@ -312,6 +313,7 @@ namespace DavidJalbert
 
             // steering
             float steeringForce = (onGround ? 1 : steeringMultiplierInAir) * (forwardVelocity < 0 ? -1 : 1) * steeringBySpeed.Evaluate(getForwardVelocityDelta()) * surfaceParameters.steeringMultiplier;
+            //Debug.Log("streeing force: " + steeringForce + " steering: " + steering +" EularY: "+ transform.rotation.eulerAngles.y + " total: " + transform.rotation.eulerAngles.y + steering * deltaTime * steeringForce);
             body.MoveRotation(Quaternion.Euler(0, transform.rotation.eulerAngles.y + steering * deltaTime * steeringForce, 0));
             // ---
 
@@ -342,7 +344,9 @@ namespace DavidJalbert
 
             float adjustedMaxGravity = maxGravity * scaleAdjustment;
             float adjustedGravityVelocity = gravityVelocity * scaleAdjustment;
-            velocity += gravityDirection * Mathf.Min(Mathf.Max(0, adjustedMaxGravity + velocity.y), adjustedGravityVelocity * deltaTime);
+
+            if (!onGround) //apply gravity when in air
+                velocity += gravityDirection * Mathf.Min(Mathf.Max(0, adjustedMaxGravity + velocity.y), adjustedGravityVelocity * deltaTime);
 
             if (hitSideStayStatic || hitSideStayDynamic) velocity *= 1f - Mathf.Clamp01(deltaTime * sideFriction * scaleAdjustment * hitSideForce);
 
@@ -368,6 +372,7 @@ namespace DavidJalbert
             hitGroundForce = 0;
             hitSidePosition = Vector3.zero;
             triggersParameters = null;
+            //Debug.Log(onGround);
             // ---
         }
 

@@ -10232,6 +10232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ForYAxis: 0
+  ForXAxis: 0
   speed: 350
 --- !u!114 &557070518
 MonoBehaviour:
@@ -17090,6 +17091,49 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 866274965}
   m_Mesh: {fileID: 8664978102845035497, guid: 14831b74a1e74324a8e0e00de9b89559, type: 3}
+--- !u!1 &870597866
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 870597868}
+  - component: {fileID: 870597867}
+  m_Layer: 0
+  m_Name: GameControl
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &870597867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870597866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd4493cb7ffadf49845c140e67f9bc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &870597868
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870597866}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 577.5449, y: 285.3349, z: -16.801725}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &876196803
 GameObject:
   m_ObjectHideFlags: 0
@@ -17183,8 +17227,8 @@ MonoBehaviour:
   m_ShowCameraFrustum: 1
   m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 1
-  m_BlendUpdateMethod: 1
+  m_UpdateMethod: 0
+  m_BlendUpdateMethod: 0
   m_DefaultBlend:
     m_Style: 1
     m_Time: 2
@@ -20523,6 +20567,7 @@ MonoBehaviour:
     ConnectBtn: {fileID: 0}
     ConnectedBtn: {fileID: 0}
     CoinText: {fileID: 0}
+    LoginTestButtons: []
   IsGamePlay: 1
 --- !u!4 &1096204536
 Transform:
@@ -27989,6 +28034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ForYAxis: 0
+  ForXAxis: 0
   speed: 350
 --- !u!114 &1415122323
 MonoBehaviour:
@@ -45026,6 +45072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ForYAxis: 0
+  ForXAxis: 0
   speed: 350
 --- !u!114 &2146277902
 MonoBehaviour:

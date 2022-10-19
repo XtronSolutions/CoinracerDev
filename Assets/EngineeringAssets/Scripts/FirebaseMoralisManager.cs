@@ -721,7 +721,7 @@ public class FirebaseMoralisManager : MonoBehaviour
         return NFTMehanics[key];
     }
 
-    public void SetMechanics(int key, NFTMehanicsData _data)
+    public void SetMechanics(int key, NFTMehanicsData _data,bool _canUpdate=false)
     {
         if (!NFTMehanics.ContainsKey(key))
         {
@@ -729,6 +729,12 @@ public class FirebaseMoralisManager : MonoBehaviour
         } else
         {
             Constants.PrintLog("key already existed");
+
+            if (_canUpdate)
+            {
+                NFTMehanics[key] = _data;
+                Constants.PrintLog("updating key data");
+            }
         }
     }
     public void UpdateMechanics(int key, NFTMehanicsData _data, bool _pushData = true)
@@ -874,10 +880,11 @@ public class FirebaseMoralisManager : MonoBehaviour
                         {
                             if (Constants.StoredCarNames.Contains(_dataNEW.result[i].name))
                             {
-                                Constants.PrintLog("sotring data offchain car already added from wallet, skipping....");
+                                Constants.PrintLog("sorting data offchain, car "+ _dataNEW.result[i].tokenId +" already added from wallet, skipping....");
                             }
                             else
                             {
+                                Constants.PrintLog("adding from offchain : "+ _dataNEW.result[i].name+" "+ _dataNEW.result[i].tokenId);
                                 AddMoralisCarInfo(_dataNEW.result[i].name, _dataNEW.result[i].tokenId);
                             }
                         }
@@ -957,6 +964,8 @@ public class FirebaseMoralisManager : MonoBehaviour
             }
 
             Constants.GetMoralisData = true;
+
+            Constants.PrintLog("finished UpdateCarPurchasedData");
         }
         else
         {
@@ -1135,6 +1144,15 @@ public class FirebaseMoralisManager : MonoBehaviour
     {
         string _json = JsonConvert.SerializeObject(CarDealer);
         Constants.PrintLog(_json);
+    }
+
+    async public void SetupUpGame_DD(string _roomID, string _playerID, string _address, string _token)
+    {
+        string _data = await apiRequestHandler.Instance.ProcessGameSetupRequest_DD(_roomID, _playerID, _address,_token);
+        if (!string.IsNullOrEmpty(_data))
+        {
+            Debug.Log("Game Setup for DD completed");
+        }
     }
     #endregion
 }
