@@ -179,6 +179,9 @@ public class apiRequestHandler : MonoBehaviour
     private string m_PurchaseCarServerFunc = "purchaseCar";
     private string m_PurchaseConsumablesFunc = "consumablePurchases";
     private string m_DDGameSetupFunc = "gameSetup";
+    private string m_DDStartGameFunc = "startGame";
+    private string m_DDUpdateGameFunc = "updateData";
+    private string m_DDClaimRewardFunc = "claimReward";
     private string m_uID = "";
     #endregion
 
@@ -980,6 +983,7 @@ public class apiRequestHandler : MonoBehaviour
         }
     }
 
+    #region Destruction Derby
     async public Task<string> ProcessGameSetupRequest_DD(string _roomID, string _playerID, string _address, string _token)
     {
         DDRequest _dataNEW = new DDRequest();
@@ -1019,6 +1023,124 @@ public class apiRequestHandler : MonoBehaviour
             }
         }
     }
+    async public Task<string> ProcessStartGameRequest_DD(string _roomID, string _playerID, string _address, string _token)
+    {
+        DDRequest _dataNEW = new DDRequest();
+        _dataNEW.betID = Constants.DDBetId.ToString();
+        _dataNEW.roomID = _roomID;
+        _dataNEW.playerID = _playerID;
+        _dataNEW.walletAddress = _address;
+        _dataNEW.carToken = _token;
+
+        string reqNew = JsonConvert.SerializeObject(_dataNEW);
+        Constants.PrintLog("DD_start game request : " + reqNew);
+        byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
+
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_DDStartGameFunc + m_AppID, "POST");
+        request.uploadHandler = new UploadHandlerRaw(rawBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        await request.SendWebRequest();
+
+        Constants.PrintLog("DD_start game response : " + request.downloadHandler.text);
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
+    }
+    async public Task<string> ProcessUpdateGameRequest_DD(string _roomID, string _playerID, string _address, string _token)
+    {
+        DDRequest _dataNEW = new DDRequest();
+        _dataNEW.betID = Constants.DDBetId.ToString();
+        _dataNEW.roomID = _roomID;
+        _dataNEW.playerID = _playerID;
+        _dataNEW.walletAddress = _address;
+        _dataNEW.carToken = _token;
+
+        string reqNew = JsonConvert.SerializeObject(_dataNEW);
+        Constants.PrintLog("DD_start game request : " + reqNew);
+        byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
+
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_DDUpdateGameFunc + m_AppID, "POST");
+        request.uploadHandler = new UploadHandlerRaw(rawBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        await request.SendWebRequest();
+
+        Constants.PrintLog("DD_start game response : " + request.downloadHandler.text);
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
+    }
+    async public Task<string> ProcessClaimRewardRequest_DD(string _roomID, string _playerID, string _address, string _token)
+    {
+        DDRequest _dataNEW = new DDRequest();
+        _dataNEW.betID = Constants.DDBetId.ToString();
+        _dataNEW.roomID = _roomID;
+        _dataNEW.playerID = _playerID;
+        _dataNEW.walletAddress = _address;
+        _dataNEW.carToken = _token;
+
+        string reqNew = JsonConvert.SerializeObject(_dataNEW);
+        Constants.PrintLog("DD_start game request : " + reqNew);
+        byte[] rawBody = System.Text.Encoding.UTF8.GetBytes(reqNew);
+
+        UnityWebRequest request = new UnityWebRequest(m_BaseURL + m_DDClaimRewardFunc + m_AppID, "POST");
+        request.uploadHandler = new UploadHandlerRaw(rawBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        await request.SendWebRequest();
+
+        Constants.PrintLog("DD_start game response : " + request.downloadHandler.text);
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            MainMenuViewController.Instance.SomethingWentWrongMessage();
+            return "";
+        }
+        else
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                return request.downloadHandler.text;
+            }
+            else
+            {
+                MainMenuViewController.Instance.SomethingWentWrongMessage();
+                return "";
+            }
+        }
+    }
+    #endregion
 
     #endregion
 }

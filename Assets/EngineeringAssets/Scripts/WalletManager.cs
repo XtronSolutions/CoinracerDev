@@ -202,8 +202,8 @@ public class WalletManager : MonoBehaviour
         //SetAcount("0xA7c3E878044180279Ea26cc75645d5021D6E8a8E");
 
 
-        Constants.WalletAddress = "0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db";
-        SetAcount("0x54815A2afe0393F167B2ED59D6DF5babD40Be6Db");
+        Constants.WalletAddress = "0x54815a2afe0393f167b2ed59d6df5babd40be6db";
+        SetAcount("0x54815a2afe0393f167b2ed59d6df5babd40be6db");
         InvokeRepeating("getNftsData", 0.1f, 10f);
 
         if (Constants.IsStagging)

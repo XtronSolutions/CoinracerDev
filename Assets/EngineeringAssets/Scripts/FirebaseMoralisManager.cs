@@ -1146,13 +1146,55 @@ public class FirebaseMoralisManager : MonoBehaviour
         Constants.PrintLog(_json);
     }
 
+    #region Destruction Derby
     async public void SetupUpGame_DD(string _roomID, string _playerID, string _address, string _token)
     {
         string _data = await apiRequestHandler.Instance.ProcessGameSetupRequest_DD(_roomID, _playerID, _address,_token);
         if (!string.IsNullOrEmpty(_data))
         {
-            Debug.Log("Game Setup for DD completed");
+            JToken token = JObject.Parse(_data);
+
+            string msg = token.SelectToken("result").SelectToken("message") != null ? (string)token.SelectToken("result").SelectToken("message") : "";
+
+            if (msg.Contains("successfully added new record"))
+            {
+                Constants.VirtualCurrencyAmount = (float)token.SelectToken("result").SelectToken("VC_amount");
+
+                StoreHandler.Instance.SetCCashText_StoreUI(Constants.VirtualCurrencyAmount);
+                StoreHandler.Instance.SetCCashText_Garage(Constants.VirtualCurrencyAmount);
+                MainMenuViewController.Instance.UpdateVCText(Constants.VirtualCurrencyAmount);
+                MainMenuViewController.Instance.ShowToast(3f, "15 CCash was deducted for contribution.", true);
+                Debug.Log("Game Setup for DD completed");
+            }
         }
     }
+
+    async public void StartGame_DD(string _roomID, string _playerID, string _address, string _token)
+    {
+        string _data = await apiRequestHandler.Instance.ProcessStartGameRequest_DD(_roomID, _playerID, _address, _token);
+        if (!string.IsNullOrEmpty(_data))
+        {
+            Debug.Log("Game started for DD");
+        }
+    }
+
+    async public void UpdateGame_DD(string _roomID, string _playerID, string _address, string _token)
+    {
+        string _data = await apiRequestHandler.Instance.ProcessUpdateGameRequest_DD(_roomID, _playerID, _address, _token);
+        if (!string.IsNullOrEmpty(_data))
+        {
+            Debug.Log("Game data updated!");
+        }
+    }
+
+    async public void ClaimWinner_DD(string _roomID, string _playerID, string _address, string _token)
+    {
+        string _data = await apiRequestHandler.Instance.ProcessClaimRewardRequest_DD(_roomID, _playerID, _address, _token);
+        if (!string.IsNullOrEmpty(_data))
+        {
+            Debug.Log("winner rewarded!");
+        }
+    }
+    #endregion
     #endregion
 }

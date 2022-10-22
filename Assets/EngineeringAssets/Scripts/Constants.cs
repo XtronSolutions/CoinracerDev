@@ -116,7 +116,7 @@ public static class Constants
     public static bool WalletChanged = false;
 
     public static bool IsTestNet = true;
-    public static bool IsTest = true;
+    public static bool IsTest = false;
     public static bool IsStagging = true;
     public static bool DebugAllCars = false;// bool to enable all cars
     public static bool IsDebugBuild = false;//apply pvp score 500+/enable force end race on levels// and force bid of 1 crace for pvp
@@ -219,7 +219,7 @@ public static class Constants
     public static int DD_WaitTime = 120; // 120 in seconds (2 mins)
     public static bool RoomConnectionInit = false;
     public static bool DDGameForceStarted = false;
-    public static int MinDDPlayers = 2; //6
+    public static int MinDDPlayers = 6; //6
     public static double DDPoolPrice = 15; //amount in CCash
     public static int DDBetId = 1;
 

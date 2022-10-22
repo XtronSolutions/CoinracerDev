@@ -118,7 +118,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     string _customPlayerPropStringDD = "";
     string _customRoomPropStringDD = "";
 
-
     double startTime;
     double timerIncrementValue;
     bool startTimer = false;
@@ -501,7 +500,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         UpdateConnectionText("Joined Room");
         Constants.StoredPID = PhotonNetwork.CurrentRoom.Name;
 
-
         if (PhotonNetwork.CurrentRoom.PlayerCount == Settings.MaxPlayers && !Constants.IsDestructionDerby)
         {
             if (!Constants.FreeMultiplayer)
@@ -524,8 +522,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
             StartCoroutine(ProcessRoomPropDD(_playerDatatemp, false, ""));
 
-            //Debug.Log(PhotonNetwork.CurrentRoom.Name);
-            //FirebaseMoralisManager.Instance.SetupUpGame_DD(PhotonNetwork.CurrentRoom.Name,FirebaseMoralisManager.Instance.PlayerData.UID,Constants.WalletAddress,Constants.SelectedCarToken.ToString());
+            //calling morlis api to setup room 
+            FirebaseMoralisManager.Instance.SetupUpGame_DD(PhotonNetwork.CurrentRoom.Name,FirebaseMoralisManager.Instance.PlayerData.UID,Constants.WalletAddress,Constants.SelectedCarToken.ToString());
 
             foreach (var item in PhotonNetwork.CurrentRoom.Players)
             {
@@ -872,8 +870,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         DDDataRoomPropData.Status = StatusType.INPROGRESS;
         string _json = JsonConvert.SerializeObject(DDDataRoomPropData);
         SetCustomPropsDD(true, Constants.RoomDataKeyDD, _json);
-
-        MultiplayerManager.Instance.LoadSceneDelay();
+        
+        //calling moralis to start game for destruction derby
+        FirebaseMoralisManager.Instance.StartGame_DD(PhotonNetwork.CurrentRoom.Name, FirebaseMoralisManager.Instance.PlayerData.UID, Constants.WalletAddress, Constants.SelectedCarToken.ToString());
+        
+        LoadSceneDelay();
     }
     public CustomPlayerPropDataDD RoomPropConstructor(string _name,string _walletAddress,string pid,string fid, int tWins, int carToken, bool status)
     {
@@ -990,6 +991,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             if (DDDataRoomPropData.Roomdata[i].PhotonID == PhotonNetwork.LocalPlayer.UserId)
             {
+                //calling moralis to update game data
+                FirebaseMoralisManager.Instance.UpdateGame_DD(PhotonNetwork.CurrentRoom.Name, DDDataRoomPropData.Roomdata[i].FirestoreID, DDDataRoomPropData.Roomdata[i].walletAddress, DDDataRoomPropData.Roomdata[i].CarToken.ToString());
+                
                 DDDataRoomPropData.Roomdata[i].GameOverStatus = true;
                 break;
             }
@@ -1002,10 +1006,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         int _winner = 0;
         string _uid = "";
+        int _index = 0;
         for (int i = 0; i < _data.Roomdata.Count; i++)
         {
             if (_data.Roomdata[i].GameOverStatus == false)
             {
+                _index = i;
                 _uid = _data.Roomdata[i].PhotonID;
                 _winner++;
             }
@@ -1014,6 +1020,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if(_winner==1 && _uid==PhotonNetwork.LocalPlayer.UserId)// we have a winner for destruction derby
         {
             _data.Status = StatusType.COMPLETED;
+            StartCoroutine(AnnounceWinner(_index));
 
             if (GamePlayUIHandler.Instance)
                 GamePlayUIHandler.Instance.InstantiateGameOver_CarTotaled("You have won the race, reward has been provided.");
@@ -1022,6 +1029,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
             SetCustomPropsDD(true, Constants.RoomDataKeyDD, _json);
         }
 
+    }
+
+    public IEnumerator AnnounceWinner(int _index)
+    {
+        yield return new WaitForSeconds(2f);
+        //calling moralis api to reward the winner
+        FirebaseMoralisManager.Instance.ClaimWinner_DD(PhotonNetwork.CurrentRoom.Name, DDDataRoomPropData.Roomdata[_index].FirestoreID, DDDataRoomPropData.Roomdata[_index].walletAddress, DDDataRoomPropData.Roomdata[_index].CarToken.ToString());
     }
     #endregion
 

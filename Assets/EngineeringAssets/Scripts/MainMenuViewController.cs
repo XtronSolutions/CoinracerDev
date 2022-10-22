@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using static Constants;
 using System.Runtime.InteropServices;
 using Photon.Pun;
+using System.Linq;
 
 #region SuperClasses
 
@@ -1500,7 +1501,7 @@ public class MainMenuViewController : MonoBehaviour
 
     public bool CheckMechanics()
     {
-        Constants.PrintLog("Selected Car : " + TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex]);
+        Constants.PrintLog("Selected Car : " + _SelectedTokenNameIndex +" "+ _SelectedTokenIDIndex +" "+ TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex]);
         SelectedCarToken = TokenNFT[_SelectedTokenNameIndex].ID[_SelectedTokenIDIndex];
         MechanicsManager.Instance.UpdateMechanicsData(SelectedCarToken);
 
@@ -2055,38 +2056,6 @@ public class MainMenuViewController : MonoBehaviour
         }
 
         ToggleTokenScreen(true);
-        //UpdateToken();
-
-        //if (Constants.EarnMultiplayer)
-        //{
-        //    for (int i = 0; i < _selecteableCars.Count; i++)
-        //    {
-        //        _selecteableCars[i].Deactivate();
-        //    }
-
-        //    ToggleTokenScreen(true);
-        //    UpdateToken();
-        //} else
-        //{
-
-        //    ToggleTokenScreen(false);
-        //}
-
-        //if (Constants.DebugAllCars)
-        //{
-        //    for (int j = 0; j < _allCars.Count; j++)
-        //    {
-        //        _selecteableCars.Add(_allCars[j].CarDetail);
-        //    }
-
-        //    LoadingScreen.SetActive(false);
-        //    _currentSelectedCarIndex = 0;
-        //    _SelectedTokenNameIndex = 0;
-        //    _SelectedTokenIDIndex = 0;
-        //    UpdateSelectedCarVisual(_currentSelectedCarIndex);
-        //    UpdateToken();
-        //    return;
-        //}
 
         if (Constants.CheckAllNFT && (Constants.GetMoralisData || Constants.DebugAllCars))
         {
@@ -2103,7 +2072,7 @@ public class MainMenuViewController : MonoBehaviour
                 {
                     if (IsSecondTournament)
                         _selecteableCars.Add(_allCars[27].CarDetail);
-                    else
+                    else if (!Constants.IsDestructionDerby)
                         _selecteableCars.Add(_allCars[0].CarDetail);
 
                     LoadingScreen.SetActive(false);
@@ -2116,13 +2085,10 @@ public class MainMenuViewController : MonoBehaviour
                 DeactivateCars();
                 _selecteableCars.Clear();
 
-                //if (!Constants.EarnMultiplayer)
-                //{
                 if (IsSecondTournament)
                     _selecteableCars.Add(_allCars[27].CarDetail);
-                else
+                else if(!Constants.IsDestructionDerby)
                     _selecteableCars.Add(_allCars[0].CarDetail);
-                //}
 
                 for (int i = 0; i < Constants.StoredCarNames.Count; i++)
                 {
@@ -2136,11 +2102,12 @@ public class MainMenuViewController : MonoBehaviour
                     }
                 }
 
-                for (int i = 0; i < Constants.StoredCarNamesMoralis.Count; i++)
+                string[] dist = Constants.StoredCarNamesMoralis.Distinct().ToArray();
+                for (int i = 0; i < dist.Length; i++)
                 {
                     for (int j = 0; j < _allCars.Count; j++)
                     {
-                        if (Constants.StoredCarNamesMoralis[i].ToLower() == _allCars[j].CarName.ToLower())
+                        if (dist[i].ToLower() == _allCars[j].CarName.ToLower())
                         {
                             _selecteableCars.Add(_allCars[j].CarDetail);
                             break;
@@ -2150,7 +2117,12 @@ public class MainMenuViewController : MonoBehaviour
 
                 LoadingScreen.SetActive(false);
                 _currentSelectedCarIndex = 0;
-                _SelectedTokenNameIndex = 0;
+                if(Constants.IsDestructionDerby)
+                    _SelectedTokenNameIndex = 1;
+                else
+                    _SelectedTokenNameIndex = 0;
+
+
                 _SelectedTokenIDIndex = 0;
                 UpdateSelectedCarVisual(_currentSelectedCarIndex);
                 UpdateToken();
