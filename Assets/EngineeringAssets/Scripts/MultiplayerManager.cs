@@ -486,8 +486,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
                 ForceStartGameDD();
             else
             {
-                MainMenuViewController.Instance.ShowToast(5f, "No player found online, try again some time later or switch to a different region.", false);
+                MainMenuViewController.Instance.ShowToast(5f, "No player found online, try again some time later or switch to a different region.\n"+Constants.VirtualCurrency+" amount refunded.", false);
                 MainMenuViewController.Instance.DisableScreen_DD();
+                FirebaseMoralisManager.Instance.ResetGame_DD(PhotonNetwork.CurrentRoom.Name, FirebaseMoralisManager.Instance.PlayerData.UID, Constants.WalletAddress, Constants.SelectedCarToken.ToString()) ;
             }
            
             //Timer Completed
@@ -1035,7 +1036,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(2f);
         //calling moralis api to reward the winner
-        FirebaseMoralisManager.Instance.ClaimWinner_DD(PhotonNetwork.CurrentRoom.Name, DDDataRoomPropData.Roomdata[_index].FirestoreID, DDDataRoomPropData.Roomdata[_index].walletAddress, DDDataRoomPropData.Roomdata[_index].CarToken.ToString());
+        //FirebaseMoralisManager.Instance.ClaimWinner_DD(PhotonNetwork.CurrentRoom.Name, DDDataRoomPropData.Roomdata[_index].FirestoreID, DDDataRoomPropData.Roomdata[_index].walletAddress, DDDataRoomPropData.Roomdata[_index].CarToken.ToString());
     }
     #endregion
 
