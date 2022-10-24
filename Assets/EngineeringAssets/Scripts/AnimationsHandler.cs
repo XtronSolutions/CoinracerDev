@@ -167,7 +167,7 @@ public class AnimationsHandler : MonoBehaviour
         mainMenuAnimating = true;
         List<Button> buttons = getMainMenuButtonsList();
         defaultMainMenuButtonsPos = getPosition(buttons);
-        setPositionX(buttons, defaultMainMenuButtonsPos, mainMenuButtonsPositionX);
+        //setPositionX(buttons, defaultMainMenuButtonsPos, mainMenuButtonsPositionX);
         startMainMenuButtonAnimation(buttons, defaultMainMenuButtonsPos, 0);
     }
 
@@ -249,7 +249,7 @@ public class AnimationsHandler : MonoBehaviour
             return mainMenuButtons;
 
         mainMenuButtons.Add(UIMainMenu.tournament);
-        //mainMenuButtons.Add(UIMainMenu.SecondTournament);
+                                //mainMenuButtons.Add(UIMainMenu.SecondTournament);
         mainMenuButtons.Add(UIMainMenu.practice);
         mainMenuButtons.Add(UIMainMenu.multiplayer);
         mainMenuButtons.Add(UIMainMenu.Chiprace);

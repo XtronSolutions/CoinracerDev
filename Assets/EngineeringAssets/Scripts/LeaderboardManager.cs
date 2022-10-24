@@ -34,7 +34,7 @@ public class LeaderboardManager : MonoBehaviour
         LeaderBoardUIData.MainScreen.SetActive(true);
         LeaderBoardUIData.LoaderObj.SetActive(true);
 
-        FirebaseMoralisManager.Instance.QueryDB("TimeSeconds", "desc", IsSecondTour);
+        FirebaseMoralisManager.Instance.QueryDB("", "", IsSecondTour);
         ToggleCoinracerButton(IsSecondTour);
         ToggleSecondTourButton(!IsSecondTour);
     }
@@ -44,7 +44,7 @@ public class LeaderboardManager : MonoBehaviour
         LeaderBoardUIData.MainScreen.SetActive(true);
         LeaderBoardUIData.LoaderObj.SetActive(true);
 
-        FirebaseMoralisManager.Instance.QueryDB("TimeSeconds", "desc",false);
+        FirebaseMoralisManager.Instance.QueryDB("", "",false);
         ToggleCoinracerButton(false);
         ToggleSecondTourButton(true);
     }
@@ -54,7 +54,7 @@ public class LeaderboardManager : MonoBehaviour
         LeaderBoardUIData.MainScreen.SetActive(true);
         LeaderBoardUIData.LoaderObj.SetActive(true);
 
-        FirebaseMoralisManager.Instance.QueryDB("TimeSeconds", "desc",true);
+        FirebaseMoralisManager.Instance.QueryDB("", "",true);
         ToggleCoinracerButton(true);
         ToggleSecondTourButton(false);
     }
@@ -98,7 +98,7 @@ public class LeaderboardManager : MonoBehaviour
             float Seconds = (float)_data[i].TimeSeconds;
 
             if(IsSecondTour)
-                Seconds = (float)_data[i].GTimeSeconds;
+                Seconds = 0;//(float)_data[i].GTimeSeconds
 
             _UIInstance.SetPrefabData((i + 1).ToString(), _data[i].UserName, _data[i].WalletAddress, Seconds, _data[i].AvatarID);
             _obj.transform.SetParent(LeaderBoardUIData.ScrollContent);

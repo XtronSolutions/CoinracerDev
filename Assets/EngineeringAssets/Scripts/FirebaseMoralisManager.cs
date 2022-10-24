@@ -69,6 +69,7 @@ public class UserData
     public EndDate TournamentEndDate { get; set; }
     public Timestamp ProfileCreated { get; set; }
     public int TotalWins { get; set; }
+    public int TotalDDWins { get; set; }
     public double GNumberOfTries { get; set; }
     public bool GPassBought { get; set; }
     public double GTimeSeconds { get; set; }
@@ -187,6 +188,7 @@ public class FirebaseMoralisManager : MonoBehaviour
         PlayerData.PassBought = (bool)response.SelectToken("data").SelectToken("PassBought");
         PlayerData.AvatarID = (int)response.SelectToken("data").SelectToken("AvatarID");
         PlayerData.TotalWins = (int)response.SelectToken("data").SelectToken("TotalWins");
+        PlayerData.TotalDDWins = response.SelectToken("data").SelectToken("TotalDDWins") != null ? (int)response.SelectToken("data").SelectToken("TotalDDWins") : 0;
         PlayerData.StalkedNFT = (string)response.SelectToken("data").SelectToken("StalkedNFT");
         Constants.TotalWins = PlayerData.TotalWins;
         PlayerData.TournamentEndDate = new EndDate();
@@ -1159,14 +1161,22 @@ public class FirebaseMoralisManager : MonoBehaviour
             if (msg.Contains("successfully added new record"))
             {
                 Constants.VirtualCurrencyAmount = (float)token.SelectToken("result").SelectToken("VC_amount");
-
-                StoreHandler.Instance.SetCCashText_StoreUI(Constants.VirtualCurrencyAmount);
-                StoreHandler.Instance.SetCCashText_Garage(Constants.VirtualCurrencyAmount);
-                MainMenuViewController.Instance.UpdateVCText(Constants.VirtualCurrencyAmount);
+                UpdateVCAmount(Constants.VirtualCurrencyAmount);
                 MainMenuViewController.Instance.ShowToast(3f, "15 CCash was deducted for contribution.", true);
                 Debug.Log("Game Setup for DD completed");
+            }else if (msg.Contains("success"))
+            {
+                MainMenuViewController.Instance.ShowToast(3f, "Successfully rejoined the room.", true);
             }
         }
+    }
+
+    public void UpdateVCAmount(double _amount)
+    {
+        PlayerData.VC_Amount = _amount;
+        StoreHandler.Instance.SetCCashText_StoreUI(_amount);
+        StoreHandler.Instance.SetCCashText_Garage(_amount);
+        MainMenuViewController.Instance.UpdateVCText(_amount);
     }
 
     async public void StartGame_DD(string _roomID, string _playerID, string _address, string _token)
@@ -1193,6 +1203,17 @@ public class FirebaseMoralisManager : MonoBehaviour
         if (!string.IsNullOrEmpty(_data))
         {
             Debug.Log("winner rewarded!");
+        }
+    }
+
+    async public void ResetGame_DD(string _roomID, string _playerID, string _address, string _token)
+    {
+        string _data = await apiRequestHandler.Instance.ProcessResetGameRequest_DD(_roomID, _playerID, _address, _token);
+        if (!string.IsNullOrEmpty(_data))
+        {
+            Constants.VirtualCurrencyAmount += Constants.DDPoolPrice;
+            UpdateVCAmount(Constants.VirtualCurrencyAmount);
+            Debug.Log("game reseted successfully");
         }
     }
     #endregion
